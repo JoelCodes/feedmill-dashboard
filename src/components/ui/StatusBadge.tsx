@@ -57,7 +57,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
     <div
       className={`inline-flex items-center gap-1 ${config.bg} rounded-lg px-2.5 py-1`}
     >
-      <div className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
+      <div className={`h-1.5 w-1.5 rounded-full ${config.dot}`} />
       <span className={`text-[10px] font-bold ${config.text}`}>
         {config.label}
       </span>

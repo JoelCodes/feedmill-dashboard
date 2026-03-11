@@ -41,7 +41,7 @@ const kpiData: KPICardProps[] = [
 
 export default function KPICards() {
   return (
-    <div className="flex gap-6 w-full">
+    <div className="flex w-full gap-6">
       {kpiData.map((kpi) => (
         <KPICard key={kpi.label} {...kpi} />
       ))}
@@ -58,7 +58,7 @@ function KPICard({ label, value, change, changeType, icon: Icon }: KPICardProps)
       : "text-[var(--text-secondary)]";
 
   return (
-    <div className="flex-1 bg-white rounded-[15px] p-[18px_21px] flex items-center justify-between shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex flex-1 items-center justify-between rounded-[15px] bg-white p-[18px_21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       <div className="flex flex-col gap-0.5">
         <span className="text-xs font-bold text-[var(--text-secondary)]">{label}</span>
         <div className="flex items-end gap-1.5">
@@ -66,8 +66,8 @@ function KPICard({ label, value, change, changeType, icon: Icon }: KPICardProps)
           <span className={`text-sm font-bold ${changeColor}`}>{change}</span>
         </div>
       </div>
-      <div className="w-[45px] h-[45px] bg-[var(--primary)] rounded-xl flex items-center justify-center shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
-        <Icon className="w-[22px] h-[22px] text-white" />
+      <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-[var(--primary)] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+        <Icon className="h-[22px] w-[22px] text-white" />
       </div>
     </div>
   );

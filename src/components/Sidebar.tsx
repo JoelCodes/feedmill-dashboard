@@ -19,20 +19,20 @@ const settingsItems = [{ icon: FlaskConical, label: "Formulas", active: false }]
 
 export default function Sidebar() {
   return (
-    <aside className="w-[280px] bg-white h-full p-6 flex flex-col gap-2">
+    <aside className="flex h-full w-[280px] flex-col gap-2 bg-white p-6">
       {/* Logo */}
       <div className="flex items-center gap-2.5 pb-5">
-        <div className="w-8 h-8 bg-[var(--primary)] rounded-lg" />
+        <div className="h-8 w-8 rounded-lg bg-[var(--primary)]" />
         <span className="text-sm font-bold text-[var(--text-primary)]">
           FEEDMILL PRO
         </span>
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-[var(--divider)] w-full" />
+      <div className="h-px w-full bg-[var(--divider)]" />
 
       {/* Production Section */}
-      <span className="text-[10px] font-bold text-[var(--text-secondary)] mt-2 tracking-wide">
+      <span className="mt-2 text-[10px] font-bold tracking-wide text-[var(--text-secondary)]">
         PRODUCTION
       </span>
 
@@ -46,10 +46,10 @@ export default function Sidebar() {
       ))}
 
       {/* Divider */}
-      <div className="h-px bg-[var(--divider)] w-full mt-2" />
+      <div className="mt-2 h-px w-full bg-[var(--divider)]" />
 
       {/* Settings Section */}
-      <span className="text-[10px] font-bold text-[var(--text-secondary)] mt-2 tracking-wide">
+      <span className="mt-2 text-[10px] font-bold tracking-wide text-[var(--text-secondary)]">
         SETTINGS
       </span>
 
@@ -76,19 +76,19 @@ function NavItem({
 }) {
   return (
     <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-[15px] w-full ${
+      className={`flex w-full items-center gap-3 rounded-[15px] px-4 py-3 ${
         active
           ? "bg-white shadow-[0_3.5px_5px_rgba(0,0,0,0.03)]"
           : "bg-transparent"
       }`}
     >
       <div
-        className={`w-[30px] h-[30px] rounded-xl flex items-center justify-center shadow-[0_3.5px_5px_rgba(0,0,0,0.03)] ${
+        className={`flex h-[30px] w-[30px] items-center justify-center rounded-xl shadow-[0_3.5px_5px_rgba(0,0,0,0.03)] ${
           active ? "bg-[var(--primary)]" : "bg-white"
         }`}
       >
         <Icon
-          className={`w-4 h-4 ${active ? "text-white" : "text-[--primary]"}`}
+          className={`h-4 w-4 ${active ? "text-white" : "text-[--primary]"}`}
         />
       </div>
       <span

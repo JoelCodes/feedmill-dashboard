@@ -62,7 +62,7 @@ const statusCounts = {
 
 export default function OrdersTable() {
   return (
-    <div className="flex-1 bg-white rounded-[15px] p-[21px] flex flex-col gap-4 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-[21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
@@ -70,7 +70,7 @@ export default function OrdersTable() {
             Outgoing Orders
           </h2>
           <div className="flex items-center gap-1">
-            <CheckCircle className="w-[15px] h-[15px] text-[var(--success)]" />
+            <CheckCircle className="h-[15px] w-[15px] text-[var(--success)]" />
             <span className="text-sm text-[var(--text-secondary)]">
               18 dispatched this week
             </span>
@@ -109,7 +109,7 @@ export default function OrdersTable() {
       </div>
 
       {/* Table */}
-      <div className="flex flex-col w-full">
+      <div className="flex w-full flex-col">
         {/* Table Header */}
         <div className="flex py-2.5">
           <div className="flex-1 text-[10px] font-bold text-[var(--text-secondary)]">
@@ -134,16 +134,16 @@ export default function OrdersTable() {
         {/* Table Rows */}
         {orders.map((order, index) => (
           <div key={order.id}>
-            <div className="flex py-3 items-center">
-              <div className="flex-1 flex items-center gap-2">
-                <div className="w-6 h-6 bg-[var(--primary)] rounded-md flex items-center justify-center">
-                  <Package className="w-3 h-3 text-white" />
+            <div className="flex items-center py-3">
+              <div className="flex flex-1 items-center gap-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--primary)]">
+                  <Package className="h-3 w-3 text-white" />
                 </div>
                 <span className="text-xs font-bold text-[var(--text-primary)]">
                   {order.id}
                 </span>
                 {order.hasAlert && (
-                  <div className="w-2 h-2 bg-[var(--error)] rounded-full" />
+                  <div className="h-2 w-2 rounded-full bg-[var(--error)]" />
                 )}
               </div>
               <div className="flex-1 text-xs text-[var(--text-primary)]">
@@ -182,9 +182,9 @@ function FilterPill({
 }) {
   if (active) {
     return (
-      <div className="flex items-center gap-1.5 bg-[var(--primary)] rounded-xl px-3.5 py-1.5">
+      <div className="flex items-center gap-1.5 rounded-xl bg-[var(--primary)] px-3.5 py-1.5">
         <span className="text-[11px] font-bold text-white">{label}</span>
-        <div className="bg-white/20 rounded-lg px-1.5 py-0.5">
+        <div className="rounded-lg bg-white/20 px-1.5 py-0.5">
           <span className="text-[10px] font-bold text-white">{count}</span>
         </div>
       </div>
@@ -196,11 +196,11 @@ function FilterPill({
 
   return (
     <div
-      className={`flex items-center gap-1.5 ${config.bg} rounded-xl px-3.5 py-1.5 border border-transparent`}
+      className={`flex items-center gap-1.5 ${config.bg} rounded-xl border border-transparent px-3.5 py-1.5`}
     >
-      <div className={`w-2 h-2 rounded-full ${config.dot}`} />
+      <div className={`h-2 w-2 rounded-full ${config.dot}`} />
       <span className={`text-[11px] font-bold ${config.text}`}>{label}</span>
-      <div className={`${config.countBg} rounded-lg px-1.5 flex items-center`}>
+      <div className={`${config.countBg} flex items-center rounded-lg px-1.5`}>
         <span className={`text-[10px] font-bold ${config.text}`}>{count}</span>
       </div>
     </div>

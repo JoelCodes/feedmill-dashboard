@@ -77,7 +77,7 @@ const colorMap = {
 
 export default function OrderDetails() {
   return (
-    <div className="w-[480px] bg-white rounded-[15px] p-[21px] flex flex-col gap-4 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex w-[480px] flex-col gap-4 rounded-[15px] bg-white p-[21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
       <div className="flex flex-col gap-1">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">
@@ -132,7 +132,7 @@ function StatCard({
   subtext?: string;
 }) {
   return (
-    <div className="flex-1 bg-[var(--bg-page)] rounded-xl p-3.5 flex flex-col items-center gap-1">
+    <div className="flex flex-1 flex-col items-center gap-1 rounded-xl bg-[var(--bg-page)] p-3.5">
       <span className="text-[10px] font-bold text-[var(--text-secondary)]">
         {label}
       </span>
@@ -166,20 +166,20 @@ function TimelineItem({
   return (
     <div className="flex gap-3.5">
       {/* Left - Icon */}
-      <div className="flex flex-col items-center w-9">
+      <div className="flex w-9 flex-col items-center">
         <div
-          className={`w-7 h-7 ${colors.bg} rounded-full flex items-center justify-center`}
+          className={`h-7 w-7 ${colors.bg} flex items-center justify-center rounded-full`}
         >
-          <Icon className="w-3.5 h-3.5 text-white" />
+          <Icon className="h-3.5 w-3.5 text-white" />
         </div>
       </div>
 
       {/* Right - Content */}
-      <div className="flex-1 flex flex-col gap-0.5">
+      <div className="flex flex-1 flex-col gap-0.5">
         <span className="text-[13px] font-bold text-[var(--text-primary)]">
           {title}
         </span>
-        <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+        <p className="text-[11px] leading-relaxed text-[var(--text-secondary)]">
           {description}
         </p>
         <span className={`text-[10px] font-bold ${colors.text}`}>{date}</span>
@@ -193,7 +193,7 @@ function TimelineConnector({ color }: { color: "primary" | "success" | "error" }
 
   return (
     <div className="h-8 pl-[17px]">
-      <div className={`w-0.5 h-full ${colors.bar}`} />
+      <div className={`h-full w-0.5 ${colors.bar}`} />
     </div>
   );
 }
