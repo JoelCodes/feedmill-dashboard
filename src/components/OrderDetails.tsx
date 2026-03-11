@@ -10,57 +10,16 @@ import { getOrderById } from '@/services/orders';
 import { Order } from '@/types/order';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { formatDeliveryDate } from '@/utils/formatDate';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
-interface TimelineStep {
+interface TimelineEvent {
+  id: string;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
-  date: string;
+  date: Date;
   color: "primary" | "success" | "error";
 }
-
-const timelineSteps: TimelineStep[] = [
-  {
-    icon: ShoppingCart,
-    title: "Order Placed",
-    description:
-      "Order received from Greenfield Farms for 24.5 tons of Layer Mash. Payment confirmed.",
-    date: "Mar 18, 2026 · 9:15 AM",
-    color: "primary",
-  },
-  {
-    icon: AlertTriangle,
-    title: "Mill Changed",
-    description:
-      "ABC Mill changed to McGruff Mill due to capacity reallocation.",
-    date: "Mar 18, 2026 · 2:45 PM",
-    color: "error",
-  },
-  {
-    icon: Factory,
-    title: "Production Complete",
-    description:
-      "Batch #B-4420 mixed and pelleted on Line 3. QC passed — moisture 11.2%, protein 16.8%.",
-    date: "Mar 19, 2026 · 2:40 PM",
-    color: "primary",
-  },
-  {
-    icon: Truck,
-    title: "Delivery Started",
-    description:
-      "Truck #TK-118 departed plant. Driver: M. Santos. ETA 6 hrs to Greenfield Farms, Amarillo TX.",
-    date: "Mar 20, 2026 · 6:00 AM",
-    color: "primary",
-  },
-  {
-    icon: CheckCircle,
-    title: "Delivery Received",
-    description:
-      "Signed by J. Henderson at Greenfield Farms. Full load accepted — no damage reported.",
-    date: "Mar 20, 2026 · 12:30 PM",
-    color: "success",
-  },
-];
 
 const colorMap = {
   primary: {
@@ -80,23 +39,115 @@ const colorMap = {
   },
 };
 
+function generateTimelineEvents(order: Order): TimelineEvent[] {
+  const events: TimelineEvent[] = [];
+
+  // Order placed (always present)
+  events.push({
+    id: 'order-placed',
+    icon: ShoppingCart,
+    title: 'Order Placed',
+    description: `Order received from ${order.customer}`,
+    date: order.createdAt,
+    color: 'primary',
+  });
+
+  // Change event (if hasChanges)
+  if (order.hasChanges) {
+    events.push({
+      id: 'change-event',
+      icon: AlertTriangle,
+      title: 'Order Modified',
+      description: 'Mill assignment changed',
+      date: order.updatedAt,
+      color: 'error',
+    });
+  }
+
+  // Status-based events (derive from current status)
+  // Add production event if past Pending
+  if (['Producing', 'Ready', 'In Transit', 'Complete'].includes(order.status)) {
+    events.push({
+      id: 'production-started',
+      icon: Factory,
+      title: 'Production Started',
+      description: `Producing ${order.quantity} tons ${order.textureType}`,
+      date: new Date(order.createdAt.getTime() + 3600000), // 1 hour after order
+      color: 'primary',
+    });
+  }
+
+  // Add delivery event if In Transit or Complete
+  if (['In Transit', 'Complete'].includes(order.status)) {
+    events.push({
+      id: 'delivery-started',
+      icon: Truck,
+      title: 'Delivery Started',
+      description: `Shipment departed for ${order.location}`,
+      date: new Date(order.deliveryDate.getTime() - 21600000), // 6 hours before delivery
+      color: 'primary',
+    });
+  }
+
+  // Add completion event if Complete
+  if (order.status === 'Complete') {
+    events.push({
+      id: 'delivered',
+      icon: CheckCircle,
+      title: 'Delivered',
+      description: `Delivered to ${order.location}`,
+      date: order.deliveryDate,
+      color: 'success',
+    });
+  }
+
+  return events;
+}
+
+function formatTimelineDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  }).format(date).replace(',', ' ·');
+}
+
 interface OrderDetailsProps {
   orderId: string | null;
 }
 
 export default function OrderDetails({ orderId }: OrderDetailsProps) {
   const [order, setOrder] = useState<Order | null>(null);
+  const [sortOrder, setSortOrder] = useLocalStorage<'asc' | 'desc'>(
+    'orderTimelineSortOrder',
+    'desc'  // Newest first by default
+  );
 
   useEffect(() => {
-    if (!orderId) {
-      setOrder(null);
-      return;
-    }
-    getOrderById(orderId).then(setOrder);
+    if (!orderId) return;
+
+    let cancelled = false;
+
+    // Fetch from external system (mock service)
+    getOrderById(orderId).then(data => {
+      if (!cancelled) {
+        setOrder(data);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [orderId]);
 
+  // Derive whether to show order based on orderId match
+  const displayOrder = orderId && order?.id === orderId ? order : null;
+
   // Show placeholder when no order selected
-  if (!orderId || !order) {
+  if (!orderId || !displayOrder) {
     return (
       <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
         <div className="flex flex-col items-center justify-center py-12">
@@ -106,46 +157,62 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
     );
   }
 
+  // Generate and sort timeline events
+  const timelineEvents = generateTimelineEvents(displayOrder);
+  const sortedEvents = [...timelineEvents].sort((a, b) => {
+    const diff = a.date.getTime() - b.date.getTime();
+    return sortOrder === 'desc' ? -diff : diff;
+  });
+
   return (
     <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
           <h2 className="text-text-primary text-lg font-bold">
-            {order.documentNumber} - {order.customer}
+            {displayOrder.documentNumber} - {displayOrder.customer}
           </h2>
-          <StatusBadge status={order.status} />
+          <StatusBadge status={displayOrder.status} />
         </div>
         <p className="text-text-secondary text-sm">
-          {order.quantity} tons {order.textureType} · {order.location}
+          {displayOrder.quantity} tons {displayOrder.textureType} · {displayOrder.location}
         </p>
       </div>
 
       {/* Stats */}
       <div className="flex gap-3">
-        <StatCard label="Quantity" value={order.quantity.toString()} unit="tons" />
-        <StatCard label="Delivery" value={formatDeliveryDate(order.deliveryDate)} />
-        <StatCard label="Texture" value={order.textureType} subtext={order.formulaType} />
+        <StatCard label="Quantity" value={displayOrder.quantity.toString()} unit="tons" />
+        <StatCard label="Delivery" value={formatDeliveryDate(displayOrder.deliveryDate)} />
+        <StatCard label="Texture" value={displayOrder.textureType} subtext={displayOrder.formulaType} />
       </div>
 
       {/* Timeline */}
-      <div className="flex flex-col">
-        {timelineSteps.map((step, index) => (
-          <div key={step.title}>
-            <TimelineItem {...step} />
-            {index < timelineSteps.length - 1 && (
-              <TimelineConnector
-                color={
-                  index === 0
-                    ? "error"
-                    : index === timelineSteps.length - 2
-                    ? "success"
-                    : "primary"
-                }
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-text-primary text-sm font-bold">Timeline</h3>
+          <button
+            onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+            className="text-primary text-[10px] font-medium hover:underline"
+          >
+            {sortOrder === 'desc' ? 'Newest first' : 'Oldest first'}
+          </button>
+        </div>
+        <div className="flex flex-col">
+          {sortedEvents.map((event, index) => (
+            <div key={event.id}>
+              <TimelineItem
+                icon={event.icon}
+                title={event.title}
+                description={event.description}
+                date={formatTimelineDate(event.date)}
+                color={event.color}
               />
-            )}
-          </div>
-        ))}
+              {index < sortedEvents.length - 1 && (
+                <TimelineConnector color={event.color} />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -193,7 +260,13 @@ function TimelineItem({
   description,
   date,
   color,
-}: TimelineStep) {
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  date: string;
+  color: "primary" | "success" | "error";
+}) {
   const colors = colorMap[color];
 
   return (
