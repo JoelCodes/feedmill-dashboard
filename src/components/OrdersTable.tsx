@@ -370,7 +370,7 @@ function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} py-.75 rounded-xl px-2.5 transition-colors hover:opacity-90`}
+      className={`flex items-center gap-1.5 ${bgClass} rounded-xl px-2.5 py-2 transition-colors hover:opacity-90`}
     >
       {hasDot && <div className={`h-2 w-2 rounded-full ${dotBgClass}`} />}
       <span className={`text-[11px] font-bold ${textClass}`}>{label}</span>
