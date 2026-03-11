@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { CheckCircle, Package, Search } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
 import { OrderStatus, Order } from "@/types/order";
@@ -13,7 +13,9 @@ export default function OrdersTable() {
   const [activeStatuses, setActiveStatuses] = useState<Set<OrderStatus>>(new Set());
   const [hasChangesFilter, setHasChangesFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const debouncedSearch = useDebounce(searchTerm, 300);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getOrders().then(setOrders);
@@ -122,6 +124,44 @@ export default function OrdersTable() {
 
     return ordersToCount.filter(o => o.hasChanges).length;
   }, [orders, activeStatuses, debouncedSearch]);
+
+  const visibleIds = filteredOrders.map(o => o.id);
+
+  // Derive valid selection - null if selected order is not in filtered list
+  const validSelectedId = selectedId && visibleIds.includes(selectedId) ? selectedId : null;
+
+  // Scroll selected row into view when keyboard navigating
+  useEffect(() => {
+    if (validSelectedId && tableRef.current) {
+      const selectedRow = tableRef.current.querySelector(`[data-order-id="${validSelectedId}"]`);
+      if (selectedRow) {
+        selectedRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [validSelectedId]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!validSelectedId || visibleIds.length === 0) {
+      // If nothing selected and arrow pressed, select first row
+      if (e.key === 'ArrowDown' && visibleIds.length > 0) {
+        e.preventDefault();
+        setSelectedId(visibleIds[0]);
+      }
+      return;
+    }
+
+    const currentIndex = visibleIds.indexOf(validSelectedId);
+
+    if (e.key === 'ArrowDown' && currentIndex < visibleIds.length - 1) {
+      e.preventDefault();
+      setSelectedId(visibleIds[currentIndex + 1]);
+    } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+      e.preventDefault();
+      setSelectedId(visibleIds[currentIndex - 1]);
+    }
+    // Note: Enter key handling deferred to Phase 2 (opens details panel)
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
@@ -199,7 +239,12 @@ export default function OrdersTable() {
       </div>
 
       {/* Table */}
-      <div className="flex w-full flex-col">
+      <div
+        ref={tableRef}
+        className="flex w-full flex-col focus:outline-none"
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+      >
         {/* Table Header */}
         <div className="flex py-2.5">
           <div className="text-text-secondary flex-1 text-[10px] font-bold">
@@ -228,9 +273,35 @@ export default function OrdersTable() {
         <div className="bg-divider h-px" />
 
         {/* Table Rows */}
-        {filteredOrders.map((order, index) => (
-          <div key={order.id}>
-            <div className="flex items-center py-3">
+        {filteredOrders.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <Package className="mb-4 h-12 w-12 text-gray-300" />
+            <p className="text-text-secondary text-sm">
+              No orders match your current filters
+            </p>
+            <button
+              onClick={() => {
+                setActiveStatuses(new Set());
+                setHasChangesFilter(false);
+                setSearchTerm('');
+              }}
+              className="text-primary mt-2 text-sm hover:underline"
+            >
+              Clear all filters
+            </button>
+          </div>
+        ) : (
+          filteredOrders.map((order, index) => (
+            <div key={order.id}>
+              <div
+                data-order-id={order.id}
+                onClick={() => setSelectedId(order.id)}
+                className={`flex cursor-pointer items-center py-3 transition-colors
+                  ${validSelectedId === order.id
+                    ? 'bg-primary/10'
+                    : 'hover:bg-gray-50'
+                  }`}
+              >
               <div className="flex flex-1 items-center gap-2">
                 <div className="bg-primary flex h-6 w-6 items-center justify-center rounded-md">
                   <Package className="h-3 w-3 text-white" />
@@ -265,7 +336,8 @@ export default function OrdersTable() {
               <div className="bg-divider h-px" />
             )}
           </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
