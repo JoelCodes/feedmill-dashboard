@@ -11,8 +11,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **INFRA-01**: TypeScript types defined for Order data structure
 - [x] **INFRA-02**: Mock orders service with async interface
-- [ ] **INFRA-03**: StatusBadge component extracted with shared constants
-- [ ] **INFRA-04**: Loading skeleton components for table and details
+- [x] **INFRA-03**: StatusBadge component extracted with shared constants
+- [x] **INFRA-04**: Loading skeleton components for table and details
 
 ### Orders Table
 
@@ -91,8 +91,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | INFRA-01 | Phase 0 | Complete |
 | INFRA-02 | Phase 0 | Complete |
-| INFRA-03 | Phase 0 | Pending |
-| INFRA-04 | Phase 0 | Pending |
+| INFRA-03 | Phase 0 | Complete |
+| INFRA-04 | Phase 0 | Complete |
 | TABLE-01 | Phase 1 | Pending |
 | TABLE-02 | Phase 1 | Pending |
 | TABLE-03 | Phase 1 | Pending |

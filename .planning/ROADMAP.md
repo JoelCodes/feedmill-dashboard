@@ -12,7 +12,7 @@ Transform the existing feed mill operations dashboard from a static visual proto
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 0: Infrastructure** - Service layer, types, and shared components
+- [x] **Phase 0: Infrastructure** - Service layer, types, and shared components
 - [ ] **Phase 1: Orders Table** - Filtering, searching, selection interactivity
 - [ ] **Phase 2: Order Details** - Panel display with timeline and change history
 - [ ] **Phase 3: KPI Cards** - Dynamic values and drill-down filtering
@@ -33,8 +33,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 00-01-PLAN.md — Types and mock orders service (INFRA-01, INFRA-02)
-- [ ] 00-02-PLAN.md — StatusBadge extraction and skeleton components (INFRA-03, INFRA-04)
+- [x] 00-01-PLAN.md — Types and mock orders service (INFRA-01, INFRA-02) — 2m, 2 tasks, 3 files
+- [x] 00-02-PLAN.md — StatusBadge extraction and skeleton components (INFRA-03, INFRA-04) — 2m, 3 tasks, 4 files
 
 ### Phase 1: Orders Table
 **Goal**: Users can filter, search, and select orders in the orders table
