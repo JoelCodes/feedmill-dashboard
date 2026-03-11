@@ -30,11 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Mock orders service returns data through async interface (same interface future API will use)
   3. StatusBadge component is extracted and reusable across table and details
   4. Loading skeleton components render appropriately during data fetching states
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 00-01: Types and mock service
-- [ ] 00-02: Shared components (StatusBadge, skeletons)
+- [ ] 00-01-PLAN.md — Types and mock orders service (INFRA-01, INFRA-02)
+- [ ] 00-02-PLAN.md — StatusBadge extraction and skeleton components (INFRA-03, INFRA-04)
 
 ### Phase 1: Orders Table
 **Goal**: Users can filter, search, and select orders in the orders table
@@ -114,7 +114,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Infrastructure | 0/2 | Not started | - |
+| 0. Infrastructure | 0/2 | Planning complete | - |
 | 1. Orders Table | 0/3 | Not started | - |
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
