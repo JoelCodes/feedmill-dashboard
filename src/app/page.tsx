@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import KPICards from "@/components/KPICard";
@@ -5,6 +8,8 @@ import OrdersTable from "@/components/OrdersTable";
 import OrderDetails from "@/components/OrderDetails";
 
 export default function Dashboard() {
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+
   return (
     <div className="bg-bg-page flex h-screen">
       {/* Sidebar */}
@@ -21,10 +26,13 @@ export default function Dashboard() {
         {/* Bottom Row */}
         <div className="flex min-h-0 flex-1 gap-6">
           {/* Orders Table */}
-          <OrdersTable />
+          <OrdersTable
+            selectedOrderId={selectedOrderId}
+            onSelectOrder={setSelectedOrderId}
+          />
 
           {/* Order Details */}
-          <OrderDetails />
+          <OrderDetails orderId={selectedOrderId} />
         </div>
       </main>
     </div>

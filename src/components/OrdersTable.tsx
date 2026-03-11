@@ -8,12 +8,16 @@ import { getOrders } from "@/services/orders";
 import { formatDeliveryDate } from "@/utils/formatDate";
 import { useDebounce } from "@/hooks/useDebounce";
 
-export default function OrdersTable() {
+interface OrdersTableProps {
+  selectedOrderId: string | null;
+  onSelectOrder: (id: string) => void;
+}
+
+export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTableProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeStatuses, setActiveStatuses] = useState<Set<OrderStatus>>(new Set());
   const [hasChangesFilter, setHasChangesFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const debouncedSearch = useDebounce(searchTerm, 300);
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -128,7 +132,7 @@ export default function OrdersTable() {
   const visibleIds = filteredOrders.map(o => o.id);
 
   // Derive valid selection - null if selected order is not in filtered list
-  const validSelectedId = selectedId && visibleIds.includes(selectedId) ? selectedId : null;
+  const validSelectedId = selectedOrderId && visibleIds.includes(selectedOrderId) ? selectedOrderId : null;
 
   // Scroll selected row into view when keyboard navigating
   useEffect(() => {
@@ -145,7 +149,7 @@ export default function OrdersTable() {
       // If nothing selected and arrow pressed, select first row
       if (e.key === 'ArrowDown' && visibleIds.length > 0) {
         e.preventDefault();
-        setSelectedId(visibleIds[0]);
+        onSelectOrder(visibleIds[0]);
       }
       return;
     }
@@ -154,10 +158,10 @@ export default function OrdersTable() {
 
     if (e.key === 'ArrowDown' && currentIndex < visibleIds.length - 1) {
       e.preventDefault();
-      setSelectedId(visibleIds[currentIndex + 1]);
+      onSelectOrder(visibleIds[currentIndex + 1]);
     } else if (e.key === 'ArrowUp' && currentIndex > 0) {
       e.preventDefault();
-      setSelectedId(visibleIds[currentIndex - 1]);
+      onSelectOrder(visibleIds[currentIndex - 1]);
     }
     // Note: Enter key handling deferred to Phase 2 (opens details panel)
   };
@@ -295,7 +299,7 @@ export default function OrdersTable() {
             <div key={order.id}>
               <div
                 data-order-id={order.id}
-                onClick={() => setSelectedId(order.id)}
+                onClick={() => onSelectOrder(order.id)}
                 className={`flex cursor-pointer items-center py-3 transition-colors
                   ${validSelectedId === order.id
                     ? 'bg-primary/10'

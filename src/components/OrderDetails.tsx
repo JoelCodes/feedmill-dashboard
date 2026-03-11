@@ -75,7 +75,11 @@ const colorMap = {
   },
 };
 
-export default function OrderDetails() {
+interface OrderDetailsProps {
+  orderId: string | null;
+}
+
+export default function OrderDetails({ orderId }: OrderDetailsProps) {
   return (
     <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
