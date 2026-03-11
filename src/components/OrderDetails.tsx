@@ -59,31 +59,31 @@ const timelineSteps: TimelineStep[] = [
 
 const colorMap = {
   primary: {
-    bg: "bg-[var(--primary)]",
-    bar: "bg-[var(--primary)]",
-    text: "text-[var(--primary)]",
+    bg: "bg-primary",
+    bar: "bg-primary",
+    text: "text-primary",
   },
   success: {
-    bg: "bg-[var(--success)]",
-    bar: "bg-[var(--success)]",
-    text: "text-[var(--success)]",
+    bg: "bg-success",
+    bar: "bg-success",
+    text: "text-success",
   },
   error: {
-    bg: "bg-[var(--error)]",
-    bar: "bg-[var(--error)]",
-    text: "text-[var(--error)]",
+    bg: "bg-error",
+    bar: "bg-error",
+    text: "text-error",
   },
 };
 
 export default function OrderDetails() {
   return (
-    <div className="flex w-[480px] flex-col gap-4 rounded-[15px] bg-white p-[21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">
+        <h2 className="text-text-primary text-lg font-bold">
           ORD-2847 — Greenfield Farms
         </h2>
-        <p className="text-sm text-[var(--text-secondary)]">
+        <p className="text-text-secondary text-sm">
           24.5 tons Layer Mash · Greenfield Farms, TX
         </p>
       </div>
@@ -132,23 +132,23 @@ function StatCard({
   subtext?: string;
 }) {
   return (
-    <div className="flex flex-1 flex-col items-center gap-1 rounded-xl bg-[var(--bg-page)] p-3.5">
-      <span className="text-[10px] font-bold text-[var(--text-secondary)]">
+    <div className="bg-bg-page flex flex-1 flex-col items-center gap-1 rounded-xl p-3.5">
+      <span className="text-text-secondary text-[10px] font-bold">
         {label}
       </span>
-      <span className="text-[22px] font-bold text-[var(--text-primary)]">
+      <span className="text-text-primary text-[22px] font-bold">
         {value}
       </span>
       {unit && (
-        <span className="text-[10px] text-[var(--text-secondary)]">{unit}</span>
+        <span className="text-text-secondary text-[10px]">{unit}</span>
       )}
       {percentage && (
-        <span className="text-[10px] font-bold text-[var(--success)]">
+        <span className="text-success text-[10px] font-bold">
           {percentage}
         </span>
       )}
       {subtext && (
-        <span className="text-[10px] text-[var(--text-secondary)]">{subtext}</span>
+        <span className="text-text-secondary text-[10px]">{subtext}</span>
       )}
     </div>
   );
@@ -176,10 +176,10 @@ function TimelineItem({
 
       {/* Right - Content */}
       <div className="flex flex-1 flex-col gap-0.5">
-        <span className="text-[13px] font-bold text-[var(--text-primary)]">
+        <span className="text-text-primary text-[13px] font-bold">
           {title}
         </span>
-        <p className="text-[11px] leading-relaxed text-[var(--text-secondary)]">
+        <p className="text-text-secondary text-[11px] leading-relaxed">
           {description}
         </p>
         <span className={`text-[10px] font-bold ${colors.text}`}>{date}</span>
@@ -192,7 +192,7 @@ function TimelineConnector({ color }: { color: "primary" | "success" | "error" }
   const colors = colorMap[color];
 
   return (
-    <div className="h-8 pl-[17px]">
+    <div className="h-8 pl-4.25">
       <div className={`h-full w-0.5 ${colors.bar}`} />
     </div>
   );

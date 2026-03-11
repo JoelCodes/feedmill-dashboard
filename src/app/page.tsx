@@ -6,7 +6,7 @@ import OrderDetails from "@/components/OrderDetails";
 
 export default function Dashboard() {
   return (
-    <div className="flex h-screen bg-[var(--bg-page)]">
+    <div className="bg-bg-page flex h-screen">
       {/* Sidebar */}
       <Sidebar />
 

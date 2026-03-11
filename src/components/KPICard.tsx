@@ -52,22 +52,22 @@ export default function KPICards() {
 function KPICard({ label, value, change, changeType, icon: Icon }: KPICardProps) {
   const changeColor =
     changeType === "positive"
-      ? "text-[var(--success)]"
+      ? "text-success"
       : changeType === "negative"
-      ? "text-[var(--error)]"
-      : "text-[var(--text-secondary)]";
+      ? "text-error"
+      : "text-text-secondary";
 
   return (
     <div className="flex flex-1 items-center justify-between rounded-[15px] bg-white p-[18px_21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       <div className="flex flex-col gap-0.5">
-        <span className="text-xs font-bold text-[var(--text-secondary)]">{label}</span>
+        <span className="text-text-secondary text-xs font-bold">{label}</span>
         <div className="flex items-end gap-1.5">
-          <span className="text-lg font-bold text-[var(--text-primary)]">{value}</span>
+          <span className="text-text-primary text-lg font-bold">{value}</span>
           <span className={`text-sm font-bold ${changeColor}`}>{change}</span>
         </div>
       </div>
-      <div className="flex h-[45px] w-[45px] items-center justify-center rounded-xl bg-[var(--primary)] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
-        <Icon className="h-[22px] w-[22px] text-white" />
+      <div className="bg-primary flex h-11.25 w-11.25 items-center justify-center rounded-xl shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+        <Icon className="h-5.5 w-5.5 text-white" />
       </div>
     </div>
   );
