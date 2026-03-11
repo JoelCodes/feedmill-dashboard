@@ -163,7 +163,7 @@ export default function OrdersTable() {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
@@ -241,7 +241,7 @@ export default function OrdersTable() {
       {/* Table */}
       <div
         ref={tableRef}
-        className="flex w-full flex-col focus:outline-none"
+        className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto focus:outline-none"
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
