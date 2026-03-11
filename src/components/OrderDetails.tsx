@@ -79,7 +79,9 @@ interface OrderDetailsProps {
   orderId: string | null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function OrderDetails({ orderId }: OrderDetailsProps) {
+  // Note: orderId will be used in Plan 02 to fetch and display actual order data
   return (
     <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}

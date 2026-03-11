@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { CheckCircle, Package, Search } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
 import { OrderStatus, Order } from "@/types/order";
@@ -134,6 +134,25 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
   // Derive valid selection - null if selected order is not in filtered list
   const validSelectedId = selectedOrderId && visibleIds.includes(selectedOrderId) ? selectedOrderId : null;
 
+  // Wrap onSelectOrder in useCallback to avoid infinite loops in useEffect dependencies
+  const handleSelectOrder = useCallback((id: string) => {
+    onSelectOrder(id);
+  }, [onSelectOrder]);
+
+  // Auto-select first row on initial load
+  useEffect(() => {
+    if (!selectedOrderId && filteredOrders.length > 0) {
+      handleSelectOrder(filteredOrders[0].id);
+    }
+  }, [selectedOrderId, filteredOrders, handleSelectOrder]);
+
+  // Auto-select first visible when current selection filtered out
+  useEffect(() => {
+    if (!validSelectedId && selectedOrderId && filteredOrders.length > 0) {
+      handleSelectOrder(filteredOrders[0].id);
+    }
+  }, [validSelectedId, filteredOrders, selectedOrderId, handleSelectOrder]);
+
   // Scroll selected row into view when keyboard navigating
   useEffect(() => {
     if (validSelectedId && tableRef.current) {
@@ -149,7 +168,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
       // If nothing selected and arrow pressed, select first row
       if (e.key === 'ArrowDown' && visibleIds.length > 0) {
         e.preventDefault();
-        onSelectOrder(visibleIds[0]);
+        handleSelectOrder(visibleIds[0]);
       }
       return;
     }
@@ -158,10 +177,10 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
 
     if (e.key === 'ArrowDown' && currentIndex < visibleIds.length - 1) {
       e.preventDefault();
-      onSelectOrder(visibleIds[currentIndex + 1]);
+      handleSelectOrder(visibleIds[currentIndex + 1]);
     } else if (e.key === 'ArrowUp' && currentIndex > 0) {
       e.preventDefault();
-      onSelectOrder(visibleIds[currentIndex - 1]);
+      handleSelectOrder(visibleIds[currentIndex - 1]);
     }
     // Note: Enter key handling deferred to Phase 2 (opens details panel)
   };
@@ -299,7 +318,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
             <div key={order.id}>
               <div
                 data-order-id={order.id}
-                onClick={() => onSelectOrder(order.id)}
+                onClick={() => handleSelectOrder(order.id)}
                 className={`flex cursor-pointer items-center py-3 transition-colors
                   ${validSelectedId === order.id
                     ? 'bg-primary/10'
