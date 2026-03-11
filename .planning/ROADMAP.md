@@ -13,7 +13,7 @@ Transform the existing feed mill operations dashboard from a static visual proto
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 0: Infrastructure** - Service layer, types, and shared components
-- [ ] **Phase 1: Orders Table** - Filtering, searching, selection interactivity
+- [x] **Phase 1: Orders Table** - Filtering, searching, selection interactivity (completed 2026-03-11)
 - [ ] **Phase 2: Order Details** - Panel display with timeline and change history
 - [ ] **Phase 3: KPI Cards** - Dynamic values and drill-down filtering
 - [ ] **Phase 4: Navigation** - Functional sidebar routing between views
@@ -115,7 +115,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Infrastructure | 2/2 | Complete | - |
-| 1. Orders Table | 2/3 | In Progress|  |
+| 1. Orders Table | 3/3 | Complete   | 2026-03-11 |
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
 | 4. Navigation | 0/1 | Not started | - |

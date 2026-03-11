@@ -22,9 +22,9 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **TABLE-04**: Red dot indicator for orders with changes flag
 - [x] **TABLE-05**: Filter by status (clickable pills)
 - [x] **TABLE-06**: Filter by "has changes"
-- [ ] **TABLE-07**: Search bar filters by customer name and product
-- [ ] **TABLE-08**: Row selection with visual highlight
-- [ ] **TABLE-09**: Empty state when no results match filters
+- [x] **TABLE-07**: Search bar filters by customer name and product
+- [x] **TABLE-08**: Row selection with visual highlight
+- [x] **TABLE-09**: Empty state when no results match filters
 
 ### Order Details
 
@@ -99,9 +99,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TABLE-04 | Phase 1 | Complete |
 | TABLE-05 | Phase 1 | Complete |
 | TABLE-06 | Phase 1 | Complete |
-| TABLE-07 | Phase 1 | Pending |
-| TABLE-08 | Phase 1 | Pending |
-| TABLE-09 | Phase 1 | Pending |
+| TABLE-07 | Phase 1 | Complete |
+| TABLE-08 | Phase 1 | Complete |
+| TABLE-09 | Phase 1 | Complete |
 | DETAIL-01 | Phase 2 | Pending |
 | DETAIL-02 | Phase 2 | Pending |
 | DETAIL-03 | Phase 2 | Pending |
