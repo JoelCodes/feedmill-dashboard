@@ -16,10 +16,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Orders Table
 
-- [ ] **TABLE-01**: Display order lines with: Document #, Customer, Product, Quantity, Location, Delivery Date, Status
-- [ ] **TABLE-02**: Product column combines Texture Type + Formula Type
-- [ ] **TABLE-03**: Status badges: Pending, Producing, Ready, In Transit, Complete
-- [ ] **TABLE-04**: Red dot indicator for orders with changes flag
+- [x] **TABLE-01**: Display order lines with: Document #, Customer, Product, Quantity, Location, Delivery Date, Status
+- [x] **TABLE-02**: Product column combines Texture Type + Formula Type
+- [x] **TABLE-03**: Status badges: Pending, Producing, Ready, In Transit, Complete
+- [x] **TABLE-04**: Red dot indicator for orders with changes flag
 - [ ] **TABLE-05**: Filter by status (clickable pills)
 - [ ] **TABLE-06**: Filter by "has changes"
 - [ ] **TABLE-07**: Search bar filters by customer name and product
@@ -93,10 +93,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-02 | Phase 0 | Complete |
 | INFRA-03 | Phase 0 | Complete |
 | INFRA-04 | Phase 0 | Complete |
-| TABLE-01 | Phase 1 | Pending |
-| TABLE-02 | Phase 1 | Pending |
-| TABLE-03 | Phase 1 | Pending |
-| TABLE-04 | Phase 1 | Pending |
+| TABLE-01 | Phase 1 | Complete |
+| TABLE-02 | Phase 1 | Complete |
+| TABLE-03 | Phase 1 | Complete |
+| TABLE-04 | Phase 1 | Complete |
 | TABLE-05 | Phase 1 | Pending |
 | TABLE-06 | Phase 1 | Pending |
 | TABLE-07 | Phase 1 | Pending |

@@ -50,7 +50,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Wire data service and update columns (TABLE-01, TABLE-02, TABLE-03, TABLE-04)
+- [x] 01-01-PLAN.md — Wire data service and update columns (TABLE-01, TABLE-02, TABLE-03, TABLE-04) — 2m, 2 tasks, 2 files
 - [ ] 01-02-PLAN.md — Multi-select status filtering and has changes toggle (TABLE-05, TABLE-06)
 - [ ] 01-03-PLAN.md — Search, row selection, keyboard navigation, empty state (TABLE-07, TABLE-08, TABLE-09)
 
@@ -115,7 +115,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Infrastructure | 2/2 | Complete | - |
-| 1. Orders Table | 0/3 | Planning complete | - |
+| 1. Orders Table | 1/3 | In progress | - |
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
 | 4. Navigation | 0/1 | Not started | - |
