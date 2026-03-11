@@ -356,34 +356,23 @@ interface FilterPillProps {
 function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor }: FilterPillProps) {
   const config = status ? STATUS_CONFIG[status] : null;
 
-  // Active state styling (like current "All" pill)
-  if (isActive) {
-    return (
-      <button
-        onClick={onClick}
-        className="bg-primary flex items-center gap-1.5 rounded-xl px-2.5 py-1 transition-colors"
-      >
-        {showDot && <div className={`h-2 w-2 rounded-full ${dotColor || 'bg-white'}`} />}
-        <span className="text-[11px] font-bold text-white">{label}</span>
-        <div className="flex items-center rounded-lg bg-white/20 px-1.5">
-          <span className="text-[10px] font-bold text-white">{count}</span>
-        </div>
-      </button>
-    );
-  }
+  // Determine if dot should show (status pills always have dot, others only if showDot)
+  const hasDot = showDot || !!config?.dot;
 
-  // Inactive state with status colors (or gray for non-status pills)
-  const bgClass = config?.bg || 'bg-gray-100';
-  const textClass = config?.text || 'text-gray-600';
-  const dotClass = showDot ? (dotColor || config?.dot || 'bg-gray-600') : config?.dot;
-  const countBgClass = config?.countBg || 'bg-gray-200';
+  // Colors change based on active state, structure stays the same
+  const bgClass = isActive ? 'bg-primary' : (config?.bg || 'bg-gray-100');
+  const textClass = isActive ? 'text-white' : (config?.text || 'text-gray-600');
+  const countBgClass = isActive ? 'bg-white/20' : (config?.countBg || 'bg-gray-200');
+  const dotBgClass = isActive
+    ? (showDot ? 'bg-white' : 'bg-white/60')
+    : (showDot ? (dotColor || 'bg-gray-600') : (config?.dot || 'bg-gray-600'));
 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} rounded-xl border border-transparent px-2.5 py-1 transition-colors hover:opacity-80`}
+      className={`flex items-center gap-1.5 ${bgClass} rounded-xl px-2.5 py-1 transition-colors hover:opacity-90`}
     >
-      {dotClass && <div className={`h-2 w-2 rounded-full ${dotClass}`} />}
+      {hasDot && <div className={`h-2 w-2 rounded-full ${dotBgClass}`} />}
       <span className={`text-[11px] font-bold ${textClass}`}>{label}</span>
       <div className={`${countBgClass} flex items-center rounded-lg px-1.5`}>
         <span className={`text-[10px] font-bold ${textClass}`}>{count}</span>
