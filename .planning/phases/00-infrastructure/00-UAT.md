@@ -24,47 +24,52 @@ result: pass
 
 ### 3. StatusBadge Visual Rendering
 expected: Open the app in browser. OrdersTable shows 5 orders with different status badges: gray for Pending, yellow/warning for Producing, blue/info for Ready, purple for In Transit (labeled "Transit"), green for Complete.
-result: issue
-reported: "The index page isn't loading."
-severity: blocker
+result: pass
 
 ### 4. Status Filter Pills
 expected: Above the table, 5 filter pills display with status-specific coloring. Each pill shows a count. Clicking a pill filters the table to that status.
-result: skipped
-reason: Page not loading (blocked by test 3)
+result: issue
+reported: "Clicking does not filter the table to that status."
+severity: major
 
 ### 5. TableSkeleton Structure
 expected: If you temporarily use TableSkeleton in place of the table content, it shows an animated pulsing skeleton with header area, 5 filter pill placeholders, and 5 table row placeholders matching the table's column structure.
-result: skipped
-reason: Page not loading (blocked by test 3)
+result: pass
 
 ### 6. DetailsSkeleton Structure
 expected: If you temporarily render DetailsSkeleton, it shows an animated pulsing skeleton with header, 6-item info grid, timeline section with 4 items, and change history section with 3 entries.
-result: skipped
-reason: Page not loading (blocked by test 3)
+result: pass
 
 ## Summary
 
 total: 6
-passed: 1
+passed: 4
 issues: 2
 pending: 0
-skipped: 3
+skipped: 0
 
 ## Gaps
 
 - truth: "Order type fields deliveryDate, createdAt, updatedAt should be Date type"
-  status: failed
+  status: fixed
   reason: "User reported: The deliveryDate, createdAt, and updatedAt should all be of the `Date` type."
   severity: major
   test: 1
-  artifacts: []
-  missing: []
+  root_cause: "Order interface defines deliveryDate, createdAt, updatedAt as string type instead of Date type"
+  fix_commit: "68ba351"
+  artifacts:
+    - path: "src/types/order.ts"
+      issue: "Lines 11, 14, 15: Date fields typed as string"
+    - path: "src/services/orders.ts"
+      issue: "Mock data uses ISO string literals instead of Date objects"
 
-- truth: "Index page loads and displays OrdersTable with status badges"
+(Test 3 blocker was environment issue - wrong dev server running, not a code bug)
+
+- truth: "Clicking a filter pill filters the table to that status"
   status: failed
-  reason: "User reported: The index page isn't loading."
-  severity: blocker
-  test: 3
+  reason: "User reported: Clicking does not filter the table to that status."
+  severity: major
+  test: 4
+  note: "Filter interaction may be out of scope for phase 00 (infrastructure only)"
   artifacts: []
   missing: []
