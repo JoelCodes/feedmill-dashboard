@@ -1,16 +1,19 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { CheckCircle, Package } from "lucide-react";
+import { CheckCircle, Package, Search } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
 import { OrderStatus, Order } from "@/types/order";
 import { getOrders } from "@/services/orders";
 import { formatDeliveryDate } from "@/utils/formatDate";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function OrdersTable() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeStatuses, setActiveStatuses] = useState<Set<OrderStatus>>(new Set());
   const [hasChangesFilter, setHasChangesFilter] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearch = useDebounce(searchTerm, 300);
 
   useEffect(() => {
     getOrders().then(setOrders);
@@ -28,6 +31,22 @@ export default function OrdersTable() {
     });
   };
 
+  const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const highlightMatch = (text: string, query: string): React.ReactNode => {
+    if (!query) return text;
+
+    const escaped = escapeRegex(query);
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, i) =>
+      regex.test(part)
+        ? <mark key={i} className="bg-primary/20 rounded px-0.5 font-semibold">{part}</mark>
+        : part
+    );
+  };
+
   const filteredOrders = useMemo(() => {
     let result = orders;
 
@@ -41,8 +60,17 @@ export default function OrdersTable() {
       result = result.filter(order => order.hasChanges);
     }
 
+    // Apply search filter (customer name or product)
+    if (debouncedSearch) {
+      const searchLower = debouncedSearch.toLowerCase();
+      result = result.filter(order =>
+        order.customer.toLowerCase().includes(searchLower) ||
+        `${order.textureType} ${order.formulaType}`.toLowerCase().includes(searchLower)
+      );
+    }
+
     return result;
-  }, [orders, activeStatuses, hasChangesFilter]);
+  }, [orders, activeStatuses, hasChangesFilter, debouncedSearch]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<OrderStatus, number> = {
@@ -60,12 +88,21 @@ export default function OrdersTable() {
       ordersToCount = ordersToCount.filter(o => o.hasChanges);
     }
 
+    // Apply search filter
+    if (debouncedSearch) {
+      const searchLower = debouncedSearch.toLowerCase();
+      ordersToCount = ordersToCount.filter(o =>
+        o.customer.toLowerCase().includes(searchLower) ||
+        `${o.textureType} ${o.formulaType}`.toLowerCase().includes(searchLower)
+      );
+    }
+
     ordersToCount.forEach(order => {
       counts[order.status]++;
     });
 
     return counts;
-  }, [orders, hasChangesFilter]);
+  }, [orders, hasChangesFilter, debouncedSearch]);
 
   const hasChangesCount = useMemo(() => {
     // Count orders with changes, respecting status filter
@@ -73,8 +110,18 @@ export default function OrdersTable() {
     if (activeStatuses.size > 0) {
       ordersToCount = ordersToCount.filter(o => activeStatuses.has(o.status));
     }
+
+    // Apply search filter
+    if (debouncedSearch) {
+      const searchLower = debouncedSearch.toLowerCase();
+      ordersToCount = ordersToCount.filter(o =>
+        o.customer.toLowerCase().includes(searchLower) ||
+        `${o.textureType} ${o.formulaType}`.toLowerCase().includes(searchLower)
+      );
+    }
+
     return ordersToCount.filter(o => o.hasChanges).length;
-  }, [orders, activeStatuses]);
+  }, [orders, activeStatuses, debouncedSearch]);
   return (
     <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
@@ -90,6 +137,18 @@ export default function OrdersTable() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by customer or product..."
+          className="border-divider focus:border-primary focus:ring-primary w-full rounded-lg border py-2 pr-3 pl-10 text-sm placeholder:text-gray-400 focus:ring-1 focus:outline-none"
+        />
       </div>
 
       {/* Status Filters */}
@@ -184,10 +243,10 @@ export default function OrdersTable() {
                 )}
               </div>
               <div className="text-text-primary flex-1 text-xs">
-                {order.customer}
+                {highlightMatch(order.customer, debouncedSearch)}
               </div>
               <div className="text-text-primary flex-1 text-xs">
-                {order.textureType} {order.formulaType}
+                {highlightMatch(`${order.textureType} ${order.formulaType}`, debouncedSearch)}
               </div>
               <div className="text-text-primary flex-1 text-xs font-bold">
                 {order.quantity}
