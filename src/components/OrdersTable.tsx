@@ -1,28 +1,80 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { CheckCircle, Package } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
 import { OrderStatus, Order } from "@/types/order";
 import { getOrders } from "@/services/orders";
 import { formatDeliveryDate } from "@/utils/formatDate";
 
-const statusCounts = {
-  all: 5,
-  "Complete": 1,
-  "In Transit": 1,
-  "Producing": 1,
-  "Ready": 1,
-  "Pending": 1,
-};
-
-
 export default function OrdersTable() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [activeStatuses, setActiveStatuses] = useState<Set<OrderStatus>>(new Set());
+  const [hasChangesFilter, setHasChangesFilter] = useState(false);
 
   useEffect(() => {
     getOrders().then(setOrders);
   }, []);
+
+  const toggleStatus = (status: OrderStatus) => {
+    setActiveStatuses(prev => {
+      const next = new Set(prev);
+      if (next.has(status)) {
+        next.delete(status);
+      } else {
+        next.add(status);
+      }
+      return next;
+    });
+  };
+
+  const filteredOrders = useMemo(() => {
+    let result = orders;
+
+    // Apply status filter (empty set = show all)
+    if (activeStatuses.size > 0) {
+      result = result.filter(order => activeStatuses.has(order.status));
+    }
+
+    // Apply has changes filter
+    if (hasChangesFilter) {
+      result = result.filter(order => order.hasChanges);
+    }
+
+    return result;
+  }, [orders, activeStatuses, hasChangesFilter]);
+
+  const statusCounts = useMemo(() => {
+    const counts: Record<OrderStatus, number> = {
+      'Pending': 0,
+      'Producing': 0,
+      'Ready': 0,
+      'In Transit': 0,
+      'Complete': 0,
+    };
+
+    // Count from orders respecting hasChanges filter only
+    // (status counts should NOT filter themselves out)
+    let ordersToCount = orders;
+    if (hasChangesFilter) {
+      ordersToCount = ordersToCount.filter(o => o.hasChanges);
+    }
+
+    ordersToCount.forEach(order => {
+      counts[order.status]++;
+    });
+
+    return counts;
+  }, [orders, hasChangesFilter]);
+
+  const hasChangesCount = useMemo(() => {
+    // Count orders with changes, respecting status filter
+    let ordersToCount = orders;
+    if (activeStatuses.size > 0) {
+      ordersToCount = ordersToCount.filter(o => activeStatuses.has(o.status));
+    }
+    return ordersToCount.filter(o => o.hasChanges).length;
+  }, [orders, activeStatuses]);
   return (
     <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
@@ -42,7 +94,7 @@ export default function OrdersTable() {
 
       {/* Status Filters */}
       <div className="flex gap-2.5">
-        <FilterPill label="All" count={statusCounts.all} active />
+        {/* All pill removed - when nothing selected, show all orders automatically */}
         <FilterPill
           label="Complete"
           count={statusCounts["Complete"]}
@@ -100,7 +152,7 @@ export default function OrdersTable() {
         <div className="bg-divider h-px" />
 
         {/* Table Rows */}
-        {orders.map((order, index) => (
+        {filteredOrders.map((order, index) => (
           <div key={order.id}>
             <div className="flex items-center py-3">
               <div className="flex flex-1 items-center gap-2">
@@ -133,7 +185,7 @@ export default function OrdersTable() {
                 <StatusBadge status={order.status} />
               </div>
             </div>
-            {index < orders.length - 1 && (
+            {index < filteredOrders.length - 1 && (
               <div className="bg-divider h-px" />
             )}
           </div>
