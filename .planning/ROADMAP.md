@@ -47,12 +47,12 @@ Plans:
   4. User can type in search bar and table filters by customer name or product
   5. User can click a row and it highlights as selected
   6. User sees appropriate empty state when no orders match current filters
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Table data display (columns, product combining, status badges)
-- [ ] 01-02: Filtering (status pills, has changes toggle)
-- [ ] 01-03: Search and selection (search bar, row highlight)
+- [ ] 01-01-PLAN.md — Wire data service and update columns (TABLE-01, TABLE-02, TABLE-03, TABLE-04)
+- [ ] 01-02-PLAN.md — Multi-select status filtering and has changes toggle (TABLE-05, TABLE-06)
+- [ ] 01-03-PLAN.md — Search, row selection, keyboard navigation, empty state (TABLE-07, TABLE-08, TABLE-09)
 
 ### Phase 2: Order Details
 **Goal**: Users can view detailed order information, timeline, and change history in a panel
@@ -114,8 +114,8 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Infrastructure | 0/2 | Planning complete | - |
-| 1. Orders Table | 0/3 | Not started | - |
+| 0. Infrastructure | 2/2 | Complete | - |
+| 1. Orders Table | 0/3 | Planning complete | - |
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
 | 4. Navigation | 0/1 | Not started | - |
