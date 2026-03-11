@@ -29,9 +29,9 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Order Details
 
 - [x] **DETAIL-01**: Click row to open order details panel
-- [ ] **DETAIL-02**: Order details panel shows full order information
-- [ ] **DETAIL-03**: Timeline visualization of order lifecycle events
-- [ ] **DETAIL-04**: Order change history display
+- [x] **DETAIL-02**: Order details panel shows full order information
+- [x] **DETAIL-03**: Timeline visualization of order lifecycle events
+- [x] **DETAIL-04**: Order change history display
 - [x] **DETAIL-05**: Panel closes via back button or close control
 
 ### KPI Cards
@@ -103,9 +103,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TABLE-08 | Phase 1 | Complete |
 | TABLE-09 | Phase 1 | Complete |
 | DETAIL-01 | Phase 2 | Complete |
-| DETAIL-02 | Phase 2 | Pending |
-| DETAIL-03 | Phase 2 | Pending |
-| DETAIL-04 | Phase 2 | Pending |
+| DETAIL-02 | Phase 2 | Complete |
+| DETAIL-03 | Phase 2 | Complete |
+| DETAIL-04 | Phase 2 | Complete |
 | DETAIL-05 | Phase 2 | Complete |
 | KPI-01 | Phase 3 | Pending |
 | KPI-02 | Phase 3 | Pending |
