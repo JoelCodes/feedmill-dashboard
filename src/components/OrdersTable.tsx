@@ -94,31 +94,48 @@ export default function OrdersTable() {
 
       {/* Status Filters */}
       <div className="flex gap-2.5">
-        {/* All pill removed - when nothing selected, show all orders automatically */}
         <FilterPill
           label="Complete"
           count={statusCounts["Complete"]}
           status="Complete"
+          isActive={activeStatuses.has("Complete")}
+          onClick={() => toggleStatus("Complete")}
         />
         <FilterPill
           label="Transit"
           count={statusCounts["In Transit"]}
           status="In Transit"
+          isActive={activeStatuses.has("In Transit")}
+          onClick={() => toggleStatus("In Transit")}
         />
         <FilterPill
           label="Producing"
           count={statusCounts["Producing"]}
           status="Producing"
+          isActive={activeStatuses.has("Producing")}
+          onClick={() => toggleStatus("Producing")}
         />
         <FilterPill
           label="Ready"
           count={statusCounts["Ready"]}
           status="Ready"
+          isActive={activeStatuses.has("Ready")}
+          onClick={() => toggleStatus("Ready")}
         />
         <FilterPill
           label="Pending"
           count={statusCounts["Pending"]}
           status="Pending"
+          isActive={activeStatuses.has("Pending")}
+          onClick={() => toggleStatus("Pending")}
+        />
+        <FilterPill
+          label="Has Changes"
+          count={hasChangesCount}
+          isActive={hasChangesFilter}
+          onClick={() => setHasChangesFilter(prev => !prev)}
+          showDot={true}
+          dotColor="bg-error"
         />
       </div>
 
@@ -195,41 +212,52 @@ export default function OrdersTable() {
   );
 }
 
-function FilterPill({
-  label,
-  count,
-  status,
-  active = false,
-}: {
+interface FilterPillProps {
   label: string;
   count: number;
   status?: OrderStatus;
-  active?: boolean;
-}) {
-  if (active) {
+  isActive: boolean;
+  onClick: () => void;
+  showDot?: boolean;
+  dotColor?: string;
+}
+
+function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor }: FilterPillProps) {
+  const config = status ? STATUS_CONFIG[status] : null;
+
+  // Active state styling (like current "All" pill)
+  if (isActive) {
     return (
-      <div className="bg-primary flex items-center gap-1.5 rounded-xl px-3.5 py-1.5">
+      <button
+        onClick={onClick}
+        className="bg-primary flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 transition-colors"
+      >
+        {showDot && <div className={`h-2 w-2 rounded-full ${dotColor || 'bg-white'}`} />}
         <span className="text-[11px] font-bold text-white">{label}</span>
         <div className="rounded-lg bg-white/20 px-1.5 py-0.5">
           <span className="text-[10px] font-bold text-white">{count}</span>
         </div>
-      </div>
+      </button>
     );
   }
 
-  const config = status ? STATUS_CONFIG[status] : null;
-  if (!config) return null;
+  // Inactive state with status colors (or gray for non-status pills)
+  const bgClass = config?.bg || 'bg-gray-100';
+  const textClass = config?.text || 'text-gray-600';
+  const dotClass = showDot ? (dotColor || config?.dot || 'bg-gray-600') : config?.dot;
+  const countBgClass = config?.countBg || 'bg-gray-200';
 
   return (
-    <div
-      className={`flex items-center gap-1.5 ${config.bg} rounded-xl border border-transparent px-3.5 py-1.5`}
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 ${bgClass} rounded-xl border border-transparent px-3.5 py-1.5 transition-colors hover:opacity-80`}
     >
-      <div className={`h-2 w-2 rounded-full ${config.dot}`} />
-      <span className={`text-[11px] font-bold ${config.text}`}>{label}</span>
-      <div className={`${config.countBg} flex items-center rounded-lg px-1.5`}>
-        <span className={`text-[10px] font-bold ${config.text}`}>{count}</span>
+      {dotClass && <div className={`h-2 w-2 rounded-full ${dotClass}`} />}
+      <span className={`text-[11px] font-bold ${textClass}`}>{label}</span>
+      <div className={`${countBgClass} flex items-center rounded-lg px-1.5`}>
+        <span className={`text-[10px] font-bold ${textClass}`}>{count}</span>
       </div>
-    </div>
+    </button>
   );
 }
 
