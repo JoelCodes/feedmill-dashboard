@@ -1,54 +1,11 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { CheckCircle, Package } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
-import { OrderStatus } from "@/types/order";
-
-interface Order {
-  id: string;
-  destination: string;
-  product: string;
-  tons: string;
-  status: OrderStatus;
-  hasAlert?: boolean;
-}
-
-const orders: Order[] = [
-  {
-    id: "ORD-2847",
-    destination: "Greenfield Farms, TX",
-    product: "Layer Mash",
-    tons: "24.5",
-    status: "Complete",
-    hasAlert: true,
-  },
-  {
-    id: "ORD-2848",
-    destination: "Valley Ranch, OK",
-    product: "Cattle Grower",
-    tons: "18.0",
-    status: "In Transit",
-  },
-  {
-    id: "ORD-2849",
-    destination: "Sunrise Poultry, AR",
-    product: "Broiler Starter",
-    tons: "32.0",
-    status: "Producing",
-  },
-  {
-    id: "ORD-2850",
-    destination: "Pine Hill Dairy, WI",
-    product: "Dairy TMR",
-    tons: "45.0",
-    status: "Ready",
-  },
-  {
-    id: "ORD-2851",
-    destination: "Lakeside Aqua, FL",
-    product: "Tilapia Pellet",
-    tons: "15.5",
-    status: "Pending",
-  },
-];
+import { OrderStatus, Order } from "@/types/order";
+import { getOrders } from "@/services/orders";
+import { formatDeliveryDate } from "@/utils/formatDate";
 
 const statusCounts = {
   all: 5,
@@ -61,6 +18,11 @@ const statusCounts = {
 
 
 export default function OrdersTable() {
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    getOrders().then(setOrders);
+  }, []);
   return (
     <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
@@ -113,16 +75,22 @@ export default function OrdersTable() {
         {/* Table Header */}
         <div className="flex py-2.5">
           <div className="text-text-secondary flex-1 text-[10px] font-bold">
-            ORDER
+            DOCUMENT #
           </div>
           <div className="text-text-secondary flex-1 text-[10px] font-bold">
-            DESTINATION
+            CUSTOMER
           </div>
           <div className="text-text-secondary flex-1 text-[10px] font-bold">
             PRODUCT
           </div>
           <div className="text-text-secondary flex-1 text-[10px] font-bold">
-            TONS
+            QTY (TONS)
+          </div>
+          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+            LOCATION
+          </div>
+          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+            DELIVERY
           </div>
           <div className="text-text-secondary flex-1 text-[10px] font-bold">
             STATUS
@@ -140,20 +108,26 @@ export default function OrdersTable() {
                   <Package className="h-3 w-3 text-white" />
                 </div>
                 <span className="text-text-primary text-xs font-bold">
-                  {order.id}
+                  {order.documentNumber}
                 </span>
-                {order.hasAlert && (
+                {order.hasChanges && (
                   <div className="bg-error h-2 w-2 rounded-full" />
                 )}
               </div>
               <div className="text-text-primary flex-1 text-xs">
-                {order.destination}
+                {order.customer}
               </div>
               <div className="text-text-primary flex-1 text-xs">
-                {order.product}
+                {order.textureType} {order.formulaType}
               </div>
               <div className="text-text-primary flex-1 text-xs font-bold">
-                {order.tons}
+                {order.quantity}
+              </div>
+              <div className="text-text-primary flex-1 text-xs">
+                {order.location}
+              </div>
+              <div className="text-text-primary flex-1 text-xs">
+                {formatDeliveryDate(order.deliveryDate)}
               </div>
               <div className="flex-1">
                 <StatusBadge status={order.status} />
