@@ -8,9 +8,9 @@ export interface Order {
   formulaType: string;
   quantity: number;
   location: string;
-  deliveryDate: string;
+  deliveryDate: Date;
   status: OrderStatus;
   hasChanges: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
