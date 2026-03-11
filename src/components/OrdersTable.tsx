@@ -356,8 +356,8 @@ interface FilterPillProps {
 function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor }: FilterPillProps) {
   const config = status ? STATUS_CONFIG[status] : null;
 
-  // Determine if dot should show (status pills always have dot, others only if showDot)
-  const hasDot = showDot || !!config?.dot;
+  // Only show dot when selected
+  const hasDot = isActive && (showDot || !!config?.dot);
 
   // Colors change based on active state, structure stays the same
   const bgClass = isActive ? 'bg-primary' : (config?.bg || 'bg-gray-100');
@@ -370,7 +370,7 @@ function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} rounded-xl px-2.5 py-1 transition-colors hover:opacity-90`}
+      className={`flex items-center gap-1.5 ${bgClass} py-.75 rounded-xl px-2.5 transition-colors hover:opacity-90`}
     >
       {hasDot && <div className={`h-2 w-2 rounded-full ${dotBgClass}`} />}
       <span className={`text-[11px] font-bold ${textClass}`}>{label}</span>
