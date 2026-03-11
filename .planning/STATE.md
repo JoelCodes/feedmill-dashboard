@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-11T19:30:58Z"
-last_activity: "2026-03-11 - Completed plan 01-01: Wire Orders Table to Service"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-11T19:36:32Z"
+last_activity: "2026-03-11 - Completed plan 01-02: Multi-Select Filtering"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
-  percent: 60
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
@@ -26,34 +26,35 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 1 of 6 (Orders Table)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-11 - Completed plan 01-01: Wire Orders Table to Service
+Last activity: 2026-03-11 - Completed plan 01-02: Multi-Select Filtering
 
-Progress: [███░░░░░░░] 33% of phase 1
+Progress: [██████░░░░] 66% of phase 1
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 2m
-- Total execution time: 4 minutes
+- Total execution time: 6 minutes
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 00 | 2 | 4m | 2m |
-| 01 | 1 | 2m | 2m |
+| 01 | 2 | 4m | 2m |
 
 **Recent Trend:**
-- Last 5 plans: 2m, 2m, 2m
+- Last 5 plans: 2m, 2m, 2m, 2m
 - Trend: Consistent
 
 *Updated after each plan completion*
 | Phase 00 P01 | 2m | 2 tasks | 3 files |
 | Phase 00 P02 | 2m | 3 tasks | 4 files |
 | Phase 01 P01 | 2m | 2 tasks | 2 files |
+| Phase 01 P02 | 2m | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,10 @@ Recent decisions affecting current work:
 - [Phase 01 P01]: Product column combines textureType + formulaType with space separator
 - [Phase 01 P01]: Date formatting uses Intl.DateTimeFormat with 'en-US' locale for 'Month Day, Year' format
 - [Phase 01 P01]: Red dot indicator checks hasChanges property (not hasAlert)
+- [Phase 01 P02]: Empty status selection shows all orders (no 'All' pill needed)
+- [Phase 01 P02]: Status counts respect hasChanges filter only (don't filter themselves)
+- [Phase 01 P02]: Has Changes count respects status filter for accurate context
+- [Phase 01 P02]: Red dot indicator uses bg-error Tailwind color
 
 ### Pending Todos
 

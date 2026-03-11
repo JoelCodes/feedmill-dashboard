@@ -115,7 +115,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Infrastructure | 2/2 | Complete | - |
-| 1. Orders Table | 1/3 | In progress | - |
+| 1. Orders Table | 2/3 | In Progress|  |
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
 | 4. Navigation | 0/1 | Not started | - |
