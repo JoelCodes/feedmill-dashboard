@@ -361,11 +361,11 @@ function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor
     return (
       <button
         onClick={onClick}
-        className="bg-primary flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 transition-colors"
+        className="bg-primary flex items-center gap-1.5 rounded-xl px-2.5 py-1 transition-colors"
       >
         {showDot && <div className={`h-2 w-2 rounded-full ${dotColor || 'bg-white'}`} />}
         <span className="text-[11px] font-bold text-white">{label}</span>
-        <div className="rounded-lg bg-white/20 px-1.5 py-0.5">
+        <div className="flex items-center rounded-lg bg-white/20 px-1.5">
           <span className="text-[10px] font-bold text-white">{count}</span>
         </div>
       </button>
@@ -381,7 +381,7 @@ function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} rounded-xl border border-transparent px-3.5 py-1.5 transition-colors hover:opacity-80`}
+      className={`flex items-center gap-1.5 ${bgClass} rounded-xl border border-transparent px-2.5 py-1 transition-colors hover:opacity-80`}
     >
       {dotClass && <div className={`h-2 w-2 rounded-full ${dotClass}`} />}
       <span className={`text-[11px] font-bold ${textClass}`}>{label}</span>
