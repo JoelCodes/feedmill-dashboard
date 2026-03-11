@@ -51,24 +51,24 @@ Plans:
 
 Plans:
 - [x] 01-01-PLAN.md — Wire data service and update columns (TABLE-01, TABLE-02, TABLE-03, TABLE-04) — 2m, 2 tasks, 2 files
-- [ ] 01-02-PLAN.md — Multi-select status filtering and has changes toggle (TABLE-05, TABLE-06)
-- [ ] 01-03-PLAN.md — Search, row selection, keyboard navigation, empty state (TABLE-07, TABLE-08, TABLE-09)
+- [x] 01-02-PLAN.md — Multi-select status filtering and has changes toggle (TABLE-05, TABLE-06) — 2m, 2 tasks, 1 files
+- [x] 01-03-PLAN.md — Search, row selection, keyboard navigation, empty state (TABLE-07, TABLE-08, TABLE-09) — 4m, 3 tasks, 2 files
 
 ### Phase 2: Order Details
 **Goal**: Users can view detailed order information, timeline, and change history in a panel
 **Depends on**: Phase 1
 **Requirements**: DETAIL-01, DETAIL-02, DETAIL-03, DETAIL-04, DETAIL-05
 **Success Criteria** (what must be TRUE):
-  1. User clicks a table row and the order details panel opens showing that order
+  1. User clicks a table row and the order details panel updates showing that order
   2. User sees full order information in the details panel
   3. User sees timeline visualization of order lifecycle events
   4. User sees change history for the order (if any changes exist)
-  5. User can close the panel via back button or close control and return to table-only view
-**Plans**: TBD
+  5. Panel is always visible (no close control needed per CONTEXT.md)
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: Panel open/close wiring (row click, close controls)
-- [ ] 02-02: Details content (full order info, timeline, change history)
+- [ ] 02-01-PLAN.md — Lift selection state and wire row click to panel (DETAIL-01, DETAIL-05)
+- [ ] 02-02-PLAN.md — Order details content with timeline and change history (DETAIL-02, DETAIL-03, DETAIL-04)
 
 ### Phase 3: KPI Cards
 **Goal**: KPI cards display computed values and enable drill-down to filtered table views
