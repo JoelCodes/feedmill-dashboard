@@ -1,6 +1,6 @@
 import { CheckCircle, Package } from "lucide-react";
-
-type OrderStatus = "shipped" | "loading" | "mixing" | "pending";
+import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
+import { OrderStatus } from "@/types/order";
 
 interface Order {
   id: string;
@@ -17,7 +17,7 @@ const orders: Order[] = [
     destination: "Greenfield Farms, TX",
     product: "Layer Mash",
     tons: "24.5",
-    status: "shipped",
+    status: "Complete",
     hasAlert: true,
   },
   {
@@ -25,72 +25,40 @@ const orders: Order[] = [
     destination: "Valley Ranch, OK",
     product: "Cattle Grower",
     tons: "18.0",
-    status: "loading",
+    status: "In Transit",
   },
   {
     id: "ORD-2849",
     destination: "Sunrise Poultry, AR",
     product: "Broiler Starter",
     tons: "32.0",
-    status: "mixing",
+    status: "Producing",
   },
   {
     id: "ORD-2850",
     destination: "Pine Hill Dairy, WI",
     product: "Dairy TMR",
     tons: "45.0",
-    status: "shipped",
+    status: "Ready",
   },
   {
     id: "ORD-2851",
     destination: "Lakeside Aqua, FL",
     product: "Tilapia Pellet",
     tons: "15.5",
-    status: "pending",
+    status: "Pending",
   },
 ];
 
 const statusCounts = {
   all: 5,
-  shipped: 2,
-  loading: 1,
-  mixing: 1,
-  pending: 1,
+  "Complete": 1,
+  "In Transit": 1,
+  "Producing": 1,
+  "Ready": 1,
+  "Pending": 1,
 };
 
-const statusConfig: Record<
-  OrderStatus,
-  { bg: string; text: string; dot: string; countBg: string; label: string }
-> = {
-  shipped: {
-    bg: "bg-[var(--success-light)]",
-    text: "text-[var(--success-dark)]",
-    dot: "bg-[var(--success-dark)]",
-    countBg: "bg-[#2f855a22]",
-    label: "Shipped",
-  },
-  loading: {
-    bg: "bg-[var(--info-light)]",
-    text: "text-[var(--info)]",
-    dot: "bg-[var(--info)]",
-    countBg: "bg-[#2b6cb022]",
-    label: "Loading",
-  },
-  mixing: {
-    bg: "bg-[var(--warning-light)]",
-    text: "text-[var(--warning)]",
-    dot: "bg-[var(--warning)]",
-    countBg: "bg-[#975a1622]",
-    label: "Mixing",
-  },
-  pending: {
-    bg: "bg-[var(--error-light)]",
-    text: "text-[var(--error-dark)]",
-    dot: "bg-[var(--error-dark)]",
-    countBg: "bg-[#c5303022]",
-    label: "Pending",
-  },
-};
 
 export default function OrdersTable() {
   return (
@@ -114,24 +82,29 @@ export default function OrdersTable() {
       <div className="flex gap-2.5">
         <FilterPill label="All" count={statusCounts.all} active />
         <FilterPill
-          label="Shipped"
-          count={statusCounts.shipped}
-          status="shipped"
+          label="Complete"
+          count={statusCounts["Complete"]}
+          status="Complete"
         />
         <FilterPill
-          label="Loading"
-          count={statusCounts.loading}
-          status="loading"
+          label="Transit"
+          count={statusCounts["In Transit"]}
+          status="In Transit"
         />
         <FilterPill
-          label="Mixing"
-          count={statusCounts.mixing}
-          status="mixing"
+          label="Producing"
+          count={statusCounts["Producing"]}
+          status="Producing"
+        />
+        <FilterPill
+          label="Ready"
+          count={statusCounts["Ready"]}
+          status="Ready"
         />
         <FilterPill
           label="Pending"
-          count={statusCounts.pending}
-          status="pending"
+          count={statusCounts["Pending"]}
+          status="Pending"
         />
       </div>
 
@@ -218,7 +191,7 @@ function FilterPill({
     );
   }
 
-  const config = status ? statusConfig[status] : null;
+  const config = status ? STATUS_CONFIG[status] : null;
   if (!config) return null;
 
   return (
@@ -234,17 +207,3 @@ function FilterPill({
   );
 }
 
-function StatusBadge({ status }: { status: OrderStatus }) {
-  const config = statusConfig[status];
-
-  return (
-    <div
-      className={`inline-flex items-center gap-1 ${config.bg} rounded-lg px-2.5 py-1`}
-    >
-      <div className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
-      <span className={`text-[10px] font-bold ${config.text}`}>
-        {config.label}
-      </span>
-    </div>
-  );
-}
