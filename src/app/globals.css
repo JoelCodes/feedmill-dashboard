@@ -30,6 +30,10 @@
   --info: #2b6cb0;
   --info-light: #bee3f8;
 
+  --purple: #9333ea;
+  --purple-dark: #7e22ce;
+  --purple-light: #f3e8ff;
+
   /* Borders & Dividers */
   --divider: #e2e8f0;
 
@@ -61,6 +65,9 @@
   --color-error-light: var(--error-light);
   --color-info: var(--info);
   --color-info-light: var(--info-light);
+  --color-purple: var(--purple);
+  --color-purple-dark: var(--purple-dark);
+  --color-purple-light: var(--purple-light);
   --color-divider: var(--divider);
 }
 
