@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   ShoppingCart,
   AlertTriangle,
@@ -5,6 +6,10 @@ import {
   Truck,
   CheckCircle,
 } from "lucide-react";
+import { getOrderById } from '@/services/orders';
+import { Order } from '@/types/order';
+import StatusBadge from '@/components/ui/StatusBadge';
+import { formatDeliveryDate } from '@/utils/formatDate';
 
 interface TimelineStep {
   icon: React.ComponentType<{ className?: string }>;
@@ -79,26 +84,48 @@ interface OrderDetailsProps {
   orderId: string | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function OrderDetails({ orderId }: OrderDetailsProps) {
-  // Note: orderId will be used in Plan 02 to fetch and display actual order data
+  const [order, setOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    if (!orderId) {
+      setOrder(null);
+      return;
+    }
+    getOrderById(orderId).then(setOrder);
+  }, [orderId]);
+
+  // Show placeholder when no order selected
+  if (!orderId || !order) {
+    return (
+      <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+        <div className="flex flex-col items-center justify-center py-12">
+          <p className="text-text-secondary text-sm">Select an order to view details</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h2 className="text-text-primary text-lg font-bold">
-          ORD-2847 — Greenfield Farms
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-text-primary text-lg font-bold">
+            {order.documentNumber} - {order.customer}
+          </h2>
+          <StatusBadge status={order.status} />
+        </div>
         <p className="text-text-secondary text-sm">
-          24.5 tons Layer Mash · Greenfield Farms, TX
+          {order.quantity} tons {order.textureType} · {order.location}
         </p>
       </div>
 
       {/* Stats */}
       <div className="flex gap-3">
-        <StatCard label="Tons Ordered" value="24.5" unit="tons" />
-        <StatCard label="Tons Produced" value="24.3" percentage="99.2% yield" />
-        <StatCard label="Texture" value="Mash" subtext="Layer Mash" />
+        <StatCard label="Quantity" value={order.quantity.toString()} unit="tons" />
+        <StatCard label="Delivery" value={formatDeliveryDate(order.deliveryDate)} />
+        <StatCard label="Texture" value={order.textureType} subtext={order.formulaType} />
       </div>
 
       {/* Timeline */}
