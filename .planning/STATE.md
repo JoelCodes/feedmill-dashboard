@@ -5,7 +5,7 @@ milestone_name: milestone
 status: completed
 stopped_at: Completed quick task 260316-sw4
 last_updated: "2026-03-17T03:53:36Z"
-last_activity: "2026-03-16 - Completed quick task 260316-sw4: Add pending items section to order details"
+last_activity: "2026-03-17 - Completed quick task 260316-tib: Fix timeline connector lines not connecting well to icons"
 progress:
   total_phases: 6
   completed_phases: 3
@@ -108,6 +108,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 1 | Fix Tailwind lint errors | 2026-03-11 | 7564daa | [1-fix-tailwind-lint-errors](./quick/1-fix-tailwind-lint-errors/) |
 | 2 | Add pending items section to order details | 2026-03-16 | 1bc3b8f | [260316-sw4-add-pending-items-section-to-order-detai](./quick/260316-sw4-add-pending-items-section-to-order-detai/) |
+| 260316-tib | Fix timeline connector lines not connecting well to icons | 2026-03-17 | 75e1b6f | [260316-tib-fix-timeline-connector-lines-not-connect](./quick/260316-tib-fix-timeline-connector-lines-not-connect/) |
 
 ## Session Continuity
 
