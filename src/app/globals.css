@@ -34,6 +34,10 @@
   --purple-dark: #7e22ce;
   --purple-light: #f3e8ff;
 
+  /* Pending Colors */
+  --pending: #cbd5e0;
+  --pending-light: #edf2f7;
+
   /* Borders & Dividers */
   --divider: #e2e8f0;
 
@@ -68,6 +72,8 @@
   --color-purple: var(--purple);
   --color-purple-dark: var(--purple-dark);
   --color-purple-light: var(--purple-light);
+  --color-pending: var(--pending);
+  --color-pending-light: var(--pending-light);
   --color-divider: var(--divider);
 }
 
