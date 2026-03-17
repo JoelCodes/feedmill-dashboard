@@ -5,6 +5,7 @@ import {
   Factory,
   Truck,
   CheckCircle,
+  Timer,
 } from "lucide-react";
 import { getOrderById } from '@/services/orders';
 import { Order } from '@/types/order';
@@ -18,7 +19,8 @@ interface TimelineEvent {
   title: string;
   description: string;
   date: Date;
-  color: "primary" | "success" | "error";
+  color: "primary" | "success" | "error" | "pending";
+  isPending?: boolean;
 }
 
 const colorMap = {
@@ -37,6 +39,11 @@ const colorMap = {
     bar: "bg-error",
     text: "text-error",
   },
+  pending: {
+    bg: "bg-white border-2 border-pending",
+    bar: "bg-pending",
+    text: "text-text-secondary",
+  },
 };
 
 function generateTimelineEvents(order: Order): TimelineEvent[] {
@@ -50,6 +57,7 @@ function generateTimelineEvents(order: Order): TimelineEvent[] {
     description: `Order received from ${order.customer}`,
     date: order.createdAt,
     color: 'primary',
+    isPending: false,
   });
 
   // Change event (if hasChanges)
@@ -61,11 +69,12 @@ function generateTimelineEvents(order: Order): TimelineEvent[] {
       description: 'Mill assignment changed',
       date: order.updatedAt,
       color: 'error',
+      isPending: false,
     });
   }
 
   // Status-based events (derive from current status)
-  // Add production event if past Pending
+  // Add production event - completed or pending based on status
   if (['Producing', 'Ready', 'In Transit', 'Complete'].includes(order.status)) {
     events.push({
       id: 'production-started',
@@ -74,10 +83,45 @@ function generateTimelineEvents(order: Order): TimelineEvent[] {
       description: `Producing ${order.quantity} tons ${order.textureType}`,
       date: new Date(order.createdAt.getTime() + 3600000), // 1 hour after order
       color: 'primary',
+      isPending: false,
+    });
+  } else if (order.status === 'Pending') {
+    // Add as pending event
+    events.push({
+      id: 'production-started',
+      icon: Factory,
+      title: 'Production Started',
+      description: `Producing ${order.quantity} tons ${order.textureType}`,
+      date: new Date(order.deliveryDate.getTime() - 7 * 24 * 3600000), // 7 days before delivery
+      color: 'pending',
+      isPending: true,
     });
   }
 
-  // Add delivery event if In Transit or Complete
+  // Add ready event - completed or pending based on status
+  if (['Ready', 'In Transit', 'Complete'].includes(order.status)) {
+    events.push({
+      id: 'ready-for-pickup',
+      icon: CheckCircle,
+      title: 'Ready for Pickup',
+      description: 'Order ready for shipment',
+      date: new Date(order.deliveryDate.getTime() - 2 * 24 * 3600000), // 2 days before delivery
+      color: 'primary',
+      isPending: false,
+    });
+  } else if (['Pending', 'Producing'].includes(order.status)) {
+    events.push({
+      id: 'ready-for-pickup',
+      icon: CheckCircle,
+      title: 'Ready for Pickup',
+      description: 'Order ready for shipment',
+      date: new Date(order.deliveryDate.getTime() - 2 * 24 * 3600000), // 2 days before delivery
+      color: 'pending',
+      isPending: true,
+    });
+  }
+
+  // Add delivery event - completed or pending based on status
   if (['In Transit', 'Complete'].includes(order.status)) {
     events.push({
       id: 'delivery-started',
@@ -86,10 +130,21 @@ function generateTimelineEvents(order: Order): TimelineEvent[] {
       description: `Shipment departed for ${order.location}`,
       date: new Date(order.deliveryDate.getTime() - 21600000), // 6 hours before delivery
       color: 'primary',
+      isPending: false,
+    });
+  } else if (['Pending', 'Producing', 'Ready'].includes(order.status)) {
+    events.push({
+      id: 'delivery-started',
+      icon: Truck,
+      title: 'Delivery Started',
+      description: `Shipment departed for ${order.location}`,
+      date: new Date(order.deliveryDate.getTime() - 21600000), // 6 hours before delivery
+      color: 'pending',
+      isPending: true,
     });
   }
 
-  // Add completion event if Complete
+  // Add completion event - completed or pending based on status
   if (order.status === 'Complete') {
     events.push({
       id: 'delivered',
@@ -98,14 +153,25 @@ function generateTimelineEvents(order: Order): TimelineEvent[] {
       description: `Delivered to ${order.location}`,
       date: order.deliveryDate,
       color: 'success',
+      isPending: false,
+    });
+  } else {
+    events.push({
+      id: 'delivered',
+      icon: CheckCircle,
+      title: 'Delivered',
+      description: `Delivered to ${order.location}`,
+      date: order.deliveryDate,
+      color: 'pending',
+      isPending: true,
     });
   }
 
   return events;
 }
 
-function formatTimelineDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', {
+function formatTimelineDate(date: Date, isPending?: boolean): string {
+  const formatted = new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -113,6 +179,17 @@ function formatTimelineDate(date: Date): string {
     minute: '2-digit',
     hour12: true
   }).format(date).replace(',', ' ·');
+
+  return isPending ? `Est. ${formatted}` : formatted;
+}
+
+function EstimatedBadge() {
+  return (
+    <div className="flex items-center gap-1.5 bg-pending-light rounded-md px-2 py-1 my-3">
+      <Timer className="h-3 w-3 text-text-secondary" />
+      <span className="text-[10px] font-bold text-text-secondary uppercase">Estimated</span>
+    </div>
+  );
 }
 
 interface OrderDetailsProps {
@@ -159,7 +236,18 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
 
   // Generate and sort timeline events
   const timelineEvents = generateTimelineEvents(displayOrder);
-  const sortedEvents = [...timelineEvents].sort((a, b) => {
+
+  // Split into completed and pending
+  const completedEvents = timelineEvents.filter(e => !e.isPending);
+  const pendingEvents = timelineEvents.filter(e => e.isPending);
+
+  // Sort each group
+  const sortedCompleted = [...completedEvents].sort((a, b) => {
+    const diff = a.date.getTime() - b.date.getTime();
+    return sortOrder === 'desc' ? -diff : diff;
+  });
+
+  const sortedPending = [...pendingEvents].sort((a, b) => {
     const diff = a.date.getTime() - b.date.getTime();
     return sortOrder === 'desc' ? -diff : diff;
   });
@@ -198,16 +286,45 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
           </button>
         </div>
         <div className="flex flex-col">
-          {sortedEvents.map((event, index) => (
+          {/* Completed events */}
+          {sortedCompleted.map((event, index) => (
             <div key={event.id}>
               <TimelineItem
                 icon={event.icon}
                 title={event.title}
                 description={event.description}
-                date={formatTimelineDate(event.date)}
+                date={formatTimelineDate(event.date, event.isPending)}
                 color={event.color}
+                isPending={event.isPending}
               />
-              {index < sortedEvents.length - 1 && (
+              {index < sortedCompleted.length - 1 && (
+                <TimelineConnector color={event.color} />
+              )}
+            </div>
+          ))}
+
+          {/* Estimated badge divider */}
+          {sortedPending.length > 0 && (
+            <>
+              {sortedCompleted.length > 0 && (
+                <TimelineConnector color="pending" />
+              )}
+              <EstimatedBadge />
+            </>
+          )}
+
+          {/* Pending events */}
+          {sortedPending.map((event, index) => (
+            <div key={event.id}>
+              <TimelineItem
+                icon={event.icon}
+                title={event.title}
+                description={event.description}
+                date={formatTimelineDate(event.date, event.isPending)}
+                color={event.color}
+                isPending={event.isPending}
+              />
+              {index < sortedPending.length - 1 && (
                 <TimelineConnector color={event.color} />
               )}
             </div>
@@ -260,12 +377,14 @@ function TimelineItem({
   description,
   date,
   color,
+  isPending,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
   date: string;
-  color: "primary" | "success" | "error";
+  color: "primary" | "success" | "error" | "pending";
+  isPending?: boolean;
 }) {
   const colors = colorMap[color];
 
@@ -276,7 +395,7 @@ function TimelineItem({
         <div
           className={`h-7 w-7 ${colors.bg} flex items-center justify-center rounded-full`}
         >
-          <Icon className="h-3.5 w-3.5 text-white" />
+          <Icon className={`h-3.5 w-3.5 ${isPending ? 'text-pending' : 'text-white'}`} />
         </div>
       </div>
 
@@ -288,13 +407,16 @@ function TimelineItem({
         <p className="text-text-secondary text-[11px] leading-relaxed">
           {description}
         </p>
-        <span className={`text-[10px] font-bold ${colors.text}`}>{date}</span>
+        <div className="flex items-center gap-1">
+          {isPending && <Timer className="h-2.5 w-2.5 text-text-secondary" />}
+          <span className={`text-[10px] font-bold ${colors.text}`}>{date}</span>
+        </div>
       </div>
     </div>
   );
 }
 
-function TimelineConnector({ color }: { color: "primary" | "success" | "error" }) {
+function TimelineConnector({ color }: { color: "primary" | "success" | "error" | "pending" }) {
   const colors = colorMap[color];
 
   return (
