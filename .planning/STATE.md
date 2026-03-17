@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-11T23:39:04.277Z"
-last_activity: "2026-03-11 - Completed plan 02-02: Dynamic Order Details with Timeline"
+stopped_at: Completed quick task 260316-sw4
+last_updated: "2026-03-17T03:53:36Z"
+last_activity: "2026-03-16 - Completed quick task 260316-sw4: Add pending items section to order details"
 progress:
   total_phases: 6
   completed_phases: 3
@@ -90,6 +90,9 @@ Recent decisions affecting current work:
 - [Phase 02 P01]: Wrapped onSelectOrder in useCallback to prevent infinite loops in useEffect dependencies
 - [Phase 02 P01]: Two separate useEffect hooks for auto-selection: initial load vs filter changes
 - [Phase 02]: Used derived state pattern (displayOrder) to avoid setState in effect and satisfy React lint rules
+- [Quick 260316-sw4]: Split timeline into completed and pending sections based on isPending flag
+- [Quick 260316-sw4]: Used deliveryDate as reference for calculating estimated pending event dates
+- [Quick 260316-sw4]: Pending events show outlined circles (white bg + gray border) vs filled circles for completed
 
 ### Pending Todos
 
@@ -104,9 +107,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Fix Tailwind lint errors | 2026-03-11 | 7564daa | [1-fix-tailwind-lint-errors](./quick/1-fix-tailwind-lint-errors/) |
+| 2 | Add pending items section to order details | 2026-03-16 | 1bc3b8f | [260316-sw4-add-pending-items-section-to-order-detai](./quick/260316-sw4-add-pending-items-section-to-order-detai/) |
 
 ## Session Continuity
 
-Last session: 2026-03-11T22:07:35.170Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-17T03:53:36Z
+Stopped at: Completed quick task 260316-sw4
 Resume file: None
