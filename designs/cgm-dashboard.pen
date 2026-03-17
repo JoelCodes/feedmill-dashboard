@@ -15337,7 +15337,7 @@
                               "x": 77.35643005371094,
                               "y": 818.5473294571484,
                               "name": "Ellipse 31",
-                              "rotation": -12.736760381912667,
+                              "rotation": -12.736760381912669,
                               "flipY": true,
                               "sweepAngle": -360.00001001791264,
                               "width": 621.1480712890625,
@@ -33886,7 +33886,8 @@
                           "content": "Pages",
                           "lineHeight": 1.5,
                           "fontFamily": "Helvetica",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -33896,7 +33897,8 @@
                           "content": "/",
                           "lineHeight": 1.5,
                           "fontFamily": "Helvetica",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -33906,7 +33908,8 @@
                           "content": "Dashboard",
                           "lineHeight": 1.5,
                           "fontFamily": "Helvetica",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -33969,7 +33972,8 @@
                           "content": "Type here...",
                           "lineHeight": 1.5,
                           "fontFamily": "Helvetica",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -34535,7 +34539,8 @@
                                   "content": "18 dispatched this week",
                                   "lineHeight": 1.4,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 14
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -35064,7 +35069,8 @@
                                   "content": "Greenfield Farms, TX",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35082,7 +35088,8 @@
                                   "content": "Layer Mash",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35217,7 +35224,8 @@
                                   "content": "Valley Ranch, OK",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35235,7 +35243,8 @@
                                   "content": "Cattle Grower",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35370,7 +35379,8 @@
                                   "content": "Sunrise Poultry, AR",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35388,7 +35398,8 @@
                                   "content": "Broiler Starter",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35523,7 +35534,8 @@
                                   "content": "Pine Hill Dairy, WI",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35541,7 +35553,8 @@
                                   "content": "Dairy TMR",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35676,7 +35689,8 @@
                                   "content": "Lakeside Aqua, FL",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35694,7 +35708,8 @@
                                   "content": "Tilapia Pellet",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -35805,7 +35820,8 @@
                           "content": "24.5 tons Layer Mash · Greenfield Farms, TX",
                           "lineHeight": 1.4,
                           "fontFamily": "Helvetica",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -35858,7 +35874,8 @@
                               "content": "tons",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -35951,7 +35968,8 @@
                               "content": "Layer Mash",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -35976,6 +35994,7 @@
                               "id": "jg0nE",
                               "name": "step1left",
                               "width": 36,
+                              "height": "fill_container",
                               "layout": "vertical",
                               "alignItems": "center",
                               "children": [
@@ -36002,6 +36021,14 @@
                                       "fill": "#ffffffff"
                                     }
                                   ]
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "7w5JH",
+                                  "name": "connLine1",
+                                  "fill": "#4fd1c5ff",
+                                  "width": 2,
+                                  "height": "fill_container"
                                 }
                               ]
                             },
@@ -36034,7 +36061,8 @@
                                   "content": "Order received from Greenfield Farms for 24.5 tons of Layer Mash. Payment confirmed.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 11
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -36068,7 +36096,7 @@
                               "type": "rectangle",
                               "id": "1s8D1",
                               "name": "connNewBar",
-                              "fill": "#e53e3eff",
+                              "fill": "#4fd1c5ff",
                               "width": 2,
                               "height": "fill_container"
                             }
@@ -36086,6 +36114,7 @@
                               "id": "vSZ7b",
                               "name": "stepMillLeft",
                               "width": 36,
+                              "height": "fill_container",
                               "layout": "vertical",
                               "alignItems": "center",
                               "children": [
@@ -36112,6 +36141,14 @@
                                       "fill": "#ffffffff"
                                     }
                                   ]
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "ZiMvK",
+                                  "name": "connLine2",
+                                  "fill": "#4fd1c5ff",
+                                  "width": 2,
+                                  "height": "fill_container"
                                 }
                               ]
                             },
@@ -36144,7 +36181,8 @@
                                   "content": "ABC Mill changed to McGruff Mill due to capacity reallocation.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 11
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -36196,6 +36234,7 @@
                               "id": "nIsz8",
                               "name": "step2left",
                               "width": 36,
+                              "height": "fill_container",
                               "layout": "vertical",
                               "alignItems": "center",
                               "children": [
@@ -36222,6 +36261,14 @@
                                       "fill": "#ffffffff"
                                     }
                                   ]
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "tIwkc",
+                                  "name": "connLine3",
+                                  "fill": "#4fd1c5ff",
+                                  "width": 2,
+                                  "height": "fill_container"
                                 }
                               ]
                             },
@@ -36254,7 +36301,8 @@
                                   "content": "Batch #B-4420 mixed and pelleted on Line 3. QC passed — moisture 11.2%, protein 16.8%.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 11
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -36306,6 +36354,7 @@
                               "id": "5qmQu",
                               "name": "step3left",
                               "width": 36,
+                              "height": "fill_container",
                               "layout": "vertical",
                               "alignItems": "center",
                               "children": [
@@ -36332,6 +36381,14 @@
                                       "fill": "#ffffffff"
                                     }
                                   ]
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "38hSI",
+                                  "name": "connLine4",
+                                  "fill": "#4fd1c5ff",
+                                  "width": 2,
+                                  "height": "fill_container"
                                 }
                               ]
                             },
@@ -36364,7 +36421,8 @@
                                   "content": "Truck #TK-118 departed plant. Driver: M. Santos. ETA 6 hrs to Greenfield Farms, Amarillo TX.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 11
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -36398,7 +36456,7 @@
                               "type": "rectangle",
                               "id": "e1ofK",
                               "name": "conn3bar",
-                              "fill": "#48bb78ff",
+                              "fill": "#4fd1c5ff",
                               "width": 2,
                               "height": "fill_container"
                             }
@@ -36474,7 +36532,8 @@
                                   "content": "Signed by J. Henderson at Greenfield Farms. Full load accepted — no damage reported.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
-                                  "fontSize": 11
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
                                 },
                                 {
                                   "type": "text",
@@ -36486,6 +36545,861 @@
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
                                   "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pxOpf",
+                  "name": "Order Future Timeline Card",
+                  "width": 480,
+                  "height": "fill_container",
+                  "fill": "#ffffffff",
+                  "cornerRadius": 15,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000005",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 21,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "2X7G7",
+                      "name": "header",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NxMeQ",
+                          "name": "title",
+                          "fill": "#2d3748",
+                          "content": "ORD-3105 — Riverside Poultry",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 18,
+                          "fontWeight": "bold"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PqGtj",
+                          "name": "subtitle",
+                          "fill": "#a0aec0",
+                          "content": "18.0 tons Broiler Starter · Riverside Poultry, OK",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "AWhN8",
+                      "name": "statsRow",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "zNyP0",
+                          "name": "stat1",
+                          "width": "fill_container",
+                          "fill": "#f8f9fa",
+                          "cornerRadius": 12,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "2eMWk",
+                              "name": "s1label",
+                              "fill": "#a0aec0",
+                              "content": "Tons Ordered",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "3wn7n",
+                              "name": "s1val",
+                              "fill": "#2d3748",
+                              "content": "18.0",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 22,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "bQc14",
+                              "name": "s1unit",
+                              "fill": "#a0aec0",
+                              "content": "tons",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Tobh5",
+                          "name": "stat2",
+                          "width": "fill_container",
+                          "fill": "#f8f9fa",
+                          "cornerRadius": 12,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "0Pz0H",
+                              "name": "s2label",
+                              "fill": "#a0aec0",
+                              "content": "Tons Produced",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "RFgmI",
+                              "name": "s2val",
+                              "fill": "#2d3748",
+                              "content": "8.2",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 22,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "vbECO",
+                              "name": "s2unit",
+                              "fill": "#dd6b20",
+                              "content": "45.6% yield",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jnkEt",
+                          "name": "stat3",
+                          "width": "fill_container",
+                          "fill": "#f8f9fa",
+                          "cornerRadius": 12,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "BE2Xn",
+                              "name": "s3label",
+                              "fill": "#a0aec0",
+                              "content": "Est. Completion",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "xrCkh",
+                              "name": "s3val",
+                              "fill": "#2d3748",
+                              "content": "Mar 22",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 22,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "zhOgF",
+                              "name": "s3unit",
+                              "fill": "#4fd1c5",
+                              "content": "4 days left",
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "uLKM8",
+                      "name": "Completed Timeline",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "9he4x",
+                          "name": "step1",
+                          "width": "fill_container",
+                          "gap": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "149KA",
+                              "name": "leftCol1",
+                              "width": 36,
+                              "height": "fill_container",
+                              "layout": "vertical",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "rLURk",
+                                  "name": "dot1",
+                                  "fill": "#4fd1c5",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "icon_font",
+                                  "id": "z8YWf",
+                                  "name": "icon1",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "file-text",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#ffffff"
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "Y5UWC",
+                                  "name": "stepLine1",
+                                  "fill": "#4fd1c5",
+                                  "width": 2,
+                                  "height": "fill_container"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ZE6eT",
+                              "name": "rightCol1",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "uDy8H",
+                                  "name": "t1title",
+                                  "fill": "#2d3748",
+                                  "content": "Order Placed",
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 13,
+                                  "fontWeight": "bold"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "0N3Og",
+                                  "name": "t1desc",
+                                  "fill": "#a0aec0",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Order received from Riverside Poultry for 18.0 tons of Broiler Starter. Payment confirmed.",
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "3ocVM",
+                                  "name": "t1date",
+                                  "fill": "#4fd1c5",
+                                  "content": "Mar 16, 2026 · 10:30 AM",
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 10,
+                                  "fontWeight": "bold"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Y3QnU",
+                          "name": "conn1",
+                          "width": "fill_container",
+                          "height": 32,
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            17
+                          ],
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "X3RCC",
+                              "name": "connLine1",
+                              "fill": "#4fd1c5",
+                              "width": 2,
+                              "height": "fill_container"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HYswl",
+                          "name": "step2",
+                          "width": "fill_container",
+                          "gap": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "9jgpn",
+                              "name": "leftCol2",
+                              "width": 36,
+                              "height": "fill_container",
+                              "layout": "vertical",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "PElYc",
+                                  "name": "dot2",
+                                  "fill": "#4fd1c5",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "icon_font",
+                                  "id": "ZyRXk",
+                                  "name": "icon2",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "factory",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#ffffff"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "WxQdH",
+                              "name": "rightCol2",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "mfIsh",
+                                  "name": "t2title",
+                                  "fill": "#2d3748",
+                                  "content": "Production Started",
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 13,
+                                  "fontWeight": "bold"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "zCpRp",
+                                  "name": "t2desc",
+                                  "fill": "#a0aec0",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Batch #B-4502 started on Line 2. Mixing phase initiated — estimated 6 hours.",
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "gUv35",
+                                  "name": "t2date",
+                                  "fill": "#4fd1c5",
+                                  "content": "Mar 17, 2026 · 7:00 AM",
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 10,
+                                  "fontWeight": "bold"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FuW1z",
+                      "name": "Future Steps",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "4ICKK",
+                          "name": "Future Label Row",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gYAdl",
+                              "name": "futureBadge",
+                              "fill": "#edf2f7ff",
+                              "cornerRadius": 8,
+                              "gap": 4,
+                              "padding": [
+                                3,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "wgwdA",
+                                  "name": "futureIcon",
+                                  "width": 10,
+                                  "height": 10,
+                                  "iconFontName": "timer",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "#a0aec0ff"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "mHtJl",
+                                  "name": "futureText",
+                                  "fill": "#a0aec0ff",
+                                  "content": "ESTIMATED",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 9,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "i78kD",
+                              "name": "futureDivider",
+                              "fill": "#e2e8f0ff",
+                              "width": "fill_container",
+                              "height": 1
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wLXYF",
+                          "name": "Step QC Pending",
+                          "width": "fill_container",
+                          "gap": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "6dltf",
+                              "name": "step3left",
+                              "width": 36,
+                              "height": "fill_container",
+                              "layout": "vertical",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "HOc1E",
+                                  "name": "step3dot",
+                                  "width": 28,
+                                  "height": 28,
+                                  "fill": "#ffffffff",
+                                  "cornerRadius": 14,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 2,
+                                    "fill": "#cbd5e0ff"
+                                  },
+                                  "layout": "none",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "yMZFe",
+                                      "x": 7,
+                                      "y": 7,
+                                      "name": "step3icon",
+                                      "width": 14,
+                                      "height": 14,
+                                      "iconFontName": "flask-conical",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#cbd5e0ff"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "33S2P",
+                                  "name": "stepLine3",
+                                  "fill": "#cbd5e0ff",
+                                  "width": 2,
+                                  "height": "fill_container"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "3rBZd",
+                              "name": "step3content",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "6gRkr",
+                                  "name": "step3title",
+                                  "fill": "#a0aec0ff",
+                                  "content": "Quality Check",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Hu1AJ",
+                                  "name": "step3desc",
+                                  "fill": "#cbd5e0ff",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "QC testing for moisture, protein, and pellet durability. Lab results pending batch completion.",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "VJvkn",
+                                  "name": "step3dateRow",
+                                  "gap": 4,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "Dqq1t",
+                                      "name": "step3clock",
+                                      "width": 10,
+                                      "height": 10,
+                                      "iconFontName": "timer",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#cbd5e0ff"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "u1oGW",
+                                      "name": "step3dateText",
+                                      "fill": "#cbd5e0ff",
+                                      "content": "Est. Mar 17, 2026 · 1:00 PM",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "Helvetica",
+                                      "fontSize": 10,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "73dk2",
+                          "name": "Connector 4",
+                          "width": "fill_container",
+                          "height": 32,
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            17
+                          ],
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "OG3E4",
+                              "name": "conn4bar",
+                              "fill": "#cbd5e0ff",
+                              "width": 2,
+                              "height": "fill_container"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "R9ZM6",
+                          "name": "Step Delivery Pending",
+                          "width": "fill_container",
+                          "gap": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "HGQHi",
+                              "name": "step4left",
+                              "width": 36,
+                              "height": "fill_container",
+                              "layout": "vertical",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "Kszdi",
+                                  "name": "step4dot",
+                                  "width": 28,
+                                  "height": 28,
+                                  "fill": "#ffffffff",
+                                  "cornerRadius": 14,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 2,
+                                    "fill": "#cbd5e0ff"
+                                  },
+                                  "layout": "none",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "Wu8jQ",
+                                      "x": 7,
+                                      "y": 7,
+                                      "name": "step4icon",
+                                      "width": 14,
+                                      "height": 14,
+                                      "iconFontName": "truck",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#cbd5e0ff"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "id": "NpMQ7",
+                                  "name": "stepLine4",
+                                  "fill": "#cbd5e0ff",
+                                  "width": 2,
+                                  "height": "fill_container"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VcLc8",
+                              "name": "step4content",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "NFseA",
+                                  "name": "step4title",
+                                  "fill": "#a0aec0ff",
+                                  "content": "Delivery",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "wv6Lg",
+                                  "name": "step4desc",
+                                  "fill": "#cbd5e0ff",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Scheduled dispatch from plant to Riverside Poultry, Tulsa OK. Estimated transit time: 4 hours.",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "eIKEm",
+                                  "name": "step4dateRow",
+                                  "gap": 4,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "DYvG9",
+                                      "name": "step4clock",
+                                      "width": 10,
+                                      "height": 10,
+                                      "iconFontName": "timer",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#cbd5e0ff"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "VjmU6",
+                                      "name": "step4dateText",
+                                      "fill": "#cbd5e0ff",
+                                      "content": "Est. Mar 21, 2026 · 6:00 AM",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "Helvetica",
+                                      "fontSize": 10,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ymX9M",
+                          "name": "Connector 5",
+                          "width": "fill_container",
+                          "height": 32,
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            17
+                          ],
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "mevU8",
+                              "name": "conn5bar",
+                              "fill": "#cbd5e0ff",
+                              "width": 2,
+                              "height": "fill_container"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DWRQi",
+                          "name": "Step Delivery Received Pending",
+                          "width": "fill_container",
+                          "gap": 14,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "RPGIr",
+                              "name": "step5left",
+                              "width": 36,
+                              "layout": "vertical",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "Y6DEw",
+                                  "name": "step5dot",
+                                  "width": 28,
+                                  "height": 28,
+                                  "fill": "#ffffffff",
+                                  "cornerRadius": 14,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 2,
+                                    "fill": "#cbd5e0ff"
+                                  },
+                                  "layout": "none",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "ArhNu",
+                                      "x": 7,
+                                      "y": 7,
+                                      "name": "step5icon",
+                                      "width": 14,
+                                      "height": 14,
+                                      "iconFontName": "circle-check-big",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#cbd5e0ff"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "7abon",
+                              "name": "step5content",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "dZ1SD",
+                                  "name": "step5title",
+                                  "fill": "#a0aec0ff",
+                                  "content": "Delivery Received",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "7Thms",
+                                  "name": "step5desc",
+                                  "fill": "#cbd5e0ff",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Awaiting confirmation of delivery at Riverside Poultry. Customer will sign off on receipt.",
+                                  "lineHeight": 1.5,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "5DicT",
+                                  "name": "step5dateRow",
+                                  "gap": 4,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon_font",
+                                      "id": "jd0Xg",
+                                      "name": "step5clock",
+                                      "width": 10,
+                                      "height": 10,
+                                      "iconFontName": "timer",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "#cbd5e0ff"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "QwEXM",
+                                      "name": "step5dateText",
+                                      "fill": "#cbd5e0ff",
+                                      "content": "Est. Mar 21, 2026 · 10:00 AM",
+                                      "lineHeight": 1.5,
+                                      "fontFamily": "Helvetica",
+                                      "fontSize": 10,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
                                 }
                               ]
                             }
