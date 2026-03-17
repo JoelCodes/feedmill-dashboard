@@ -288,46 +288,33 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
         <div className="flex flex-col">
           {/* Completed events */}
           {sortedCompleted.map((event, index) => (
-            <div key={event.id}>
-              <TimelineItem
-                icon={event.icon}
-                title={event.title}
-                description={event.description}
-                date={formatTimelineDate(event.date, event.isPending)}
-                color={event.color}
-                isPending={event.isPending}
-              />
-              {index < sortedCompleted.length - 1 && (
-                <TimelineConnector color={event.color} />
-              )}
-            </div>
+            <TimelineItem
+              key={event.id}
+              icon={event.icon}
+              title={event.title}
+              description={event.description}
+              date={formatTimelineDate(event.date, event.isPending)}
+              color={event.color}
+              isPending={event.isPending}
+              showConnector={index < sortedCompleted.length - 1}
+            />
           ))}
 
           {/* Pending badge divider */}
-          {sortedPending.length > 0 && (
-            <>
-              {sortedCompleted.length > 0 && (
-                <TimelineConnector color="pending" />
-              )}
-              <PendingBadge />
-            </>
-          )}
+          {sortedPending.length > 0 && <PendingBadge />}
 
           {/* Pending events */}
           {sortedPending.map((event, index) => (
-            <div key={event.id}>
-              <TimelineItem
-                icon={event.icon}
-                title={event.title}
-                description={event.description}
-                date={formatTimelineDate(event.date, event.isPending)}
-                color={event.color}
-                isPending={event.isPending}
-              />
-              {index < sortedPending.length - 1 && (
-                <TimelineConnector color={event.color} />
-              )}
-            </div>
+            <TimelineItem
+              key={event.id}
+              icon={event.icon}
+              title={event.title}
+              description={event.description}
+              date={formatTimelineDate(event.date, event.isPending)}
+              color={event.color}
+              isPending={event.isPending}
+              showConnector={index < sortedPending.length - 1}
+            />
           ))}
         </div>
       </div>
@@ -378,6 +365,7 @@ function TimelineItem({
   date,
   color,
   isPending,
+  showConnector,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -385,22 +373,26 @@ function TimelineItem({
   date: string;
   color: "primary" | "success" | "error" | "pending";
   isPending?: boolean;
+  showConnector?: boolean;
 }) {
   const colors = colorMap[color];
 
   return (
-    <div className="flex gap-3.5">
-      {/* Left - Icon */}
+    <div className="flex items-stretch gap-3.5">
+      {/* Left - Icon + Connector */}
       <div className="flex w-9 flex-col items-center">
         <div
-          className={`h-7 w-7 ${colors.bg} flex items-center justify-center rounded-full`}
+          className={`h-7 w-7 ${colors.bg} flex shrink-0 items-center justify-center rounded-full`}
         >
           <Icon className={`h-3.5 w-3.5 ${isPending ? 'text-pending' : 'text-white'}`} />
         </div>
+        {showConnector && (
+          <div className={`w-0.5 flex-1 ${colors.bar}`} />
+        )}
       </div>
 
       {/* Right - Content */}
-      <div className="flex flex-1 flex-col gap-0.5">
+      <div className="flex flex-1 flex-col gap-0.5 pb-8">
         <span className="text-text-primary text-[13px] font-bold">
           {title}
         </span>
@@ -416,12 +408,3 @@ function TimelineItem({
   );
 }
 
-function TimelineConnector({ color }: { color: "primary" | "success" | "error" | "pending" }) {
-  const colors = colorMap[color];
-
-  return (
-    <div className="h-8 pl-4.25">
-      <div className={`h-full w-0.5 ${colors.bar}`} />
-    </div>
-  );
-}
