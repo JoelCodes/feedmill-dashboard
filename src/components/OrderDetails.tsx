@@ -183,11 +183,11 @@ function formatTimelineDate(date: Date, isPending?: boolean): string {
   return isPending ? `Est. ${formatted}` : formatted;
 }
 
-function EstimatedBadge() {
+function PendingBadge() {
   return (
     <div className="flex items-center gap-1.5 bg-pending-light rounded-md px-2 py-1 my-3">
       <Timer className="h-3 w-3 text-text-secondary" />
-      <span className="text-[10px] font-bold text-text-secondary uppercase">Estimated</span>
+      <span className="text-[10px] font-bold text-text-secondary uppercase">Pending</span>
     </div>
   );
 }
@@ -303,13 +303,13 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
             </div>
           ))}
 
-          {/* Estimated badge divider */}
+          {/* Pending badge divider */}
           {sortedPending.length > 0 && (
             <>
               {sortedCompleted.length > 0 && (
                 <TimelineConnector color="pending" />
               )}
-              <EstimatedBadge />
+              <PendingBadge />
             </>
           )}
 
