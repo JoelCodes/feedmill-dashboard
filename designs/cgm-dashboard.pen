@@ -8,7 +8,7 @@
       "y": -1069,
       "name": "UI Kit",
       "clip": true,
-      "width": 13631,
+      "width": 15515,
       "height": 1717,
       "fill": "#FFFFFF",
       "layout": "none",
@@ -108,14 +108,14 @@
                           "type": "group",
                           "id": "6dVqt",
                           "x": 721.5001831054688,
-                          "y": 0.00002432836663501803,
+                          "y": 2.432836663501803e-05,
                           "name": "Menu",
                           "children": [
                             {
                               "type": "text",
                               "id": "w59PU",
                               "x": 280.9996032714844,
-                              "y": 0.00002432836663501803,
+                              "y": 2.432836663501803e-05,
                               "name": "License",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -131,7 +131,7 @@
                               "type": "text",
                               "id": "zNG99",
                               "x": 212.5001983642578,
-                              "y": 0.00002432836663501803,
+                              "y": 2.432836663501803e-05,
                               "name": "Blog",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -147,7 +147,7 @@
                               "type": "text",
                               "id": "GcoyC",
                               "x": 111.49980163574219,
-                              "y": 0.00002432836663501803,
+                              "y": 2.432836663501803e-05,
                               "name": "Simmmple",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -189,12 +189,12 @@
                               "id": "JN3Yf",
                               "x": 0,
                               "y": 0,
-                              "name": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "name": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
                               "width": 372.5,
                               "height": 18,
-                              "content": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "content": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12,
@@ -431,9 +431,9 @@
                                             {
                                               "type": "text",
                                               "id": "JblqQ",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -486,9 +486,9 @@
                                             {
                                               "type": "text",
                                               "id": "EYCPH",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -505,7 +505,7 @@
                                 {
                                   "type": "frame",
                                   "id": "4a04j",
-                                  "name": "🔛MinWidth",
+                                  "name": "\ud83d\udd1bMinWidth",
                                   "clip": true,
                                   "height": 0.004695788025856018,
                                   "stroke": {
@@ -562,7 +562,7 @@
                               "type": "frame",
                               "id": "sSooD",
                               "x": 0,
-                              "y": 0.000006141603080322966,
+                              "y": 6.141603080322966e-06,
                               "name": "_Switch/Base",
                               "clip": true,
                               "width": 36,
@@ -660,7 +660,7 @@
                                     {
                                       "type": "frame",
                                       "id": "1GfwM",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -768,7 +768,7 @@
                                     {
                                       "type": "frame",
                                       "id": "hEJih",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -876,7 +876,7 @@
                                     {
                                       "type": "frame",
                                       "id": "agXLq",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -1326,9 +1326,9 @@
                                             {
                                               "type": "text",
                                               "id": "0HrZG",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -1381,9 +1381,9 @@
                                             {
                                               "type": "text",
                                               "id": "RNtiV",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -1400,7 +1400,7 @@
                                 {
                                   "type": "frame",
                                   "id": "wi2xH",
-                                  "name": "🔛MinWidth",
+                                  "name": "\ud83d\udd1bMinWidth",
                                   "clip": true,
                                   "height": 0.004695788025856018,
                                   "stroke": {
@@ -1559,7 +1559,7 @@
                                     {
                                       "type": "frame",
                                       "id": "AeuM2",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -1711,7 +1711,7 @@
                                     {
                                       "type": "frame",
                                       "id": "aIggn",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -1878,7 +1878,7 @@
                                     {
                                       "type": "frame",
                                       "id": "0dCwY",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -1912,7 +1912,7 @@
                               "type": "frame",
                               "id": "uervY",
                               "x": 0,
-                              "y": 0.0000061892123994766735,
+                              "y": 6.1892123994766735e-06,
                               "name": "Dashboard",
                               "width": 81.5,
                               "height": 22.5,
@@ -2060,7 +2060,7 @@
                                     {
                                       "type": "frame",
                                       "id": "GA6gW",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004695788025856018,
                                       "stroke": {
@@ -2296,7 +2296,7 @@
                           "type": "group",
                           "id": "MhJ7k",
                           "x": 663,
-                          "y": 0.0000017767624740372412,
+                          "y": 1.7767624740372412e-06,
                           "name": "Menu",
                           "children": [
                             {
@@ -2351,7 +2351,7 @@
                               "type": "text",
                               "id": "5oUq2",
                               "x": 0,
-                              "y": 0.000014435700904869009,
+                              "y": 1.4435700904869009e-05,
                               "name": "Creative Tim",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -2377,12 +2377,12 @@
                               "id": "yYgZt",
                               "x": 0,
                               "y": 0,
-                              "name": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "name": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
                               "width": 372.5,
                               "height": 18,
-                              "content": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "content": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12.000000953674316,
@@ -2614,9 +2614,9 @@
                                             {
                                               "type": "text",
                                               "id": "rgY94",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -2669,9 +2669,9 @@
                                             {
                                               "type": "text",
                                               "id": "3TUN4",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -2688,7 +2688,7 @@
                                 {
                                   "type": "frame",
                                   "id": "T2O7O",
-                                  "name": "🔛MinWidth",
+                                  "name": "\ud83d\udd1bMinWidth",
                                   "clip": true,
                                   "height": 0.004761410877108574,
                                   "stroke": {
@@ -2745,7 +2745,7 @@
                               "type": "frame",
                               "id": "q3mgC",
                               "x": 0,
-                              "y": 0.0000036722396998811746,
+                              "y": 3.6722396998811746e-06,
                               "name": "_Switch/Base",
                               "clip": true,
                               "width": 36,
@@ -2843,7 +2843,7 @@
                                     {
                                       "type": "frame",
                                       "id": "VSSPU",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004761410877108574,
                                       "stroke": {
@@ -2951,7 +2951,7 @@
                                     {
                                       "type": "frame",
                                       "id": "BsMQD",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004761410877108574,
                                       "stroke": {
@@ -3227,9 +3227,9 @@
                                             {
                                               "type": "text",
                                               "id": "VFwJD",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -3282,9 +3282,9 @@
                                             {
                                               "type": "text",
                                               "id": "n6hMh",
-                                              "name": "",
+                                              "name": "\uf118",
                                               "fill": "#000000ff",
-                                              "content": "",
+                                              "content": "\uf118",
                                               "lineHeight": 1.0909090909090908,
                                               "textAlign": "center",
                                               "textAlignVertical": "middle",
@@ -3301,7 +3301,7 @@
                                 {
                                   "type": "frame",
                                   "id": "MMhU6",
-                                  "name": "🔛MinWidth",
+                                  "name": "\ud83d\udd1bMinWidth",
                                   "clip": true,
                                   "height": 0.004761410877108574,
                                   "stroke": {
@@ -3342,7 +3342,7 @@
                               "type": "frame",
                               "id": "9S9XO",
                               "x": 289.4999694824219,
-                              "y": 0.0000018994344372913474,
+                              "y": 1.8994344372913474e-06,
                               "name": "Sign In",
                               "width": 60.5,
                               "height": 22.5,
@@ -3460,7 +3460,7 @@
                                     {
                                       "type": "frame",
                                       "id": "tSReR",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004761410877108574,
                                       "stroke": {
@@ -3494,7 +3494,7 @@
                               "type": "frame",
                               "id": "QSA20",
                               "x": 199.9998321533203,
-                              "y": 0.0000018994344372913474,
+                              "y": 1.8994344372913474e-06,
                               "name": "Sign Up",
                               "width": 60.5,
                               "height": 22.5,
@@ -3612,7 +3612,7 @@
                                     {
                                       "type": "frame",
                                       "id": "hP0Y8",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004761410877108574,
                                       "stroke": {
@@ -3646,7 +3646,7 @@
                               "type": "frame",
                               "id": "nnY34",
                               "x": 110.50019073486328,
-                              "y": 0.0000018994344372913474,
+                              "y": 1.8994344372913474e-06,
                               "name": "Profile",
                               "width": 60.5,
                               "height": 22.5,
@@ -3779,7 +3779,7 @@
                                     {
                                       "type": "frame",
                                       "id": "sOqXq",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004761410877108574,
                                       "stroke": {
@@ -3961,7 +3961,7 @@
                                     {
                                       "type": "frame",
                                       "id": "cLS4U",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.004761410877108574,
                                       "stroke": {
@@ -4169,14 +4169,14 @@
                           "type": "group",
                           "id": "2NBSv",
                           "x": 1277.5001220703125,
-                          "y": 0.000012200676792417653,
+                          "y": 1.2200676792417653e-05,
                           "name": "Menu",
                           "children": [
                             {
                               "type": "text",
                               "id": "xvbne",
                               "x": 280.9997863769531,
-                              "y": 0.000012200676792417653,
+                              "y": 1.2200676792417653e-05,
                               "name": "License",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -4192,7 +4192,7 @@
                               "type": "text",
                               "id": "Ucqj9",
                               "x": 212.4998016357422,
-                              "y": 0.000012200676792417653,
+                              "y": 1.2200676792417653e-05,
                               "name": "Blog",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -4208,7 +4208,7 @@
                               "type": "text",
                               "id": "IePmZ",
                               "x": 111.50016021728516,
-                              "y": 0.000012200676792417653,
+                              "y": 1.2200676792417653e-05,
                               "name": "Simmmple",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -4250,12 +4250,12 @@
                               "id": "XXXAv",
                               "x": 0,
                               "y": 0,
-                              "name": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "name": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
                               "width": 372.5,
                               "height": 18,
-                              "content": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "content": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12,
@@ -4450,7 +4450,7 @@
                                           "type": "ellipse",
                                           "id": "DduVL",
                                           "x": 0.4255470335483551,
-                                          "y": 0.00001598993912921287,
+                                          "y": 1.598993912921287e-05,
                                           "name": "Ellipse 4",
                                           "sweepAngle": -360.00001001791264,
                                           "fill": "#4318ffff",
@@ -4514,7 +4514,7 @@
                                           "type": "ellipse",
                                           "id": "OfRe0",
                                           "x": 0.4255470335483551,
-                                          "y": 0.00001598993912921287,
+                                          "y": 1.598993912921287e-05,
                                           "name": "Ellipse 5",
                                           "sweepAngle": -360.00001001791264,
                                           "width": 19.56321907043457,
@@ -4626,7 +4626,7 @@
                                           "type": "ellipse",
                                           "id": "7Jeo6",
                                           "x": 1.7020291090011597,
-                                          "y": 0.000015958150470396504,
+                                          "y": 1.5958150470396504e-05,
                                           "name": "Ellipse 4",
                                           "sweepAngle": -360.00001001791264,
                                           "fill": "#4318ffff",
@@ -4691,7 +4691,7 @@
                                           "type": "ellipse",
                                           "id": "ykpHM",
                                           "x": 1.7020291090011597,
-                                          "y": 0.000015958150470396504,
+                                          "y": 1.5958150470396504e-05,
                                           "name": "Ellipse 5",
                                           "sweepAngle": -360.00001001791264,
                                           "width": 19.563220977783203,
@@ -4862,9 +4862,9 @@
                                                         {
                                                           "type": "text",
                                                           "id": "b57mk",
-                                                          "name": "",
+                                                          "name": "\uf118",
                                                           "fill": "#000000ff",
-                                                          "content": "",
+                                                          "content": "\uf118",
                                                           "lineHeight": 1.0909090909090908,
                                                           "textAlign": "center",
                                                           "textAlignVertical": "middle",
@@ -4917,9 +4917,9 @@
                                                         {
                                                           "type": "text",
                                                           "id": "IRQfX",
-                                                          "name": "",
+                                                          "name": "\uf118",
                                                           "fill": "#000000ff",
-                                                          "content": "",
+                                                          "content": "\uf118",
                                                           "lineHeight": 1.0909090909090908,
                                                           "textAlign": "center",
                                                           "textAlignVertical": "middle",
@@ -4936,7 +4936,7 @@
                                             {
                                               "type": "frame",
                                               "id": "OEpEy",
-                                              "name": "🔛MinWidth",
+                                              "name": "\ud83d\udd1bMinWidth",
                                               "clip": true,
                                               "height": 0.005674127954989672,
                                               "stroke": {
@@ -5159,7 +5159,7 @@
                                           "type": "ellipse",
                                           "id": "X0TpR",
                                           "x": 0.42567723989486694,
-                                          "y": 0.00001598993912921287,
+                                          "y": 1.598993912921287e-05,
                                           "name": "Ellipse 4",
                                           "sweepAngle": -360.00001001791264,
                                           "fill": "#4318ffff",
@@ -5223,7 +5223,7 @@
                                           "type": "ellipse",
                                           "id": "wUfnD",
                                           "x": 0.42567723989486694,
-                                          "y": 0.00001598993912921287,
+                                          "y": 1.598993912921287e-05,
                                           "name": "Ellipse 5",
                                           "sweepAngle": -360.00001001791264,
                                           "width": 19.56321907043457,
@@ -5335,7 +5335,7 @@
                                           "type": "ellipse",
                                           "id": "8oiDh",
                                           "x": 1.7021594047546387,
-                                          "y": 0.000015958150470396504,
+                                          "y": 1.5958150470396504e-05,
                                           "name": "Ellipse 4",
                                           "sweepAngle": -360.00001001791264,
                                           "fill": "#4318ffff",
@@ -5400,7 +5400,7 @@
                                           "type": "ellipse",
                                           "id": "q9H7Z",
                                           "x": 1.7021594047546387,
-                                          "y": 0.000015958150470396504,
+                                          "y": 1.5958150470396504e-05,
                                           "name": "Ellipse 5",
                                           "sweepAngle": -360.00001001791264,
                                           "width": 19.563220977783203,
@@ -5571,9 +5571,9 @@
                                                         {
                                                           "type": "text",
                                                           "id": "ifRHH",
-                                                          "name": "",
+                                                          "name": "\uf118",
                                                           "fill": "#000000ff",
-                                                          "content": "",
+                                                          "content": "\uf118",
                                                           "lineHeight": 1.0909090909090908,
                                                           "textAlign": "center",
                                                           "textAlignVertical": "middle",
@@ -5626,9 +5626,9 @@
                                                         {
                                                           "type": "text",
                                                           "id": "EY8Sa",
-                                                          "name": "",
+                                                          "name": "\uf118",
                                                           "fill": "#000000ff",
-                                                          "content": "",
+                                                          "content": "\uf118",
                                                           "lineHeight": 1.0909090909090908,
                                                           "textAlign": "center",
                                                           "textAlignVertical": "middle",
@@ -5645,7 +5645,7 @@
                                             {
                                               "type": "frame",
                                               "id": "R7nc5",
-                                              "name": "🔛MinWidth",
+                                              "name": "\ud83d\udd1bMinWidth",
                                               "clip": true,
                                               "height": 0.005674127954989672,
                                               "stroke": {
@@ -5849,7 +5849,7 @@
                                           "type": "ellipse",
                                           "id": "Hv6vd",
                                           "x": 0.4253191649913788,
-                                          "y": 0.00001598993912921287,
+                                          "y": 1.598993912921287e-05,
                                           "name": "Ellipse 4",
                                           "sweepAngle": -360.00001001791264,
                                           "fill": "#4318ffff",
@@ -5913,7 +5913,7 @@
                                           "type": "ellipse",
                                           "id": "HLdPu",
                                           "x": 0.4253191649913788,
-                                          "y": 0.00001598993912921287,
+                                          "y": 1.598993912921287e-05,
                                           "name": "Ellipse 5",
                                           "sweepAngle": -360.00001001791264,
                                           "width": 19.56321907043457,
@@ -6041,7 +6041,7 @@
                                           "type": "frame",
                                           "id": "e3lWt",
                                           "x": 0,
-                                          "y": 0.00001594984314579051,
+                                          "y": 1.594984314579051e-05,
                                           "name": "Person Photo 23",
                                           "width": 19.563215255737305,
                                           "height": 19.59259033203125,
@@ -6261,9 +6261,9 @@
                                                         {
                                                           "type": "text",
                                                           "id": "jSEGX",
-                                                          "name": "",
+                                                          "name": "\uf118",
                                                           "fill": "#000000ff",
-                                                          "content": "",
+                                                          "content": "\uf118",
                                                           "lineHeight": 1.0909090909090908,
                                                           "textAlign": "center",
                                                           "textAlignVertical": "middle",
@@ -6316,9 +6316,9 @@
                                                         {
                                                           "type": "text",
                                                           "id": "B818G",
-                                                          "name": "",
+                                                          "name": "\uf118",
                                                           "fill": "#000000ff",
-                                                          "content": "",
+                                                          "content": "\uf118",
                                                           "lineHeight": 1.0909090909090908,
                                                           "textAlign": "center",
                                                           "textAlignVertical": "middle",
@@ -6335,7 +6335,7 @@
                                             {
                                               "type": "frame",
                                               "id": "fcxAk",
-                                              "name": "🔛MinWidth",
+                                              "name": "\ud83d\udd1bMinWidth",
                                               "clip": true,
                                               "height": 0.005674127954989672,
                                               "stroke": {
@@ -7260,7 +7260,7 @@
                           "type": "group",
                           "id": "YyP11",
                           "x": 540.4998168945312,
-                          "y": 7.62542413212941e-7,
+                          "y": 7.62542413212941e-07,
                           "name": "Profile Information",
                           "children": [
                             {
@@ -7598,12 +7598,12 @@
                                   "id": "soMWh",
                                   "x": 0,
                                   "y": 40.99999237060547,
-                                  "name": "Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).",
+                                  "name": "Hi, I\u2019m Alec Thompson, Decisions: If you can\u2019t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).",
                                   "fill": "#a0aec0ff",
                                   "textGrowth": "fixed-width-height",
                                   "width": 460.5,
                                   "height": 52.5,
-                                  "content": "Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).",
+                                  "content": "Hi, I\u2019m Alec Thompson, Decisions: If you can\u2019t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 12,
@@ -7612,7 +7612,7 @@
                                 {
                                   "type": "text",
                                   "id": "xEWDd",
-                                  "x": 0.00009770708857104182,
+                                  "x": 9.770708857104182e-05,
                                   "y": 0,
                                   "name": "Profile Information",
                                   "fill": "#2d3748ff",
@@ -7692,7 +7692,7 @@
                                           "type": "text",
                                           "id": "3HWJY",
                                           "x": 45.99983596801758,
-                                          "y": 0.000002033446207860834,
+                                          "y": 2.033446207860834e-06,
                                           "name": "Subscribe to newsletter",
                                           "fill": "#a0aec0ff",
                                           "textGrowth": "fixed-width-height",
@@ -7935,7 +7935,7 @@
                                           "type": "frame",
                                           "id": "qxUmJ",
                                           "x": 0,
-                                          "y": 0.000004066891960974317,
+                                          "y": 4.066891960974317e-06,
                                           "name": "_Switch/Base",
                                           "clip": true,
                                           "width": 36,
@@ -8069,7 +8069,7 @@
                                           "type": "frame",
                                           "id": "hFZbe",
                                           "x": 0,
-                                          "y": 0.000004066891960974317,
+                                          "y": 4.066891960974317e-06,
                                           "name": "_Switch/Base",
                                           "clip": true,
                                           "width": 36,
@@ -8204,7 +8204,7 @@
                             {
                               "type": "rectangle",
                               "id": "tRJ19",
-                              "x": 0.00006507027865154669,
+                              "x": 6.507027865154669e-05,
                               "y": 0,
                               "name": "1457718455276 1",
                               "fill": {
@@ -8363,7 +8363,7 @@
                                     {
                                       "type": "frame",
                                       "id": "y1bDf",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005674127954989672,
                                       "stroke": {
@@ -8703,7 +8703,7 @@
                               "type": "frame",
                               "id": "zMUxI",
                               "x": 269.0000305175781,
-                              "y": 0.0000017792654034565203,
+                              "y": 1.7792654034565203e-06,
                               "name": "Projects",
                               "width": 134.5,
                               "height": 35,
@@ -8821,7 +8821,7 @@
                                     {
                                       "type": "frame",
                                       "id": "yJGEb",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005674127954989672,
                                       "stroke": {
@@ -8855,7 +8855,7 @@
                               "type": "frame",
                               "id": "B3dvx",
                               "x": 134.49977111816406,
-                              "y": 0.0000017792654034565203,
+                              "y": 1.7792654034565203e-06,
                               "name": "Teams",
                               "width": 134.5,
                               "height": 35,
@@ -9018,7 +9018,7 @@
                                     {
                                       "type": "frame",
                                       "id": "S83wV",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005674127954989672,
                                       "stroke": {
@@ -9211,7 +9211,7 @@
                                     {
                                       "type": "frame",
                                       "id": "pmOad",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005674127954989672,
                                       "stroke": {
@@ -9714,9 +9714,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "q9A6K",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -9769,9 +9769,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "QMldX",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -9788,7 +9788,7 @@
                                     {
                                       "type": "frame",
                                       "id": "oFXci",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005761606618762016,
                                       "stroke": {
@@ -10874,7 +10874,7 @@
               "type": "group",
               "id": "wdavt",
               "x": 0.9999046325683594,
-              "y": 0.000020384788513183594,
+              "y": 2.0384788513183594e-05,
               "name": "New Design",
               "children": [
                 {
@@ -10925,7 +10925,7 @@
                               "type": "text",
                               "id": "PzQn2",
                               "x": 280.9999694824219,
-                              "y": 0.00002036620026046876,
+                              "y": 2.036620026046876e-05,
                               "name": "License",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -10941,7 +10941,7 @@
                               "type": "text",
                               "id": "BF44S",
                               "x": 212.50009155273438,
-                              "y": 0.00002036620026046876,
+                              "y": 2.036620026046876e-05,
                               "name": "Blog",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -10957,7 +10957,7 @@
                               "type": "text",
                               "id": "kpjZL",
                               "x": 111.50006866455078,
-                              "y": 0.00002036620026046876,
+                              "y": 2.036620026046876e-05,
                               "name": "Simmmple",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -10999,12 +10999,12 @@
                               "id": "Hu5Nt",
                               "x": 0,
                               "y": 0,
-                              "name": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "name": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
                               "width": 372.5,
                               "height": 18,
-                              "content": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "content": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12,
@@ -11079,7 +11079,7 @@
                                     {
                                       "type": "group",
                                       "id": "83MzY",
-                                      "x": 0.00008293992505059578,
+                                      "x": 8.293992505059578e-05,
                                       "y": 230.5000060908278,
                                       "name": "4",
                                       "children": [
@@ -11109,7 +11109,7 @@
                                             {
                                               "type": "text",
                                               "id": "y4txx",
-                                              "x": 0.000036334005926619284,
+                                              "x": 3.6334005926619284e-05,
                                               "y": 0,
                                               "name": "Microsoft",
                                               "fill": "#2d3748ff",
@@ -11269,7 +11269,7 @@
                                             {
                                               "type": "text",
                                               "id": "8jXon",
-                                              "x": 0.00006505341661977582,
+                                              "x": 6.505341661977582e-05,
                                               "y": 0,
                                               "name": "Webflow",
                                               "fill": "#2d3748ff",
@@ -11430,7 +11430,7 @@
                                             {
                                               "type": "text",
                                               "id": "RFuWW",
-                                              "x": 0.00006505341661977582,
+                                              "x": 6.505341661977582e-05,
                                               "y": 0,
                                               "name": "HubSpot",
                                               "fill": "#2d3748ff",
@@ -11559,7 +11559,7 @@
                                     {
                                       "type": "group",
                                       "id": "a70ly",
-                                      "x": 0.00008293992505059578,
+                                      "x": 8.293992505059578e-05,
                                       "y": 32.500000063446066,
                                       "name": "1",
                                       "children": [
@@ -11589,7 +11589,7 @@
                                             {
                                               "type": "text",
                                               "id": "YT0US",
-                                              "x": 0.00006505341661977582,
+                                              "x": 6.505341661977582e-05,
                                               "y": 0,
                                               "name": "Stripe",
                                               "fill": "#2d3748ff",
@@ -11772,7 +11772,7 @@
                                             {
                                               "type": "text",
                                               "id": "BB6YJ",
-                                              "x": 0.00006505341661977582,
+                                              "x": 6.505341661977582e-05,
                                               "y": 0,
                                               "name": "Apple",
                                               "fill": "#2d3748ff",
@@ -11931,7 +11931,7 @@
                                             {
                                               "type": "text",
                                               "id": "Jb7uL",
-                                              "x": 0.00006505341661977582,
+                                              "x": 6.505341661977582e-05,
                                               "y": 0,
                                               "name": "Netflix",
                                               "fill": "#2d3748ff",
@@ -12354,7 +12354,7 @@
                           "type": "group",
                           "id": "AT6id",
                           "x": 0,
-                          "y": 0.000003997105068265228,
+                          "y": 3.997105068265228e-06,
                           "name": "Billing Information",
                           "children": [
                             {
@@ -12840,7 +12840,7 @@
                                     {
                                       "type": "group",
                                       "id": "w0bpW",
-                                      "x": 0.00009770700489752926,
+                                      "x": 9.770700489752926e-05,
                                       "y": 0,
                                       "name": "1",
                                       "children": [
@@ -13987,9 +13987,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "0AT4s",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -14042,9 +14042,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "YvdUf",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -14061,7 +14061,7 @@
                                     {
                                       "type": "frame",
                                       "id": "60ZhG",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005283263977617025,
                                       "stroke": {
@@ -14215,7 +14215,7 @@
                                     {
                                       "type": "frame",
                                       "id": "cfdKw",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005283263977617025,
                                       "stroke": {
@@ -14321,7 +14321,7 @@
                                       "type": "ellipse",
                                       "id": "diVch",
                                       "x": 0,
-                                      "y": 0.0000022523367988469545,
+                                      "y": 2.2523367988469545e-06,
                                       "name": "Ellipse 48",
                                       "sweepAngle": -360.00001001791264,
                                       "fill": "#eb001bff",
@@ -14385,7 +14385,7 @@
                                     {
                                       "type": "frame",
                                       "id": "IwUmp",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005283263977617025,
                                       "stroke": {
@@ -14572,9 +14572,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "NxR6Z",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -14627,9 +14627,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "CUNzE",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -14646,7 +14646,7 @@
                                     {
                                       "type": "frame",
                                       "id": "lRdOw",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005283263977617025,
                                       "stroke": {
@@ -15440,7 +15440,7 @@
                                 {
                                   "type": "text",
                                   "id": "qfYnR",
-                                  "x": 0.000048726611566962674,
+                                  "x": 4.8726611566962674e-05,
                                   "y": 14.809508323669434,
                                   "name": "09X",
                                   "rotation": -1.7692407183427176e-31,
@@ -15743,7 +15743,7 @@
                                     {
                                       "type": "frame",
                                       "id": "fNUun",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005283263977617025,
                                       "stroke": {
@@ -15969,7 +15969,7 @@
                             {
                               "type": "frame",
                               "id": "SzYwB",
-                              "x": 0.00004896347672911361,
+                              "x": 4.896347672911361e-05,
                               "y": 0,
                               "name": "Breadcrumb/Item/Previous",
                               "width": 44.999996185302734,
@@ -16283,9 +16283,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "zFmnR",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -16338,9 +16338,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "xVNtz",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -16357,7 +16357,7 @@
                                     {
                                       "type": "frame",
                                       "id": "v9cif",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005761606618762016,
                                       "stroke": {
@@ -17443,7 +17443,7 @@
               "type": "group",
               "id": "NGwg0",
               "x": 1,
-              "y": 0.000028478127205744386,
+              "y": 2.8478127205744386e-05,
               "name": "New Design",
               "children": [
                 {
@@ -17487,7 +17487,7 @@
                           "type": "group",
                           "id": "Ojq3M",
                           "x": 1277.5001220703125,
-                          "y": 0.000007434720828314312,
+                          "y": 7.434720828314312e-06,
                           "name": "Menu",
                           "children": [
                             {
@@ -17542,7 +17542,7 @@
                               "type": "text",
                               "id": "DdaUn",
                               "x": 0,
-                              "y": 0.000003912034117092844,
+                              "y": 3.912034117092844e-06,
                               "name": "Creative Tim",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -17568,12 +17568,12 @@
                               "id": "vKAE0",
                               "x": 0,
                               "y": 0,
-                              "name": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "name": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
                               "width": 372.5,
                               "height": 18,
-                              "content": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "content": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12,
@@ -18508,14 +18508,14 @@
                                                       "type": "group",
                                                       "id": "sHNef",
                                                       "x": -0.0002732876455411315,
-                                                      "y": -0.0000061183477839676925,
+                                                      "y": -6.1183477839676925e-06,
                                                       "name": "Group",
                                                       "children": [
                                                         {
                                                           "type": "path",
                                                           "id": "4OAF8",
                                                           "x": 0,
-                                                          "y": 0.000006118347755545983,
+                                                          "y": 6.118347755545983e-06,
                                                           "name": "Vector",
                                                           "geometry": "M897.40027 0c-135.29999 0.1-244.79999 109.89999-244.70001 245.2-0.09998 135.3 109.5 245.09999 244.79998 245.19999l244.80006 0 0-245.09999c0.1-135.3-109.5-245.1-244.90003-245.3 0.09997 0 0.09997 0 0 0l0 0z m0 654l-652.59999 0c-135.30001 0.09998-244.90001 109.90002-244.80001 245.20001-0.2 135.29999 109.4 245.09999 244.7 245.29999l652.7 0c135.30003-0.1 244.89993-109.9 244.79993-245.20001 0.1-135.39997-109.4999-245.20001-244.79993-245.29999l0 0z",
                                                           "fillRule": "evenodd",
@@ -18621,7 +18621,7 @@
                                         {
                                           "type": "group",
                                           "id": "WPf3Q",
-                                          "x": 0.00009225727080774959,
+                                          "x": 9.225727080774959e-05,
                                           "y": 0,
                                           "name": "Content",
                                           "children": [
@@ -19254,7 +19254,7 @@
                                 {
                                   "type": "group",
                                   "id": "dHdZZ",
-                                  "x": 0.000037970839912304655,
+                                  "x": 3.7970839912304655e-05,
                                   "y": 27.499976576460654,
                                   "name": "Lines",
                                   "children": [
@@ -19336,7 +19336,7 @@
                                       "type": "text",
                                       "id": "DGzMr",
                                       "x": 0,
-                                      "y": 0.000001371992880194739,
+                                      "y": 1.371992880194739e-06,
                                       "name": "COMPANIES",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -19378,7 +19378,7 @@
                                 {
                                   "type": "frame",
                                   "id": "P6vFG",
-                                  "x": 0.00003797083627432585,
+                                  "x": 3.797083627432585e-05,
                                   "y": 33.00001907348633,
                                   "name": "IONIcon/C/checkmark/C/circle",
                                   "clip": true,
@@ -19435,7 +19435,7 @@
                         {
                           "type": "group",
                           "id": "JWode",
-                          "x": 0.000018985419956152327,
+                          "x": 1.8985419956152327e-05,
                           "y": 0,
                           "name": "First Card",
                           "children": [
@@ -19603,7 +19603,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "DnN2M",
-                                                  "x": 0.00009492709796177223,
+                                                  "x": 9.492709796177223e-05,
                                                   "y": 17,
                                                   "name": "UI/UX Design",
                                                   "fill": "#718096ff",
@@ -20989,7 +20989,7 @@
                                     {
                                       "type": "group",
                                       "id": "Tf7tE",
-                                      "x": 0.000018985419956152327,
+                                      "x": 1.8985419956152327e-05,
                                       "y": 0,
                                       "name": "Esthera Jackson",
                                       "children": [
@@ -21128,7 +21128,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "CU9hG",
-                                                  "x": 0.00006209814455360174,
+                                                  "x": 6.209814455360174e-05,
                                                   "y": 16.999977111816406,
                                                   "name": "Organization",
                                                   "fill": "#718096ff",
@@ -21330,7 +21330,7 @@
                                       "type": "text",
                                       "id": "IVoqg",
                                       "x": 1230.9996337890625,
-                                      "y": 6.674563337583095e-7,
+                                      "y": 6.674563337583095e-07,
                                       "name": "EMPLOYED",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -21346,7 +21346,7 @@
                                       "type": "text",
                                       "id": "RWvbl",
                                       "x": 997.9998168945312,
-                                      "y": 6.674563337583095e-7,
+                                      "y": 6.674563337583095e-07,
                                       "name": "STATUS",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -21362,7 +21362,7 @@
                                       "type": "text",
                                       "id": "JLr8u",
                                       "x": 724.4998779296875,
-                                      "y": 6.674563337583095e-7,
+                                      "y": 6.674563337583095e-07,
                                       "name": "FUNCTION",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -21571,7 +21571,7 @@
                                     {
                                       "type": "frame",
                                       "id": "rQeFu",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005734153091907501,
                                       "stroke": {
@@ -22111,9 +22111,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "qCIIP",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -22166,9 +22166,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "QapQ1",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -22185,7 +22185,7 @@
                                     {
                                       "type": "frame",
                                       "id": "Q1nBt",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005761606618762016,
                                       "stroke": {
@@ -23366,7 +23366,7 @@
                               "type": "text",
                               "id": "fI3K4",
                               "x": 0,
-                              "y": 0.000024452268917229958,
+                              "y": 2.4452268917229958e-05,
                               "name": "Creative Tim",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
@@ -23384,7 +23384,7 @@
                           "type": "group",
                           "id": "wdzRS",
                           "x": 0,
-                          "y": 0.000048904537834459916,
+                          "y": 4.8904537834459916e-05,
                           "name": "Copyright",
                           "children": [
                             {
@@ -23392,12 +23392,12 @@
                               "id": "RTGIf",
                               "x": 0,
                               "y": 0,
-                              "name": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "name": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "fill": "#a0aec0ff",
                               "textGrowth": "fixed-width-height",
                               "width": 372.5,
                               "height": 18,
-                              "content": "@ 2021, Made with ❤️ by Creative Tim & Simmmple for a better web",
+                              "content": "@ 2021, Made with \u2764\ufe0f by Creative Tim & Simmmple for a better web",
                               "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12.000000953674316,
@@ -23502,7 +23502,7 @@
                                             {
                                               "type": "text",
                                               "id": "1f4aB",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 0,
                                               "name": "New order #9851258",
                                               "fill": "#2d3748ff",
@@ -23708,7 +23708,7 @@
                                             {
                                               "type": "text",
                                               "id": "Ary8B",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 0,
                                               "name": "Unlock packages for Development",
                                               "fill": "#2d3748ff",
@@ -23830,7 +23830,7 @@
                                             {
                                               "type": "text",
                                               "id": "JQKIT",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 0,
                                               "name": "New card added for order #3210145",
                                               "fill": "#2d3748ff",
@@ -23967,7 +23967,7 @@
                                             {
                                               "type": "text",
                                               "id": "h1xhS",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 0,
                                               "name": "Server Payments for April",
                                               "fill": "#2d3748ff",
@@ -24119,7 +24119,7 @@
                                             {
                                               "type": "text",
                                               "id": "VQp4T",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 0,
                                               "name": "New order #4219423",
                                               "fill": "#2d3748ff",
@@ -24241,7 +24241,7 @@
                                             {
                                               "type": "text",
                                               "id": "Ethax",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 0,
                                               "name": "$2400, Design changes",
                                               "fill": "#2d3748ff",
@@ -24478,7 +24478,7 @@
                                 {
                                   "type": "group",
                                   "id": "jdKuf",
-                                  "x": 0.00008972199702839134,
+                                  "x": 8.972199702839134e-05,
                                   "y": 46.49999312876912,
                                   "name": "Items",
                                   "children": [
@@ -24538,7 +24538,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "rpJIL",
-                                                  "x": 0.000048904537834459916,
+                                                  "x": 4.8904537834459916e-05,
                                                   "y": 0,
                                                   "name": "40%",
                                                   "fill": "#4fd1c5ff",
@@ -24610,7 +24610,7 @@
                                                           "type": "ellipse",
                                                           "id": "RP3jQ",
                                                           "x": 0.4246772825717926,
-                                                          "y": 0.000006961822691664565,
+                                                          "y": 6.961822691664565e-06,
                                                           "name": "Ellipse 4",
                                                           "sweepAngle": -360.00001001791264,
                                                           "fill": "#4318ffff",
@@ -24674,7 +24674,7 @@
                                                           "type": "ellipse",
                                                           "id": "oiqoi",
                                                           "x": 0.4246772825717926,
-                                                          "y": 0.000006961822691664565,
+                                                          "y": 6.961822691664565e-06,
                                                           "name": "Ellipse 5",
                                                           "sweepAngle": -360.00001001791264,
                                                           "width": 19.56321907043457,
@@ -24879,7 +24879,7 @@
                                         {
                                           "type": "group",
                                           "id": "AawpZ",
-                                          "x": 0.000056991616474988405,
+                                          "x": 5.6991616474988405e-05,
                                           "y": 42.99998855590809,
                                           "name": "Line",
                                           "children": [
@@ -24951,7 +24951,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "iAYbE",
-                                                  "x": 0.000048904537834459916,
+                                                  "x": 4.8904537834459916e-05,
                                                   "y": 0,
                                                   "name": "25%",
                                                   "fill": "#4fd1c5ff",
@@ -25581,7 +25581,7 @@
                                     {
                                       "type": "group",
                                       "id": "ACrZ2",
-                                      "x": 0.000056991616474988405,
+                                      "x": 5.6991616474988405e-05,
                                       "y": 185.9999755716101,
                                       "name": "Launch our Mobile App",
                                       "children": [
@@ -25660,7 +25660,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "YTmsD",
-                                                  "x": 0.000048904537834459916,
+                                                  "x": 4.8904537834459916e-05,
                                                   "y": 0,
                                                   "name": "100%",
                                                   "fill": "#4fd1c5ff",
@@ -25732,7 +25732,7 @@
                                                           "type": "ellipse",
                                                           "id": "h4VuO",
                                                           "x": 0.4246772825717926,
-                                                          "y": 0.000013113021850585938,
+                                                          "y": 1.3113021850585938e-05,
                                                           "name": "Ellipse 4",
                                                           "sweepAngle": -360.00001001791264,
                                                           "fill": "#4318ffff",
@@ -25796,7 +25796,7 @@
                                                           "type": "ellipse",
                                                           "id": "XuqCD",
                                                           "x": 0.4246772825717926,
-                                                          "y": 0.000013113021850585938,
+                                                          "y": 1.3113021850585938e-05,
                                                           "name": "Ellipse 5",
                                                           "sweepAngle": -360.00001001791264,
                                                           "width": 19.56321907043457,
@@ -25924,7 +25924,7 @@
                                                           "type": "frame",
                                                           "id": "EfbUK",
                                                           "x": 0,
-                                                          "y": 0.00000875569548952626,
+                                                          "y": 8.75569548952626e-06,
                                                           "name": "Person Photo 23",
                                                           "width": 19.563217163085938,
                                                           "height": 19.592592239379883,
@@ -26134,7 +26134,7 @@
                                         {
                                           "type": "group",
                                           "id": "A5ofH",
-                                          "x": 0.000056991616474988405,
+                                          "x": 5.6991616474988405e-05,
                                           "y": 42.99998625753824,
                                           "name": "Line",
                                           "children": [
@@ -26206,7 +26206,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "rGGQn",
-                                                  "x": 0.000048904537834459916,
+                                                  "x": 4.8904537834459916e-05,
                                                   "y": 0,
                                                   "name": "100%",
                                                   "fill": "#4fd1c5ff",
@@ -26278,7 +26278,7 @@
                                                           "type": "ellipse",
                                                           "id": "PHdHv",
                                                           "x": 0.4246772825717926,
-                                                          "y": 9.059907029040914e-7,
+                                                          "y": 9.059907029040914e-07,
                                                           "name": "Ellipse 4",
                                                           "sweepAngle": -360.00001001791264,
                                                           "fill": "#4318ffff",
@@ -26342,7 +26342,7 @@
                                                           "type": "ellipse",
                                                           "id": "eVqqS",
                                                           "x": 0.4246772825717926,
-                                                          "y": 9.059907029040914e-7,
+                                                          "y": 9.059907029040914e-07,
                                                           "name": "Ellipse 5",
                                                           "sweepAngle": -360.00001001791264,
                                                           "width": 19.56321907043457,
@@ -26583,7 +26583,7 @@
                                     {
                                       "type": "group",
                                       "id": "9BQnS",
-                                      "x": 0.000056991616474988405,
+                                      "x": 5.6991616474988405e-05,
                                       "y": 61.999989314071854,
                                       "name": "Progress Track",
                                       "children": [
@@ -26616,7 +26616,7 @@
                                         {
                                           "type": "group",
                                           "id": "sjedj",
-                                          "x": 7.641210686415434e-8,
+                                          "x": 7.641210686415434e-08,
                                           "y": 0,
                                           "name": "Content",
                                           "children": [
@@ -26662,7 +26662,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "uigJY",
-                                                  "x": 0.000048904537834459916,
+                                                  "x": 4.8904537834459916e-05,
                                                   "y": 0,
                                                   "name": "10%",
                                                   "fill": "#4fd1c5ff",
@@ -26734,7 +26734,7 @@
                                                           "type": "ellipse",
                                                           "id": "JvPhm",
                                                           "x": 0.4246772825717926,
-                                                          "y": 0.000003957748504035408,
+                                                          "y": 3.957748504035408e-06,
                                                           "name": "Ellipse 4",
                                                           "sweepAngle": -360.00001001791264,
                                                           "fill": "#4318ffff",
@@ -26798,7 +26798,7 @@
                                                           "type": "ellipse",
                                                           "id": "dRJd4",
                                                           "x": 0.4246772825717926,
-                                                          "y": 0.000003957748504035408,
+                                                          "y": 3.957748504035408e-06,
                                                           "name": "Ellipse 5",
                                                           "sweepAngle": -360.00001001791264,
                                                           "width": 19.56321907043457,
@@ -27005,7 +27005,7 @@
                                     {
                                       "type": "group",
                                       "id": "5Kbdf",
-                                      "x": 0.000008087078640528489,
+                                      "x": 8.087078640528489e-06,
                                       "y": 0,
                                       "name": "Soft UI XD",
                                       "children": [
@@ -27084,7 +27084,7 @@
                                                 {
                                                   "type": "text",
                                                   "id": "vNO0h",
-                                                  "x": 0.000048904537834459916,
+                                                  "x": 4.8904537834459916e-05,
                                                   "y": 0,
                                                   "name": "60%",
                                                   "fill": "#4fd1c5ff",
@@ -27726,7 +27726,7 @@
                                 {
                                   "type": "group",
                                   "id": "KP3zW",
-                                  "x": 0.000048904537834459916,
+                                  "x": 4.8904537834459916e-05,
                                   "y": 27.500003814697266,
                                   "name": "Lines",
                                   "children": [
@@ -27760,7 +27760,7 @@
                                       "type": "text",
                                       "id": "6e2rF",
                                       "x": 841.4999389648438,
-                                      "y": 0.00000305653384202742,
+                                      "y": 3.05653384202742e-06,
                                       "name": "COMPLETION",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -27776,7 +27776,7 @@
                                       "type": "text",
                                       "id": "OJjCN",
                                       "x": 663.9999389648438,
-                                      "y": 0.00000305653384202742,
+                                      "y": 3.05653384202742e-06,
                                       "name": "BUDGET",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -27792,7 +27792,7 @@
                                       "type": "text",
                                       "id": "CB3K3",
                                       "x": 450.00006103515625,
-                                      "y": 0.00000305653384202742,
+                                      "y": 3.05653384202742e-06,
                                       "name": "MEMBERS",
                                       "fill": "#a0aec0ff",
                                       "textGrowth": "fixed-width-height",
@@ -27850,7 +27850,7 @@
                                 {
                                   "type": "frame",
                                   "id": "IdVu8",
-                                  "x": 0.000024452268917229958,
+                                  "x": 2.4452268917229958e-05,
                                   "y": 32.999996185302734,
                                   "name": "IONIcon/C/checkmark/C/circle",
                                   "clip": true,
@@ -27972,7 +27972,7 @@
                           "type": "group",
                           "id": "7Foga",
                           "x": 676,
-                          "y": 0.000012226134458614979,
+                          "y": 1.2226134458614979e-05,
                           "name": "Second Card",
                           "children": [
                             {
@@ -28075,7 +28075,7 @@
                                           "type": "text",
                                           "id": "8bALe",
                                           "x": 824,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Dec",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28091,7 +28091,7 @@
                                           "type": "text",
                                           "id": "8StLf",
                                           "x": 748,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Nov",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28107,7 +28107,7 @@
                                           "type": "text",
                                           "id": "KMltX",
                                           "x": 674,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Oct",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28123,7 +28123,7 @@
                                           "type": "text",
                                           "id": "l3uoc",
                                           "x": 598.5,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Sep",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28139,7 +28139,7 @@
                                           "type": "text",
                                           "id": "EqLrz",
                                           "x": 522,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Aug",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28155,7 +28155,7 @@
                                           "type": "text",
                                           "id": "6yBYI",
                                           "x": 450.5,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Jul",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28171,7 +28171,7 @@
                                           "type": "text",
                                           "id": "TvNpS",
                                           "x": 375.5,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Jun",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28187,7 +28187,7 @@
                                           "type": "text",
                                           "id": "Xa21Y",
                                           "x": 299,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "May",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28203,7 +28203,7 @@
                                           "type": "text",
                                           "id": "rPQR1",
                                           "x": 224.49996948242188,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Apr",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28219,7 +28219,7 @@
                                           "type": "text",
                                           "id": "gLveB",
                                           "x": 149.49996948242188,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Mar",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28235,7 +28235,7 @@
                                           "type": "text",
                                           "id": "AFQE1",
                                           "x": 74.4999771118164,
-                                          "y": 0.00000305653384202742,
+                                          "y": 3.05653384202742e-06,
                                           "name": "Feb",
                                           "fill": "#cbd5e0ff",
                                           "textGrowth": "fixed-width-height",
@@ -28291,7 +28291,7 @@
                                         {
                                           "type": "text",
                                           "id": "KMUq8",
-                                          "x": 0.000048904537834459916,
+                                          "x": 4.8904537834459916e-05,
                                           "y": 200,
                                           "name": "100",
                                           "fill": "#cbd5e0ff",
@@ -28307,7 +28307,7 @@
                                         {
                                           "type": "text",
                                           "id": "CSRxL",
-                                          "x": 0.000048904537834459916,
+                                          "x": 4.8904537834459916e-05,
                                           "y": 150,
                                           "name": "200",
                                           "fill": "#cbd5e0ff",
@@ -28323,7 +28323,7 @@
                                         {
                                           "type": "text",
                                           "id": "2igmd",
-                                          "x": 0.000048904537834459916,
+                                          "x": 4.8904537834459916e-05,
                                           "y": 99.99999237060547,
                                           "name": "300",
                                           "fill": "#cbd5e0ff",
@@ -28339,7 +28339,7 @@
                                         {
                                           "type": "text",
                                           "id": "nPgSd",
-                                          "x": 0.000048904537834459916,
+                                          "x": 4.8904537834459916e-05,
                                           "y": 49.99999237060547,
                                           "name": "400",
                                           "fill": "#cbd5e0ff",
@@ -28378,10 +28378,10 @@
                                             {
                                               "type": "line",
                                               "id": "27kzW",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 250,
                                               "name": "Line 9",
-                                              "rotation": -0.000005008956130975318,
+                                              "rotation": -5.008956130975318e-06,
                                               "width": 840,
                                               "height": 0,
                                               "stroke": {
@@ -28395,10 +28395,10 @@
                                             {
                                               "type": "line",
                                               "id": "DwZ0j",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 200,
                                               "name": "Line 8",
-                                              "rotation": -0.000005008956130975318,
+                                              "rotation": -5.008956130975318e-06,
                                               "width": 840,
                                               "height": 0,
                                               "stroke": {
@@ -28412,10 +28412,10 @@
                                             {
                                               "type": "line",
                                               "id": "dLARc",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 150,
                                               "name": "Line 7",
-                                              "rotation": -0.000005008956130975318,
+                                              "rotation": -5.008956130975318e-06,
                                               "width": 840,
                                               "height": 0,
                                               "stroke": {
@@ -28429,10 +28429,10 @@
                                             {
                                               "type": "line",
                                               "id": "UQ17s",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 99.99999237060547,
                                               "name": "Line 6",
-                                              "rotation": -0.000005008956130975318,
+                                              "rotation": -5.008956130975318e-06,
                                               "width": 840,
                                               "height": 0,
                                               "stroke": {
@@ -28446,10 +28446,10 @@
                                             {
                                               "type": "line",
                                               "id": "GiEGo",
-                                              "x": 0.000024452268917229958,
+                                              "x": 2.4452268917229958e-05,
                                               "y": 49.99999237060547,
                                               "name": "Line 5",
-                                              "rotation": -0.000005008956130975318,
+                                              "rotation": -5.008956130975318e-06,
                                               "width": 840,
                                               "height": 0,
                                               "stroke": {
@@ -28466,7 +28466,7 @@
                                               "x": 0,
                                               "y": 0,
                                               "name": "Line 4",
-                                              "rotation": -0.000005008956130975318,
+                                              "rotation": -5.008956130975318e-06,
                                               "width": 840,
                                               "height": 0,
                                               "stroke": {
@@ -28552,7 +28552,7 @@
                                         {
                                           "type": "group",
                                           "id": "Um7k0",
-                                          "x": 0.000024452268917229958,
+                                          "x": 2.4452268917229958e-05,
                                           "y": 15.500014889242948,
                                           "name": "Teal",
                                           "children": [
@@ -28596,7 +28596,7 @@
                                               "type": "path",
                                               "id": "O0hH1",
                                               "x": 0,
-                                              "y": 0.000003621590394686791,
+                                              "y": 3.621590394686791e-06,
                                               "name": "Vector 1",
                                               "geometry": "M0 286.84326c40.19139-21.8291 142.37799-58.93852 229.59331-32.74362 109.01915 32.74362 118.97368-78.17813 209.90669-125.90604 90.93298-47.7279 163.3421 25.64962 236.3421-63.85038 73-89.5 169.6579-82 243.1579 0 51.47467 57.42754 170.2512 130.48359 222.5 97.00004 29.4736-19.23915 109.3469-79.32362 156.7727-33.14966 59.2824 57.71746 93.6331 136.04007 152.7273 122.64966 58.7799-13.31917 59.2716-58.82728 70.335-122.64966 13.5645-78.25171 85.2631-74.36592 169.665-89.35029",
                                               "width": 839,
@@ -28669,7 +28669,7 @@
                                   "type": "group",
                                   "id": "piGgh",
                                   "x": 468.0000978090761,
-                                  "y": 0.0000061130672293074895,
+                                  "y": 6.1130672293074895e-06,
                                   "name": "Items",
                                   "children": [
                                     {
@@ -28831,7 +28831,7 @@
                                   "type": "group",
                                   "id": "ocmH9",
                                   "x": 312.0001772311916,
-                                  "y": 0.0000061130672293074895,
+                                  "y": 6.1130672293074895e-06,
                                   "name": "Sales",
                                   "children": [
                                     {
@@ -29023,7 +29023,7 @@
                                   "type": "group",
                                   "id": "QIY0K",
                                   "x": 156.00024139451853,
-                                  "y": 0.0000061130672293074895,
+                                  "y": 6.1130672293074895e-06,
                                   "name": "Clicks",
                                   "children": [
                                     {
@@ -29638,7 +29638,7 @@
                                     {
                                       "type": "text",
                                       "id": "QZwm9",
-                                      "x": 0.000024452268917229958,
+                                      "x": 2.4452268917229958e-05,
                                       "y": 144.5,
                                       "name": "0",
                                       "fill": "#ffffffff",
@@ -29654,7 +29654,7 @@
                                     {
                                       "type": "text",
                                       "id": "qZiJy",
-                                      "x": 0.000024452268917229958,
+                                      "x": 2.4452268917229958e-05,
                                       "y": 115.99998474121094,
                                       "name": "100",
                                       "fill": "#ffffffff",
@@ -29670,7 +29670,7 @@
                                     {
                                       "type": "text",
                                       "id": "okt5N",
-                                      "x": 0.000024452268917229958,
+                                      "x": 2.4452268917229958e-05,
                                       "y": 86.99999237060547,
                                       "name": "200",
                                       "fill": "#ffffffff",
@@ -29686,7 +29686,7 @@
                                     {
                                       "type": "text",
                                       "id": "c0e6K",
-                                      "x": 0.000024452268917229958,
+                                      "x": 2.4452268917229958e-05,
                                       "y": 58,
                                       "name": "300",
                                       "fill": "#ffffffff",
@@ -29702,7 +29702,7 @@
                                     {
                                       "type": "text",
                                       "id": "GOlTq",
-                                      "x": 0.000024452268917229958,
+                                      "x": 2.4452268917229958e-05,
                                       "y": 29.0000057220459,
                                       "name": "400",
                                       "fill": "#ffffffff",
@@ -30013,9 +30013,9 @@
                                                             {
                                                               "type": "text",
                                                               "id": "tPrhb",
-                                                              "name": "",
+                                                              "name": "\uf118",
                                                               "fill": "#000000ff",
-                                                              "content": "",
+                                                              "content": "\uf118",
                                                               "lineHeight": 1.0909090909090908,
                                                               "textAlign": "center",
                                                               "textAlignVertical": "middle",
@@ -30065,9 +30065,9 @@
                                                             {
                                                               "type": "text",
                                                               "id": "2BFEM",
-                                                              "name": "",
+                                                              "name": "\uf118",
                                                               "fill": "#000000ff",
-                                                              "content": "",
+                                                              "content": "\uf118",
                                                               "lineHeight": 1.0909090909090908,
                                                               "textAlign": "center",
                                                               "textAlignVertical": "middle",
@@ -30084,7 +30084,7 @@
                                                 {
                                                   "type": "frame",
                                                   "id": "NgEnA",
-                                                  "name": "🔛MinWidth",
+                                                  "name": "\ud83d\udd1bMinWidth",
                                                   "clip": true,
                                                   "height": 0.004999999888241291,
                                                   "stroke": {
@@ -30360,9 +30360,9 @@
                                                             {
                                                               "type": "text",
                                                               "id": "8Hruc",
-                                                              "name": "",
+                                                              "name": "\uf118",
                                                               "fill": "#000000ff",
-                                                              "content": "",
+                                                              "content": "\uf118",
                                                               "lineHeight": 1.0909090909090908,
                                                               "textAlign": "center",
                                                               "textAlignVertical": "middle",
@@ -30412,9 +30412,9 @@
                                                             {
                                                               "type": "text",
                                                               "id": "nY37K",
-                                                              "name": "",
+                                                              "name": "\uf118",
                                                               "fill": "#000000ff",
-                                                              "content": "",
+                                                              "content": "\uf118",
                                                               "lineHeight": 1.0909090909090908,
                                                               "textAlign": "center",
                                                               "textAlignVertical": "middle",
@@ -30431,7 +30431,7 @@
                                                 {
                                                   "type": "frame",
                                                   "id": "jW3yb",
-                                                  "name": "🔛MinWidth",
+                                                  "name": "\ud83d\udd1bMinWidth",
                                                   "clip": true,
                                                   "height": 0.004999999888241291,
                                                   "stroke": {
@@ -31005,7 +31005,7 @@
                                 {
                                   "type": "text",
                                   "id": "tb93S",
-                                  "x": 0.000024452268917229958,
+                                  "x": 2.4452268917229958e-05,
                                   "y": 19,
                                   "name": "+3,052",
                                   "fill": "#2d3748ff",
@@ -31168,12 +31168,12 @@
                                   "id": "FV8qn",
                                   "x": 0,
                                   "y": 0,
-                                  "name": "Today’s Users",
+                                  "name": "Today\u2019s Users",
                                   "fill": "#a0aec0ff",
                                   "textGrowth": "fixed-width-height",
                                   "width": 81,
                                   "height": 18,
-                                  "content": "Today’s Users",
+                                  "content": "Today\u2019s Users",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 12.000000953674316,
@@ -31182,7 +31182,7 @@
                                 {
                                   "type": "text",
                                   "id": "s7Tuh",
-                                  "x": 0.000048904537834459916,
+                                  "x": 4.8904537834459916e-05,
                                   "y": 19,
                                   "name": "2,300",
                                   "fill": "#2d3748ff",
@@ -31371,7 +31371,7 @@
                           "type": "group",
                           "id": "PXd70",
                           "x": 0,
-                          "y": 0.000024452268917229958,
+                          "y": 2.4452268917229958e-05,
                           "name": "Today's Money",
                           "children": [
                             {
@@ -31409,14 +31409,14 @@
                                 {
                                   "type": "text",
                                   "id": "GsZeo",
-                                  "x": 0.000048904537834459916,
+                                  "x": 4.8904537834459916e-05,
                                   "y": 0,
-                                  "name": "Today’s Money",
+                                  "name": "Today\u2019s Money",
                                   "fill": "#a0aec0ff",
                                   "textGrowth": "fixed-width-height",
                                   "width": 85.5,
                                   "height": 18,
-                                  "content": "Today’s Money",
+                                  "content": "Today\u2019s Money",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 12.000000953674316,
@@ -31709,7 +31709,7 @@
                                     {
                                       "type": "frame",
                                       "id": "m9EJb",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005761606618762016,
                                       "stroke": {
@@ -31935,7 +31935,7 @@
                             {
                               "type": "frame",
                               "id": "14Dht",
-                              "x": 0.000048904537834459916,
+                              "x": 4.8904537834459916e-05,
                               "y": 0,
                               "name": "Breadcrumb/Item/Previous",
                               "width": 45,
@@ -32249,9 +32249,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "O6U3l",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -32304,9 +32304,9 @@
                                                 {
                                                   "type": "text",
                                                   "id": "skxW7",
-                                                  "name": "",
+                                                  "name": "\uf118",
                                                   "fill": "#000000ff",
-                                                  "content": "",
+                                                  "content": "\uf118",
                                                   "lineHeight": 1.0909090909090908,
                                                   "textAlign": "center",
                                                   "textAlignVertical": "middle",
@@ -32323,7 +32323,7 @@
                                     {
                                       "type": "frame",
                                       "id": "jqDy8",
-                                      "name": "🔛MinWidth",
+                                      "name": "\ud83d\udd1bMinWidth",
                                       "clip": true,
                                       "height": 0.005761606618762016,
                                       "stroke": {
@@ -33379,6 +33379,1208 @@
                           }
                         }
                       }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wwb9c",
+          "x": 13495,
+          "y": 36,
+          "name": "Mill Production View",
+          "width": 1920,
+          "height": 1200,
+          "fill": "#f8f9faff",
+          "cornerRadius": 0,
+          "stroke": {
+            "align": "inside",
+            "thickness": 0.5
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "Mv2ga",
+              "x": 0,
+              "y": 0,
+              "name": "Background",
+              "fill": "#f8f9faff",
+              "width": 1920,
+              "height": 1200
+            },
+            {
+              "type": "rectangle",
+              "cornerRadius": 15,
+              "id": "oQ1iE",
+              "x": 24,
+              "y": 24,
+              "name": "Sidebar",
+              "fill": "#ffffffff",
+              "width": 250,
+              "height": 1152,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#0000000d",
+                "offset": {
+                  "x": 0,
+                  "y": 4
+                },
+                "blur": 12
+              }
+            },
+            {
+              "type": "group",
+              "id": "XFof6",
+              "x": 298,
+              "y": 24,
+              "name": "Header",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kH8yC",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Title",
+                  "fill": "#2d3748ff",
+                  "content": "Mill Production",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 28,
+                  "fontWeight": "700",
+                  "width": 200,
+                  "height": 35
+                },
+                {
+                  "type": "text",
+                  "id": "UYdvq",
+                  "x": 0,
+                  "y": 40,
+                  "name": "Date",
+                  "fill": "#a0aec0ff",
+                  "content": "Today, April 23, 2026",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "width": 200,
+                  "height": 20
+                }
+              ]
+            },
+            {
+              "type": "group",
+              "id": "BOlib",
+              "x": 298,
+              "y": 100,
+              "name": "Column Headers",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "XZMTS",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Premix Header",
+                  "fill": "#2d3748ff",
+                  "content": "Premix",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 18,
+                  "fontWeight": "700",
+                  "width": 500,
+                  "height": 25
+                },
+                {
+                  "type": "text",
+                  "id": "7czRh",
+                  "x": 520,
+                  "y": 0,
+                  "name": "Excel Header",
+                  "fill": "#2d3748ff",
+                  "content": "Excel",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 18,
+                  "fontWeight": "700",
+                  "width": 500,
+                  "height": 25
+                },
+                {
+                  "type": "text",
+                  "id": "b00hN",
+                  "x": 1040,
+                  "y": 0,
+                  "name": "CGM Header",
+                  "fill": "#2d3748ff",
+                  "content": "CGM",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 18,
+                  "fontWeight": "700",
+                  "width": 500,
+                  "height": 25
+                }
+              ]
+            },
+            {
+              "type": "group",
+              "id": "TH0U6",
+              "x": 298,
+              "y": 140,
+              "name": "Production Cards",
+              "children": [
+                {
+                  "type": "group",
+                  "id": "G8Lh1",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Card - Starter Mix A",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "614yg",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "2mGN9",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#c6f6d5ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "OKwaG",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "m7Rip",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Starter Mix A",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "rP1rG",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "180 T / 180 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "G7Tlj",
+                  "x": 0,
+                  "y": 116,
+                  "name": "Card - Grower Formula B",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "Kaerk",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "McC8J",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#fefcbfff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "NGLAK",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "eNtLZ",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Grower Formula B",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "gPGFO",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "95 T / 200 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "dyA2P",
+                  "x": 0,
+                  "y": 232,
+                  "name": "Card - Finisher Mix C",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "vRCRH",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "qSsPx",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "5A8UC",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "66NVz",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Finisher Mix C",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "zXAlR",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "0 T / 150 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "pFt2N",
+                  "x": 0,
+                  "y": 348,
+                  "name": "Card - Layer Premix D",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "rAYAB",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "UJXe5",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#fed7d7ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "406Hm",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#c53030ff",
+                      "content": "Blocked",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "kCpId",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Layer Premix D",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "3YkcO",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "45 T / 175 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "5uxW5",
+                  "x": 520,
+                  "y": 0,
+                  "name": "Card - Cattle Feed Base",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "WT7k1",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "IAa4e",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#fefcbfff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "InAAz",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "ztuMv",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Cattle Feed Base",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "x8weZ",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "120 T / 250 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "ZJhcv",
+                  "x": 520,
+                  "y": 116,
+                  "name": "Card - Dairy Supplement",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "lG9rh",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "yr82x",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#c6f6d5ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "cbbRx",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "PGOIg",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Dairy Supplement",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "IndUQ",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "200 T / 200 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "rw7GN",
+                  "x": 520,
+                  "y": 232,
+                  "name": "Card - Calf Starter",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "smCqx",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "Zh2UE",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "i0p7U",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "e72I4",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Calf Starter",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "GI3gf",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "0 T / 180 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "cb1ld",
+                  "x": 520,
+                  "y": 348,
+                  "name": "Card - Beef Finisher",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "wSrkA",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "7NuCI",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#c6f6d5ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "56vkg",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "DJ2NY",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Beef Finisher",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "MXZNU",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "160 T / 160 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "zJ5GC",
+                  "x": 1040,
+                  "y": 0,
+                  "name": "Card - Swine Grower",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "QxGU8",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "r9Ln8",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "4KY0U",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "kWWo8",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Swine Grower",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "kFHG4",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "0 T / 220 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "0MotC",
+                  "x": 1040,
+                  "y": 116,
+                  "name": "Card - Sow Feed Mix",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "1Iwsg",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "QlLDt",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#fed7d7ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "COljz",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#c53030ff",
+                      "content": "Blocked",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "3Hu4Z",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Sow Feed Mix",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "1vryP",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "80 T / 190 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "BgfW0",
+                  "x": 1040,
+                  "y": 232,
+                  "name": "Card - Nursery Blend",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "ixwhB",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "AzOnX",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#fefcbfff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "jGYP3",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "GBUOH",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Nursery Blend",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "SoKFH",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "65 T / 175 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "IbkSl",
+                  "x": 1040,
+                  "y": 348,
+                  "name": "Card - Market Hog",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "qxhJY",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 100,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "JW1ks",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#c6f6d5ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "PPEgV",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "3A3KM",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Market Hog",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "w8F7w",
+                      "x": 16,
+                      "y": 70,
+                      "name": "Progress",
+                      "fill": "#718096ff",
+                      "content": "145 T / 145 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "normal",
+                      "width": 200,
+                      "height": 20
                     }
                   ]
                 }
@@ -35806,7 +37008,7 @@
                           "id": "qL9s3",
                           "name": "shipTitle",
                           "fill": "#2d3748ff",
-                          "content": "ORD-2847 — Greenfield Farms",
+                          "content": "ORD-2847 \u2014 Greenfield Farms",
                           "lineHeight": 1.4,
                           "fontFamily": "Helvetica",
                           "fontSize": 18,
@@ -35817,7 +37019,7 @@
                           "id": "GTXt4",
                           "name": "shipSub",
                           "fill": "#a0aec0ff",
-                          "content": "24.5 tons Layer Mash · Greenfield Farms, TX",
+                          "content": "24.5 tons Layer Mash \u00b7 Greenfield Farms, TX",
                           "lineHeight": 1.4,
                           "fontFamily": "Helvetica",
                           "fontSize": 14,
@@ -36069,7 +37271,7 @@
                                   "id": "EoSrX",
                                   "name": "step1date",
                                   "fill": "#4fd1c5ff",
-                                  "content": "Mar 18, 2026 · 9:15 AM",
+                                  "content": "Mar 18, 2026 \u00b7 9:15 AM",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
@@ -36189,7 +37391,7 @@
                                   "id": "5qhGB",
                                   "name": "stepMillDate",
                                   "fill": "#e53e3eff",
-                                  "content": "Mar 18, 2026 · 2:45 PM",
+                                  "content": "Mar 18, 2026 \u00b7 2:45 PM",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
@@ -36298,7 +37500,7 @@
                                   "fill": "#a0aec0ff",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Batch #B-4420 mixed and pelleted on Line 3. QC passed — moisture 11.2%, protein 16.8%.",
+                                  "content": "Batch #B-4420 mixed and pelleted on Line 3. QC passed \u2014 moisture 11.2%, protein 16.8%.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 11,
@@ -36309,7 +37511,7 @@
                                   "id": "EeWpV",
                                   "name": "step2date",
                                   "fill": "#4fd1c5ff",
-                                  "content": "Mar 19, 2026 · 2:40 PM",
+                                  "content": "Mar 19, 2026 \u00b7 2:40 PM",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
@@ -36429,7 +37631,7 @@
                                   "id": "sUcMN",
                                   "name": "step3date",
                                   "fill": "#4fd1c5ff",
-                                  "content": "Mar 20, 2026 · 6:00 AM",
+                                  "content": "Mar 20, 2026 \u00b7 6:00 AM",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
@@ -36529,7 +37731,7 @@
                                   "fill": "#a0aec0ff",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Signed by J. Henderson at Greenfield Farms. Full load accepted — no damage reported.",
+                                  "content": "Signed by J. Henderson at Greenfield Farms. Full load accepted \u2014 no damage reported.",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 11,
@@ -36540,7 +37742,7 @@
                                   "id": "iWOEZ",
                                   "name": "step4date",
                                   "fill": "#48bb78ff",
-                                  "content": "Mar 20, 2026 · 12:30 PM",
+                                  "content": "Mar 20, 2026 \u00b7 12:30 PM",
                                   "lineHeight": 1.5,
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
@@ -36589,7 +37791,7 @@
                           "id": "NxMeQ",
                           "name": "title",
                           "fill": "#2d3748",
-                          "content": "ORD-3105 — Riverside Poultry",
+                          "content": "ORD-3105 \u2014 Riverside Poultry",
                           "fontFamily": "Helvetica",
                           "fontSize": 18,
                           "fontWeight": "bold"
@@ -36599,7 +37801,7 @@
                           "id": "PqGtj",
                           "name": "subtitle",
                           "fill": "#a0aec0",
-                          "content": "18.0 tons Broiler Starter · Riverside Poultry, OK",
+                          "content": "18.0 tons Broiler Starter \u00b7 Riverside Poultry, OK",
                           "fontFamily": "Helvetica",
                           "fontSize": 14,
                           "fontWeight": "normal"
@@ -36830,35 +38032,12 @@
                                   "id": "3ocVM",
                                   "name": "t1date",
                                   "fill": "#4fd1c5",
-                                  "content": "Mar 16, 2026 · 10:30 AM",
+                                  "content": "Mar 16, 2026 \u00b7 10:30 AM",
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
                                   "fontWeight": "bold"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "Y3QnU",
-                          "name": "conn1",
-                          "width": "fill_container",
-                          "height": 32,
-                          "padding": [
-                            0,
-                            0,
-                            0,
-                            17
-                          ],
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "id": "X3RCC",
-                              "name": "connLine1",
-                              "fill": "#4fd1c5",
-                              "width": 2,
-                              "height": "fill_container"
                             }
                           ]
                         },
@@ -36923,7 +38102,7 @@
                                   "fill": "#a0aec0",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Batch #B-4502 started on Line 2. Mixing phase initiated — estimated 6 hours.",
+                                  "content": "Batch #B-4502 started on Line 2. Mixing phase initiated \u2014 estimated 6 hours.",
                                   "fontFamily": "Helvetica",
                                   "fontSize": 11,
                                   "fontWeight": "normal"
@@ -36933,7 +38112,7 @@
                                   "id": "gUv35",
                                   "name": "t2date",
                                   "fill": "#4fd1c5",
-                                  "content": "Mar 17, 2026 · 7:00 AM",
+                                  "content": "Mar 17, 2026 \u00b7 7:00 AM",
                                   "fontFamily": "Helvetica",
                                   "fontSize": 10,
                                   "fontWeight": "bold"
@@ -37114,7 +38293,7 @@
                                       "id": "u1oGW",
                                       "name": "step3dateText",
                                       "fill": "#cbd5e0ff",
-                                      "content": "Est. Mar 17, 2026 · 1:00 PM",
+                                      "content": "Est. Mar 17, 2026 \u00b7 1:00 PM",
                                       "lineHeight": 1.5,
                                       "fontFamily": "Helvetica",
                                       "fontSize": 10,
@@ -37123,29 +38302,6 @@
                                   ]
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "73dk2",
-                          "name": "Connector 4",
-                          "width": "fill_container",
-                          "height": 32,
-                          "padding": [
-                            0,
-                            0,
-                            0,
-                            17
-                          ],
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "id": "OG3E4",
-                              "name": "conn4bar",
-                              "fill": "#cbd5e0ff",
-                              "width": 2,
-                              "height": "fill_container"
                             }
                           ]
                         },
@@ -37258,7 +38414,7 @@
                                       "id": "VjmU6",
                                       "name": "step4dateText",
                                       "fill": "#cbd5e0ff",
-                                      "content": "Est. Mar 21, 2026 · 6:00 AM",
+                                      "content": "Est. Mar 21, 2026 \u00b7 6:00 AM",
                                       "lineHeight": 1.5,
                                       "fontFamily": "Helvetica",
                                       "fontSize": 10,
@@ -37267,29 +38423,6 @@
                                   ]
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "ymX9M",
-                          "name": "Connector 5",
-                          "width": "fill_container",
-                          "height": 32,
-                          "padding": [
-                            0,
-                            0,
-                            0,
-                            17
-                          ],
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "id": "mevU8",
-                              "name": "conn5bar",
-                              "fill": "#cbd5e0ff",
-                              "width": 2,
-                              "height": "fill_container"
                             }
                           ]
                         },
@@ -37393,7 +38526,7 @@
                                       "id": "QwEXM",
                                       "name": "step5dateText",
                                       "fill": "#cbd5e0ff",
-                                      "content": "Est. Mar 21, 2026 · 10:00 AM",
+                                      "content": "Est. Mar 21, 2026 \u00b7 10:00 AM",
                                       "lineHeight": 1.5,
                                       "fontFamily": "Helvetica",
                                       "fontSize": 10,
