@@ -33486,10 +33486,10 @@
                   "fill": "#2d3748ff",
                   "content": "Premix",
                   "fontFamily": "Helvetica",
-                  "fontSize": 18,
+                  "fontSize": 24,
                   "fontWeight": "700",
                   "width": 500,
-                  "height": 25
+                  "height": 32
                 },
                 {
                   "type": "text",
@@ -33500,10 +33500,10 @@
                   "fill": "#2d3748ff",
                   "content": "Excel",
                   "fontFamily": "Helvetica",
-                  "fontSize": 18,
+                  "fontSize": 24,
                   "fontWeight": "700",
                   "width": 500,
-                  "height": 25
+                  "height": 32
                 },
                 {
                   "type": "text",
@@ -33514,10 +33514,52 @@
                   "fill": "#2d3748ff",
                   "content": "CGM",
                   "fontFamily": "Helvetica",
-                  "fontSize": 18,
+                  "fontSize": 24,
                   "fontWeight": "700",
                   "width": 500,
-                  "height": 25
+                  "height": 32
+                },
+                {
+                  "type": "text",
+                  "id": "zhaOY",
+                  "x": 0,
+                  "y": 36,
+                  "name": "Premix Total",
+                  "fill": "#718096ff",
+                  "content": "320 T / 705 T",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 16,
+                  "fontWeight": "600",
+                  "width": 200,
+                  "height": 22
+                },
+                {
+                  "type": "text",
+                  "id": "fCR1G",
+                  "x": 520,
+                  "y": 36,
+                  "name": "Excel Total",
+                  "fill": "#718096ff",
+                  "content": "480 T / 790 T",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 16,
+                  "fontWeight": "600",
+                  "width": 200,
+                  "height": 22
+                },
+                {
+                  "type": "text",
+                  "id": "rqSR9",
+                  "x": 1040,
+                  "y": 36,
+                  "name": "CGM Total",
+                  "fill": "#718096ff",
+                  "content": "290 T / 730 T",
+                  "fontFamily": "Helvetica",
+                  "fontSize": 16,
+                  "fontWeight": "600",
+                  "width": 200,
+                  "height": 22
                 }
               ]
             },
@@ -33525,7 +33567,7 @@
               "type": "group",
               "id": "TH0U6",
               "x": 298,
-              "y": 140,
+              "y": 180,
               "name": "Production Cards",
               "children": [
                 {
@@ -33544,7 +33586,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33599,20 +33641,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "rP1rG",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "180 T / 180 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -33632,7 +33660,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33687,20 +33715,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "gPGFO",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "95 T / 200 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -33720,7 +33734,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33775,20 +33789,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "zXAlR",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "0 T / 150 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -33808,7 +33808,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33863,20 +33863,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "3YkcO",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "45 T / 175 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -33896,7 +33882,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33951,20 +33937,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "x8weZ",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "120 T / 250 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -33984,7 +33956,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34039,20 +34011,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "IndUQ",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "200 T / 200 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -34072,7 +34030,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34127,20 +34085,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "GI3gf",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "0 T / 180 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -34160,7 +34104,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34215,20 +34159,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "MXZNU",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "160 T / 160 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -34248,7 +34178,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34303,20 +34233,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "kFHG4",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "0 T / 220 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -34336,7 +34252,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34391,20 +34307,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "1vryP",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "80 T / 190 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -34424,7 +34326,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34479,20 +34381,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "SoKFH",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "65 T / 175 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 },
@@ -34512,7 +34400,7 @@
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 100,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34567,20 +34455,6 @@
                       "fontWeight": "600",
                       "width": 300,
                       "height": 22
-                    },
-                    {
-                      "type": "text",
-                      "id": "w8F7w",
-                      "x": 16,
-                      "y": 70,
-                      "name": "Progress",
-                      "fill": "#718096ff",
-                      "content": "145 T / 145 T",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "normal",
-                      "width": 200,
-                      "height": 20
                     }
                   ]
                 }
