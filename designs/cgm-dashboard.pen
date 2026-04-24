@@ -33648,7 +33648,7 @@
                   "type": "group",
                   "id": "G7Tlj",
                   "x": 0,
-                  "y": 116,
+                  "y": 96,
                   "name": "Card - Grower Formula B",
                   "children": [
                     {
@@ -33720,83 +33720,9 @@
                 },
                 {
                   "type": "group",
-                  "id": "dyA2P",
-                  "x": 0,
-                  "y": 232,
-                  "name": "Card - Finisher Mix C",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 12,
-                      "id": "vRCRH",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Card Background",
-                      "fill": "#ffffffff",
-                      "width": 480,
-                      "height": 80,
-                      "effect": {
-                        "type": "shadow",
-                        "shadowType": "outer",
-                        "color": "#0000000d",
-                        "offset": {
-                          "x": 0,
-                          "y": 2
-                        },
-                        "blur": 8
-                      }
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "qSsPx",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#e2e8f0ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
-                      "type": "text",
-                      "id": "5A8UC",
-                      "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#4a5568ff",
-                      "content": "Pending",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "66NVz",
-                      "x": 16,
-                      "y": 44,
-                      "name": "Label",
-                      "fill": "#2d3748ff",
-                      "content": "Finisher Mix C",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 16,
-                      "fontWeight": "600",
-                      "width": 300,
-                      "height": 22
-                    }
-                  ]
-                },
-                {
-                  "type": "group",
                   "id": "pFt2N",
                   "x": 0,
-                  "y": 348,
+                  "y": 192,
                   "name": "Card - Layer Premix D",
                   "children": [
                     {
@@ -33868,15 +33794,15 @@
                 },
                 {
                   "type": "group",
-                  "id": "5uxW5",
-                  "x": 520,
-                  "y": 0,
-                  "name": "Card - Cattle Feed Base",
+                  "id": "dyA2P",
+                  "x": 0,
+                  "y": 288,
+                  "name": "Card - Finisher Mix C",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "WT7k1",
+                      "id": "vRCRH",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
@@ -33902,22 +33828,22 @@
                         0,
                         0
                       ],
-                      "id": "IAa4e",
+                      "id": "qSsPx",
                       "x": 0,
                       "y": 0,
                       "name": "State Badge BG",
-                      "fill": "#fefcbfff",
+                      "fill": "#e2e8f0ff",
                       "width": 480,
                       "height": 32
                     },
                     {
                       "type": "text",
-                      "id": "InAAz",
+                      "id": "5A8UC",
                       "x": 16,
                       "y": 6,
                       "name": "State",
-                      "fill": "#975a16ff",
-                      "content": "Mixing",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
                       "fontFamily": "Helvetica",
                       "fontSize": 14,
                       "fontWeight": "700",
@@ -33926,12 +33852,12 @@
                     },
                     {
                       "type": "text",
-                      "id": "ztuMv",
+                      "id": "66NVz",
                       "x": 16,
                       "y": 44,
                       "name": "Label",
                       "fill": "#2d3748ff",
-                      "content": "Cattle Feed Base",
+                      "content": "Finisher Mix C",
                       "fontFamily": "Helvetica",
                       "fontSize": 16,
                       "fontWeight": "600",
@@ -33944,7 +33870,7 @@
                   "type": "group",
                   "id": "ZJhcv",
                   "x": 520,
-                  "y": 116,
+                  "y": 0,
                   "name": "Card - Dairy Supplement",
                   "children": [
                     {
@@ -34016,83 +33942,9 @@
                 },
                 {
                   "type": "group",
-                  "id": "rw7GN",
-                  "x": 520,
-                  "y": 232,
-                  "name": "Card - Calf Starter",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 12,
-                      "id": "smCqx",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Card Background",
-                      "fill": "#ffffffff",
-                      "width": 480,
-                      "height": 80,
-                      "effect": {
-                        "type": "shadow",
-                        "shadowType": "outer",
-                        "color": "#0000000d",
-                        "offset": {
-                          "x": 0,
-                          "y": 2
-                        },
-                        "blur": 8
-                      }
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "Zh2UE",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#e2e8f0ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
-                      "type": "text",
-                      "id": "i0p7U",
-                      "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#4a5568ff",
-                      "content": "Pending",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "e72I4",
-                      "x": 16,
-                      "y": 44,
-                      "name": "Label",
-                      "fill": "#2d3748ff",
-                      "content": "Calf Starter",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 16,
-                      "fontWeight": "600",
-                      "width": 300,
-                      "height": 22
-                    }
-                  ]
-                },
-                {
-                  "type": "group",
                   "id": "cb1ld",
                   "x": 520,
-                  "y": 348,
+                  "y": 96,
                   "name": "Card - Beef Finisher",
                   "children": [
                     {
@@ -34164,15 +34016,15 @@
                 },
                 {
                   "type": "group",
-                  "id": "zJ5GC",
-                  "x": 1040,
-                  "y": 0,
-                  "name": "Card - Swine Grower",
+                  "id": "5uxW5",
+                  "x": 520,
+                  "y": 192,
+                  "name": "Card - Cattle Feed Base",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "QxGU8",
+                      "id": "WT7k1",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
@@ -34198,7 +34050,81 @@
                         0,
                         0
                       ],
-                      "id": "r9Ln8",
+                      "id": "IAa4e",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#fefcbfff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "InAAz",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "ztuMv",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Cattle Feed Base",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "rw7GN",
+                  "x": 520,
+                  "y": 288,
+                  "name": "Card - Calf Starter",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "smCqx",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 80,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "Zh2UE",
                       "x": 0,
                       "y": 0,
                       "name": "State Badge BG",
@@ -34208,7 +34134,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "4KY0U",
+                      "id": "i0p7U",
                       "x": 16,
                       "y": 6,
                       "name": "State",
@@ -34222,12 +34148,12 @@
                     },
                     {
                       "type": "text",
-                      "id": "kWWo8",
+                      "id": "e72I4",
                       "x": 16,
                       "y": 44,
                       "name": "Label",
                       "fill": "#2d3748ff",
-                      "content": "Swine Grower",
+                      "content": "Calf Starter",
                       "fontFamily": "Helvetica",
                       "fontSize": 16,
                       "fontWeight": "600",
@@ -34238,15 +34164,15 @@
                 },
                 {
                   "type": "group",
-                  "id": "0MotC",
+                  "id": "IbkSl",
                   "x": 1040,
-                  "y": 116,
-                  "name": "Card - Sow Feed Mix",
+                  "y": 0,
+                  "name": "Card - Market Hog",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "1Iwsg",
+                      "id": "qxhJY",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
@@ -34272,22 +34198,22 @@
                         0,
                         0
                       ],
-                      "id": "QlLDt",
+                      "id": "JW1ks",
                       "x": 0,
                       "y": 0,
                       "name": "State Badge BG",
-                      "fill": "#fed7d7ff",
+                      "fill": "#c6f6d5ff",
                       "width": 480,
                       "height": 32
                     },
                     {
                       "type": "text",
-                      "id": "COljz",
+                      "id": "PPEgV",
                       "x": 16,
                       "y": 6,
                       "name": "State",
-                      "fill": "#c53030ff",
-                      "content": "Blocked",
+                      "fill": "#276749ff",
+                      "content": "Completed",
                       "fontFamily": "Helvetica",
                       "fontSize": 14,
                       "fontWeight": "700",
@@ -34296,12 +34222,12 @@
                     },
                     {
                       "type": "text",
-                      "id": "3Hu4Z",
+                      "id": "3A3KM",
                       "x": 16,
                       "y": 44,
                       "name": "Label",
                       "fill": "#2d3748ff",
-                      "content": "Sow Feed Mix",
+                      "content": "Market Hog",
                       "fontFamily": "Helvetica",
                       "fontSize": 16,
                       "fontWeight": "600",
@@ -34314,7 +34240,7 @@
                   "type": "group",
                   "id": "BgfW0",
                   "x": 1040,
-                  "y": 232,
+                  "y": 96,
                   "name": "Card - Nursery Blend",
                   "children": [
                     {
@@ -34386,15 +34312,15 @@
                 },
                 {
                   "type": "group",
-                  "id": "IbkSl",
+                  "id": "0MotC",
                   "x": 1040,
-                  "y": 348,
-                  "name": "Card - Market Hog",
+                  "y": 192,
+                  "name": "Card - Sow Feed Mix",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "qxhJY",
+                      "id": "1Iwsg",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
@@ -34420,22 +34346,22 @@
                         0,
                         0
                       ],
-                      "id": "JW1ks",
+                      "id": "QlLDt",
                       "x": 0,
                       "y": 0,
                       "name": "State Badge BG",
-                      "fill": "#c6f6d5ff",
+                      "fill": "#fed7d7ff",
                       "width": 480,
                       "height": 32
                     },
                     {
                       "type": "text",
-                      "id": "PPEgV",
+                      "id": "COljz",
                       "x": 16,
                       "y": 6,
                       "name": "State",
-                      "fill": "#276749ff",
-                      "content": "Completed",
+                      "fill": "#c53030ff",
+                      "content": "Blocked",
                       "fontFamily": "Helvetica",
                       "fontSize": 14,
                       "fontWeight": "700",
@@ -34444,12 +34370,86 @@
                     },
                     {
                       "type": "text",
-                      "id": "3A3KM",
+                      "id": "3Hu4Z",
                       "x": 16,
                       "y": 44,
                       "name": "Label",
                       "fill": "#2d3748ff",
-                      "content": "Market Hog",
+                      "content": "Sow Feed Mix",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 300,
+                      "height": 22
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "zJ5GC",
+                  "x": 1040,
+                  "y": 288,
+                  "name": "Card - Swine Grower",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "QxGU8",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Card Background",
+                      "fill": "#ffffffff",
+                      "width": 480,
+                      "height": 80,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#0000000d",
+                        "offset": {
+                          "x": 0,
+                          "y": 2
+                        },
+                        "blur": 8
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        12,
+                        0,
+                        0
+                      ],
+                      "id": "r9Ln8",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Badge BG",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "4KY0U",
+                      "x": 16,
+                      "y": 6,
+                      "name": "State",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700",
+                      "width": 100,
+                      "height": 20
+                    },
+                    {
+                      "type": "text",
+                      "id": "kWWo8",
+                      "x": 16,
+                      "y": 44,
+                      "name": "Label",
+                      "fill": "#2d3748ff",
+                      "content": "Swine Grower",
                       "fontFamily": "Helvetica",
                       "fontSize": 16,
                       "fontWeight": "600",
