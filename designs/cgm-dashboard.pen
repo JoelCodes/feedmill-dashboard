@@ -33616,12 +33616,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "tGPph",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#c6f6d5ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -33636,9 +33641,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "NB0g1",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#38a169ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "6I9On",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -33652,7 +33673,7 @@
                     {
                       "type": "text",
                       "id": "Pcwxm",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -33666,7 +33687,7 @@
                     {
                       "type": "text",
                       "id": "SAKhH",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -33678,6 +33699,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "BLSC9",
+                  "x": 0,
+                  "y": 136,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -33725,12 +33756,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "K4lMd",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#fefcbfff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -33745,9 +33781,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "ZAznp",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#d69e2eff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "oxoAc",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -33761,7 +33813,7 @@
                     {
                       "type": "text",
                       "id": "LFVM7",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -33775,7 +33827,7 @@
                     {
                       "type": "text",
                       "id": "OQfNI",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -33787,6 +33839,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "kWcwV",
+                  "x": 0,
+                  "y": 288,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -33834,12 +33896,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "6CeQP",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#fed7d7ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -33854,9 +33921,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "Bdl0P",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#e53e3eff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "FTH8I",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -33870,7 +33953,7 @@
                     {
                       "type": "text",
                       "id": "M2owy",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -33884,7 +33967,7 @@
                     {
                       "type": "text",
                       "id": "91P5k",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -33896,6 +33979,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "2MXEB",
+                  "x": 0,
+                  "y": 440,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -33943,12 +34036,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "exm87",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#e2e8f0ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -33963,9 +34061,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "RYAsZ",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#a0aec0ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "MYeyd",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -33979,7 +34093,7 @@
                     {
                       "type": "text",
                       "id": "G1xYe",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -33993,7 +34107,7 @@
                     {
                       "type": "text",
                       "id": "9l7Yz",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34005,6 +34119,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "9blxs",
+                  "x": 520,
+                  "y": -16,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34052,12 +34176,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "AkK4k",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#c6f6d5ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34072,9 +34201,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "vNRAT",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#38a169ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "Xe9A3",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34088,7 +34233,7 @@
                     {
                       "type": "text",
                       "id": "V0S87",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34102,7 +34247,7 @@
                     {
                       "type": "text",
                       "id": "6aWKx",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34124,12 +34269,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "MBDbq",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#c6f6d5ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34144,9 +34294,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "cJS3J",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#38a169ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "wEJa7",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34160,7 +34326,7 @@
                     {
                       "type": "text",
                       "id": "NLLXN",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34174,7 +34340,7 @@
                     {
                       "type": "text",
                       "id": "OuCxC",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34186,6 +34352,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ZDsMG",
+                  "x": 520,
+                  "y": 228,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34233,12 +34409,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "TYkB6",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#fefcbfff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34253,9 +34434,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "fcvYJ",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#d69e2eff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "gFlG1",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34269,7 +34466,7 @@
                     {
                       "type": "text",
                       "id": "YL7OQ",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34283,7 +34480,7 @@
                     {
                       "type": "text",
                       "id": "uFlLD",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34295,6 +34492,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "DhuTb",
+                  "x": 520,
+                  "y": 380,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34342,12 +34549,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "VWa1L",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#e2e8f0ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34362,9 +34574,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "n6SwC",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#a0aec0ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "svJQX",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34378,7 +34606,7 @@
                     {
                       "type": "text",
                       "id": "XoCOZ",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34392,7 +34620,7 @@
                     {
                       "type": "text",
                       "id": "gzk8h",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34404,6 +34632,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "x5nB0",
+                  "x": 1040,
+                  "y": -16,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34451,12 +34689,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "jcFVH",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#c6f6d5ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34471,9 +34714,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "1177y",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#38a169ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "K9y4w",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34487,7 +34746,7 @@
                     {
                       "type": "text",
                       "id": "Q1g1X",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34501,7 +34760,7 @@
                     {
                       "type": "text",
                       "id": "iIgdF",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34513,6 +34772,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "C57mq",
+                  "x": 1040,
+                  "y": 136,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34560,12 +34829,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "gPO37",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#fefcbfff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34580,9 +34854,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "6SK8v",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#d69e2eff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "ckMGI",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34596,7 +34886,7 @@
                     {
                       "type": "text",
                       "id": "YnR1K",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34610,7 +34900,7 @@
                     {
                       "type": "text",
                       "id": "UJ08v",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34622,6 +34912,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "z8AKp",
+                  "x": 1040,
+                  "y": 288,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34669,12 +34969,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "oSqth",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#fed7d7ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34689,9 +34994,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "n02H9",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#e53e3eff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "HZbQI",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34705,7 +35026,7 @@
                     {
                       "type": "text",
                       "id": "7UV6O",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34719,7 +35040,7 @@
                     {
                       "type": "text",
                       "id": "k7UlI",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
@@ -34731,6 +35052,16 @@
                       "height": 20
                     }
                   ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "6DkRx",
+                  "x": 1040,
+                  "y": 440,
+                  "name": "Section Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": 480,
+                  "height": 1
                 },
                 {
                   "type": "group",
@@ -34778,12 +35109,17 @@
                   "children": [
                     {
                       "type": "rectangle",
-                      "cornerRadius": 12,
+                      "cornerRadius": [
+                        0,
+                        12,
+                        12,
+                        0
+                      ],
                       "id": "xqOth",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
-                      "fill": "#e2e8f0ff",
+                      "fill": "#ffffffff",
                       "width": 480,
                       "height": 80,
                       "effect": {
@@ -34798,9 +35134,25 @@
                       }
                     },
                     {
+                      "type": "rectangle",
+                      "cornerRadius": [
+                        12,
+                        0,
+                        0,
+                        12
+                      ],
+                      "id": "gMe43",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Left Border",
+                      "fill": "#a0aec0ff",
+                      "width": 4,
+                      "height": 80
+                    },
+                    {
                       "type": "text",
                       "id": "zMY3G",
-                      "x": 16,
+                      "x": 20,
                       "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
@@ -34814,7 +35166,7 @@
                     {
                       "type": "text",
                       "id": "lVANf",
-                      "x": 16,
+                      "x": 20,
                       "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
@@ -34828,7 +35180,7 @@
                     {
                       "type": "text",
                       "id": "7Cewh",
-                      "x": 16,
+                      "x": 20,
                       "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
