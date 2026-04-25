@@ -33572,21 +33572,58 @@
               "children": [
                 {
                   "type": "group",
-                  "id": "G8Lh1",
+                  "id": "mXXxl",
                   "x": 0,
                   "y": 0,
+                  "name": "Status Header - Completed",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "aLVTn",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "gndey",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "180 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "WZtKM",
+                  "x": 0,
+                  "y": 36,
                   "name": "Card - Starter Mix A",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "cZ7K4",
+                      "id": "tGPph",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33599,40 +33636,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "dhgYU",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#c6f6d5ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "goo2u",
+                      "id": "6I9On",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#276749ff",
-                      "content": "Completed",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "y75Gq",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2847",
@@ -33644,9 +33651,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "pp0kh",
+                      "id": "Pcwxm",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Starter Mix A",
@@ -33658,9 +33665,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "cSNmD",
+                      "id": "SAKhH",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "180 tons",
@@ -33674,21 +33681,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "G7Tlj",
+                  "id": "21Lo3",
                   "x": 0,
-                  "y": 126,
+                  "y": 152,
+                  "name": "Status Header - Mixing",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nWJxc",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "bAjSd",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "200 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "FWkjW",
+                  "x": 0,
+                  "y": 188,
                   "name": "Card - Grower Formula B",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "R1gj9",
+                      "id": "K4lMd",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33701,40 +33745,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "9ZXpG",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#fefcbfff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "iFeHo",
+                      "id": "oxoAc",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#975a16ff",
-                      "content": "Mixing",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "yvlT3",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2851",
@@ -33746,9 +33760,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "wTG0E",
+                      "id": "LFVM7",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Grower Formula B",
@@ -33760,9 +33774,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "3c4UZ",
+                      "id": "OQfNI",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "200 tons",
@@ -33776,21 +33790,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "pFt2N",
+                  "id": "7XVI9",
                   "x": 0,
-                  "y": 252,
+                  "y": 304,
+                  "name": "Status Header - Blocked",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rPMNb",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#c53030ff",
+                      "content": "Blocked",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "wQ76k",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "175 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "chjgz",
+                  "x": 0,
+                  "y": 340,
                   "name": "Card - Layer Premix D",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "Al3Md",
+                      "id": "6CeQP",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33803,40 +33854,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "nvUQQ",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#fed7d7ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "5FvKv",
+                      "id": "FTH8I",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#c53030ff",
-                      "content": "Blocked",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "roCUL",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2849",
@@ -33848,9 +33869,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "kLyaT",
+                      "id": "M2owy",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Layer Premix D",
@@ -33862,9 +33883,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "xleFL",
+                      "id": "91P5k",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "175 tons",
@@ -33878,21 +33899,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "dyA2P",
+                  "id": "H4QT5",
                   "x": 0,
-                  "y": 378,
+                  "y": 456,
+                  "name": "Status Header - Pending",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "orygT",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "UIyb8",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "150 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "G8MG7",
+                  "x": 0,
+                  "y": 492,
                   "name": "Card - Finisher Mix C",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "Iicf9",
+                      "id": "exm87",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -33905,40 +33963,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "oUDpw",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#e2e8f0ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "Nu3kx",
+                      "id": "MYeyd",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#4a5568ff",
-                      "content": "Pending",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "EbFNC",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2853",
@@ -33950,9 +33978,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "jmmzN",
+                      "id": "G1xYe",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Finisher Mix C",
@@ -33964,9 +33992,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "OXHTu",
+                      "id": "9l7Yz",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "150 tons",
@@ -33980,21 +34008,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "ZJhcv",
+                  "id": "UaUtW",
                   "x": 520,
                   "y": 0,
+                  "name": "Status Header - Completed",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vLCjG",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "RNaCi",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "360 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "0behW",
+                  "x": 520,
+                  "y": 36,
                   "name": "Card - Dairy Supplement",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "yM6Lj",
+                      "id": "AkK4k",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34007,40 +34072,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "y7zE8",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#c6f6d5ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "7ukeG",
+                      "id": "Xe9A3",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#276749ff",
-                      "content": "Completed",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "XXHaC",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2844",
@@ -34052,9 +34087,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "52A8V",
+                      "id": "V0S87",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Dairy Supplement",
@@ -34066,9 +34101,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "vUEto",
+                      "id": "6aWKx",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "200 tons",
@@ -34082,21 +34117,21 @@
                 },
                 {
                   "type": "group",
-                  "id": "cb1ld",
+                  "id": "xohCL",
                   "x": 520,
-                  "y": 126,
+                  "y": 128,
                   "name": "Card - Beef Finisher",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "mXPbY",
+                      "id": "MBDbq",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34109,40 +34144,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "oZLDm",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#c6f6d5ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "uBGLA",
+                      "id": "wEJa7",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#276749ff",
-                      "content": "Completed",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "d5KTS",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2846",
@@ -34154,9 +34159,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "et9Eq",
+                      "id": "NLLXN",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Beef Finisher",
@@ -34168,9 +34173,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "4BIbl",
+                      "id": "OuCxC",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "160 tons",
@@ -34184,21 +34189,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "5uxW5",
+                  "id": "FCpmx",
                   "x": 520,
-                  "y": 252,
+                  "y": 244,
+                  "name": "Status Header - Mixing",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iRR4I",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "GPOEw",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "250 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "Xv2Yw",
+                  "x": 520,
+                  "y": 280,
                   "name": "Card - Cattle Feed Base",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "3gOwv",
+                      "id": "TYkB6",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34211,40 +34253,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "zXZpy",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#fefcbfff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "d2wRe",
+                      "id": "gFlG1",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#975a16ff",
-                      "content": "Mixing",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "dAgme",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2850",
@@ -34256,9 +34268,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "wQKTh",
+                      "id": "YL7OQ",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Cattle Feed Base",
@@ -34270,9 +34282,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "EWmdo",
+                      "id": "uFlLD",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "250 tons",
@@ -34286,21 +34298,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "rw7GN",
+                  "id": "1VEhb",
                   "x": 520,
-                  "y": 378,
+                  "y": 396,
+                  "name": "Status Header - Pending",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jr3F1",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "VSSJW",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "180 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "zdEua",
+                  "x": 520,
+                  "y": 432,
                   "name": "Card - Calf Starter",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "HpVe1",
+                      "id": "VWa1L",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34313,40 +34362,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "IxTwZ",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#e2e8f0ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "gdEat",
+                      "id": "svJQX",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#4a5568ff",
-                      "content": "Pending",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "XeTR8",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2855",
@@ -34358,9 +34377,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "iakzy",
+                      "id": "XoCOZ",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Calf Starter",
@@ -34372,9 +34391,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "aEJpA",
+                      "id": "gzk8h",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "180 tons",
@@ -34388,21 +34407,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "IbkSl",
+                  "id": "l7gtr",
                   "x": 1040,
                   "y": 0,
-                  "name": "Card - Market Hog",
+                  "name": "Status Header - Completed",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "K2u7G",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#276749ff",
+                      "content": "Completed",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "F666H",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "145 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "t40Zo",
+                  "x": 1040,
+                  "y": 36,
+                  "name": "Card - Market Hog Feed",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "Xmgyx",
+                      "id": "jcFVH",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34415,40 +34471,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "kLkB6",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#c6f6d5ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "4fJKJ",
+                      "id": "K9y4w",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#276749ff",
-                      "content": "Completed",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "6262G",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2843",
@@ -34460,9 +34486,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "dusJh",
+                      "id": "Q1g1X",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Market Hog Feed",
@@ -34474,9 +34500,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "2figc",
+                      "id": "iIgdF",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "145 tons",
@@ -34490,21 +34516,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "BgfW0",
+                  "id": "vMqpw",
                   "x": 1040,
-                  "y": 126,
+                  "y": 152,
+                  "name": "Status Header - Mixing",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "oQuFg",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#975a16ff",
+                      "content": "Mixing",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "Njk94",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "175 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "CUKnt",
+                  "x": 1040,
+                  "y": 188,
                   "name": "Card - Nursery Blend",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "CYqgd",
+                      "id": "gPO37",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34517,40 +34580,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "khXL9",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#fefcbfff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "g8G37",
+                      "id": "ckMGI",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#975a16ff",
-                      "content": "Mixing",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "6mI74",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2852",
@@ -34562,9 +34595,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "C4pTY",
+                      "id": "YnR1K",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Nursery Blend",
@@ -34576,9 +34609,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "D8oFy",
+                      "id": "UJ08v",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "175 tons",
@@ -34592,21 +34625,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "0MotC",
+                  "id": "p2n75",
                   "x": 1040,
-                  "y": 252,
+                  "y": 304,
+                  "name": "Status Header - Blocked",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "t0Kqc",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#c53030ff",
+                      "content": "Blocked",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "0Th3n",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "190 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "nkM21",
+                  "x": 1040,
+                  "y": 340,
                   "name": "Card - Sow Feed Mix",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "Cklkz",
+                      "id": "oSqth",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34619,40 +34689,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "Eic9K",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#fed7d7ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "ehltC",
+                      "id": "HZbQI",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#c53030ff",
-                      "content": "Blocked",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "Smels",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2848",
@@ -34664,9 +34704,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "0nM3o",
+                      "id": "7UV6O",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Sow Feed Mix",
@@ -34678,9 +34718,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "ywibW",
+                      "id": "k7UlI",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "190 tons",
@@ -34694,21 +34734,58 @@
                 },
                 {
                   "type": "group",
-                  "id": "zJ5GC",
+                  "id": "nENZH",
                   "x": 1040,
-                  "y": 378,
+                  "y": 456,
+                  "name": "Status Header - Pending",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lKdgx",
+                      "x": 0,
+                      "y": 0,
+                      "name": "State Name",
+                      "fill": "#4a5568ff",
+                      "content": "Pending",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 20,
+                      "fontWeight": "700",
+                      "width": 150,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "RPBFW",
+                      "x": 110,
+                      "y": 4,
+                      "name": "State Total",
+                      "fill": "#718096ff",
+                      "content": "220 T",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "500",
+                      "width": 100,
+                      "height": 24
+                    }
+                  ]
+                },
+                {
+                  "type": "group",
+                  "id": "QklT5",
+                  "x": 1040,
+                  "y": 492,
                   "name": "Card - Swine Grower",
                   "children": [
                     {
                       "type": "rectangle",
                       "cornerRadius": 12,
-                      "id": "YMYLn",
+                      "id": "xqOth",
                       "x": 0,
                       "y": 0,
                       "name": "Card Background",
                       "fill": "#ffffffff",
                       "width": 480,
-                      "height": 110,
+                      "height": 80,
                       "effect": {
                         "type": "shadow",
                         "shadowType": "outer",
@@ -34721,40 +34798,10 @@
                       }
                     },
                     {
-                      "type": "rectangle",
-                      "cornerRadius": [
-                        12,
-                        12,
-                        0,
-                        0
-                      ],
-                      "id": "amoeV",
-                      "x": 0,
-                      "y": 0,
-                      "name": "State Badge BG",
-                      "fill": "#e2e8f0ff",
-                      "width": 480,
-                      "height": 32
-                    },
-                    {
                       "type": "text",
-                      "id": "18aVI",
+                      "id": "zMY3G",
                       "x": 16,
-                      "y": 6,
-                      "name": "State",
-                      "fill": "#4a5568ff",
-                      "content": "Pending",
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700",
-                      "width": 100,
-                      "height": 20
-                    },
-                    {
-                      "type": "text",
-                      "id": "DNqFo",
-                      "x": 16,
-                      "y": 42,
+                      "y": 12,
                       "name": "Order Number",
                       "fill": "#718096ff",
                       "content": "ORD-2854",
@@ -34766,9 +34813,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "Id3El",
+                      "id": "lVANf",
                       "x": 16,
-                      "y": 60,
+                      "y": 32,
                       "name": "Product Name",
                       "fill": "#2d3748ff",
                       "content": "Swine Grower",
@@ -34780,9 +34827,9 @@
                     },
                     {
                       "type": "text",
-                      "id": "KygEe",
+                      "id": "7Cewh",
                       "x": 16,
-                      "y": 84,
+                      "y": 54,
                       "name": "Quantity",
                       "fill": "#4a5568ff",
                       "content": "220 tons",
