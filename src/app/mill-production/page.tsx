@@ -7,6 +7,8 @@ import {
   MillLine,
 } from "@/types/millProduction";
 import { getProductionOrders } from "@/services/millProduction";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 const STATE_ORDER: ProductionState[] = [
   "Completed",
@@ -79,10 +81,7 @@ function StateSection({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-baseline gap-3">
-        <span
-          className="text-xl font-bold"
-          style={{ color: headerColor }}
-        >
+        <span className="text-xl font-bold" style={{ color: headerColor }}>
           {state}
         </span>
         <span className="text-base font-medium text-[#718096]">
@@ -173,13 +172,6 @@ export default function MillProductionPage() {
     });
   }, []);
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
   const ordersByMill: Record<MillLine, ProductionOrder[]> = {
     Premix: orders.filter((o) => o.millLine === "Premix"),
     Excel: orders.filter((o) => o.millLine === "Excel"),
@@ -187,21 +179,20 @@ export default function MillProductionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-page p-6">
-      <header className="mb-6">
-        <h1 className="text-[28px] font-bold text-[#2d3748]">Mill Production</h1>
-        <p className="text-sm text-[#a0aec0]">Today, {today}</p>
-      </header>
-
-      {loading ? (
-        <LoadingSkeleton />
-      ) : (
-        <div className="flex gap-6">
-          <MillColumn millLine="Premix" orders={ordersByMill.Premix} />
-          <MillColumn millLine="Excel" orders={ordersByMill.Excel} />
-          <MillColumn millLine="CGM" orders={ordersByMill.CGM} />
-        </div>
-      )}
+    <div className="flex h-screen bg-bg-page">
+      <Sidebar activeItem="production-lines" />
+      <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
+        <Header title="Mill Production" />
+        {loading ? (
+          <LoadingSkeleton />
+        ) : (
+          <div className="flex gap-6">
+            <MillColumn millLine="Premix" orders={ordersByMill.Premix} />
+            <MillColumn millLine="Excel" orders={ordersByMill.Excel} />
+            <MillColumn millLine="CGM" orders={ordersByMill.CGM} />
+          </div>
+        )}
+      </main>
     </div>
   );
 }

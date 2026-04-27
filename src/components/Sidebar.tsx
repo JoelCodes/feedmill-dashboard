@@ -8,16 +8,22 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: ClipboardList, label: "Orders", active: false },
-  { icon: Factory, label: "Production Lines", active: false },
-  { icon: Package, label: "Inventory", active: false },
-  { icon: Truck, label: "Shipments", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
+  { icon: ClipboardList, label: "Orders", id: "orders" },
+  { icon: Factory, label: "Production Lines", id: "production-lines" },
+  { icon: Package, label: "Inventory", id: "inventory" },
+  { icon: Truck, label: "Shipments", id: "shipments" },
 ];
 
-const settingsItems = [{ icon: FlaskConical, label: "Formulas", active: false }];
+const settingsItems = [
+  { icon: FlaskConical, label: "Formulas", id: "formulas" },
+];
 
-export default function Sidebar() {
+interface SidebarProps {
+  activeItem?: string;
+}
+
+export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
   return (
     <aside className="flex h-full w-[280px] flex-col gap-2 bg-white p-6">
       {/* Logo */}
@@ -41,7 +47,7 @@ export default function Sidebar() {
           key={item.label}
           icon={item.icon}
           label={item.label}
-          active={item.active}
+          active={item.id === activeItem}
         />
       ))}
 
@@ -58,7 +64,7 @@ export default function Sidebar() {
           key={item.label}
           icon={item.icon}
           label={item.label}
-          active={item.active}
+          active={item.id === activeItem}
         />
       ))}
     </aside>

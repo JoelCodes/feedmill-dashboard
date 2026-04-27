@@ -1,6 +1,10 @@
 import { Search, Bell, Settings } from "lucide-react";
 
-export default function Header() {
+interface HeaderProps {
+  title?: string;
+}
+
+export default function Header({ title = "Dashboard" }: HeaderProps) {
   return (
     <header className="flex w-full items-center justify-between">
       {/* Left Side - Breadcrumb */}
@@ -8,9 +12,9 @@ export default function Header() {
         <div className="text-text-secondary flex items-center gap-1 text-xs">
           <span>Pages</span>
           <span>/</span>
-          <span className="text-text-primary">Dashboard</span>
+          <span className="text-text-primary">{title}</span>
         </div>
-        <h1 className="text-text-primary text-sm font-bold">Dashboard</h1>
+        <h1 className="text-text-primary text-sm font-bold">{title}</h1>
       </div>
 
       {/* Right Side - Actions */}
