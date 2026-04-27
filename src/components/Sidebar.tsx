@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -8,15 +9,15 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: ClipboardList, label: "Orders", id: "orders" },
-  { icon: Factory, label: "Production Lines", id: "production-lines" },
-  { icon: Package, label: "Inventory", id: "inventory" },
-  { icon: Truck, label: "Shipments", id: "shipments" },
+  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", href: "/" },
+  { icon: Factory, label: "Production", id: "production", href: "/mill-production" },
+  { icon: ClipboardList, label: "Orders", id: "orders", href: "#" },
+  { icon: Package, label: "Inventory", id: "inventory", href: "#" },
+  { icon: Truck, label: "Shipments", id: "shipments", href: "#" },
 ];
 
 const settingsItems = [
-  { icon: FlaskConical, label: "Formulas", id: "formulas" },
+  { icon: FlaskConical, label: "Formulas", id: "formulas", href: "#" },
 ];
 
 interface SidebarProps {
@@ -47,6 +48,7 @@ export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
           key={item.label}
           icon={item.icon}
           label={item.label}
+          href={item.href}
           active={item.id === activeItem}
         />
       ))}
@@ -64,6 +66,7 @@ export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
           key={item.label}
           icon={item.icon}
           label={item.label}
+          href={item.href}
           active={item.id === activeItem}
         />
       ))}
@@ -74,14 +77,17 @@ export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
 function NavItem({
   icon: Icon,
   label,
+  href,
   active,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  href: string;
   active: boolean;
 }) {
   return (
-    <div
+    <Link
+      href={href}
       className={`flex w-full items-center gap-3 rounded-[15px] px-4 py-3 ${
         active
           ? "bg-white shadow-[0_3.5px_5px_rgba(0,0,0,0.03)]"
@@ -104,6 +110,6 @@ function NavItem({
       >
         {label}
       </span>
-    </div>
+    </Link>
   );
 }
