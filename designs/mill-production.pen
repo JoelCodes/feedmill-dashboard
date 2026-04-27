@@ -7,1972 +7,2513 @@
       "x": 13495,
       "y": 36,
       "name": "Mill Production View",
+      "clip": true,
       "width": 1920,
       "height": 1200,
       "fill": "#f8f9faff",
-      "cornerRadius": 0,
-      "stroke": {
-        "align": "inside",
-        "thickness": 0.5
-      },
-      "layout": "none",
       "children": [
         {
-          "type": "rectangle",
-          "id": "Mv2ga",
-          "x": 0,
-          "y": 0,
-          "name": "Background",
-          "fill": "#f8f9faff",
-          "width": 1920,
-          "height": 1200
-        },
-        {
-          "type": "rectangle",
-          "cornerRadius": 15,
-          "id": "oQ1iE",
-          "x": 24,
-          "y": 24,
+          "type": "frame",
+          "id": "DdE40",
           "name": "Sidebar",
+          "width": 280,
+          "height": "fill_container",
           "fill": "#ffffffff",
-          "width": 250,
-          "height": 1152,
-          "effect": {
-            "type": "shadow",
-            "shadowType": "outer",
-            "color": "#0000000d",
-            "offset": {
-              "x": 0,
-              "y": 4
-            },
-            "blur": 12
-          }
-        },
-        {
-          "type": "group",
-          "id": "XFof6",
-          "x": 298,
-          "y": 24,
-          "name": "Header",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 24,
           "children": [
             {
-              "type": "text",
-              "id": "kH8yC",
-              "x": 0,
-              "y": 0,
-              "name": "Title",
-              "fill": "#2d3748ff",
-              "content": "Mill Production",
-              "fontFamily": "Helvetica",
-              "fontSize": 28,
-              "fontWeight": "700",
-              "width": 200,
-              "height": 35
+              "type": "frame",
+              "id": "NNupj",
+              "name": "Logo Section",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                0,
+                0,
+                20,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KjdZd",
+                  "name": "Logo Icon",
+                  "width": 32,
+                  "height": 32,
+                  "fill": "#4fd1c5ff",
+                  "cornerRadius": 8,
+                  "layout": "none"
+                },
+                {
+                  "type": "text",
+                  "id": "o8hB6",
+                  "name": "logoText",
+                  "fill": "#2d3748ff",
+                  "content": "FEEDMILL PRO",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "UmOMr",
+              "name": "Divider",
+              "fill": "#e2e8f0ff",
+              "width": "fill_container",
+              "height": 1
             },
             {
               "type": "text",
-              "id": "UYdvq",
-              "x": 0,
-              "y": 40,
-              "name": "Date",
+              "id": "qCOjU",
+              "name": "navLabel",
               "fill": "#a0aec0ff",
-              "content": "Today, April 23, 2026",
+              "content": "PRODUCTION",
+              "lineHeight": 1.5,
               "fontFamily": "Helvetica",
-              "fontSize": 14,
-              "fontWeight": "normal",
-              "width": 200,
-              "height": 20
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "upD8A",
+              "name": "Nav Dashboard",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "8vP2F",
+                  "name": "navDashIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "RzPtN",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navDashIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "layout-dashboard",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "vfUvB",
+                  "name": "navDashText",
+                  "fill": "#a0aec0ff",
+                  "content": "Dashboard",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mcbft",
+              "name": "Nav Orders",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "PNFj2",
+                  "name": "navOrdersIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "536za",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navOrdersIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "clipboard-list",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "5fChm",
+                  "name": "navOrdersText",
+                  "fill": "#a0aec0ff",
+                  "content": "Orders",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8VKeV",
+              "name": "Nav Production Lines",
+              "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000008",
+                "offset": {
+                  "x": 0,
+                  "y": 3.5
+                },
+                "blur": 5
+              },
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "cKzYm",
+                  "name": "navProdIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#4fd1c5ff",
+                  "cornerRadius": 12,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "LwDcr",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navProdIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "factory",
+                      "iconFontFamily": "lucide",
+                      "fill": "#ffffffff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "TQK1T",
+                  "name": "navProdText",
+                  "fill": "#2d3748ff",
+                  "content": "Production Lines",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JQBY4",
+              "name": "Nav Inventory",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "E3ata",
+                  "name": "navInvIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "LFNKs",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navInvIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "warehouse",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "wCgx9",
+                  "name": "navInvText",
+                  "fill": "#a0aec0ff",
+                  "content": "Inventory",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "79CnO",
+              "name": "Nav Shipments",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KSOxK",
+                  "name": "navShipIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "YQTGo",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navShipIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "truck",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "rHlfB",
+                  "name": "navShipText",
+                  "fill": "#a0aec0ff",
+                  "content": "Shipments",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "JWdCd",
+              "name": "Divider 2",
+              "fill": "#e2e8f0ff",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "kMBgf",
+              "name": "navLabel2",
+              "fill": "#a0aec0ff",
+              "content": "SETTINGS",
+              "lineHeight": 1.5,
+              "fontFamily": "Helvetica",
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "NgmOR",
+              "name": "Nav Formulas",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BFAUa",
+                  "name": "navFormulasIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "4jKmi",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navFormulasIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "flask-conical",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "zkyio",
+                  "name": "navFormulasText",
+                  "fill": "#a0aec0ff",
+                  "content": "Formulas",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
             }
           ]
         },
         {
-          "type": "group",
-          "id": "BOlib",
-          "x": 298,
-          "y": 100,
-          "name": "Column Headers",
+          "type": "frame",
+          "id": "7nKKB",
+          "name": "Main Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            32
+          ],
           "children": [
             {
-              "type": "text",
-              "id": "XZMTS",
-              "x": 0,
-              "y": 0,
-              "name": "Premix Header",
-              "fill": "#2d3748ff",
-              "content": "Premix",
-              "fontFamily": "Helvetica",
-              "fontSize": 24,
-              "fontWeight": "700",
-              "width": 500,
-              "height": 32
-            },
-            {
-              "type": "text",
-              "id": "7czRh",
-              "x": 520,
-              "y": 0,
-              "name": "Excel Header",
-              "fill": "#2d3748ff",
-              "content": "Excel",
-              "fontFamily": "Helvetica",
-              "fontSize": 24,
-              "fontWeight": "700",
-              "width": 500,
-              "height": 32
-            },
-            {
-              "type": "text",
-              "id": "b00hN",
-              "x": 1040,
-              "y": 0,
-              "name": "CGM Header",
-              "fill": "#2d3748ff",
-              "content": "CGM",
-              "fontFamily": "Helvetica",
-              "fontSize": 24,
-              "fontWeight": "700",
-              "width": 500,
-              "height": 32
-            },
-            {
-              "type": "text",
-              "id": "zhaOY",
-              "x": 0,
-              "y": 36,
-              "name": "Premix Total",
-              "fill": "#718096ff",
-              "content": "32K / 406K lbs",
-              "fontFamily": "Helvetica",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "width": 200,
-              "height": 22
-            },
-            {
-              "type": "text",
-              "id": "fCR1G",
-              "x": 520,
-              "y": 36,
-              "name": "Excel Total",
-              "fill": "#718096ff",
-              "content": "45K / 142K lbs",
-              "fontFamily": "Helvetica",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "width": 200,
-              "height": 22
-            },
-            {
-              "type": "text",
-              "id": "rqSR9",
-              "x": 1040,
-              "y": 36,
-              "name": "CGM Total",
-              "fill": "#718096ff",
-              "content": "60K / 381K lbs",
-              "fontFamily": "Helvetica",
-              "fontSize": 16,
-              "fontWeight": "600",
-              "width": 200,
-              "height": 22
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "id": "TH0U6",
-          "x": 298,
-          "y": 180,
-          "name": "Production Cards",
-          "children": [
-            {
-              "type": "group",
-              "id": "mXXxl",
-              "x": 0,
-              "y": 0,
-              "name": "Status Header - Completed",
+              "type": "frame",
+              "id": "ksWVD",
+              "name": "Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
               "children": [
                 {
-                  "type": "text",
-                  "id": "aLVTn",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#276749ff",
-                  "content": "Completed",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "gndey",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "6K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "WZtKM",
-              "x": 0,
-              "y": 36,
-              "name": "Card - Westbridge Farm",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "tGPph",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
-                      "x": 0,
-                      "y": 2
+                  "type": "frame",
+                  "id": "ruYr5",
+                  "name": "Header Left",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iIRPR",
+                      "name": "Breadcrumb",
+                      "gap": 5,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "09X92",
+                          "name": "breadHome",
+                          "fill": "#a0aec0ff",
+                          "content": "Pages",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GrpCt",
+                          "name": "breadSep",
+                          "fill": "#a0aec0ff",
+                          "content": "/",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZNvot",
+                          "name": "breadCurrent",
+                          "fill": "#2d3748ff",
+                          "content": "Mill Production",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
+                    {
+                      "type": "text",
+                      "id": "3wWsx",
+                      "name": "headerTitle",
+                      "fill": "#2d3748ff",
+                      "content": "Mill Production",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    }
+                  ]
                 },
                 {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "NB0g1",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#38a169ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "6I9On",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255154",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "6I9On-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Westbridge Farm",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "Pcwxm",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "6,000 lbs • BROILER BRD 16% OS",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "SAKhH",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 8:30 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "BLSC9",
-              "x": 0,
-              "y": 156,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "21Lo3",
-              "x": 0,
-              "y": 172,
-              "name": "Status Header - Mixing",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "nWJxc",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#975a16ff",
-                  "content": "Mixing",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "bAjSd",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "6K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "FWkjW",
-              "x": 0,
-              "y": 208,
-              "name": "Card - Meadowview Poultry",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "K4lMd",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
-                      "x": 0,
-                      "y": 2
+                  "type": "frame",
+                  "id": "OPrqP",
+                  "name": "Header Right",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zfTsg",
+                      "name": "Search",
+                      "clip": true,
+                      "width": 200,
+                      "height": 40,
+                      "fill": "#ffffffff",
+                      "cornerRadius": 15,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 0.5,
+                        "fill": "#e2e8f0ff"
+                      },
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "bVGMx",
+                          "name": "searchIcon",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "search",
+                          "iconFontFamily": "lucide",
+                          "fill": "#a0aec0ff"
+                        },
+                        {
+                          "type": "text",
+                          "id": "sMgSr",
+                          "name": "searchText",
+                          "fill": "#a0aec0ff",
+                          "content": "Type here...",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "ZAznp",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#d69e2eff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "oxoAc",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255421",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "oxoAc-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Meadowview Poultry",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "LFVM7",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "6,000 lbs • BRD PRE-START FINE CR",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "OQfNI",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 9:15 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "kWcwV",
-              "x": 0,
-              "y": 328,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "7XVI9",
-              "x": 0,
-              "y": 344,
-              "name": "Status Header - Blocked",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "rPMNb",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#c53030ff",
-                  "content": "Blocked",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "wQ76k",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "12K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "chjgz",
-              "x": 0,
-              "y": 380,
-              "name": "Card - Starbird @ Jaedel",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "6CeQP",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
-                      "x": 0,
-                      "y": 2
+                    {
+                      "type": "icon_font",
+                      "id": "rERx9",
+                      "name": "settingsIcon",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "settings",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "Bdl0P",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#e53e3eff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "FTH8I",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255492",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "FTH8I-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Starbird @ Jaedel",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "M2owy",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "12,000 lbs • BROILER BRD LAY 1 T8",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "91P5k",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 10:00 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
+                    {
+                      "type": "icon_font",
+                      "id": "MUane",
+                      "name": "bellIcon",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "bell",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "rectangle",
-              "id": "2MXEB",
-              "x": 0,
-              "y": 500,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "H4QT5",
-              "x": 0,
-              "y": 516,
-              "name": "Status Header - Pending",
+              "type": "frame",
+              "id": "prodContent",
+              "name": "Production Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "none",
               "children": [
                 {
-                  "type": "text",
-                  "id": "orygT",
+                  "type": "group",
+                  "id": "BOlib",
                   "x": 0,
                   "y": 0,
-                  "name": "State Name",
-                  "fill": "#4a5568ff",
-                  "content": "Pending",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "UIyb8",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "8K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "G8MG7",
-              "x": 0,
-              "y": 552,
-              "name": "Card - Starbird @ Jaedel 2",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "exm87",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                  "name": "Column Headers",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XZMTS",
                       "x": 0,
-                      "y": 2
+                      "y": 0,
+                      "name": "Premix Header",
+                      "fill": "#2d3748ff",
+                      "content": "Premix",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "width": 500,
+                      "height": 32
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "RYAsZ",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#a0aec0ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "MYeyd",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255491",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "MYeyd-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Starbird @ Jaedel",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "G1xYe",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "8,000 lbs • BRD DEVELOP PLAIN T8",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "9l7Yz",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 11:30 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "9blxs",
-              "x": 520,
-              "y": -16,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "UaUtW",
-              "x": 520,
-              "y": 0,
-              "name": "Status Header - Completed",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "vLCjG",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#276749ff",
-                  "content": "Completed",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "RNaCi",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "21K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "0behW",
-              "x": 520,
-              "y": 36,
-              "name": "Card - Severinski Farm",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "AkK4k",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "text",
+                      "id": "7czRh",
+                      "x": 520,
+                      "y": 0,
+                      "name": "Excel Header",
+                      "fill": "#2d3748ff",
+                      "content": "Excel",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "width": 500,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "b00hN",
+                      "x": 1040,
+                      "y": 0,
+                      "name": "CGM Header",
+                      "fill": "#2d3748ff",
+                      "content": "CGM",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "width": 500,
+                      "height": 32
+                    },
+                    {
+                      "type": "text",
+                      "id": "zhaOY",
                       "x": 0,
-                      "y": 2
+                      "y": 36,
+                      "name": "Premix Total",
+                      "fill": "#718096ff",
+                      "content": "32K / 406K lbs",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 200,
+                      "height": 22
                     },
-                    "blur": 8
-                  }
+                    {
+                      "type": "text",
+                      "id": "fCR1G",
+                      "x": 520,
+                      "y": 36,
+                      "name": "Excel Total",
+                      "fill": "#718096ff",
+                      "content": "45K / 142K lbs",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 200,
+                      "height": 22
+                    },
+                    {
+                      "type": "text",
+                      "id": "rqSR9",
+                      "x": 1040,
+                      "y": 36,
+                      "name": "CGM Total",
+                      "fill": "#718096ff",
+                      "content": "60K / 381K lbs",
+                      "fontFamily": "Helvetica",
+                      "fontSize": 16,
+                      "fontWeight": "600",
+                      "width": 200,
+                      "height": 22
+                    }
+                  ]
                 },
                 {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "vNRAT",
+                  "type": "group",
+                  "id": "TH0U6",
                   "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#38a169ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "Xe9A3",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255298",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "Xe9A3-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Severinski Farm",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "V0S87",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "15,000 lbs • SEVERINSKI DAIRY MASH",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "6aWKx",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 7:00 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "xohCL",
-              "x": 520,
-              "y": 148,
-              "name": "Card - Jireh Farms",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "MBDbq",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                  "y": 80,
+                  "name": "Production Cards",
+                  "children": [
+                    {
+                      "type": "group",
+                      "id": "mXXxl",
                       "x": 0,
-                      "y": 2
+                      "y": 0,
+                      "name": "Status Header - Completed",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "aLVTn",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#276749ff",
+                          "content": "Completed",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "gndey",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "6K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "cJS3J",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#38a169ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "wEJa7",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255309",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "wEJa7-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Jireh Farms",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "NLLXN",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "6,000 lbs • JIREH COMPUTER PELLET",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "OuCxC",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 7:45 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "ZDsMG",
-              "x": 520,
-              "y": 268,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "FCpmx",
-              "x": 520,
-              "y": 284,
-              "name": "Status Header - Mixing",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "iRR4I",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#975a16ff",
-                  "content": "Mixing",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "GPOEw",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "18K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "Xv2Yw",
-              "x": 520,
-              "y": 320,
-              "name": "Card - Corner's Pride",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "TYkB6",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "group",
+                      "id": "WZtKM",
                       "x": 0,
-                      "y": 2
+                      "y": 36,
+                      "name": "Card - Westbridge Farm",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "tGPph",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "NB0g1",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#38a169ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "6I9On",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255154",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "6I9On-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Westbridge Farm",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "Pcwxm",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "6,000 lbs • BROILER BRD 16% OS",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "SAKhH",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 8:30 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "fcvYJ",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#d69e2eff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "gFlG1",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255300",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "gFlG1-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Corner's Pride Farm",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "YL7OQ",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "18,000 lbs • CPF ROBOT GRAIN PELLET",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "uFlLD",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 10:30 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "DhuTb",
-              "x": 520,
-              "y": 440,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "1VEhb",
-              "x": 520,
-              "y": 456,
-              "name": "Status Header - Pending",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "jr3F1",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#4a5568ff",
-                  "content": "Pending",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "VSSJW",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "6K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "zdEua",
-              "x": 520,
-              "y": 492,
-              "name": "Card - Trilean Makin Bacon",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "VWa1L",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "rectangle",
+                      "id": "BLSC9",
                       "x": 0,
-                      "y": 2
+                      "y": 156,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "n6SwC",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#a0aec0ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "svJQX",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255447",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "svJQX-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Trilean Makin Bacon",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "XoCOZ",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "6,000 lbs • FINISHER FEB 2026 WHEY",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "gzk8h",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 1:00 PM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "x5nB0",
-              "x": 1040,
-              "y": -16,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "l7gtr",
-              "x": 1040,
-              "y": 0,
-              "name": "Status Header - Completed",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "K2u7G",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#276749ff",
-                  "content": "Completed",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "F666H",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "15K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "t40Zo",
-              "x": 1040,
-              "y": 36,
-              "name": "Card - Rockwall @ Peardonville",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "jcFVH",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "group",
+                      "id": "21Lo3",
                       "x": 0,
-                      "y": 2
+                      "y": 172,
+                      "name": "Status Header - Mixing",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nWJxc",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#975a16ff",
+                          "content": "Mixing",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "bAjSd",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "6K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "1177y",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#38a169ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "K9y4w",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255393",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "K9y4w-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Rockwall @ Peardonville",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "Q1g1X",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "15,000 lbs • BROILER GROWER I MD",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "iIgdF",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 6:30 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "C57mq",
-              "x": 1040,
-              "y": 156,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "vMqpw",
-              "x": 1040,
-              "y": 172,
-              "name": "Status Header - Mixing",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "oQuFg",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#975a16ff",
-                  "content": "Mixing",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "Njk94",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "12K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "CUKnt",
-              "x": 1040,
-              "y": 208,
-              "name": "Card - Cedarcroft Poultry",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "gPO37",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "group",
+                      "id": "FWkjW",
                       "x": 0,
-                      "y": 2
+                      "y": 208,
+                      "name": "Card - Meadowview Poultry",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "K4lMd",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "ZAznp",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#d69e2eff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "oxoAc",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255421",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "oxoAc-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Meadowview Poultry",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "LFVM7",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "6,000 lbs • BRD PRE-START FINE CR",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "OQfNI",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 9:15 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "6SK8v",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#d69e2eff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "ckMGI",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255461",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "ckMGI-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Cedarcroft Poultry",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "YnR1K",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "12,000 lbs • BROILER STARTER MD",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "UJ08v",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 9:45 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "z8AKp",
-              "x": 1040,
-              "y": 328,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "p2n75",
-              "x": 1040,
-              "y": 344,
-              "name": "Status Header - Blocked",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "t0Kqc",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#c53030ff",
-                  "content": "Blocked",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "0Th3n",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "18K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "nkM21",
-              "x": 1040,
-              "y": 380,
-              "name": "Card - Triple H Farms",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "oSqth",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "rectangle",
+                      "id": "kWcwV",
                       "x": 0,
-                      "y": 2
+                      "y": 328,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "n02H9",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#e53e3eff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "HZbQI",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255360",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "HZbQI-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Triple H Farms",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "7UV6O",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "18,000 lbs • BROIL FINISH 1 PELLET",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "k7UlI",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 11:15 AM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "6DkRx",
-              "x": 1040,
-              "y": 500,
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": 480,
-              "height": 1
-            },
-            {
-              "type": "group",
-              "id": "nENZH",
-              "x": 1040,
-              "y": 516,
-              "name": "Status Header - Pending",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "lKdgx",
-                  "x": 0,
-                  "y": 0,
-                  "name": "State Name",
-                  "fill": "#4a5568ff",
-                  "content": "Pending",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 20,
-                  "fontWeight": "700",
-                  "width": 150,
-                  "height": 28
-                },
-                {
-                  "type": "text",
-                  "id": "RPBFW",
-                  "x": 110,
-                  "y": 4,
-                  "name": "State Total",
-                  "fill": "#718096ff",
-                  "content": "15K",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "500",
-                  "width": 100,
-                  "height": 24
-                }
-              ]
-            },
-            {
-              "type": "group",
-              "id": "QklT5",
-              "x": 1040,
-              "y": 552,
-              "name": "Card - Whytebridge Farms",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    0,
-                    12,
-                    12,
-                    0
-                  ],
-                  "id": "xqOth",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Card Background",
-                  "fill": "#ffffffff",
-                  "width": 480,
-                  "height": 100,
-                  "effect": {
-                    "type": "shadow",
-                    "shadowType": "outer",
-                    "color": "#0000000d",
-                    "offset": {
+                    {
+                      "type": "group",
+                      "id": "7XVI9",
                       "x": 0,
-                      "y": 2
+                      "y": 344,
+                      "name": "Status Header - Blocked",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rPMNb",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#c53030ff",
+                          "content": "Blocked",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "wQ76k",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "12K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
                     },
-                    "blur": 8
-                  }
-                },
-                {
-                  "type": "rectangle",
-                  "cornerRadius": [
-                    12,
-                    0,
-                    0,
-                    12
-                  ],
-                  "id": "gMe43",
-                  "x": 0,
-                  "y": 0,
-                  "name": "Left Border",
-                  "fill": "#a0aec0ff",
-                  "width": 4,
-                  "height": 100
-                },
-                {
-                  "type": "text",
-                  "id": "zMY3G",
-                  "x": 20,
-                  "y": 10,
-                  "name": "Order Number",
-                  "fill": "#718096ff",
-                  "content": "ORD-255392",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 11,
-                  "fontWeight": "600",
-                  "width": 100,
-                  "height": 14
-                },
-                {
-                  "type": "text",
-                  "id": "zMY3G-cust",
-                  "x": 20,
-                  "y": 26,
-                  "name": "Customer Name",
-                  "fill": "#2d3748ff",
-                  "content": "Whytebridge Farms",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 15,
-                  "fontWeight": "700",
-                  "width": 300,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "lVANf",
-                  "x": 20,
-                  "y": 50,
-                  "name": "Product with Weight",
-                  "fill": "#4a5568ff",
-                  "content": "15,000 lbs • BROILER GROWER 2 MD",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 14,
-                  "fontWeight": "500",
-                  "width": 350,
-                  "height": 18
-                },
-                {
-                  "type": "text",
-                  "id": "7Cewh",
-                  "x": 20,
-                  "y": 74,
-                  "name": "Delivery Time",
-                  "fill": "#718096ff",
-                  "content": "Delivery: 2:30 PM",
-                  "fontFamily": "Helvetica",
-                  "fontSize": 12,
-                  "fontWeight": "500",
-                  "width": 150,
-                  "height": 16
+                    {
+                      "type": "group",
+                      "id": "chjgz",
+                      "x": 0,
+                      "y": 380,
+                      "name": "Card - Starbird @ Jaedel",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "6CeQP",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "Bdl0P",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#e53e3eff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "FTH8I",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255492",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "FTH8I-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Starbird @ Jaedel",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "M2owy",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "12,000 lbs • BROILER BRD LAY 1 T8",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "91P5k",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 10:00 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "2MXEB",
+                      "x": 0,
+                      "y": 500,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "H4QT5",
+                      "x": 0,
+                      "y": 516,
+                      "name": "Status Header - Pending",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "orygT",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#4a5568ff",
+                          "content": "Pending",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "UIyb8",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "8K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "G8MG7",
+                      "x": 0,
+                      "y": 552,
+                      "name": "Card - Starbird @ Jaedel 2",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "exm87",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "RYAsZ",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#a0aec0ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "MYeyd",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255491",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "MYeyd-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Starbird @ Jaedel",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "G1xYe",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "8,000 lbs • BRD DEVELOP PLAIN T8",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "9l7Yz",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 11:30 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "9blxs",
+                      "x": 520,
+                      "y": -16,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "UaUtW",
+                      "x": 520,
+                      "y": 0,
+                      "name": "Status Header - Completed",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vLCjG",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#276749ff",
+                          "content": "Completed",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "RNaCi",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "21K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "0behW",
+                      "x": 520,
+                      "y": 36,
+                      "name": "Card - Severinski Farm",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "AkK4k",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "vNRAT",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#38a169ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "Xe9A3",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255298",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "Xe9A3-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Severinski Farm",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "V0S87",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "15,000 lbs • SEVERINSKI DAIRY MASH",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "6aWKx",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 7:00 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "xohCL",
+                      "x": 520,
+                      "y": 148,
+                      "name": "Card - Jireh Farms",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "MBDbq",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "cJS3J",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#38a169ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "wEJa7",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255309",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "wEJa7-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Jireh Farms",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "NLLXN",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "6,000 lbs • JIREH COMPUTER PELLET",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "OuCxC",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 7:45 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "ZDsMG",
+                      "x": 520,
+                      "y": 268,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "FCpmx",
+                      "x": 520,
+                      "y": 284,
+                      "name": "Status Header - Mixing",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iRR4I",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#975a16ff",
+                          "content": "Mixing",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "GPOEw",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "18K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "Xv2Yw",
+                      "x": 520,
+                      "y": 320,
+                      "name": "Card - Corner's Pride",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "TYkB6",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "fcvYJ",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#d69e2eff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "gFlG1",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255300",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "gFlG1-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Corner's Pride Farm",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "YL7OQ",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "18,000 lbs • CPF ROBOT GRAIN PELLET",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "uFlLD",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 10:30 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "DhuTb",
+                      "x": 520,
+                      "y": 440,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "1VEhb",
+                      "x": 520,
+                      "y": 456,
+                      "name": "Status Header - Pending",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jr3F1",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#4a5568ff",
+                          "content": "Pending",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "VSSJW",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "6K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "zdEua",
+                      "x": 520,
+                      "y": 492,
+                      "name": "Card - Trilean Makin Bacon",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "VWa1L",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "n6SwC",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#a0aec0ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "svJQX",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255447",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "svJQX-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Trilean Makin Bacon",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "XoCOZ",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "6,000 lbs • FINISHER FEB 2026 WHEY",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "gzk8h",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 1:00 PM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "x5nB0",
+                      "x": 1040,
+                      "y": -16,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "l7gtr",
+                      "x": 1040,
+                      "y": 0,
+                      "name": "Status Header - Completed",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "K2u7G",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#276749ff",
+                          "content": "Completed",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "F666H",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "15K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "t40Zo",
+                      "x": 1040,
+                      "y": 36,
+                      "name": "Card - Rockwall @ Peardonville",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "jcFVH",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "1177y",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#38a169ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "K9y4w",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255393",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "K9y4w-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Rockwall @ Peardonville",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q1g1X",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "15,000 lbs • BROILER GROWER I MD",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "iIgdF",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 6:30 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "C57mq",
+                      "x": 1040,
+                      "y": 156,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "vMqpw",
+                      "x": 1040,
+                      "y": 172,
+                      "name": "Status Header - Mixing",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "oQuFg",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#975a16ff",
+                          "content": "Mixing",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "Njk94",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "12K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "CUKnt",
+                      "x": 1040,
+                      "y": 208,
+                      "name": "Card - Cedarcroft Poultry",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "gPO37",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "6SK8v",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#d69e2eff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "ckMGI",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255461",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "ckMGI-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Cedarcroft Poultry",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "YnR1K",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "12,000 lbs • BROILER STARTER MD",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "UJ08v",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 9:45 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "z8AKp",
+                      "x": 1040,
+                      "y": 328,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "p2n75",
+                      "x": 1040,
+                      "y": 344,
+                      "name": "Status Header - Blocked",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "t0Kqc",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#c53030ff",
+                          "content": "Blocked",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "0Th3n",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "18K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "nkM21",
+                      "x": 1040,
+                      "y": 380,
+                      "name": "Card - Triple H Farms",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "oSqth",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "n02H9",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#e53e3eff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "HZbQI",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255360",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "HZbQI-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Triple H Farms",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "7UV6O",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "18,000 lbs • BROIL FINISH 1 PELLET",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "k7UlI",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 11:15 AM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "6DkRx",
+                      "x": 1040,
+                      "y": 500,
+                      "name": "Section Divider",
+                      "fill": "#e2e8f0ff",
+                      "width": 480,
+                      "height": 1
+                    },
+                    {
+                      "type": "group",
+                      "id": "nENZH",
+                      "x": 1040,
+                      "y": 516,
+                      "name": "Status Header - Pending",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "lKdgx",
+                          "x": 0,
+                          "y": 0,
+                          "name": "State Name",
+                          "fill": "#4a5568ff",
+                          "content": "Pending",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700",
+                          "width": 150,
+                          "height": 28
+                        },
+                        {
+                          "type": "text",
+                          "id": "RPBFW",
+                          "x": 110,
+                          "y": 4,
+                          "name": "State Total",
+                          "fill": "#718096ff",
+                          "content": "15K",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 16,
+                          "fontWeight": "500",
+                          "width": 100,
+                          "height": 24
+                        }
+                      ]
+                    },
+                    {
+                      "type": "group",
+                      "id": "QklT5",
+                      "x": 1040,
+                      "y": 552,
+                      "name": "Card - Whytebridge Farms",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            0,
+                            12,
+                            12,
+                            0
+                          ],
+                          "id": "xqOth",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Card Background",
+                          "fill": "#ffffffff",
+                          "width": 480,
+                          "height": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0000000d",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          }
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": [
+                            12,
+                            0,
+                            0,
+                            12
+                          ],
+                          "id": "gMe43",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Left Border",
+                          "fill": "#a0aec0ff",
+                          "width": 4,
+                          "height": 100
+                        },
+                        {
+                          "type": "text",
+                          "id": "zMY3G",
+                          "x": 20,
+                          "y": 10,
+                          "name": "Order Number",
+                          "fill": "#718096ff",
+                          "content": "ORD-255392",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 11,
+                          "fontWeight": "600",
+                          "width": 100,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "zMY3G-cust",
+                          "x": 20,
+                          "y": 26,
+                          "name": "Customer Name",
+                          "fill": "#2d3748ff",
+                          "content": "Whytebridge Farms",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 15,
+                          "fontWeight": "700",
+                          "width": 300,
+                          "height": 20
+                        },
+                        {
+                          "type": "text",
+                          "id": "lVANf",
+                          "x": 20,
+                          "y": 50,
+                          "name": "Product with Weight",
+                          "fill": "#4a5568ff",
+                          "content": "15,000 lbs • BROILER GROWER 2 MD",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 14,
+                          "fontWeight": "500",
+                          "width": 350,
+                          "height": 18
+                        },
+                        {
+                          "type": "text",
+                          "id": "7Cewh",
+                          "x": 20,
+                          "y": 74,
+                          "name": "Delivery Time",
+                          "fill": "#718096ff",
+                          "content": "Delivery: 2:30 PM",
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "500",
+                          "width": 150,
+                          "height": 16
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }

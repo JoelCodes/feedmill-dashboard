@@ -1,0 +1,622 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "page-layout",
+      "x": 0,
+      "y": 0,
+      "name": "Page Layout",
+      "clip": true,
+      "width": 1920,
+      "height": 1200,
+      "fill": "#f8f9faff",
+      "children": [
+        {
+          "type": "frame",
+          "id": "DdE40",
+          "name": "Sidebar",
+          "width": 280,
+          "height": "fill_container",
+          "fill": "#ffffffff",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "NNupj",
+              "name": "Logo Section",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                0,
+                0,
+                20,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KjdZd",
+                  "name": "Logo Icon",
+                  "width": 32,
+                  "height": 32,
+                  "fill": "#4fd1c5ff",
+                  "cornerRadius": 8,
+                  "layout": "none"
+                },
+                {
+                  "type": "text",
+                  "id": "o8hB6",
+                  "name": "logoText",
+                  "fill": "#2d3748ff",
+                  "content": "FEEDMILL PRO",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "UmOMr",
+              "name": "Divider",
+              "fill": "#e2e8f0ff",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "qCOjU",
+              "name": "navLabel",
+              "fill": "#a0aec0ff",
+              "content": "PRODUCTION",
+              "lineHeight": 1.5,
+              "fontFamily": "Helvetica",
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "upD8A",
+              "name": "Nav Dashboard",
+              "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000008",
+                "offset": {
+                  "x": 0,
+                  "y": 3.5
+                },
+                "blur": 5
+              },
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "8vP2F",
+                  "name": "navActiveIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#4fd1c5ff",
+                  "cornerRadius": 12,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "RzPtN",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navActiveIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "layout-dashboard",
+                      "iconFontFamily": "lucide",
+                      "fill": "#ffffffff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "vfUvB",
+                  "name": "navActiveText",
+                  "fill": "#2d3748ff",
+                  "content": "Dashboard",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mcbft",
+              "name": "Nav Orders",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "PNFj2",
+                  "name": "navOrdersIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "536za",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navOrdersIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "clipboard-list",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "5fChm",
+                  "name": "navOrdersText",
+                  "fill": "#a0aec0ff",
+                  "content": "Orders",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8VKeV",
+              "name": "Nav Production Lines",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "cKzYm",
+                  "name": "navProdIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "LwDcr",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navProdIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "factory",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "TQK1T",
+                  "name": "navProdText",
+                  "fill": "#a0aec0ff",
+                  "content": "Production Lines",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JQBY4",
+              "name": "Nav Inventory",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "E3ata",
+                  "name": "navInvIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "LFNKs",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navInvIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "warehouse",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "wCgx9",
+                  "name": "navInvText",
+                  "fill": "#a0aec0ff",
+                  "content": "Inventory",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "79CnO",
+              "name": "Nav Shipments",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KSOxK",
+                  "name": "navShipIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "YQTGo",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navShipIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "truck",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "rHlfB",
+                  "name": "navShipText",
+                  "fill": "#a0aec0ff",
+                  "content": "Shipments",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "JWdCd",
+              "name": "Divider 2",
+              "fill": "#e2e8f0ff",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "kMBgf",
+              "name": "navLabel2",
+              "fill": "#a0aec0ff",
+              "content": "SETTINGS",
+              "lineHeight": 1.5,
+              "fontFamily": "Helvetica",
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "NgmOR",
+              "name": "Nav Formulas",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BFAUa",
+                  "name": "navFormulasIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 3.5
+                    },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "4jKmi",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navFormulasIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "flask-conical",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "zkyio",
+                  "name": "navFormulasText",
+                  "fill": "#a0aec0ff",
+                  "content": "Formulas",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "7nKKB",
+          "name": "Main Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            32
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ksWVD",
+              "name": "Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ruYr5",
+                  "name": "Header Left",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iIRPR",
+                      "name": "Breadcrumb",
+                      "gap": 5,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "09X92",
+                          "name": "breadHome",
+                          "fill": "#a0aec0ff",
+                          "content": "Pages",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GrpCt",
+                          "name": "breadSep",
+                          "fill": "#a0aec0ff",
+                          "content": "/",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZNvot",
+                          "name": "breadCurrent",
+                          "fill": "#2d3748ff",
+                          "content": "Mill Production",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "3wWsx",
+                      "name": "headerTitle",
+                      "fill": "#2d3748ff",
+                      "content": "Mill Production",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OPrqP",
+                  "name": "Header Right",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zfTsg",
+                      "name": "Search",
+                      "clip": true,
+                      "width": 200,
+                      "height": 40,
+                      "fill": "#ffffffff",
+                      "cornerRadius": 15,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 0.5,
+                        "fill": "#e2e8f0ff"
+                      },
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "bVGMx",
+                          "name": "searchIcon",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "search",
+                          "iconFontFamily": "lucide",
+                          "fill": "#a0aec0ff"
+                        },
+                        {
+                          "type": "text",
+                          "id": "sMgSr",
+                          "name": "searchText",
+                          "fill": "#a0aec0ff",
+                          "content": "Type here...",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "rERx9",
+                      "name": "settingsIcon",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "settings",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "MUane",
+                      "name": "bellIcon",
+                      "width": 14,
+                      "height": 14,
+                      "iconFontName": "bell",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
