@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Orders Table** - Filtering, searching, selection interactivity (completed 2026-03-11)
 - [ ] **Phase 2: Order Details** - Panel display with timeline and change history
 - [ ] **Phase 3: KPI Cards** - Dynamic values and drill-down filtering
-- [ ] **Phase 4: Navigation** - Functional sidebar routing between views
+- [x] **Phase 4: Navigation** - Functional sidebar routing between views
 - [ ] **Phase 5: Header** - Global search, notifications, and settings
 
 ## Phase Details
@@ -102,10 +102,12 @@ Plans:
   1. User can search across all orders using header search box
   2. User sees notifications area with indicator
   3. User can click settings link and navigate to settings page
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Header functionality (search, notifications, settings)
+- [ ] 05-01-PLAN.md — Infrastructure: types, services, hooks (HEADER-01, HEADER-02, HEADER-03)
+- [ ] 05-02-PLAN.md — Header functionality: search, notifications dropdown, settings nav (HEADER-01, HEADER-02, HEADER-03)
+- [ ] 05-03-PLAN.md — Settings page with preferences (HEADER-03)
 
 ## Progress
 
@@ -118,8 +120,8 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 1. Orders Table | 3/3 | Complete   | 2026-03-11 |
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
-| 4. Navigation | 0/1 | Not started | - |
-| 5. Header | 0/1 | Not started | - |
+| 4. Navigation | 1/1 | Complete | - |
+| 5. Header | 0/3 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-11*
