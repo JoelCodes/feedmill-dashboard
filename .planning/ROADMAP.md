@@ -102,12 +102,13 @@ Plans:
   1. User can search across all orders using header search box
   2. User sees notifications area with indicator
   3. User can click settings link and navigate to settings page
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
 - [x] 05-01-PLAN.md — Infrastructure: types, services, hooks (HEADER-01, HEADER-02, HEADER-03)
 - [x] 05-02-PLAN.md — Header functionality: search, notifications dropdown, settings nav (HEADER-01, HEADER-02, HEADER-03)
 - [x] 05-03-PLAN.md — Settings page with preferences (HEADER-03)
+- [ ] 05-04-PLAN.md — Gap closure: wire search to table, fix notification read state (HEADER-01, HEADER-02)
 
 ## Progress
 
@@ -121,7 +122,7 @@ Phases execute in numeric order: 0 -> 1 -> 2 -> 3 -> 4 -> 5
 | 2. Order Details | 0/2 | Not started | - |
 | 3. KPI Cards | 0/1 | Not started | - |
 | 4. Navigation | 1/1 | Complete | - |
-| 5. Header | 3/3 | Complete | 2026-04-28 |
+| 5. Header | 3/4 | Gap closure | 2026-04-28 |
 
 ---
 *Roadmap created: 2026-03-11*
