@@ -148,14 +148,20 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
   // Auto-select first row on initial load
   useEffect(() => {
     if (!selectedOrderId && filteredOrders.length > 0) {
-      handleSelectOrder(filteredOrders[0].id);
+      const firstOrder = filteredOrders[0];
+      if (firstOrder) {
+        handleSelectOrder(firstOrder.id);
+      }
     }
   }, [selectedOrderId, filteredOrders, handleSelectOrder]);
 
   // Auto-select first visible when current selection filtered out
   useEffect(() => {
     if (!validSelectedId && selectedOrderId && filteredOrders.length > 0) {
-      handleSelectOrder(filteredOrders[0].id);
+      const firstOrder = filteredOrders[0];
+      if (firstOrder) {
+        handleSelectOrder(firstOrder.id);
+      }
     }
   }, [validSelectedId, filteredOrders, selectedOrderId, handleSelectOrder]);
 
