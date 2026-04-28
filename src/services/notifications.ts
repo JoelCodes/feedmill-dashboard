@@ -59,6 +59,13 @@ const mockNotifications: Notification[] = [
 
 export async function getNotifications(): Promise<Notification[]> {
   await delay(200);
+  // When connecting to real API, deserialize timestamp strings:
+  // const response = await fetch('/api/notifications');
+  // const data = await response.json();
+  // return data.map((n: Record<string, unknown>) => ({
+  //   ...n,
+  //   timestamp: new Date(n.timestamp as string)
+  // }));
   return mockNotifications;
 }
 
