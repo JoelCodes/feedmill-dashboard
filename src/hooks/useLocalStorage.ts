@@ -22,7 +22,9 @@ export function useLocalStorage<T>(
     try {
       window.localStorage.setItem(key, JSON.stringify(storedValue));
     } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`Error setting localStorage key "${key}":`, error);
+      }
     }
   }, [key, storedValue]);
 
