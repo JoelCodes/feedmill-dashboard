@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -11,20 +14,24 @@ import {
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", href: "/" },
   { icon: Factory, label: "Production", id: "production", href: "/mill-production" },
-  { icon: ClipboardList, label: "Orders", id: "orders", href: "#" },
-  { icon: Package, label: "Inventory", id: "inventory", href: "#" },
-  { icon: Truck, label: "Shipments", id: "shipments", href: "#" },
+  { icon: ClipboardList, label: "Orders", id: "orders", href: "/orders" },
+  { icon: Package, label: "Inventory", id: "inventory", href: "/inventory" },
+  { icon: Truck, label: "Shipments", id: "shipments", href: "/shipments" },
 ];
 
 const settingsItems = [
   { icon: FlaskConical, label: "Formulas", id: "formulas", href: "#" },
 ];
 
-interface SidebarProps {
-  activeItem?: string;
+function isActive(href: string, pathname: string): boolean {
+  if (href === "/") {
+    return pathname === "/";
+  }
+  return pathname.startsWith(href);
 }
 
-export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
+export default function Sidebar() {
+  const pathname = usePathname();
   return (
     <aside className="flex h-full w-[280px] flex-col gap-2 bg-white p-6">
       {/* Logo */}
@@ -49,7 +56,7 @@ export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
           icon={item.icon}
           label={item.label}
           href={item.href}
-          active={item.id === activeItem}
+          active={isActive(item.href, pathname)}
         />
       ))}
 
@@ -67,7 +74,7 @@ export default function Sidebar({ activeItem = "dashboard" }: SidebarProps) {
           icon={item.icon}
           label={item.label}
           href={item.href}
-          active={item.id === activeItem}
+          active={isActive(item.href, pathname)}
         />
       ))}
     </aside>
