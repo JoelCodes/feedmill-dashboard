@@ -9,6 +9,7 @@ interface NotificationDropdownProps {
   onClose: () => void;
   onMarkAsRead: (id: string) => void;
   onClearAll: () => void;
+  readNotificationIds: string[];
 }
 
 export default function NotificationDropdown({
@@ -17,6 +18,7 @@ export default function NotificationDropdown({
   onClose,
   onMarkAsRead,
   onClearAll,
+  readNotificationIds,
 }: NotificationDropdownProps) {
   const ref = useClickOutside<HTMLDivElement>(onClose);
 
@@ -73,12 +75,12 @@ export default function NotificationDropdown({
                 className="flex gap-3 p-3 hover:bg-gray-50 cursor-pointer transition-colors"
               >
                 {/* Unread Indicator */}
-                {!notification.isRead && (
+                {!readNotificationIds.includes(notification.id) && (
                   <div className="flex-shrink-0">
                     <div className="h-2 w-2 rounded-full bg-blue-500 mt-1" />
                   </div>
                 )}
-                {notification.isRead && (
+                {readNotificationIds.includes(notification.id) && (
                   <div className="flex-shrink-0 w-2" />
                 )}
 

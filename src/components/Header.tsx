@@ -125,6 +125,7 @@ export default function Header({ onSearch }: HeaderProps) {
             onClose={() => setIsDropdownOpen(false)}
             onMarkAsRead={handleMarkAsRead}
             onClearAll={handleClearAll}
+            readNotificationIds={readNotificationIds}
           />
         </div>
       </div>
