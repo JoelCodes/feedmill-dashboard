@@ -106,6 +106,7 @@ export default function Header({ onSearch }: HeaderProps) {
         <button
           onClick={() => router.push('/settings')}
           className="rounded-lg p-2 transition-colors hover:bg-white/50"
+          aria-label="Settings"
         >
           <Settings className="text-text-secondary h-4 w-4" />
         </button>
@@ -115,6 +116,8 @@ export default function Header({ onSearch }: HeaderProps) {
           <button
             onClick={toggleDropdown}
             className="rounded-lg p-2 transition-colors hover:bg-white/50 relative"
+            aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+            aria-expanded={isDropdownOpen}
           >
             <Bell className="text-text-secondary h-4 w-4" />
             {unreadCount > 0 && (
