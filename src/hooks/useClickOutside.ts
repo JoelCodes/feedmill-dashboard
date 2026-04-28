@@ -5,7 +5,7 @@ export function useClickOutside<T extends HTMLElement>(
 ): React.RefObject<T | null> {
   const ref = useRef<T | null>(null);
 
-  const stableHandler = useCallback(handler, [handler]);
+  const stableHandler = useCallback(() => handler(), [handler]);
 
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {

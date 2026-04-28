@@ -60,7 +60,7 @@ export default function NotificationDropdown({
           <div className="flex flex-col items-center justify-center p-8 text-center">
             <h4 className="text-sm font-bold text-text-primary mb-1">All caught up</h4>
             <p className="text-xs text-text-secondary">
-              You'll see order updates and system alerts here.
+              You&apos;ll see order updates and system alerts here.
             </p>
           </div>
         ) : (
