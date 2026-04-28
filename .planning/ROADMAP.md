@@ -89,10 +89,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User clicks sidebar links and navigates to different views/pages
   2. Current view is visually indicated in sidebar (active state)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 04-01: Sidebar routing and active state
+- [ ] 04-01-PLAN.md — Sidebar auto-detection and stub pages (NAV-01, NAV-02)
 
 ### Phase 5: Header
 **Goal**: Header features (global search, notifications, settings) are functional
