@@ -39,7 +39,11 @@ export default function Header({ onSearch }: HeaderProps) {
 
   // Load notifications on mount
   useEffect(() => {
-    getNotifications().then(setNotifications);
+    getNotifications()
+      .then(setNotifications)
+      .catch((error) => {
+        console.error('Failed to load notifications:', error);
+      });
   }, []);
 
   // Search callback (debounced)
