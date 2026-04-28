@@ -180,7 +180,7 @@ export default function MillProductionPage() {
 
   return (
     <div className="flex h-screen bg-bg-page">
-      <Sidebar activeItem="production" />
+      <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header title="Mill Production" />
         {loading ? (
