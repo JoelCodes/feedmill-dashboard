@@ -24,6 +24,12 @@ export default function NotificationDropdown({
 
   if (!isOpen) return null;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  };
+
   const formatTimestamp = (timestamp: Date): string => {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
@@ -41,6 +47,9 @@ export default function NotificationDropdown({
     <div
       ref={ref}
       className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-white shadow-lg"
+      onKeyDown={handleKeyDown}
+      role="dialog"
+      aria-label="Notifications"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-200 p-4">
