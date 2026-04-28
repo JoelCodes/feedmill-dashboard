@@ -108,7 +108,7 @@ Plans:
 - [x] 05-01-PLAN.md — Infrastructure: types, services, hooks (HEADER-01, HEADER-02, HEADER-03)
 - [x] 05-02-PLAN.md — Header functionality: search, notifications dropdown, settings nav (HEADER-01, HEADER-02, HEADER-03)
 - [x] 05-03-PLAN.md — Settings page with preferences (HEADER-03)
-- [ ] 05-04-PLAN.md — Gap closure: wire search to table, fix notification read state (HEADER-01, HEADER-02)
+- [x] 05-04-PLAN.md — Gap closure: wire search to table, fix notification read state (HEADER-01, HEADER-02)
 
 ## Progress
 
