@@ -1,10 +1,77 @@
+'use client';
+
 import { Search, Bell, Settings } from "lucide-react";
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useDebounce } from '@/hooks/useDebounce';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { getNotifications } from '@/services/notifications';
+import { Notification } from '@/types/notification';
+import NotificationDropdown from './NotificationDropdown';
 
 interface HeaderProps {
-  title?: string;
+  onSearch?: (query: string) => void;
 }
 
-export default function Header({ title = "Dashboard" }: HeaderProps) {
+const getPageTitle = (path: string): string => {
+  if (path === '/') return 'Dashboard';
+  if (path.startsWith('/orders')) return 'Orders';
+  if (path.startsWith('/mill-production')) return 'Production';
+  if (path.startsWith('/inventory')) return 'Inventory';
+  if (path.startsWith('/shipments')) return 'Shipments';
+  if (path.startsWith('/settings')) return 'Settings';
+  return 'Dashboard';
+};
+
+export default function Header({ onSearch }: HeaderProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const title = getPageTitle(pathname);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [readNotificationIds, setReadNotificationIds] = useLocalStorage<string[]>(
+    'notifications-read',
+    []
+  );
+
+  // Load notifications on mount
+  useEffect(() => {
+    getNotifications().then(setNotifications);
+  }, []);
+
+  // Search callback (debounced)
+  useEffect(() => {
+    if (onSearch) {
+      onSearch(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, onSearch]);
+
+  // Compute unread count
+  const unreadCount = useMemo(() => {
+    return notifications.filter((n) => !readNotificationIds.includes(n.id)).length;
+  }, [notifications, readNotificationIds]);
+
+  // Mark notification as read
+  const handleMarkAsRead = useCallback((id: string) => {
+    if (!readNotificationIds.includes(id)) {
+      setReadNotificationIds((prev) => [...prev, id]);
+    }
+  }, [readNotificationIds, setReadNotificationIds]);
+
+  // Clear all notifications
+  const handleClearAll = useCallback(() => {
+    const allIds = notifications.map((n) => n.id);
+    setReadNotificationIds(allIds);
+  }, [notifications, setReadNotificationIds]);
+
+  // Toggle dropdown
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <header className="flex w-full items-center justify-between">
       {/* Left Side - Breadcrumb */}
@@ -25,17 +92,41 @@ export default function Header({ title = "Dashboard" }: HeaderProps) {
           <input
             type="text"
             placeholder="Type here..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="placeholder:text-text-secondary w-32 bg-transparent text-xs outline-none"
           />
         </div>
 
         {/* Icons */}
-        <button className="rounded-lg p-2 transition-colors hover:bg-white/50">
+        <button
+          onClick={() => router.push('/settings')}
+          className="rounded-lg p-2 transition-colors hover:bg-white/50"
+        >
           <Settings className="text-text-secondary h-4 w-4" />
         </button>
-        <button className="rounded-lg p-2 transition-colors hover:bg-white/50">
-          <Bell className="text-text-secondary h-4 w-4" />
-        </button>
+
+        {/* Bell with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="rounded-lg p-2 transition-colors hover:bg-white/50 relative"
+          >
+            <Bell className="text-text-secondary h-4 w-4" />
+            {unreadCount > 0 && (
+              <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-error text-white text-[10px] font-bold flex items-center justify-center">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </button>
+          <NotificationDropdown
+            notifications={notifications}
+            isOpen={isDropdownOpen}
+            onClose={() => setIsDropdownOpen(false)}
+            onMarkAsRead={handleMarkAsRead}
+            onClearAll={handleClearAll}
+          />
+        </div>
       </div>
     </header>
   );
