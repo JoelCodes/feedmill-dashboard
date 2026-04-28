@@ -46,9 +46,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Header
 
-- [ ] **HEADER-01**: Search box searches across all orders
-- [ ] **HEADER-02**: Notifications area with indicator
-- [ ] **HEADER-03**: Settings link to settings page
+- [x] **HEADER-01**: Search box searches across all orders
+- [x] **HEADER-02**: Notifications area with indicator
+- [x] **HEADER-03**: Settings link to settings page
 
 ## v2 Requirements
 
@@ -111,9 +111,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | KPI-02 | Phase 3 | Pending |
 | NAV-01 | Phase 4 | Complete |
 | NAV-02 | Phase 4 | Complete |
-| HEADER-01 | Phase 5 | Pending |
-| HEADER-02 | Phase 5 | Pending |
-| HEADER-03 | Phase 5 | Pending |
+| HEADER-01 | Phase 5 | Complete |
+| HEADER-02 | Phase 5 | Complete |
+| HEADER-03 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 25 total
