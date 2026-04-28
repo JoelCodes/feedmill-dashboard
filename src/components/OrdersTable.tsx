@@ -11,14 +11,16 @@ import { useDebounce } from "@/hooks/useDebounce";
 interface OrdersTableProps {
   selectedOrderId: string | null;
   onSelectOrder: (id: string) => void;
+  externalSearchTerm?: string;
 }
 
-export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTableProps) {
+export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSearchTerm }: OrdersTableProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeStatuses, setActiveStatuses] = useState<Set<OrderStatus>>(new Set());
   const [hasChangesFilter, setHasChangesFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 300);
+  const activeSearch = externalSearchTerm || debouncedSearch;
   const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -67,8 +69,8 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
     }
 
     // Apply search filter (customer name or product)
-    if (debouncedSearch) {
-      const searchLower = debouncedSearch.toLowerCase();
+    if (activeSearch) {
+      const searchLower = activeSearch.toLowerCase();
       result = result.filter(order =>
         order.customer.toLowerCase().includes(searchLower) ||
         `${order.textureType} ${order.formulaType}`.toLowerCase().includes(searchLower)
@@ -76,7 +78,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
     }
 
     return result;
-  }, [orders, activeStatuses, hasChangesFilter, debouncedSearch]);
+  }, [orders, activeStatuses, hasChangesFilter, activeSearch, externalSearchTerm]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<OrderStatus, number> = {
@@ -95,8 +97,8 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
     }
 
     // Apply search filter
-    if (debouncedSearch) {
-      const searchLower = debouncedSearch.toLowerCase();
+    if (activeSearch) {
+      const searchLower = activeSearch.toLowerCase();
       ordersToCount = ordersToCount.filter(o =>
         o.customer.toLowerCase().includes(searchLower) ||
         `${o.textureType} ${o.formulaType}`.toLowerCase().includes(searchLower)
@@ -108,7 +110,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
     });
 
     return counts;
-  }, [orders, hasChangesFilter, debouncedSearch]);
+  }, [orders, hasChangesFilter, activeSearch, externalSearchTerm]);
 
   const hasChangesCount = useMemo(() => {
     // Count orders with changes, respecting status filter
@@ -118,8 +120,8 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
     }
 
     // Apply search filter
-    if (debouncedSearch) {
-      const searchLower = debouncedSearch.toLowerCase();
+    if (activeSearch) {
+      const searchLower = activeSearch.toLowerCase();
       ordersToCount = ordersToCount.filter(o =>
         o.customer.toLowerCase().includes(searchLower) ||
         `${o.textureType} ${o.formulaType}`.toLowerCase().includes(searchLower)
@@ -127,7 +129,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
     }
 
     return ordersToCount.filter(o => o.hasChanges).length;
-  }, [orders, activeStatuses, debouncedSearch]);
+  }, [orders, activeStatuses, activeSearch, externalSearchTerm]);
 
   const visibleIds = filteredOrders.map(o => o.id);
 
@@ -337,10 +339,10 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder }: OrdersTa
                 )}
               </div>
               <div className="text-text-primary flex-1 text-xs">
-                {highlightMatch(order.customer, debouncedSearch)}
+                {highlightMatch(order.customer, activeSearch)}
               </div>
               <div className="text-text-primary flex-1 text-xs">
-                {highlightMatch(`${order.textureType} ${order.formulaType}`, debouncedSearch)}
+                {highlightMatch(`${order.textureType} ${order.formulaType}`, activeSearch)}
               </div>
               <div className="text-text-primary flex-1 text-xs font-bold">
                 {order.quantity}

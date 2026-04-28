@@ -9,6 +9,7 @@ import OrderDetails from "@/components/OrderDetails";
 
 export default function Dashboard() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [headerSearchTerm, setHeaderSearchTerm] = useState('');
 
   return (
     <div className="bg-bg-page flex h-screen">
@@ -18,7 +19,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         {/* Header */}
-        <Header />
+        <Header onSearch={setHeaderSearchTerm} />
 
         {/* KPI Cards */}
         <KPICards />
@@ -29,6 +30,7 @@ export default function Dashboard() {
           <OrdersTable
             selectedOrderId={selectedOrderId}
             onSelectOrder={setSelectedOrderId}
+            externalSearchTerm={headerSearchTerm}
           />
 
           {/* Order Details */}
