@@ -6,6 +6,6 @@ export interface Notification {
   title: string;
   message: string;
   timestamp: Date;
-  isRead: boolean;
+  // Note: Read state is managed in localStorage, not in this type
   relatedOrderId?: string;
 }
