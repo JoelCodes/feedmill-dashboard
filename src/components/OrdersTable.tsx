@@ -20,8 +20,12 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
   const [hasChangesFilter, setHasChangesFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 300);
-  const activeSearch = externalSearchTerm || debouncedSearch;
   const tableRef = useRef<HTMLDivElement>(null);
+
+  const activeSearch = useMemo(() =>
+    externalSearchTerm || debouncedSearch,
+    [externalSearchTerm, debouncedSearch]
+  );
 
   useEffect(() => {
     getOrders().then(setOrders);
@@ -78,7 +82,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
     }
 
     return result;
-  }, [orders, activeStatuses, hasChangesFilter, activeSearch, externalSearchTerm]);
+  }, [orders, activeStatuses, hasChangesFilter, activeSearch]);
 
   const statusCounts = useMemo(() => {
     const counts: Record<OrderStatus, number> = {
@@ -110,7 +114,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
     });
 
     return counts;
-  }, [orders, hasChangesFilter, activeSearch, externalSearchTerm]);
+  }, [orders, hasChangesFilter, activeSearch]);
 
   const hasChangesCount = useMemo(() => {
     // Count orders with changes, respecting status filter
@@ -129,7 +133,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
     }
 
     return ordersToCount.filter(o => o.hasChanges).length;
-  }, [orders, activeStatuses, activeSearch, externalSearchTerm]);
+  }, [orders, activeStatuses, activeSearch]);
 
   const visibleIds = filteredOrders.map(o => o.id);
 
