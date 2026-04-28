@@ -41,8 +41,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAV-01**: Sidebar links route to different views
-- [ ] **NAV-02**: Current view indicated in sidebar
+- [x] **NAV-01**: Sidebar links route to different views
+- [x] **NAV-02**: Current view indicated in sidebar
 
 ### Header
 
@@ -109,8 +109,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DETAIL-05 | Phase 2 | Complete |
 | KPI-01 | Phase 3 | Pending |
 | KPI-02 | Phase 3 | Pending |
-| NAV-01 | Phase 4 | Pending |
-| NAV-02 | Phase 4 | Pending |
+| NAV-01 | Phase 4 | Complete |
+| NAV-02 | Phase 4 | Complete |
 | HEADER-01 | Phase 5 | Pending |
 | HEADER-02 | Phase 5 | Pending |
 | HEADER-03 | Phase 5 | Pending |

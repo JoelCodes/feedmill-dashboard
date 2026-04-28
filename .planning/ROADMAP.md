@@ -92,7 +92,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — Sidebar auto-detection and stub pages (NAV-01, NAV-02)
+- [x] 04-01-PLAN.md — Sidebar auto-detection and stub pages (NAV-01, NAV-02)
 
 ### Phase 5: Header
 **Goal**: Header features (global search, notifications, settings) are functional
