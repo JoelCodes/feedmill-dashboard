@@ -76,10 +76,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User can see status filter pills design in mill-production.pen file
   2. User can approve design (colors, spacing, typography) before implementation begins
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: TBD
+- [ ] 06-01-PLAN.md — Design filter pills with interaction states in mill-production.pen
 
 **UI hint**: yes
 
@@ -121,8 +121,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Mill production layout spacing and typography match .pen design exactly
   2. Filter pill colors and styling match .pen design (active=blue, inactive=gray)
-  3. Production cards match .pen shadow, border, and spacing styling
-  4. No hardcoded hex colors or spacing values (all use design tokens)
+  3. No hardcoded hex colors or spacing values (all use design tokens)
 **Plans**: TBD
 
 Plans:
@@ -137,7 +136,7 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 6. Design | 0/0 | Not started | - |
+| 6. Design | 0/1 | Not started | - |
 | 7. Data Infrastructure | 0/0 | Not started | - |
 | 8. Filter Implementation | 0/0 | Not started | - |
 | 9. Polish | 0/0 | Not started | - |
