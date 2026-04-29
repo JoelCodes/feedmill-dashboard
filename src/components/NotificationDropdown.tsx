@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { Notification } from '@/types/notification';
 import { useClickOutside } from '@/hooks/useClickOutside';
 
@@ -20,7 +21,15 @@ export default function NotificationDropdown({
   onClearAll,
   readNotificationIds,
 }: NotificationDropdownProps) {
-  const ref = useClickOutside<HTMLDivElement>(onClose);
+  const clickOutsideRef = useClickOutside<HTMLDivElement>(onClose);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Focus dropdown when opened for keyboard accessibility
+  useEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      dropdownRef.current.focus();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -45,8 +54,13 @@ export default function NotificationDropdown({
 
   return (
     <div
-      ref={ref}
-      className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-white shadow-lg"
+      ref={(node) => {
+        // Combine refs: one for click-outside, one for focus management
+        (clickOutsideRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        (dropdownRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      tabIndex={-1}
+      className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-white shadow-lg focus:outline-none"
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-label="Notifications"
