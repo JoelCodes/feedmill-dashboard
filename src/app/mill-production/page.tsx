@@ -233,9 +233,9 @@ export default function MillProductionPage() {
   }, []);
 
   const ordersByMill: Record<MillLine, ProductionOrder[]> = {
-    Premix: orders.filter((o) => o.millLine === "Premix"),
-    Excel: orders.filter((o) => o.millLine === "Excel"),
-    CGM: orders.filter((o) => o.millLine === "CGM"),
+    Premix: filteredOrders.filter((o) => o.millLine === "Premix"),
+    Excel: filteredOrders.filter((o) => o.millLine === "Excel"),
+    CGM: filteredOrders.filter((o) => o.millLine === "CGM"),
   };
 
   return (
@@ -243,6 +243,19 @@ export default function MillProductionPage() {
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header />
+        {/* Filter strip - per D-01, D-02 */}
+        <div className="flex gap-2.5">
+          {STATE_ORDER.map(state => (
+            <FilterPill
+              key={state}
+              label={state}
+              count={stateCounts[state]}
+              color={PRODUCTION_STATE_PILL_CONFIG[state]}
+              isActive={activeStates.has(state)}
+              onClick={() => toggleState(state)}
+            />
+          ))}
+        </div>
         {loading ? (
           <LoadingSkeleton />
         ) : (
