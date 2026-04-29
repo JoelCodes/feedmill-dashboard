@@ -91,10 +91,10 @@ Plans:
   1. Mock service returns production orders with all required fields (orderNumber, customer, product, state, millLine, etc.)
   2. Orders distributed realistically across mill lines (Premix, Excel, CGM) and states (Completed, Mixing, Blocked, Pending)
   3. Mock data structure matches Book1.xlsx column format
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 07-01: TBD
+- [ ] 07-01-PLAN.md — Expand mock service to 33 orders with textureType and lineCode fields
 
 ### Phase 8: Filter Implementation
 **Goal**: Interactive status filter pills with toggle behavior
@@ -137,7 +137,7 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 6. Design | 1/1 | Complete | 2026-04-28 |
-| 7. Data Infrastructure | 0/0 | Not started | - |
+| 7. Data Infrastructure | 0/1 | Planning complete | - |
 | 8. Filter Implementation | 0/0 | Not started | - |
 | 9. Polish | 0/0 | Not started | - |
 
