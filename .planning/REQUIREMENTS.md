@@ -63,24 +63,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DESGN-01 | TBD | Pending |
-| DESGN-02 | TBD | Pending |
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
-| FILTR-01 | TBD | Pending |
-| FILTR-02 | TBD | Pending |
-| FILTR-03 | TBD | Pending |
-| FILTR-04 | TBD | Pending |
-| FILTR-05 | TBD | Pending |
-| POLSH-01 | TBD | Pending |
-| POLSH-02 | TBD | Pending |
-| POLSH-03 | TBD | Pending |
+| DESGN-01 | Phase 6 | Pending |
+| DESGN-02 | Phase 6 | Pending |
+| DATA-01 | Phase 7 | Pending |
+| DATA-02 | Phase 7 | Pending |
+| FILTR-01 | Phase 8 | Pending |
+| FILTR-02 | Phase 8 | Pending |
+| FILTR-03 | Phase 8 | Pending |
+| FILTR-04 | Phase 8 | Pending |
+| FILTR-05 | Phase 8 | Pending |
+| POLSH-01 | Phase 9 | Pending |
+| POLSH-02 | Phase 9 | Pending |
+| POLSH-03 | Phase 9 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 12 total
-- Mapped to phases: 0
-- Unmapped: 12
+- Mapped to phases: 12
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-28*
-*Last updated: 2026-04-28 after initial definition*
+*Last updated: 2026-04-28 after roadmap creation*
