@@ -110,8 +110,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Extract shared FilterPill component with TDD
-- [ ] 08-02-PLAN.md — Integrate filter pills into mill-production page
+- [x] 08-01-PLAN.md — Extract shared FilterPill component with TDD
+- [x] 08-02-PLAN.md — Integrate filter pills into mill-production page
 
 **UI hint**: yes
 
