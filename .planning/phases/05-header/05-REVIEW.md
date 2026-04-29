@@ -1,264 +1,200 @@
 ---
 phase: 05-header
-reviewed: 2026-04-28T19:45:00Z
+reviewed: 2026-04-28T21:30:00Z
 depth: standard
-files_reviewed: 9
+files_reviewed: 13
 files_reviewed_list:
-  - src/app/page.tsx
-  - src/app/settings/page.tsx
-  - src/components/Header.tsx
-  - src/components/NotificationDropdown.tsx
-  - src/components/OrdersTable.tsx
-  - src/hooks/useClickOutside.ts
-  - src/services/notifications.ts
   - src/types/notification.ts
   - src/types/settings.ts
+  - src/services/notifications.ts
+  - src/hooks/useClickOutside.ts
+  - src/components/NotificationDropdown.tsx
+  - src/app/settings/page.tsx
+  - src/components/Header.tsx
+  - src/app/inventory/page.tsx
+  - src/app/shipments/page.tsx
+  - src/app/mill-production/page.tsx
+  - src/app/orders/page.tsx
+  - src/app/page.tsx
+  - src/components/OrdersTable.tsx
 findings:
-  critical: 0
-  warning: 8
+  critical: 2
+  warning: 4
   info: 1
-  total: 9
+  total: 7
 status: issues_found
 ---
 
 # Phase 05: Code Review Report
 
-**Reviewed:** 2026-04-28T19:45:00Z
+**Reviewed:** 2026-04-28T21:30:00Z
 **Depth:** standard
-**Files Reviewed:** 9
+**Files Reviewed:** 13
 **Status:** issues_found
 
 ## Summary
 
-This review covers the header component implementation including search functionality, notification system, and settings page. The code is generally well-structured with TypeScript types and React best practices. However, several issues were identified including missing error handling in async operations, potential race conditions with useEffect dependencies, type inconsistencies between the notification data model and UI state management, and accessibility gaps in interactive components.
+This is an adversarial re-review of the Phase 05 header implementation after prior fixes were applied. The review covers all files in scope: type definitions, services, hooks, and React components for the header, notifications, and settings functionality.
 
-The most significant issues involve:
-- Missing error handling in async notification loading
-- Stale closure bug in useClickOutside hook
-- Type mismatch between Notification.isRead and localStorage-based read tracking
-- Missing ARIA attributes for accessibility
+While several issues from the prior review were addressed (error handling in Header.tsx, useClickOutside stale closure fix, accessibility improvements), this review identified critical issues that remain unfixed or were introduced elsewhere:
 
-## Warnings
+1. **Missing error handling in async operations** - Multiple components fetch data without catch handlers, meaning network failures will silently fail and leave users with broken or empty UIs
+2. **Unsafe type assertions** in settings page that bypass TypeScript's type safety
+3. **Keyboard accessibility gap** in NotificationDropdown where keyboard events cannot be received without focus management
 
-### WR-01: Missing Error Handling in Notification Loading
+## Critical Issues
 
-**File:** `src/components/Header.tsx:41-43`
-**Issue:** The `getNotifications()` promise has no error handling. If the service call fails, the error will be silently swallowed and notifications state will remain empty. Users won't know if notifications failed to load vs. no notifications exist.
+### CR-01: Missing Error Handling in OrdersTable Data Fetch
+
+**File:** `src/components/OrdersTable.tsx:30-32`
+**Issue:** The `getOrders()` promise has no error handling. If the orders service fails (network error, server error, etc.), the promise rejection will be unhandled, the orders state will remain empty, and users will see "No orders match your current filters" with no indication that a fetch failed. This is a silent failure that masks backend issues.
 
 **Fix:**
 ```typescript
-// Load notifications on mount
 useEffect(() => {
-  getNotifications()
-    .then(setNotifications)
+  getOrders()
+    .then(setOrders)
     .catch((error) => {
-      console.error('Failed to load notifications:', error);
-      // Optional: Set error state to show user-facing error message
+      console.error('Failed to load orders:', error);
+      // Consider: setError(true) to show user-facing error state
     });
 }, []);
 ```
 
-### WR-02: Stale Closure in useClickOutside Hook
+### CR-02: Missing Error Handling in Mill Production Page
 
-**File:** `src/hooks/useClickOutside.ts:8`
-**Issue:** The `stableHandler` callback wraps `handler()` unnecessarily, which defeats the purpose of memoization. If `handler` changes, `stableHandler` will still use the old reference due to the dependency array `[handler]`. This creates a stale closure where the callback will execute the old handler function, not the current one.
-
-**Fix:**
-```typescript
-// Remove the unnecessary wrapper - just use handler directly
-const stableHandler = useCallback(handler, [handler]);
-
-// Or if you want to avoid re-registering listeners, use useRef:
-const handlerRef = useRef(handler);
-useEffect(() => {
-  handlerRef.current = handler;
-}, [handler]);
-
-const stableHandler = useCallback(() => {
-  handlerRef.current();
-}, []);
-```
-
-### WR-03: Type Inconsistency Between Notification Model and Read State
-
-**File:** `src/types/notification.ts:9` and `src/components/Header.tsx:35-38`
-**Issue:** The `Notification` type includes an `isRead: boolean` field, but the Header component ignores this field and maintains read state separately in localStorage as `readNotificationIds: string[]`. This creates two sources of truth for read status. The service returns `isRead: false` for all new notifications, but this field is never used or synced with localStorage.
+**File:** `src/app/mill-production/page.tsx:168-173`
+**Issue:** The `getProductionOrders()` promise has no error handling. If the service fails, `setLoading(false)` is never called (the promise chain stops at `.then()`), leaving users stuck on the loading skeleton indefinitely. This creates a broken UI state with no recovery path.
 
 **Fix:**
-Either remove `isRead` from the type if client-side localStorage is the sole source of truth:
-```typescript
-export interface Notification {
-  id: string;
-  type: NotificationType;
-  title: string;
-  message: string;
-  timestamp: Date;
-  // Remove isRead - managed in localStorage
-  relatedOrderId?: string;
-}
-```
-
-Or sync the service data with localStorage:
 ```typescript
 useEffect(() => {
-  getNotifications().then((notifications) => {
-    // Filter out notifications already marked as read in the service
-    const unreadIds = notifications.filter(n => !n.isRead).map(n => n.id);
-    setReadNotificationIds(unreadIds);
-    setNotifications(notifications);
-  });
+  getProductionOrders()
+    .then((data) => {
+      setOrders(data);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error('Failed to load production orders:', error);
+      setLoading(false);
+      // Consider: setError(true) to show user-facing error state
+    });
 }, []);
 ```
 
-### WR-04: Dependency Array Missing setReadNotificationIds
+## Warnings
 
-**File:** `src/components/Header.tsx:58-62`
-**Issue:** The `handleMarkAsRead` callback includes `setReadNotificationIds` in its dependency array. Since `setReadNotificationIds` comes from `useLocalStorage` hook which returns a new setter function on every render (not a stable identity), this causes the callback to be recreated unnecessarily. While not a bug, it's inefficient and indicates the hook should return a stable setter.
+### WR-01: Unsafe Type Assertion in Theme Select Handler
+
+**File:** `src/app/settings/page.tsx:109`
+**Issue:** The code casts `e.target.value as "light" | "dark"` without validation. While the select options are controlled, a malicious user or browser extension could inject an invalid value. The cast tells TypeScript the value is safe when it may not be. This bypasses TypeScript's compile-time guarantees.
 
 **Fix:**
-Verify that `useLocalStorage` returns a stable setter function (wrapped in useCallback). If not, wrap it:
 ```typescript
-// In useLocalStorage.ts
-const setValue = useCallback((value: T | ((prev: T) => T)) => {
-  setStoredValue(value);
-}, []);
-
-return [storedValue, setValue];
-```
-
-Alternatively, remove it from the dependency array if the setter is guaranteed stable:
-```typescript
-const handleMarkAsRead = useCallback((id: string) => {
-  if (!readNotificationIds.includes(id)) {
-    setReadNotificationIds((prev) => [...prev, id]);
+const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const value = e.target.value;
+  if (value === 'light' || value === 'dark') {
+    updateTheme(value);
   }
-}, [readNotificationIds]); // setReadNotificationIds removed if stable
-```
-
-### WR-05: Notification Timestamp Deserialization Issue
-
-**File:** `src/services/notifications.ts:5-65`
-**Issue:** The mock service returns `Notification` objects with `timestamp: new Date(...)`, but in a real API scenario, timestamps would be JSON strings. When notifications are fetched from an API, `timestamp` will be a string, not a Date object, breaking `formatTimestamp` logic in NotificationDropdown. This is a latent bug waiting to surface when the service is connected to a real backend.
-
-**Fix:**
-Add deserialization in the service layer:
-```typescript
-export async function getNotifications(): Promise<Notification[]> {
-  await delay(200);
-  // When connecting to real API:
-  // const response = await fetch('/api/notifications');
-  // const data = await response.json();
-  // return data.map(n => ({
-  //   ...n,
-  //   timestamp: new Date(n.timestamp)
-  // }));
-  return mockNotifications;
-}
-```
-
-### WR-06: Missing Accessibility Attributes on Interactive Elements
-
-**File:** `src/components/Header.tsx:102-108` and `111-121`
-**Issue:** The Settings and Bell buttons lack ARIA labels, making them inaccessible to screen readers. Users with assistive technology won't know what these icon-only buttons do.
-
-**Fix:**
-```typescript
-<button
-  onClick={() => router.push('/settings')}
-  className="rounded-lg p-2 transition-colors hover:bg-white/50"
-  aria-label="Settings"
->
-  <Settings className="text-text-secondary h-4 w-4" />
-</button>
-
-<button
-  onClick={toggleDropdown}
-  className="rounded-lg p-2 transition-colors hover:bg-white/50 relative"
-  aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
-  aria-expanded={isDropdownOpen}
->
-  <Bell className="text-text-secondary h-4 w-4" />
-  {/* ... */}
-</button>
-```
-
-### WR-07: Missing Keyboard Navigation for Notification Dropdown
-
-**File:** `src/components/NotificationDropdown.tsx:40-106`
-**Issue:** The notification dropdown has no keyboard navigation support. Users cannot use arrow keys to navigate through notifications or Escape to close the dropdown. This violates WCAG 2.1 keyboard navigation guidelines for interactive components.
-
-**Fix:**
-Add keyboard event handler to the dropdown:
-```typescript
-const handleKeyDown = (e: React.KeyboardEvent) => {
-  if (e.key === 'Escape') {
-    onClose();
-  }
-  // Optional: Add arrow key navigation between notification items
 };
 
-return (
-  <div
-    ref={ref}
-    className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-white shadow-lg"
-    onKeyDown={handleKeyDown}
-    role="dialog"
-    aria-label="Notifications"
-  >
-    {/* ... */}
-  </div>
-);
+// Usage:
+onChange={handleThemeChange}
 ```
 
-### WR-08: Unchecked Array Access in OrdersTable
+### WR-02: Unsafe Type Assertion in Density Select Handler
 
-**File:** `src/components/OrdersTable.tsx:151` and `158`
-**Issue:** The code accesses `filteredOrders[0]` without checking if the array has elements. While there is a length check (`filteredOrders.length > 0`), TypeScript cannot guarantee the array won't be modified between the check and access in concurrent renders, especially with async state updates.
+**File:** `src/app/settings/page.tsx:121-122`
+**Issue:** Same issue as WR-01. The code casts `e.target.value as "comfortable" | "compact"` without validating the value is actually one of those strings.
 
 **Fix:**
-Use optional chaining for defensive programming:
 ```typescript
-// Auto-select first row on initial load
-useEffect(() => {
-  if (!selectedOrderId && filteredOrders.length > 0) {
-    const firstOrder = filteredOrders[0];
-    if (firstOrder) {
-      handleSelectOrder(firstOrder.id);
-    }
+const handleDensityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const value = e.target.value;
+  if (value === 'comfortable' || value === 'compact') {
+    updateDensity(value);
   }
-}, [selectedOrderId, filteredOrders, handleSelectOrder]);
+};
 
-// Auto-select first visible when current selection filtered out
+// Usage:
+onChange={handleDensityChange}
+```
+
+### WR-03: Keyboard Handler Cannot Receive Events Without Focus
+
+**File:** `src/components/NotificationDropdown.tsx:46-52`
+**Issue:** The `onKeyDown` handler on the dropdown div will never fire because the div has no `tabIndex` attribute and no focus management. When the dropdown opens, focus remains on the bell button, so pressing Escape does nothing. The accessibility improvement from the prior fix (WR-07) is incomplete - the code exists but cannot execute.
+
+**Fix:**
+```typescript
+import { useEffect, useRef } from 'react';
+
+// Inside component:
+const dropdownRef = useRef<HTMLDivElement>(null);
+
+// Combine with click-outside ref or use a compound ref
 useEffect(() => {
-  if (!validSelectedId && selectedOrderId && filteredOrders.length > 0) {
-    const firstOrder = filteredOrders[0];
-    if (firstOrder) {
-      handleSelectOrder(firstOrder.id);
-    }
+  if (isOpen && dropdownRef.current) {
+    dropdownRef.current.focus();
   }
-}, [validSelectedId, filteredOrders, selectedOrderId, handleSelectOrder]);
+}, [isOpen]);
+
+// In JSX:
+<div
+  ref={dropdownRef}
+  tabIndex={-1}
+  className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-white shadow-lg focus:outline-none"
+  onKeyDown={handleKeyDown}
+  role="dialog"
+  aria-label="Notifications"
+>
+```
+
+Alternatively, add a global keydown listener that checks `isOpen` state.
+
+### WR-04: Potential Null Event Target in useClickOutside
+
+**File:** `src/hooks/useClickOutside.ts:17`
+**Issue:** The code casts `event.target as Node` unconditionally. While `event.target` is rarely null in practice, the DOM spec allows it to be null for synthetic or programmatic events. The cast suppresses TypeScript's null check, which could lead to a runtime error in edge cases when `el.contains(null)` is called.
+
+**Fix:**
+```typescript
+const listener = (event: MouseEvent | TouchEvent) => {
+  const el = ref.current;
+  const target = event.target;
+  if (!el || !target || el.contains(target as Node)) {
+    return;
+  }
+  handlerRef.current();
+};
 ```
 
 ## Info
 
-### IN-01: Console.error in Production Code
+### IN-01: Hardcoded "18 dispatched this week" in OrdersTable
 
-**File:** `src/hooks/useLocalStorage.ts:25`
-**Issue:** The hook uses `console.error` for localStorage errors. While this is acceptable for development, production builds should use a proper error logging service (e.g., Sentry, LogRocket) or suppress non-critical errors to avoid console noise.
+**File:** `src/components/OrdersTable.tsx:210-211`
+**Issue:** The text "18 dispatched this week" is hardcoded rather than computed from actual order data. This creates misleading UI that doesn't reflect real dispatch counts. While this may be intentional for a demo/mock, it should be flagged for production readiness.
 
 **Fix:**
 ```typescript
-// Option 1: Use environment-aware logging
-if (process.env.NODE_ENV === 'development') {
-  console.error(`Error setting localStorage key "${key}":`, error);
-}
+const dispatchedThisWeek = useMemo(() => {
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  return orders.filter(o =>
+    o.status === 'Complete' &&
+    new Date(o.deliveryDate) > oneWeekAgo
+  ).length;
+}, [orders]);
 
-// Option 2: Use a logging service
-// logError(`Error setting localStorage key "${key}"`, error);
+// In JSX:
+<span className="text-text-secondary text-sm">
+  {dispatchedThisWeek} dispatched this week
+</span>
 ```
 
 ---
 
-_Reviewed: 2026-04-28T19:45:00Z_
+_Reviewed: 2026-04-28T21:30:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
