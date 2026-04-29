@@ -123,9 +123,12 @@ export default function SettingsPage() {
                 <label className="mb-2 block text-sm font-bold">Display Density</label>
                 <select
                   value={formState.density}
-                  onChange={(e) =>
-                    updateDensity(e.target.value as "comfortable" | "compact")
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === 'comfortable' || value === 'compact') {
+                      updateDensity(value);
+                    }
+                  }}
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="comfortable">Comfortable</option>
