@@ -126,7 +126,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 09-01-PLAN.md — Add design tokens and replace hardcoded values with token-based styling
+- [x] 09-01-PLAN.md — Add design tokens and replace hardcoded values with token-based styling
 
 **UI hint**: yes
 
@@ -140,7 +140,7 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 | 6. Design | 1/1 | Complete | 2026-04-28 |
 | 7. Data Infrastructure | 1/1 | Complete | 2026-04-29 |
 | 8. Filter Implementation | 2/2 | Complete | 2026-04-29 |
-| 9. Polish | 0/1 | Planning complete | - |
+| 9. Polish | 1/1 | Complete | 2026-04-29 |
 
 ---
 *Roadmap created: 2026-03-11*

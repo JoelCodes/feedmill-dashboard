@@ -19,17 +19,17 @@ Requirements for Mill Production Dashboard milestone. Each maps to roadmap phase
 
 ### Filters
 
-- [ ] **FILTR-01**: User can see status filter pills (Completed, Mixing, Blocked, Pending) above columns
-- [ ] **FILTR-02**: User can click a filter pill to show only cards with that status
-- [ ] **FILTR-03**: User can click multiple pills to show combined statuses
-- [ ] **FILTR-04**: User can see count badges showing orders per status
-- [ ] **FILTR-05**: User sees all cards when no filters selected (default)
+- [x] **FILTR-01**: User can see status filter pills (Completed, Mixing, Blocked, Pending) above columns
+- [x] **FILTR-02**: User can click a filter pill to show only cards with that status
+- [x] **FILTR-03**: User can click multiple pills to show combined statuses
+- [x] **FILTR-04**: User can see count badges showing orders per status
+- [x] **FILTR-05**: User sees all cards when no filters selected (default)
 
 ### Polish
 
-- [ ] **POLSH-01**: Mill production view matches .pen design spacing and typography
-- [ ] **POLSH-02**: Filter pills match .pen design colors and styling
-- [ ] **POLSH-03**: Cards match .pen design shadow and border styling
+- [x] **POLSH-01**: Mill production view matches .pen design spacing and typography
+- [x] **POLSH-02**: Filter pills match .pen design colors and styling
+- [x] **POLSH-03**: Cards match .pen design shadow and border styling
 
 ## Future Requirements
 
@@ -67,14 +67,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DESGN-02 | Phase 6 | Complete |
 | DATA-01 | Phase 7 | Complete |
 | DATA-02 | Phase 7 | Complete |
-| FILTR-01 | Phase 8 | Pending |
-| FILTR-02 | Phase 8 | Pending |
-| FILTR-03 | Phase 8 | Pending |
-| FILTR-04 | Phase 8 | Pending |
-| FILTR-05 | Phase 8 | Pending |
-| POLSH-01 | Phase 9 | Pending |
-| POLSH-02 | Phase 9 | Pending |
-| POLSH-03 | Phase 9 | Pending |
+| FILTR-01 | Phase 8 | Complete |
+| FILTR-02 | Phase 8 | Complete |
+| FILTR-03 | Phase 8 | Complete |
+| FILTR-04 | Phase 8 | Complete |
+| FILTR-05 | Phase 8 | Complete |
+| POLSH-01 | Phase 9 | Complete |
+| POLSH-02 | Phase 9 | Complete |
+| POLSH-03 | Phase 9 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 12 total
@@ -83,4 +83,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-28*
-*Last updated: 2026-04-28 after roadmap creation*
+*Last updated: 2026-04-29 after Phase 9 completion*
