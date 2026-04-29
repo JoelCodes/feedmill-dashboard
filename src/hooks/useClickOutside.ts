@@ -14,7 +14,8 @@ export function useClickOutside<T extends HTMLElement>(
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
       const el = ref.current;
-      if (!el || el.contains(event.target as Node)) {
+      const target = event.target;
+      if (!el || !target || el.contains(target as Node)) {
         return;
       }
       handlerRef.current();
