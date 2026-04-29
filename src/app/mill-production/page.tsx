@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   ProductionOrder,
   ProductionState,
@@ -9,6 +9,7 @@ import {
 import { getProductionOrders } from "@/services/millProduction";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import FilterPill, { FilterPillColorConfig } from "@/components/FilterPill";
 
 const STATE_ORDER: ProductionState[] = [
   "Completed",
@@ -25,6 +26,33 @@ const STATE_COLORS: Record<
   Mixing: { border: "#d69e2e", header: "#975a16" },
   Blocked: { border: "#e53e3e", header: "#c53030" },
   Pending: { border: "#a0aec0", header: "#4a5568" },
+};
+
+const PRODUCTION_STATE_PILL_CONFIG: Record<ProductionState, FilterPillColorConfig> = {
+  Completed: {
+    bg: "bg-success-light",
+    text: "text-success-dark",
+    dot: "bg-success",
+    countBg: "bg-[#2f855a22]",
+  },
+  Mixing: {
+    bg: "bg-warning-light",
+    text: "text-warning",
+    dot: "bg-warning",
+    countBg: "bg-[#975a1622]",
+  },
+  Blocked: {
+    bg: "bg-error-light",
+    text: "text-error-dark",
+    dot: "bg-error",
+    countBg: "bg-[#c5303022]",
+  },
+  Pending: {
+    bg: "bg-pending-light",
+    text: "text-[#718096]",
+    dot: "bg-pending",
+    countBg: "bg-[#71809622]",
+  },
 };
 
 function formatWeight(lbs: number): string {
@@ -164,6 +192,31 @@ function LoadingSkeleton() {
 export default function MillProductionPage() {
   const [orders, setOrders] = useState<ProductionOrder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeStates, setActiveStates] = useState<Set<ProductionState>>(new Set());
+
+  const toggleState = (state: ProductionState) => {
+    setActiveStates(prev => {
+      const next = new Set(prev);
+      if (next.has(state)) {
+        next.delete(state);
+      } else {
+        next.add(state);
+      }
+      return next;
+    });
+  };
+
+  const stateCounts = useMemo(() => {
+    return STATE_ORDER.reduce((acc, state) => {
+      acc[state] = orders.filter(o => o.state === state).length;
+      return acc;
+    }, {} as Record<ProductionState, number>);
+  }, [orders]);
+
+  const filteredOrders = useMemo(() => {
+    if (activeStates.size === 0) return orders;
+    return orders.filter(order => activeStates.has(order.state));
+  }, [orders, activeStates]);
 
   useEffect(() => {
     getProductionOrders()
