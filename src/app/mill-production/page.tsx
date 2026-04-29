@@ -166,10 +166,17 @@ export default function MillProductionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getProductionOrders().then((data) => {
-      setOrders(data);
-      setLoading(false);
-    });
+    getProductionOrders()
+      .then((data) => {
+        setOrders(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Failed to load production orders:', error);
+        }
+        setLoading(false);
+      });
   }, []);
 
   const ordersByMill: Record<MillLine, ProductionOrder[]> = {
