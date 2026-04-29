@@ -107,10 +107,11 @@ Plans:
   4. User can see count badges showing total orders per status (not filtered count)
   5. User sees all cards when no filters selected (default state)
   6. Cards matching selected states remain visible, non-matching cards hidden
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: TBD
+- [ ] 08-01-PLAN.md — Extract shared FilterPill component with TDD
+- [ ] 08-02-PLAN.md — Integrate filter pills into mill-production page
 
 **UI hint**: yes
 
@@ -137,11 +138,11 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 6. Design | 1/1 | Complete | 2026-04-28 |
-| 7. Data Infrastructure | 0/1 | Planning complete | - |
-| 8. Filter Implementation | 0/0 | Not started | - |
+| 7. Data Infrastructure | 1/1 | Complete | 2026-04-29 |
+| 8. Filter Implementation | 0/2 | Planning complete | - |
 | 9. Polish | 0/0 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-11*
 *v1.0 shipped: 2026-04-29*
-*v1.1 roadmap updated: 2026-04-28*
+*v1.1 roadmap updated: 2026-04-29*
