@@ -3,10 +3,44 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { CheckCircle, Package, Search } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
+import FilterPill, { FilterPillColorConfig } from "@/components/FilterPill";
 import { OrderStatus, Order } from "@/types/order";
 import { getOrders } from "@/services/orders";
 import { formatDeliveryDate } from "@/utils/formatDate";
 import { useDebounce } from "@/hooks/useDebounce";
+
+const STATUS_PILL_CONFIG: Record<OrderStatus, FilterPillColorConfig> = {
+  "Pending": {
+    bg: "bg-gray-100",
+    text: "text-gray-600",
+    dot: "bg-gray-600",
+    countBg: "bg-gray-200",
+  },
+  "Producing": {
+    bg: "bg-[var(--warning-light)]",
+    text: "text-[var(--warning)]",
+    dot: "bg-[var(--warning)]",
+    countBg: "bg-[#975a1622]",
+  },
+  "Ready": {
+    bg: "bg-[var(--info-light)]",
+    text: "text-[var(--info)]",
+    dot: "bg-[var(--info)]",
+    countBg: "bg-[#2b6cb022]",
+  },
+  "In Transit": {
+    bg: "bg-[var(--purple-light)]",
+    text: "text-[var(--purple)]",
+    dot: "bg-[var(--purple)]",
+    countBg: "bg-[#9333ea22]",
+  },
+  "Complete": {
+    bg: "bg-[var(--success-light)]",
+    text: "text-[var(--success-dark)]",
+    dot: "bg-[var(--success-dark)]",
+    countBg: "bg-[#2f855a22]",
+  },
+};
 
 interface OrdersTableProps {
   selectedOrderId: string | null;
@@ -246,35 +280,35 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
         <FilterPill
           label="Complete"
           count={statusCounts["Complete"]}
-          status="Complete"
+          color={STATUS_PILL_CONFIG["Complete"]}
           isActive={activeStatuses.has("Complete")}
           onClick={() => toggleStatus("Complete")}
         />
         <FilterPill
           label="Transit"
           count={statusCounts["In Transit"]}
-          status="In Transit"
+          color={STATUS_PILL_CONFIG["In Transit"]}
           isActive={activeStatuses.has("In Transit")}
           onClick={() => toggleStatus("In Transit")}
         />
         <FilterPill
           label="Producing"
           count={statusCounts["Producing"]}
-          status="Producing"
+          color={STATUS_PILL_CONFIG["Producing"]}
           isActive={activeStatuses.has("Producing")}
           onClick={() => toggleStatus("Producing")}
         />
         <FilterPill
           label="Ready"
           count={statusCounts["Ready"]}
-          status="Ready"
+          color={STATUS_PILL_CONFIG["Ready"]}
           isActive={activeStatuses.has("Ready")}
           onClick={() => toggleStatus("Ready")}
         />
         <FilterPill
           label="Pending"
           count={statusCounts["Pending"]}
-          status="Pending"
+          color={STATUS_PILL_CONFIG["Pending"]}
           isActive={activeStatuses.has("Pending")}
           onClick={() => toggleStatus("Pending")}
         />
@@ -390,44 +424,6 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
         )}
       </div>
     </div>
-  );
-}
-
-interface FilterPillProps {
-  label: string;
-  count: number;
-  status?: OrderStatus;
-  isActive: boolean;
-  onClick: () => void;
-  showDot?: boolean;
-  dotColor?: string;
-}
-
-function FilterPill({ label, count, status, isActive, onClick, showDot, dotColor }: FilterPillProps) {
-  const config = status ? STATUS_CONFIG[status] : null;
-
-  // Only show dot when selected
-  const hasDot = isActive && (showDot || !!config?.dot);
-
-  // Colors change based on active state, structure stays the same
-  const bgClass = isActive ? 'bg-primary' : (config?.bg || 'bg-gray-100');
-  const textClass = isActive ? 'text-white' : (config?.text || 'text-gray-600');
-  const countBgClass = isActive ? 'bg-white/20' : (config?.countBg || 'bg-gray-200');
-  const dotBgClass = isActive
-    ? (showDot ? 'bg-white' : 'bg-white/60')
-    : (showDot ? (dotColor || 'bg-gray-600') : (config?.dot || 'bg-gray-600'));
-
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} rounded-xl px-2.5 py-2 transition-colors hover:opacity-90`}
-    >
-      {hasDot && <div className={`h-2 w-2 rounded-full ${dotBgClass}`} />}
-      <span className={`text-[11px] font-bold ${textClass}`}>{label}</span>
-      <div className={`${countBgClass} flex items-center rounded-lg px-1.5`}>
-        <span className={`text-[10px] font-bold ${textClass}`}>{count}</span>
-      </div>
-    </button>
   );
 }
 
