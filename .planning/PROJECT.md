@@ -8,6 +8,16 @@ A feed mill operations dashboard that displays and manages feed orders in real-t
 
 Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
+## Current Milestone: v1.1 Mill Production Dashboard
+
+**Goal:** Transform the mill production view into a polished, data-driven production dashboard with filtering capabilities.
+
+**Target features:**
+- Design status filter pills in .pen file, get approval, then implement
+- Polish implementation to pixel-match the approved .pen design
+- Create mock JSON data service derived from Book1.xlsx example data
+- Wire filter pills with toggle behavior matching orders page
+
 ## Current State
 
 **Shipped:** v1.0 MVP (2026-04-29)
@@ -20,8 +30,9 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Functional sidebar navigation with auto-detecting active state
 - Header with global search and notification system
 - Settings page with theme/density preferences
+- Mill production view with 3 columns and state cards (basic implementation)
 
-**Known gaps (deferred to v1.1):**
+**Known gaps (deferred):**
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 
@@ -57,10 +68,19 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ### Active
 
-<!-- Next milestone scope -->
+<!-- v1.1 Mill Production Dashboard scope -->
 
-- [ ] KPI cards display computed values from order data (deferred from v1.0)
-- [ ] Click KPI card to filter table to relevant orders (deferred from v1.0)
+- [ ] Design filter pills UI in mill-production.pen
+- [ ] Polish mill production view to match .pen design exactly
+- [ ] Create data-driven mock service from Book1.xlsx example data
+- [ ] Implement status filter pills with toggle behavior
+
+### Deferred
+
+<!-- Acknowledged but not in current scope -->
+
+- KPI cards display computed values from order data (deferred from v1.0)
+- Click KPI card to filter table to relevant orders (deferred from v1.0)
 
 ### Out of Scope
 
@@ -116,5 +136,22 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 | localStorage for read notification state | Single source of truth for badge and indicators | ✓ Good |
 | Phase 3 deferred | KPI functionality can ship in v1.1 without blocking core features | — Pending |
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd-complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-04-29 after v1.0 milestone*
+*Last updated: 2026-04-28 after v1.1 milestone start*
