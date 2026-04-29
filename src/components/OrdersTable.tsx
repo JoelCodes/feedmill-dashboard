@@ -28,7 +28,13 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
   );
 
   useEffect(() => {
-    getOrders().then(setOrders);
+    getOrders()
+      .then(setOrders)
+      .catch((error) => {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Failed to load orders:', error);
+        }
+      });
   }, []);
 
   const toggleStatus = (status: OrderStatus) => {
