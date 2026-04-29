@@ -1,85 +1,83 @@
 ---
 phase: 05-header
-fixed_at: 2026-04-28T20:15:00Z
+fixed_at: 2026-04-29T00:30:19Z
 review_path: .planning/phases/05-header/05-REVIEW.md
-iteration: 1
-findings_in_scope: 9
-fixed: 8
-skipped: 1
-status: partial
+iteration: 2
+findings_in_scope: 7
+fixed: 7
+skipped: 0
+status: all_fixed
 ---
 
 # Phase 05: Code Review Fix Report
 
-**Fixed at:** 2026-04-28T20:15:00Z
+**Fixed at:** 2026-04-29T00:30:19Z
 **Source review:** .planning/phases/05-header/05-REVIEW.md
-**Iteration:** 1
+**Iteration:** 2
 
 **Summary:**
-- Findings in scope: 9
-- Fixed: 8
-- Skipped: 1
+- Findings in scope: 7
+- Fixed: 7
+- Skipped: 0
 
 ## Fixed Issues
 
-### WR-01: Missing Error Handling in Notification Loading
-
-**Files modified:** `src/components/Header.tsx`
-**Commit:** da73839
-**Applied fix:** Added .catch() handler to getNotifications() promise to log errors when notification loading fails.
-
-### WR-02: Stale Closure in useClickOutside Hook
-
-**Files modified:** `src/hooks/useClickOutside.ts`
-**Commit:** 7e77db8
-**Applied fix:** Replaced useCallback wrapper with useRef pattern to avoid stale closures. The handler is now stored in a ref that's updated on every render, and the event listener calls handlerRef.current(), ensuring it always uses the latest handler without re-registering listeners.
-
-### WR-03: Type Inconsistency Between Notification Model and Read State
-
-**Files modified:** `src/types/notification.ts`, `src/services/notifications.ts`
-**Commit:** c446299
-**Applied fix:** Removed `isRead` field from Notification interface and mock data. Read state is now solely managed in localStorage via `readNotificationIds`, eliminating dual source of truth.
-
-### WR-05: Notification Timestamp Deserialization Issue
-
-**Files modified:** `src/services/notifications.ts`
-**Commit:** 0723deb
-**Applied fix:** Added documentation comment showing how to deserialize timestamp strings when connecting to a real API. This ensures future developers know to convert JSON string timestamps to Date objects.
-
-### WR-06: Missing Accessibility Attributes on Interactive Elements
-
-**Files modified:** `src/components/Header.tsx`
-**Commit:** 5d89387
-**Applied fix:** Added `aria-label="Settings"` to settings button, `aria-label` with dynamic unread count and `aria-expanded` to notifications button for screen reader accessibility.
-
-### WR-07: Missing Keyboard Navigation for Notification Dropdown
-
-**Files modified:** `src/components/NotificationDropdown.tsx`
-**Commit:** 0a749ab
-**Applied fix:** Added `onKeyDown` handler that closes dropdown on Escape key, plus `role="dialog"` and `aria-label="Notifications"` for accessibility.
-
-### WR-08: Unchecked Array Access in OrdersTable
+### CR-01: Missing Error Handling in OrdersTable Data Fetch
 
 **Files modified:** `src/components/OrdersTable.tsx`
-**Commit:** c277570
-**Applied fix:** Added explicit null check after `filteredOrders[0]` access in both auto-select useEffect hooks for defensive programming against race conditions.
+**Commit:** a6e3596
+**Applied fix:** Added `.catch()` handler to `getOrders()` promise to log errors and prevent unhandled promise rejections. Error logging is suppressed in production to align with prior IN-01 fix pattern.
 
-### IN-01: Console.error in Production Code
+### CR-02: Missing Error Handling in Mill Production Page
 
-**Files modified:** `src/hooks/useLocalStorage.ts`
-**Commit:** 43e5573
-**Applied fix:** Wrapped console.error call in `process.env.NODE_ENV === 'development'` check to suppress error logging in production builds.
+**Files modified:** `src/app/mill-production/page.tsx`
+**Commit:** 601765b
+**Applied fix:** Added `.catch()` handler to `getProductionOrders()` promise. The catch block logs the error (in non-production) and calls `setLoading(false)` to exit the loading state, preventing users from being stuck on an infinite loading skeleton.
+
+### WR-01: Unsafe Type Assertion in Theme Select Handler
+
+**Files modified:** `src/app/settings/page.tsx`
+**Commit:** 2c8b66d
+**Applied fix:** Replaced unsafe `as "light" | "dark"` cast with runtime validation. Now checks if value is exactly `'light'` or `'dark'` before calling `updateTheme()`, making the code type-safe without relying on TypeScript casts.
+
+### WR-02: Unsafe Type Assertion in Density Select Handler
+
+**Files modified:** `src/app/settings/page.tsx`
+**Commit:** 30949b1
+**Applied fix:** Replaced unsafe `as "comfortable" | "compact"` cast with runtime validation. Now checks if value is exactly `'comfortable'` or `'compact'` before calling `updateDensity()`.
+
+### WR-03: Keyboard Handler Cannot Receive Events Without Focus
+
+**Files modified:** `src/components/NotificationDropdown.tsx`
+**Commit:** aff2a63
+**Applied fix:** Added focus management to NotificationDropdown:
+- Added `useEffect` and `useRef` imports
+- Created `dropdownRef` for focus management
+- Added `useEffect` to focus dropdown when `isOpen` becomes true
+- Added `tabIndex={-1}` to make div focusable
+- Added `focus:outline-none` class for clean appearance
+- Combined `clickOutsideRef` and `dropdownRef` using callback ref pattern
+
+### WR-04: Potential Null Event Target in useClickOutside
+
+**Files modified:** `src/hooks/useClickOutside.ts`
+**Commit:** 9b36b74
+**Applied fix:** Added explicit null check for `event.target` before using it in `el.contains()`. The code now extracts `target` to a variable and checks `!target` in the early-return condition.
+
+### IN-01: Hardcoded "18 dispatched this week" in OrdersTable
+
+**Files modified:** `src/components/OrdersTable.tsx`
+**Commit:** 91415ae
+**Applied fix:** Replaced hardcoded "18" with computed `dispatchedThisWeek` value:
+- Added `useMemo` hook that calculates orders with status `'Complete'` and `deliveryDate` within the last 7 days
+- Updated JSX to use `{dispatchedThisWeek}` interpolation instead of hardcoded number
 
 ## Skipped Issues
 
-### WR-04: Dependency Array Missing setReadNotificationIds
-
-**File:** `src/components/Header.tsx:58-62`
-**Reason:** Code already correct - useState setters are stable by React's guarantee. The review's premise that useLocalStorage returns a new setter function on every render is incorrect; useState's `setStoredValue` is stable. Including it in the dependency array is unnecessary but harmless, and removing it would trigger ESLint's exhaustive-deps rule. No fix needed.
-**Original issue:** The `handleMarkAsRead` callback includes `setReadNotificationIds` in its dependency array. Since `setReadNotificationIds` comes from `useLocalStorage` hook which returns a new setter function on every render (not a stable identity), this causes the callback to be recreated unnecessarily.
+None -- all findings were fixed.
 
 ---
 
-_Fixed: 2026-04-28T20:15:00Z_
+_Fixed: 2026-04-29T00:30:19Z_
 _Fixer: Claude (gsd-code-fixer)_
-_Iteration: 1_
+_Iteration: 2_
