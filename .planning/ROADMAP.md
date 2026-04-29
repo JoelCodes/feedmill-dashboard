@@ -79,7 +79,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 06-01-PLAN.md — Design filter pills with interaction states in mill-production.pen
+- [x] 06-01-PLAN.md — Design filter pills with interaction states in mill-production.pen
 
 **UI hint**: yes
 
@@ -136,7 +136,7 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 6. Design | 0/1 | Not started | - |
+| 6. Design | 1/1 | Complete | 2026-04-28 |
 | 7. Data Infrastructure | 0/0 | Not started | - |
 | 8. Filter Implementation | 0/0 | Not started | - |
 | 9. Polish | 0/0 | Not started | - |

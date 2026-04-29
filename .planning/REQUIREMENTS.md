@@ -9,8 +9,8 @@ Requirements for Mill Production Dashboard milestone. Each maps to roadmap phase
 
 ### Design
 
-- [ ] **DESGN-01**: User can see status filter pills design in mill-production.pen
-- [ ] **DESGN-02**: User can approve design before implementation begins
+- [x] **DESGN-01**: User can see status filter pills design in mill-production.pen
+- [x] **DESGN-02**: User can approve design before implementation begins
 
 ### Data
 
@@ -63,8 +63,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DESGN-01 | Phase 6 | Pending |
-| DESGN-02 | Phase 6 | Pending |
+| DESGN-01 | Phase 6 | Complete |
+| DESGN-02 | Phase 6 | Complete |
 | DATA-01 | Phase 7 | Pending |
 | DATA-02 | Phase 7 | Pending |
 | FILTR-01 | Phase 8 | Pending |
