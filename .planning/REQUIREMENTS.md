@@ -14,8 +14,8 @@ Requirements for Mill Production Dashboard milestone. Each maps to roadmap phase
 
 ### Data
 
-- [ ] **DATA-01**: Production orders mock data derived from Book1.xlsx structure
-- [ ] **DATA-02**: Mock service returns orders with realistic mill line distribution
+- [x] **DATA-01**: Production orders mock data derived from Book1.xlsx structure
+- [x] **DATA-02**: Mock service returns orders with realistic mill line distribution
 
 ### Filters
 
@@ -65,8 +65,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | DESGN-01 | Phase 6 | Complete |
 | DESGN-02 | Phase 6 | Complete |
-| DATA-01 | Phase 7 | Pending |
-| DATA-02 | Phase 7 | Pending |
+| DATA-01 | Phase 7 | Complete |
+| DATA-02 | Phase 7 | Complete |
 | FILTR-01 | Phase 8 | Pending |
 | FILTR-02 | Phase 8 | Pending |
 | FILTR-03 | Phase 8 | Pending |

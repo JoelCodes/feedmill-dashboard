@@ -94,7 +94,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 07-01-PLAN.md — Expand mock service to 33 orders with textureType and lineCode fields
+- [x] 07-01-PLAN.md — Expand mock service to 33 orders with textureType and lineCode fields
 
 ### Phase 8: Filter Implementation
 **Goal**: Interactive status filter pills with toggle behavior
