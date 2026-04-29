@@ -123,10 +123,10 @@ Plans:
   1. Mill production layout spacing and typography match .pen design exactly
   2. Filter pill colors and styling match .pen design (active=blue, inactive=gray)
   3. No hardcoded hex colors or spacing values (all use design tokens)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 09-01: TBD
+- [ ] 09-01-PLAN.md — Add design tokens and replace hardcoded values with token-based styling
 
 **UI hint**: yes
 
@@ -139,8 +139,8 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 |-------|----------------|--------|-----------|
 | 6. Design | 1/1 | Complete | 2026-04-28 |
 | 7. Data Infrastructure | 1/1 | Complete | 2026-04-29 |
-| 8. Filter Implementation | 0/2 | Planning complete | - |
-| 9. Polish | 0/0 | Not started | - |
+| 8. Filter Implementation | 2/2 | Complete | 2026-04-29 |
+| 9. Polish | 0/1 | Planning complete | - |
 
 ---
 *Roadmap created: 2026-03-11*
