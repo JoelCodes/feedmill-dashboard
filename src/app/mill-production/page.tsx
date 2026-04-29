@@ -22,10 +22,22 @@ const STATE_COLORS: Record<
   ProductionState,
   { border: string; header: string }
 > = {
-  Completed: { border: "#38a169", header: "#276749" },
-  Mixing: { border: "#d69e2e", header: "#975a16" },
-  Blocked: { border: "#e53e3e", header: "#c53030" },
-  Pending: { border: "#a0aec0", header: "#4a5568" },
+  Completed: {
+    border: "var(--status-completed-border)",
+    header: "var(--status-completed-header)",
+  },
+  Mixing: {
+    border: "var(--status-mixing-border)",
+    header: "var(--status-mixing-header)",
+  },
+  Blocked: {
+    border: "var(--status-blocked-border)",
+    header: "var(--status-blocked-header)",
+  },
+  Pending: {
+    border: "var(--status-pending-border)",
+    header: "var(--status-pending-header)",
+  },
 };
 
 const PRODUCTION_STATE_PILL_CONFIG: Record<ProductionState, FilterPillColorConfig> = {
@@ -33,25 +45,25 @@ const PRODUCTION_STATE_PILL_CONFIG: Record<ProductionState, FilterPillColorConfi
     bg: "bg-success-light",
     text: "text-success-dark",
     dot: "bg-success",
-    countBg: "bg-[#2f855a22]",
+    countBg: "bg-[var(--status-completed-bg-22)]",
   },
   Mixing: {
     bg: "bg-warning-light",
     text: "text-warning",
     dot: "bg-warning",
-    countBg: "bg-[#975a1622]",
+    countBg: "bg-[var(--status-mixing-bg-22)]",
   },
   Blocked: {
     bg: "bg-error-light",
     text: "text-error-dark",
     dot: "bg-error",
-    countBg: "bg-[#c5303022]",
+    countBg: "bg-[var(--status-blocked-bg-22)]",
   },
   Pending: {
     bg: "bg-pending-light",
-    text: "text-[#718096]",
+    text: "text-muted",
     dot: "bg-pending",
-    countBg: "bg-[#71809622]",
+    countBg: "bg-[var(--status-pending-bg-22)]",
   },
 };
 
@@ -66,27 +78,22 @@ function ProductionCard({ order }: { order: ProductionOrder }) {
   const borderColor = STATE_COLORS[order.state].border;
 
   return (
-    <div
-      className="relative overflow-hidden rounded-r-xl bg-white"
-      style={{
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-      }}
-    >
+    <div className="relative overflow-hidden rounded-r-xl bg-white shadow-card">
       <div
         className="absolute left-0 top-0 h-full w-1 rounded-l-xl"
         style={{ backgroundColor: borderColor }}
       />
       <div className="py-2.5 pl-5 pr-4">
-        <p className="text-[11px] font-semibold text-[#718096]">
+        <p className="text-card-label font-semibold text-muted">
           {order.orderNumber}
         </p>
-        <p className="mt-1 text-[15px] font-bold text-[#2d3748]">
+        <p className="mt-1 text-card-title font-bold text-primary">
           {order.customer}
         </p>
-        <p className="mt-2 text-sm font-medium text-[#4a5568]">
+        <p className="mt-2 text-sm font-medium text-medium">
           {order.weightLbs.toLocaleString()} lbs &bull; {order.product}
         </p>
-        <p className="mt-1.5 text-xs font-medium text-[#718096]">
+        <p className="mt-1.5 text-xs font-medium text-muted">
           Delivery: {order.deliveryTime}
         </p>
       </div>
@@ -112,7 +119,7 @@ function StateSection({
         <span className="text-xl font-bold" style={{ color: headerColor }}>
           {state}
         </span>
-        <span className="text-base font-medium text-[#718096]">
+        <span className="text-base font-medium text-muted">
           {formatWeight(totalWeight)}
         </span>
       </div>
@@ -148,8 +155,8 @@ function MillColumn({
   return (
     <div className="flex flex-1 flex-col gap-5">
       <div>
-        <h2 className="text-2xl font-bold text-[#2d3748]">{millLine}</h2>
-        <p className="mt-1 text-base font-semibold text-[#718096]">
+        <h2 className="text-2xl font-bold text-primary">{millLine}</h2>
+        <p className="mt-1 text-base font-semibold text-muted">
           {formatWeight(completedWeight)} / {formatWeight(totalWeight)} lbs
         </p>
       </div>
