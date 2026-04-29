@@ -106,7 +106,12 @@ export default function SettingsPage() {
                 <label className="mb-2 block text-sm font-bold">Theme</label>
                 <select
                   value={formState.theme}
-                  onChange={(e) => updateTheme(e.target.value as "light" | "dark")}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === 'light' || value === 'dark') {
+                      updateTheme(value);
+                    }
+                  }}
                   className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="light">Light</option>
