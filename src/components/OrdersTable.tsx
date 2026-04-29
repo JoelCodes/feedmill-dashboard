@@ -141,6 +141,15 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
     return ordersToCount.filter(o => o.hasChanges).length;
   }, [orders, activeStatuses, activeSearch]);
 
+  const dispatchedThisWeek = useMemo(() => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    return orders.filter(o =>
+      o.status === 'Complete' &&
+      new Date(o.deliveryDate) > oneWeekAgo
+    ).length;
+  }, [orders]);
+
   const visibleIds = filteredOrders.map(o => o.id);
 
   // Derive valid selection - null if selected order is not in filtered list
@@ -214,7 +223,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
           <div className="flex items-center gap-1">
             <CheckCircle className="text-success h-3.75 w-3.75" />
             <span className="text-text-secondary text-sm">
-              18 dispatched this week
+              {dispatchedThisWeek} dispatched this week
             </span>
           </div>
         </div>
