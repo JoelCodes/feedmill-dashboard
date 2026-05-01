@@ -2,13 +2,13 @@
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 0-5 (shipped 2026-04-29)
-- 🚧 **v1.1 Mill Production Dashboard** - Phases 6-9 (in progress)
+- ✅ **v1.0 MVP** — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
+- ✅ **v1.1 Mill Production Dashboard** — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 0-5) - SHIPPED 2026-04-29</summary>
+<summary>✅ v1.0 MVP (Phases 0-5) — SHIPPED 2026-04-29</summary>
 
 ### Phase 0: Infrastructure
 **Goal**: Foundation for orders table with type-safe data
@@ -37,7 +37,7 @@ Plans:
 
 ### Phase 3: KPI Cards (DEFERRED)
 **Goal**: Dashboard KPIs with click-to-filter
-**Status**: Deferred to v1.1+
+**Status**: Deferred to v1.2+
 
 ### Phase 4: Navigation
 **Goal**: Functional navigation with auto-detecting active state
@@ -58,91 +58,48 @@ Plans:
 
 </details>
 
-## 🚧 v1.1 Mill Production Dashboard (In Progress)
-
-**Milestone Goal:** Transform mill production view into a polished, data-driven production dashboard with filtering capabilities.
-
-- [ ] **Phase 6: Design** - Status filter pills designed and approved
-- [ ] **Phase 7: Data Infrastructure** - Production orders mock service
-- [ ] **Phase 8: Filter Implementation** - Interactive filter pills
-- [ ] **Phase 9: Polish** - Pixel-perfect design matching
-
-## Phase Details
+<details>
+<summary>✅ v1.1 Mill Production Dashboard (Phases 6-9) — SHIPPED 2026-04-29</summary>
 
 ### Phase 6: Design
 **Goal**: Status filter pills designed and approved in mill-production.pen
-**Depends on**: Nothing (first phase of v1.1)
-**Requirements**: DESGN-01, DESGN-02
-**Success Criteria** (what must be TRUE):
-  1. User can see status filter pills design in mill-production.pen file
-  2. User can approve design (colors, spacing, typography) before implementation begins
 **Plans**: 1 plan
 
 Plans:
-- [x] 06-01-PLAN.md — Design filter pills with interaction states in mill-production.pen
-
-**UI hint**: yes
+- [x] 06-01: Design filter pills with interaction states in mill-production.pen
 
 ### Phase 7: Data Infrastructure
 **Goal**: Production orders mock service derived from Book1.xlsx example data
-**Depends on**: Phase 6
-**Requirements**: DATA-01, DATA-02
-**Success Criteria** (what must be TRUE):
-  1. Mock service returns production orders with all required fields (orderNumber, customer, product, state, millLine, etc.)
-  2. Orders distributed realistically across mill lines (Premix, Excel, CGM) and states (Completed, Mixing, Blocked, Pending)
-  3. Mock data structure matches Book1.xlsx column format
 **Plans**: 1 plan
 
 Plans:
-- [x] 07-01-PLAN.md — Expand mock service to 33 orders with textureType and lineCode fields
+- [x] 07-01: Expand mock service to 33 orders with textureType and lineCode fields
 
 ### Phase 8: Filter Implementation
 **Goal**: Interactive status filter pills with toggle behavior
-**Depends on**: Phase 7
-**Requirements**: FILTR-01, FILTR-02, FILTR-03, FILTR-04, FILTR-05
-**Success Criteria** (what must be TRUE):
-  1. User can see status filter pills (Completed, Mixing, Blocked, Pending) above mill columns
-  2. User can click a filter pill to toggle that status on/off
-  3. User can select multiple pills to show combined statuses
-  4. User can see count badges showing total orders per status (not filtered count)
-  5. User sees all cards when no filters selected (default state)
-  6. Cards matching selected states remain visible, non-matching cards hidden
 **Plans**: 2 plans
 
 Plans:
-- [x] 08-01-PLAN.md — Extract shared FilterPill component with TDD
-- [x] 08-02-PLAN.md — Integrate filter pills into mill-production page
-
-**UI hint**: yes
+- [x] 08-01: Extract shared FilterPill component with TDD
+- [x] 08-02: Integrate filter pills into mill-production page
 
 ### Phase 9: Polish
 **Goal**: Mill production view matches .pen design pixel-perfect
-**Depends on**: Phase 8
-**Requirements**: POLSH-01, POLSH-02, POLSH-03
-**Success Criteria** (what must be TRUE):
-  1. Mill production layout spacing and typography match .pen design exactly
-  2. Filter pill colors and styling match .pen design (active=blue, inactive=gray)
-  3. No hardcoded hex colors or spacing values (all use design tokens)
 **Plans**: 1 plan
 
 Plans:
-- [x] 09-01-PLAN.md — Add design tokens and replace hardcoded values with token-based styling
+- [x] 09-01: Add design tokens and replace hardcoded values with token-based styling
 
-**UI hint**: yes
+</details>
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 6 → 7 → 8 → 9
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 6. Design | 1/1 | Complete | 2026-04-28 |
-| 7. Data Infrastructure | 1/1 | Complete | 2026-04-29 |
-| 8. Filter Implementation | 2/2 | Complete | 2026-04-29 |
-| 9. Polish | 1/1 | Complete | 2026-04-29 |
+| Milestone | Phases | Plans | Status | Shipped |
+|-----------|--------|-------|--------|---------|
+| v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
+| v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
 
 ---
 *Roadmap created: 2026-03-11*
 *v1.0 shipped: 2026-04-29*
-*v1.1 roadmap updated: 2026-04-29*
+*v1.1 shipped: 2026-04-29*

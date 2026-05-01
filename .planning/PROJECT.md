@@ -2,26 +2,16 @@
 
 ## What This Is
 
-A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation.
+A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system.
 
 ## Core Value
 
 Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-## Current Milestone: v1.1 Mill Production Dashboard
-
-**Goal:** Transform the mill production view into a polished, data-driven production dashboard with filtering capabilities.
-
-**Target features:**
-- Design status filter pills in .pen file, get approval, then implement
-- Polish implementation to pixel-match the approved .pen design
-- Create mock JSON data service derived from Book1.xlsx example data
-- Wire filter pills with toggle behavior matching orders page
-
 ## Current State
 
-**Shipped:** v1.0 MVP (2026-04-29)
-**Codebase:** 2,699 LOC TypeScript across 121 files
+**Shipped:** v1.1 Mill Production Dashboard (2026-04-29)
+**Codebase:** 3,191 LOC TypeScript
 **Tech stack:** Next.js 15, React 19, Tailwind CSS 4
 
 **What's working:**
@@ -30,7 +20,9 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Functional sidebar navigation with auto-detecting active state
 - Header with global search and notification system
 - Settings page with theme/density preferences
-- Mill production view with 3 columns and state cards (basic implementation)
+- Mill production view with 3 columns, state cards, and multi-select filter pills
+- Design token system for status colors, typography, and spacing
+- 33 mock production orders with realistic Book1.xlsx data
 
 **Known gaps (deferred):**
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
@@ -42,6 +34,7 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 <!-- Shipped and confirmed working -->
 
+**v1.0:**
 - ✓ TypeScript types defined for Order data structure — v1.0
 - ✓ Mock orders service with async interface — v1.0
 - ✓ StatusBadge component extracted with shared constants — v1.0
@@ -66,14 +59,19 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - ✓ Notifications area with indicator — v1.0
 - ✓ Settings link to settings page — v1.0
 
+**v1.1:**
+- ✓ Filter pills UI designed in mill-production.pen with 4 interaction states — v1.1
+- ✓ Mill production view polished to match .pen design exactly — v1.1
+- ✓ Mock service expanded to 33 orders from Book1.xlsx example data — v1.1
+- ✓ Status filter pills with multi-select toggle behavior — v1.1
+- ✓ Design tokens for status colors, typography, and shadows — v1.1
+- ✓ Reusable FilterPill component with TDD (11 tests) — v1.1
+
 ### Active
 
-<!-- v1.1 Mill Production Dashboard scope -->
+<!-- Next milestone scope - to be defined -->
 
-- [ ] Design filter pills UI in mill-production.pen
-- [ ] Polish mill production view to match .pen design exactly
-- [ ] Create data-driven mock service from Book1.xlsx example data
-- [ ] Implement status filter pills with toggle behavior
+(No active requirements - ready for next milestone planning)
 
 ### Deferred
 
@@ -135,6 +133,9 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 | Auto-detecting active nav state | usePathname() with prefix matching for nested routes | ✓ Good |
 | localStorage for read notification state | Single source of truth for badge and indicators | ✓ Good |
 | Phase 3 deferred | KPI functionality can ship in v1.1 without blocking core features | — Pending |
+| Generic FilterPill with color props | Enables reuse across orders and mill-production with different status types | ✓ Good |
+| Design tokens in globals.css | Centralized styling, eliminates hardcoded hex values, enables theme consistency | ✓ Good |
+| TDD for FilterPill component | 11 tests ensure correctness, documents behavior for future maintainers | ✓ Good |
 
 ## Evolution
 
@@ -154,4 +155,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-28 after v1.1 milestone start*
+*Last updated: 2026-04-29 after v1.1 milestone completion*

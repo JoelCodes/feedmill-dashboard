@@ -45,6 +45,49 @@
 
 ---
 
+## Milestone: v1.1 — Mill Production Dashboard
+
+**Shipped:** 2026-04-29
+**Phases:** 4 | **Plans:** 5 | **Timeline:** 2 days
+
+### What Was Built
+- Status filter pills design with 4 interaction states (hover, active, multi-select, filtered)
+- Expanded mock production orders from 12 to 33 with realistic Book1.xlsx data
+- Reusable FilterPill component with generic color props and 11 unit tests
+- Multi-select filter toggle behavior for mill production page
+- Design token system eliminating all hardcoded hex colors and inline styles
+
+### What Worked
+- **TDD for FilterPill:** 11 tests established clear contract before extraction
+- **Generic color props:** Made component reusable across orders and mill-production contexts
+- **Design tokens in globals.css:** Centralized styling enables future theme support
+- **Set<ProductionState> for multi-select:** O(1) has() lookups, clean toggle logic
+- **Memoization strategy:** stateCounts (static) vs filteredOrders (dynamic) correctly separated
+
+### What Was Inefficient
+- **Quick task cleanup still pending:** 10 quick task directories carry over from v1.0
+- **One-liner extraction from SUMMARY.md:** SDK didn't extract properly, required manual fix
+- **Verification gap in Phase 06:** human_needed status carried forward without resolution
+
+### Patterns Established
+- Design token naming: semantic (text-card-label) over technical (text-11)
+- Hex alpha format (#rrggbb38) for opacity variants in CSS variables
+- FilterPillColorConfig interface for reusable pill styling
+- STATE_ORDER constant for consistent status rendering order
+
+### Key Lessons
+1. **TDD pays off for shared components:** FilterPill extraction was clean because tests documented behavior
+2. **Static vs dynamic memoization:** Always separate counts (static) from filtered results (dynamic) in filter UIs
+3. **Design tokens should happen earlier:** Would have been cleaner to establish tokens before Phase 8 implementation
+4. **Quick task hygiene needed:** v1.0 backlog carried into v1.1 — need explicit cleanup phase
+
+### Cost Observations
+- Phases completed in 2 days (fast turnaround)
+- All 5 plans executed under 10 minutes total
+- Jest infrastructure added (one-time cost, now available for future tests)
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -52,15 +95,19 @@
 | Milestone | Phases | Plans | Key Change |
 |-----------|--------|-------|------------|
 | v1.0 | 5 | 12 | Established Design → Infra → Build pattern |
+| v1.1 | 4 | 5 | Added TDD, design tokens, shared component extraction |
 
 ### Cumulative Quality
 
 | Milestone | Tests | Coverage | Zero-Dep Additions |
 |-----------|-------|----------|-------------------|
 | v1.0 | 0 | 0% | useDebounce, useLocalStorage hooks |
+| v1.1 | 11 | FilterPill 100% | FilterPill component, Jest infrastructure |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Derived state pattern avoids React lint violations and cascading renders
 2. Outside-in development with visual prototype makes progress visible
 3. Single source of truth for state (STATUS_CONFIG, localStorage-backed) prevents drift
+4. TDD for shared components ensures clean extraction and documents behavior
+5. Design tokens should be established early — retrofitting is more work
