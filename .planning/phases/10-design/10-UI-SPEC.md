@@ -51,12 +51,14 @@ Exceptions: none
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Label | 10px | 700 (bold) | 1.2 |
-| Small | 11px | 700 (bold) | 1.2 |
+| Small/Label | 10px | 700 (bold) | 1.2 |
 | Body | 12px | 400 (regular) | 1.5 |
-| Heading | 14px | 700 (bold) | 1.2 |
+| Heading | 16px | 700 (bold) | 1.2 |
+| Display | 20px | 700 (bold) | 1.2 |
 
 **Source**: Detected from OrdersTable.tsx, Header.tsx, FilterPill.tsx, and globals.css
+
+**Rationale**: Consolidated from original 10/11/12/14 scale. Removed 11px (too close to 10px and 12px). Changed heading from 14px to 16px and added 20px display size to create sufficient visual hierarchy with minimum 2px jumps between sizes.
 
 ---
 
@@ -182,6 +184,21 @@ Components to design in .pen files:
 | Order link in timeline | default, hover | hover: underline, click navigates to /orders?selected=[orderId] |
 
 **Source**: Inferred from OrdersTable interaction patterns and decisions D-01, D-03, D-07
+
+---
+
+## Visual Focal Points
+
+**Customer list view (customers.pen):**
+- **Primary focal point**: CustomerSearchBox — positioned at top of list, accent color on focus state draws eye first
+- **Secondary focal point**: First CustomerTable row — high-contrast status indicators create visual weight
+
+**Customer detail view (customer-detail.pen):**
+- **Primary focal point**: CustomerDetailHeader — fixed position at top, contains customer name at Display size (20px bold)
+- **Secondary focal point**: BinGaugeRow section — color-coded gauges (green/yellow/red) create immediate visual hierarchy below header
+- **Tertiary focal point**: ActivityTimeline — chronological layout guides eye downward after header and bins
+
+**Source**: Recommended by gsd-ui-checker Dimension 2 (Visuals)
 
 ---
 
