@@ -28,6 +28,16 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 
+## Current Milestone: v1.2 Customers Page
+
+**Goal:** Sales/delivery team can look up customers, see their order history and bin status, and track activity across orders and deliveries.
+
+**Target features:**
+- Customers list page with search and order/change status indicators
+- Customer detail page with unified activity timeline
+- Bin visualization with fill level bars and alert thresholds
+- Mock bin data following Bin Sentry patterns
+
 ## Requirements
 
 ### Validated
@@ -69,9 +79,16 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ### Active
 
-<!-- Next milestone scope - to be defined -->
+<!-- Current scope for v1.2 Customers Page -->
 
-(No active requirements - ready for next milestone planning)
+- [ ] Customers list page with search functionality
+- [ ] Customer row shows order status and change flags
+- [ ] Customer detail page with header info
+- [ ] Unified activity timeline (orders, deliveries, bin alerts)
+- [ ] Order history with inline summary and link to full details
+- [ ] Bin visualization with fill level bars
+- [ ] Low/critical alert thresholds on bins
+- [ ] Mock bin data service (Bin Sentry-style)
 
 ### Deferred
 
@@ -155,4 +172,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-29 after v1.1 milestone completion*
+*Last updated: 2026-05-01 after v1.2 milestone started*

@@ -1,11 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: (ready for next)
-milestone_name:
-status: ready_for_milestone
-stopped_at: v1.1 milestone archived
-last_updated: "2026-05-01T04:10:00.000Z"
-last_activity: 2026-05-01 -- Completed v1.1 milestone archival
+milestone: v1.2
+milestone_name: Customers Page
+status: planning
+last_updated: "2026-05-01T19:39:24.450Z"
+last_activity: 2026-05-01
 progress:
   total_phases: 0
   completed_phases: 0
@@ -25,12 +24,10 @@ See: .planning/PROJECT.md (updated 2026-04-29)
 
 ## Current Position
 
-Phase: (none - between milestones)
-Plan: N/A
-Status: v1.1 archived, ready for `/gsd-new-milestone`
-Last activity: 2026-05-01
-
-Progress: Ready for next milestone
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-01 — Milestone v1.2 started
 
 ## Performance Metrics
 
