@@ -7,6 +7,12 @@
 
 Requirements for Customers Page milestone. Each maps to roadmap phases.
 
+### Design
+
+- [ ] **DSGN-01**: Customer list view designed in customers.pen
+- [ ] **DSGN-02**: Customer detail page layout designed in customer-detail.pen
+- [ ] **DSGN-03**: Bin visualization component designed with fill bars and alert states
+
 ### Data Layer
 
 - [ ] **DATA-01**: Customer TypeScript types defined (Customer, CustomerStats)
@@ -74,29 +80,32 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
-| DATA-03 | TBD | Pending |
-| DATA-04 | TBD | Pending |
-| CUST-01 | TBD | Pending |
-| CUST-02 | TBD | Pending |
-| CUST-03 | TBD | Pending |
-| CUST-04 | TBD | Pending |
-| CDET-01 | TBD | Pending |
-| CDET-02 | TBD | Pending |
-| CDET-03 | TBD | Pending |
-| TMLN-01 | TBD | Pending |
-| TMLN-02 | TBD | Pending |
-| TMLN-03 | TBD | Pending |
-| BIN-01 | TBD | Pending |
-| BIN-02 | TBD | Pending |
-| BIN-03 | TBD | Pending |
+| DSGN-01 | Phase 10 | Pending |
+| DSGN-02 | Phase 10 | Pending |
+| DSGN-03 | Phase 10 | Pending |
+| DATA-01 | Phase 11 | Pending |
+| DATA-02 | Phase 11 | Pending |
+| DATA-03 | Phase 11 | Pending |
+| DATA-04 | Phase 11 | Pending |
+| CUST-01 | Phase 12 | Pending |
+| CUST-02 | Phase 12 | Pending |
+| CUST-03 | Phase 12 | Pending |
+| CUST-04 | Phase 12 | Pending |
+| CDET-01 | Phase 13 | Pending |
+| CDET-02 | Phase 13 | Pending |
+| CDET-03 | Phase 13 | Pending |
+| TMLN-01 | Phase 14 | Pending |
+| TMLN-02 | Phase 14 | Pending |
+| TMLN-03 | Phase 14 | Pending |
+| BIN-01 | Phase 15 | Pending |
+| BIN-02 | Phase 15 | Pending |
+| BIN-03 | Phase 15 | Pending |
 
 **Coverage:**
-- v1.2 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17
+- v1.2 requirements: 20 total
+- Mapped to phases: 20
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after initial definition*
+*Last updated: 2026-05-01 after roadmap creation*

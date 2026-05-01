@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Customers Page
-status: planning
-last_updated: "2026-05-01T19:39:24.450Z"
+status: active
+last_updated: "2026-05-01"
 last_activity: 2026-05-01
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,27 +17,39 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-29)
+See: .planning/PROJECT.md (updated 2026-05-01)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
-**Current focus:** Ready for next milestone
+
+**Current focus:** Sales/delivery team can look up customers, see their order history and bin status, and track activity across orders and deliveries.
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-01 — Milestone v1.2 started
+**Phase:** 10 - Foundation (Data Layer)
+**Plan:** Not started
+**Status:** Not started
+
+```
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/5 phases)
+```
+
+**Next action:** `/gsd-plan-phase 10`
 
 ## Performance Metrics
 
-**Velocity:**
+**Milestone v1.2:**
+- Phases completed: 0/5
+- Plans completed: 0/0
+- Tasks completed: 0/0
+- Days elapsed: 0
+- Velocity: N/A
 
-- Total plans completed: 15
-- Average duration: 2m
-- Total execution time: 13 minutes
+**Historical (v1.0-v1.1):**
+- v1.1: 4 phases, 5 plans, 10 tasks in 2 days
+- v1.0: 5 phases, 12 plans, ~24 tasks in 49 days
+- Average plan duration: 2m (13 minutes total execution time)
 
-**By Phase:**
+**By Phase (Historical):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
@@ -48,30 +60,11 @@ Last activity: 2026-05-01 — Milestone v1.2 started
 | 05 | 4 | - | - |
 | 06 | 1 | - | - |
 | 08 | 2 | - | - |
-
-**Recent Trend:**
-
-- Last 5 plans: 2m, 262s, 203s, 272s
-- Trend: Consistent
-
-*Updated after each plan completion*
-| Phase 00 P01 | 2m | 2 tasks | 3 files |
-| Phase 00 P02 | 2m | 3 tasks | 4 files |
-| Phase 01 P01 | 2m | 2 tasks | 2 files |
-| Phase 01 P02 | 2m | 2 tasks | 1 files |
-| Phase 01 P03 | 262s | 3 tasks | 2 files |
-| Phase 02 P01 | 203s | 2 tasks | 3 files |
-| Phase 02 P02 | 272s | 3 tasks | 2 files |
-| Phase 04 P01 | 135s | 3 tasks | 5 files |
-| Phase 05 P01 | 127s | 3 tasks | 4 files |
-| Phase 05 P02 | 168s | 2 tasks | 9 files |
-| Phase 05 P04 | 198s | 3 tasks | 4 files |
-| Phase 06 P01 | 207s | 3 tasks | 1 files |
-| Phase 09 P01 | 121s | 3 tasks | 2 files |
+| 09 | 1 | 121s | 121s |
 
 ## Accumulated Context
 
-### Decisions
+### Recent Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
@@ -80,89 +73,58 @@ Recent decisions affecting current work:
 - Design -> Infrastructure -> Build pattern: Ensures visual/UX consideration before coding
 - Each order line = separate row: Lines are individual deliveries to specific bins
 - Product = Texture Type + Formula Type: Simplifies display, keeps related info together
-- [Phase 00]: Mock dataset has 18 orders for comprehensive coverage
-- [Phase 00]: Used 'En Route' and 'Delivered' as location values for In Transit and Complete orders
-- [Phase 00 P02]: StatusBadge uses default export, STATUS_CONFIG uses named export for flexibility
-- [Phase 00 P02]: "In Transit" status label abbreviated to "Transit" in UI per CONTEXT.md design decision
-- [Phase 00 P02]: TableSkeleton has 5 rows matching OrdersTable initial display size
-- [Phase 00 P02]: DetailsSkeleton structured with 4 sections: header, info grid, timeline, change history
-- [Phase 00 P02]: Mock data in OrdersTable updated to use all 5 new statuses for visual testing
-- [Phase quick-1]: Used eslint-plugin-tailwindcss@4.0.0-beta.0 for Tailwind v4 compatibility, disabled config-dependent rules
-- [Phase 01 P01]: Product column combines textureType + formulaType with space separator
-- [Phase 01 P01]: Date formatting uses Intl.DateTimeFormat with 'en-US' locale for 'Month Day, Year' format
-- [Phase 01 P01]: Red dot indicator checks hasChanges property (not hasAlert)
-- [Phase 01 P02]: Empty status selection shows all orders (no 'All' pill needed)
-- [Phase 01 P02]: Status counts respect hasChanges filter only (don't filter themselves)
-- [Phase 01 P02]: Has Changes count respects status filter for accurate context
-- [Phase 01 P02]: Red dot indicator uses bg-error Tailwind color
-- [Phase 01]: Derived validSelectedId from filteredOrders to avoid setState in useEffect (React best practice)
-- [Phase 02 P01]: Wrapped onSelectOrder in useCallback to prevent infinite loops in useEffect dependencies
-- [Phase 02 P01]: Two separate useEffect hooks for auto-selection: initial load vs filter changes
-- [Phase 02]: Used derived state pattern (displayOrder) to avoid setState in effect and satisfy React lint rules
-- [Quick 260316-sw4]: Split timeline into completed and pending sections based on isPending flag
-- [Quick 260316-sw4]: Used deliveryDate as reference for calculating estimated pending event dates
-- [Quick 260316-sw4]: Pending events show outlined circles (white bg + gray border) vs filled circles for completed
-- [Phase 04 P01]: Auto-detect active navigation state using usePathname() hook instead of manual activeItem prop
-- [Phase 04 P01]: Use prefix matching for nested routes - /orders/123 highlights Orders nav item
-- [Phase 05 P01]: useDebounce hook already existed from prior work
-- [Phase 05 P01]: Followed established patterns from orders.ts service
-- [Phase 05 P01]: Used 200ms delay for notification service (lighter than orders 300ms)
-- [Phase 05 P01]: Created 7 mock notifications with realistic timestamps within last 24 hours
-- [Phase 05 P01]: Mixed read/unread states for realistic notification panel testing
-- [Phase 05 P02]: Header derives title from pathname using getPageTitle mapping function
-- [Phase 05 P02]: Removed title prop from HeaderProps to enforce single source of truth
-- [Phase 05 P02]: Read notification IDs persist to localStorage for cross-session tracking
-- [Phase 05 P04]: Use externalSearchTerm || debouncedSearch pattern to allow both header and table search
-- [Phase 05 P04]: Memoize activeSearch with useMemo for explicit dependency tracking
-- [Phase 05 P04]: readNotificationIds as single source of truth for badge count and blue dots
-- [Phase 06 P01]: Filter pills left-aligned above mill columns per compact design directive D-02
-- [Phase 06 P01]: Multi-select pattern allows combining status filters (Completed + Blocked)
-- [Phase 06 P01]: Filtered state dims non-matching cards with opacity for visual feedback
-- [Phase 06 P01]: Placeholder counts used: Completed (6), Mixing (4), Blocked (2), Pending (3)
-- [Phase 09 P01]: Used semantic token naming (text-card-label) over technical naming (text-11)
-- [Phase 09 P01]: Hex alpha format (#rrggbb38) for 22% opacity bg tokens
-- [Phase 09 P01]: Kept dynamic inline style for headerColor (CSS variable resolved at runtime)
+- Generic FilterPill with color props: Enables reuse across orders and mill-production with different status types
+- Design tokens in globals.css: Centralized styling, eliminates hardcoded hex values, enables theme consistency
+- TDD for FilterPill component: 11 tests ensure correctness, documents behavior for future maintainers
 
-### Pending Todos
+### Active Todos
 
-None yet.
+*No active todos*
 
-### Blockers/Concerns
+### Known Blockers
 
-None yet.
+*No blockers*
 
-## Deferred Items
+### Deferred Items
 
-Items acknowledged and deferred at milestone close on 2026-04-29:
+*Items deferred from v1.1 (not in v1.2 scope):*
 
-| Category | Item | Status |
-|----------|------|--------|
-| verification_gaps | Phase 04: 04-01-VERIFICATION.md | human_needed |
-| quick_tasks | 1-fix-tailwind-lint-errors | missing |
-| quick_tasks | 2-add-design-to-pen-file | missing |
-| quick_tasks | 260316-sw4-add-pending-items-section-to-order-detai | missing |
-| quick_tasks | 260316-tib-fix-timeline-connector-lines-not-connect | missing |
-| quick_tasks | 260316-tpp-update-react-timeline-to-integrate-conne | missing |
-| quick_tasks | 260423-mpv-mill-production-view | missing |
-| quick_tasks | 260426-c99-organize-design-files | missing |
-| quick_tasks | 260427-mpd-mill-production-dashboard | missing |
-| quick_tasks | 260427-mwc-update-pages-match-pen-files | missing |
+**Performance:**
+- Consider memoizing filtered/sorted data in OrdersTable to avoid recalculating on every render
+- Evaluate if card-hover opacity transition should use transform instead for better performance
 
-### Quick Tasks Completed
+**Accessibility:**
+- Add aria-label to filter pills for screen reader clarity
+- Consider keyboard navigation for multi-select (Space to toggle, Arrow keys to move)
+- Add focus management for filter pills
+- Test with screen reader to ensure multi-select state is announced
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Fix Tailwind lint errors | 2026-03-11 | 7564daa | [1-fix-tailwind-lint-errors](./quick/1-fix-tailwind-lint-errors/) |
-| 2 | Add pending items section to order details | 2026-03-16 | 1bc3b8f | [260316-sw4-add-pending-items-section-to-order-detai](./quick/260316-sw4-add-pending-items-section-to-order-detai/) |
-| 260316-tib | Fix timeline connector lines not connecting well to icons | 2026-03-17 | 75e1b6f | [260316-tib-fix-timeline-connector-lines-not-connect](./quick/260316-tib-fix-timeline-connector-lines-not-connect/) |
-| 260316-tpp | Update React timeline to integrate connector lines | 2026-03-17 | 26415e6 | [260316-tpp-update-react-timeline-to-integrate-conne](./quick/260316-tpp-update-react-timeline-to-integrate-conne/) |
-| 260423-mpv | Mill production view design with three columns and state cards | 2026-04-23 | 72d6949 | [260423-mpv-mill-production-view](./quick/260423-mpv-mill-production-view/) |
-| 260426-c99 | Organize design files into separate .pen files | 2026-04-26 | 34f51af | [260426-c99-organize-design-files](./quick/260426-c99-organize-design-files/) |
-| 260427-mwc | Update pages to match .pen design files | 2026-04-27 | e17777f | [260427-mwc-update-pages-match-pen-files](./quick/260427-mwc-update-pages-match-pen-files/) |
-| 260429-rfn | Randomize farm names with fun parody names | 2026-04-29 | 0d225e1 | [260429-rfn-randomize-farm-names](./quick/260429-rfn-randomize-farm-names/) |
+**UX Refinements:**
+- Add subtle animation when filter count changes
+- Consider adding "Clear all filters" action when multiple selected
+- Explore shift-click to select range of filters
+- Add tooltip on hover showing full filter label for truncated text
+
+**Code Quality:**
+- Extract filter state management to custom hook if complexity grows
+- Consider adding snapshot tests for FilterPill variants
+- Document multi-select pattern for reuse in other filter contexts
+- Add visual regression tests if implementing additional filter states
 
 ## Session Continuity
 
-Last session: 2026-04-29T18:14:43Z
-Stopped at: Phase 9 complete - v1.1 milestone complete
-Resume file: None
+**If context is lost, reload:**
+1. `.planning/PROJECT.md` — Core value, current milestone, constraints
+2. `.planning/ROADMAP.md` — Phase structure and current position
+3. `.planning/STATE.md` — This file for accumulated context
+
+**Quick recovery:**
+- Current milestone: v1.2 Customers Page
+- Current phase: Phase 10 - Foundation (Data Layer)
+- Next step: Plan the phase with `/gsd-plan-phase 10`
+- Requirements: 17 total in REQUIREMENTS.md
+- Coverage: 17/17 mapped to phases 10-14
+
+---
+*State initialized: 2026-05-01 for v1.2 milestone*
+*Last session: 2026-05-01*
