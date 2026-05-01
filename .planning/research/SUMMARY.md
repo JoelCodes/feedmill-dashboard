@@ -1,315 +1,299 @@
-# Research Summary: Dashboard Interactivity Stack
+# Project Research Summary
 
-**Domain:** Feed mill operations dashboard - adding interactivity to existing Next.js/React/Tailwind prototype
-**Researched:** 2026-03-11
-**Overall Confidence:** MEDIUM (based on training data current through Jan 2025, web tools unavailable)
+**Project:** CGM Dashboard v1.2 - Customer Management & Bin Monitoring
+**Domain:** Feed mill operations dashboard with customer activity tracking and bin inventory management
+**Researched:** 2026-05-01
+**Confidence:** HIGH
 
 ## Executive Summary
 
-Adding interactivity to the existing feed mill dashboard requires introducing **three core capabilities**: data table management (filtering, sorting, searching), UI state management (selections, panel visibility), and a mock data layer that transitions seamlessly to real APIs. The recommended stack prioritizes **minimal dependencies**, **headless libraries** that preserve the existing Tailwind design system, and **architectural patterns** that enable mock-to-API transitions without component rewrites.
+v1.2 adds customer-centric functionality to an existing feed mill operations dashboard, integrating customer management with order tracking and bin inventory monitoring. The good news: the existing Next.js/React/Tailwind stack is **completely sufficient** for all new features with **zero new dependencies required**. Research shows this milestone can leverage established patterns from v1.0-v1.1 (search from OrdersTable, timeline from OrderDetails, StatusBadge, FilterPill) while extending them to handle multi-source activity aggregation and bin fill visualizations.
 
-**Key architectural insight:** The critical success factor is introducing a **service layer abstraction** between components and data sources. This allows the entire mock data implementation to be swapped for real API calls by editing a single file, without touching any component code.
+The recommended approach is to build incrementally starting with the data layer (customer/bin services and types), then list view (reusing OrdersTable patterns), then detail view (combining timeline + bin visualization components). Critical success factors include: (1) implementing shared mock data layer to avoid stale data across pages, (2) using virtualization from the start for timeline to avoid memory leaks, (3) establishing cursor-based pagination pattern for order history before scale hits, and (4) avoiding charting library bloat by using CSS-only bin fill bars.
 
-**Confidence caveat:** This research relied on training data (current through January 2025) due to web search and documentation tools being unavailable. Library versions and React 19 compatibility should be verified against official documentation before installation.
+Key risk is **performance degradation from naive timeline aggregation**: fetching all events from multiple sources then merging client-side will fail at scale. Mitigation: structure mock services to return pre-aggregated ActivityEvent arrays, test with 100+ events per customer, and design data layer anticipating future backend aggregation table. Secondary risk is **inconsistent patterns**: new customer pages must audit and reuse existing components (StatusBadge, FilterPill, TimelineEvent structure) rather than reinventing similar UI.
 
 ## Key Findings
 
-**Stack:** TanStack Table v8 (headless data table) + Zustand v5 (state management) + MSW v2 (API mocking) + date-fns v4 (date utilities) + clsx/tailwind-merge (styling utilities)
+### Recommended Stack
 
-**Architecture:** Container/Presentation component split with service layer abstraction. Containers manage state and data fetching, presentations render UI from props, services provide data (mock or API with identical interface).
+**No new dependencies required.** All v1.2 features can be implemented with the existing v1.0-v1.1 stack: Next.js 16.1.6 App Router for customer routes (`/customers/[id]`), React 19.2.3 with hooks for state management, Tailwind CSS 4 for bin visualization bars, TypeScript for type safety, and lucide-react for icons (Container, Gauge, AlertTriangle, Bell already available).
 
-**Critical Pitfall:** Filter state explosion - multiple filter dimensions (status, search, "has changes") can create performance and UX issues if not architected correctly from the start. Use URL state for shareable filters and single reducer for all filter logic.
+**Core technologies:**
+- **Next.js App Router:** Dynamic customer detail routes with server components and parallel data fetching
+- **Native Array methods:** Customer search with `Array.filter()` and timeline merging with `Array.sort()` — no fuse.js or date-fns needed
+- **CSS + Tailwind:** Bin fill level bars using `<div style={{ width: ${percent}% }}>` with design token colors — no charting library needed
+- **Existing patterns:** Extend OrderDetails timeline for unified activity, reuse OrdersTable search pattern for customer list, continue mock service async pattern from orders.ts
+
+**Explicitly rejected:**
+- date-fns/dayjs (codebase uses native Intl API)
+- recharts/chart.js (overkill for simple horizontal fill bars)
+- Zustand/Redux (component-local state sufficient)
+- fuse.js (dataset <100 customers, native string matching adequate)
+
+### Expected Features
+
+Research validated customer management features against industry patterns from CRM systems (Salesforce, Dynamics 365, Bitrix24) and bin monitoring platforms (BinSentry, BinMaster FeedView).
+
+**Must have (table stakes):**
+- Customer list with search by name — standard in all CRM/account management systems
+- Status indicators on customer rows — operations teams expect at-a-glance account health (active orders, changes flag)
+- Customer detail page with header + summary stats — universal CRM pattern
+- Unified activity timeline (orders + deliveries + bin alerts) — industry standard chronological history
+- Expandable timeline events — progressive disclosure prevents clutter
+- Bin fill level visualization with percentage bars — table stakes in bin monitoring systems
+- Alert thresholds with color coding (green/yellow/red) — automated alerts are expected in bin monitoring
+- Multiple bins per customer — realistic scenario (2-5 bins for different feed types)
+
+**Should have (competitive advantage):**
+- Unified timeline across orders + bins + deliveries — BinSentry separates these, combining creates single customer view and reduces context switching
+- Bin alerts in customer timeline — ties bin status to customer context rather than isolated monitoring
+- Recent activity sorting on customer list — helps operations prioritize daily workflow
+
+**Defer (v2+):**
+- Days-until-empty prediction (requires consumption rate calculation from historical data)
+- Customer health indicators in list (requires complex business logic combining bins + orders)
+- Real-time bin updates (WebSocket complexity, minimal operational value for slow-changing feed levels)
+- Trend graphs per bin (visual clutter, days-until-empty metric more actionable)
+- Customer grouping/hierarchy (scope creep into territory management)
+
+### Architecture Approach
+
+Extend existing three-layer architecture (Presentation → Service → Types) with new customer domain alongside existing orders domain. Keep flat component structure, add customer routes to Next.js App Router, create separate services per entity (customers.ts, bins.ts) following established mock async pattern.
+
+**Major components:**
+1. **CustomersTable** — List view with search, reuses OrdersTable pattern with customer-specific columns and status indicators
+2. **UnifiedTimeline** — Merges events from multiple sources (orders, deliveries, bin alerts) into chronological ActivityEvent[] array, extends existing OrderDetails timeline pattern
+3. **BinVisualization** — Displays multiple bins per customer with CSS fill level bars (no charting library), threshold-based color coding using design tokens
+4. **Customer/Bin Services** — Mock async services following orders.ts pattern, customers service aggregates from orders to compute stats, bins service calculates fill percentages and alert status server-side
+
+**Critical integration points:**
+- Add `customerId` field to existing Order interface to enable customer-order relationship
+- Extract unique customers from existing mock orders in orders.ts
+- Reuse StatusBadge component with customer-specific status colors
+- Add Customers nav item to existing Sidebar between Orders and Inventory
+- Create shared mock data singleton to avoid stale data inconsistency across pages
+
+### Critical Pitfalls
+
+Based on research into CRM systems, bin monitoring platforms, and Next.js performance patterns:
+
+1. **Timeline aggregation performance** — Fetching all events from multiple sources (orders, deliveries, bins) then merging client-side creates massive database load and slow rendering with 1000+ events. **Avoid:** Design services to return pre-aggregated ActivityEvent[] from day one. Mock with 100+ events to expose early. Plan for future backend aggregation table.
+
+2. **Infinite scroll memory leaks** — Timeline events stay mounted in DOM as users scroll, causing browser memory to climb from 50MB to 500MB+ until tab crashes. **Avoid:** Use react-virtuoso or react-window for virtualization from the start. Keep max 50 items in DOM. Test with 100+ timeline items in mock data.
+
+3. **Stale data across pages** — Customer list shows "3 pending orders", detail page shows "2 pending orders" due to independent caching. Users lose trust. **Avoid:** Implement shared mock data layer (singleton pattern), not separate arrays per service. Add cache invalidation when order status changes. Use React Query or SWR if data fetching complexity increases.
+
+4. **Bin alert false positives** — Sensor drift, improper thresholds, displaying raw values without smoothing leads to "alert fatigue" where teams ignore all alerts and miss real critical events. **Avoid:** Implement threshold hysteresis (don't clear warning immediately), use 5-minute rolling average not instant values, document expected alert frequency, mock edge cases (threshold crossing scenarios).
+
+5. **Offset-based pagination breaks at scale** — Customer with 1000+ orders experiences 10+ second load times for order history deep in list as database scans all preceding records. **Avoid:** Use cursor-based pagination (`WHERE id > cursor`) not offset/limit. Test with 100+ orders per customer in mock data. Add database indexes (customer_id, order_date, order_id) before real API.
 
 ## Implications for Roadmap
 
-Based on research, suggested phase structure:
+Based on dependencies discovered in research and component build-order requirements, suggested 4-phase structure:
 
-### Phase 0: Infrastructure (Before Milestone 1)
-**Focus:** Establish data layer and component architecture
-- **Addresses:** Mock data shape mismatch (Pitfall #2), service layer abstraction
-- **Avoids:** Rewrite when switching to real API
-- **Key Deliverables:**
-  - Create `lib/services/orders-service.ts` with mock data
-  - Define TypeScript types for Order data structure
-  - Set up MSW for API mocking (optional but recommended)
-  - Extract StatusBadge and shared constants to prevent duplication (Pitfall #5)
-- **Duration:** 2-3 days
-- **Research Flag:** NONE - standard patterns, low risk
+### Phase 1: Foundation (Data Layer)
+**Rationale:** Type definitions and services must exist before any UI can consume them. Establishing shared data layer prevents stale data pitfall. Customer service aggregates from existing orders service, creating integration point that must work before building dependent views.
 
-### Phase 1: Milestone 1 - Orders Table Interactivity
-**Focus:** Implement filtering, searching, sorting, row selection
-- **Addresses:** Core table stakes features from FEATURES.md
-- **Avoids:** Filter state explosion (Pitfall #1), search performance issues (Pitfall #3)
-- **Key Deliverables:**
-  - Create OrdersTableContainer (client component with state)
-  - Extract OrdersTableUI (presentation component)
-  - Implement URL-based filter state (status, search, hasChanges)
-  - Add debounced search with memoized results
-  - Row selection with visual highlight (local state, not URL)
-  - Status filter pills with computed counts
-  - Empty state components
-  - Loading skeleton UI
-- **Duration:** 1-2 weeks
-- **Research Flag:** NONE - patterns covered in this research
+**Delivers:**
+- `types/customer.ts` and `types/bin.ts` with Customer, Bin, BinAlert, ActivityEvent interfaces
+- `services/customers.ts` mock service with order aggregation logic
+- `services/bins.ts` mock service with fill percentage calculation and alert status logic
+- Add `customerId` field to existing Order interface
+- Shared mock data singleton pattern to avoid inconsistency
+- Mock data includes 100+ orders for one customer and 100+ timeline events to expose performance issues early
 
-### Phase 2: Milestone 2 - Order Details Panel
-**Focus:** Click row to show order details, timeline, change history
-- **Addresses:** Drill-down interaction, order lifecycle visibility
-- **Avoids:** Selected row state without URL (Pitfall #4)
-- **Key Deliverables:**
-  - Use URL query param for selected order (`?order=ORD-2847`)
-  - OrderDetailsContainer + OrderDetailsUI components
-  - Timeline visualization component
-  - Change history display
-  - Panel open/close animation
-  - Browser back button closes panel (URL sync)
-- **Duration:** 1 week
-- **Research Flag:** LOW - timeline visualization may need design research for UX patterns
+**Addresses:** Mock-to-real API type mismatch pitfall, stale data across pages pitfall
 
-### Phase 3: Milestone 3 - KPI Cards Interactivity (Future)
-**Focus:** Make KPI cards dynamic and clickable
-- **Addresses:** Real-time metrics, drill-down to filtered views
-- **Avoids:** Table re-renders on unrelated state (Pitfall #6)
-- **Key Deliverables:**
-  - Compute KPI values from order data
-  - Click KPI to filter table (e.g., click "18 Ready" → filter to Ready status)
-  - Separate state contexts to prevent unnecessary re-renders
-  - Loading states for KPI data
-- **Duration:** 3-5 days
-- **Research Flag:** NONE - patterns from Phases 1-2 apply
+**Avoids:** Building UI before data contracts are defined, creating separate mock data per page
 
-### Phase 4: Milestone 4-5 - Navigation & Header (Future)
-**Focus:** Functional routing, search, notifications, settings
-- **Addresses:** Multi-view dashboard, global search, notifications
-- **Avoids:** Scope TBD based on requirements
-- **Research Flag:** HIGH - needs dedicated research when scope defined
+**Research flag:** Standard mock service pattern (skip phase research) — follows established orders.ts pattern
 
-**Phase Ordering Rationale:**
+---
 
-1. **Infrastructure first** prevents data layer rewrites and establishes component boundaries
-2. **Table before details** creates the interaction foundation (selection, state management)
-3. **Details before KPIs** builds on selection state, validates URL state pattern
-4. **KPIs use table patterns** can reuse filtering/state logic from table phase
-5. **Navigation deferred** until core interactions proven, prevents premature routing complexity
+### Phase 2: Customer List Page
+**Rationale:** List is entry point for navigation to detail pages. Testing search and status indicators here validates reuse of OrdersTable patterns before more complex detail page. Customer list proves services work before building timeline aggregation.
 
-**Research Flags for Phases:**
+**Delivers:**
+- `app/customers/page.tsx` route with layout
+- `components/CustomersTable.tsx` with search (reuses OrdersTable pattern)
+- Customer status indicators (active orders count, changes flag, bin alerts)
+- Empty state for no search results
+- Add Customers to Sidebar navigation with Users icon
 
-- **Phase 0 (Infrastructure):** Standard patterns, no additional research needed
-- **Phase 1 (Orders Table):** Covered in this research, no additional research needed
-- **Phase 2 (Order Details):** Timeline visualization UX might need design pattern research
-- **Phase 3 (KPI Cards):** Standard patterns, no additional research needed
-- **Phase 4+ (Navigation/Header):** Needs dedicated research when scope defined
+**Uses:** Existing useDebounce hook for search, StatusBadge component for indicators, FilterPill if filtering needed
+
+**Addresses:** Inconsistent design pattern pitfall by auditing and reusing existing components
+
+**Avoids:** Reinventing search, creating new status badge component, inconsistent navigation patterns
+
+**Research flag:** Standard list/search pattern (skip phase research) — well-documented, matches existing orders page
+
+---
+
+### Phase 3: Customer Detail Infrastructure
+**Rationale:** Detail page structure and layout must exist before populating with timeline and bin components. Parallel data fetching pattern (customer metadata + orders + bins) establishes multi-source aggregation that timeline depends on. Setting up cursor-based pagination now prevents painful refactor later.
+
+**Delivers:**
+- `app/customers/[id]/page.tsx` dynamic route with parallel data fetching
+- `components/CustomerDetail.tsx` layout shell (header + grid for timeline + bins)
+- Customer header with summary stats
+- Cursor-based pagination helper for order history
+- Loading and error states (reuse existing skeleton patterns)
+
+**Implements:** Architectural pattern from ARCHITECTURE.md for multi-source data fetching with Promise.all
+
+**Addresses:** Offset pagination performance pitfall, Next.js prefetch overload pitfall
+
+**Avoids:** Building offset pagination that breaks at scale, automatic prefetch on all customer links
+
+**Research flag:** Needs research — pagination strategy requires validation against real data patterns
+
+---
+
+### Phase 4: Unified Activity Timeline
+**Rationale:** Timeline is most complex component, requires multi-source aggregation working correctly. Depends on customer detail page infrastructure and shared data layer. Implementing virtualization from start avoids memory leak refactor later.
+
+**Delivers:**
+- `components/UnifiedTimeline.tsx` with ActivityEvent merging from orders + bins + deliveries
+- Timeline event transformation utilities (transformOrderToEvent, transformBinAlertToEvent)
+- Expandable event details (click to expand from summary)
+- Event type icons and color coding (reuses existing timeline pattern from OrderDetails)
+- Virtualization using react-virtuoso or react-window
+- Consistent time display utilities using native Intl API
+
+**Uses:** Extract and generalize TimelineItem from existing OrderDetails component
+
+**Addresses:** Timeline aggregation performance pitfall, infinite scroll memory leak pitfall, timezone display pitfall
+
+**Avoids:** Fetching all events then filtering client-side, keeping all items mounted in DOM, inconsistent time formatting
+
+**Research flag:** Needs research — virtualization library choice and timeline aggregation pattern need validation
+
+---
+
+### Phase 5: Bin Visualization
+**Rationale:** Standalone component that can be built independently after timeline. Uses services from Phase 1. CSS-only implementation avoids charting library decisions.
+
+**Delivers:**
+- `components/BinVisualization.tsx` with fill level bars
+- Multiple bins per customer in card layout
+- Threshold-based color coding (green/yellow/red) using design tokens
+- Bin metadata display (location, capacity, current level, contents)
+- Add bin threshold design tokens to globals.css
+
+**Uses:** CSS + Tailwind for horizontal bars with dynamic width percentage, existing design token system
+
+**Addresses:** Bin alert false positive pitfall, mixing charting libraries pitfall
+
+**Avoids:** Adding recharts/chart.js for simple bars, hardcoding thresholds in components
+
+**Research flag:** Standard visualization pattern (skip phase research) — CSS progress bars are well-documented
+
+---
+
+### Phase Ordering Rationale
+
+- **Data layer first:** Services and types must exist before any UI. Shared data layer prevents stale data pitfall across pages.
+- **List before detail:** Customer list is entry point, proves services work, validates pattern reuse before complex detail page.
+- **Infrastructure before components:** Detail page layout and data fetching must work before building timeline and bins.
+- **Timeline before bins:** Timeline is more complex (multi-source aggregation, virtualization), bins are simpler standalone component.
+- **Incremental validation:** Each phase produces testable output that validates patterns before building dependent phases.
+
+**Dependency chain:**
+```
+Phase 1 (Data Layer)
+    ├──> Phase 2 (List) requires customer service
+    └──> Phase 3 (Detail Infrastructure) requires customer + bin services
+            ├──> Phase 4 (Timeline) requires detail page + aggregation pattern
+            └──> Phase 5 (Bins) requires detail page + bin service
+```
+
+### Research Flags
+
+**Phases needing deeper research during planning:**
+- **Phase 3 (Detail Infrastructure):** Pagination strategy and prefetch optimization need validation against expected data volumes and navigation patterns
+- **Phase 4 (Unified Timeline):** Virtualization library choice (react-virtuoso vs react-window) and multi-source aggregation pattern need performance testing
+
+**Phases with standard patterns (skip research-phase):**
+- **Phase 1 (Data Layer):** Mock service pattern established in orders.ts, TypeScript interfaces are standard
+- **Phase 2 (List Page):** Search/filter patterns match existing OrdersTable, well-documented
+- **Phase 5 (Bin Visualization):** CSS progress bars are standard, threshold-based color coding is simple design token usage
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| **Stack - Data Tables** | MEDIUM | TanStack Table v8 widely used as of Jan 2025, React 19 compatibility likely but unverified |
-| **Stack - State Management** | MEDIUM | Zustand v5 stable, React 19 compatible as of Jan 2025, but unable to verify current state |
-| **Stack - Mock Data** | MEDIUM | MSW v2 stable pattern, version current as of Jan 2025 |
-| **Stack - Utilities** | HIGH | clsx, tailwind-merge, date-fns are stable libraries with minimal API changes |
-| **Features - Table Stakes** | HIGH | Search, filter, sort are established patterns in all modern dashboards |
-| **Features - Interaction Patterns** | HIGH | Based on widely-adopted patterns in data table libraries and design systems |
-| **Features - Domain Specifics** | MEDIUM | Feed mill change indicators and delivery date prominence inferred from context |
-| **Architecture - Patterns** | HIGH | Container/Presentation, service layer abstraction are established React patterns |
-| **Architecture - Next.js Integration** | MEDIUM | App Router server/client boundaries based on Next.js 16 docs, but specifics unverified |
-| **Pitfalls - React Patterns** | HIGH | Filter state, search performance, key props are well-documented pitfalls |
-| **Pitfalls - Domain Specific** | MEDIUM | Feed mill specific pitfalls inferred from project context |
+| Stack | HIGH | Validated against existing codebase files (package.json, OrderDetails.tsx, OrdersTable.tsx, orders.ts). Zero new dependencies needed, all features achievable with current stack. |
+| Features | MEDIUM | Validated against multiple industry sources (BinSentry, BinMaster, Salesforce, Dynamics 365). Table stakes clear, differentiators identified, but some feature priorities based on inference from patterns. |
+| Architecture | HIGH | Direct extension of existing patterns verified in codebase (services/orders.ts, components/OrderDetails.tsx). Three-layer architecture proven in v1.0-v1.1. Integration points identified. |
+| Pitfalls | MEDIUM | Performance pitfalls validated via multiple sources (pagination best practices, feed aggregation patterns, memory leak prevention). Bin monitoring pitfalls from domain-specific sources. Some pitfalls inferred from general patterns. |
 
-## Gaps to Address
+**Overall confidence:** HIGH
 
-**Verification needed:**
-1. **Library versions** - Check npm for latest versions, verify React 19 compatibility
-2. **TanStack Table API** - Review current documentation for breaking changes since Jan 2025
-3. **Zustand v5 features** - Verify DevTools integration and TypeScript patterns
-4. **MSW v2 setup** - Confirm Next.js 16 integration pattern (browser vs server setup)
-5. **date-fns v4** - Check for API changes from v3
+### Gaps to Address
 
-**Research gaps:**
-1. **Timeline visualization UX** - Best practices for order lifecycle timelines (Milestone 2)
-2. **Virtual scrolling** - If dataset exceeds 500+ rows, research TanStack Virtual or react-window
-3. **URL state management** - Consider libraries like `nuqs` or `next-usequerystate` for Phase 2
-4. **Real-time updates** - If multi-user collaboration required, research polling vs WebSocket patterns
-5. **Advanced table features** - Column resizing, pinning, density toggle if requested by users
+**Open questions needing validation during implementation:**
 
-**Domain-specific gaps:**
-1. **Feed mill workflows** - User research on actual operator workflows would validate filter priorities
-2. **Change tracking importance** - Validate whether "has changes" filter is actually high priority
-3. **Delivery date criticality** - Confirm delivery date should be primary sort/filter dimension
-4. **Status transitions** - Understand if status changes are manual or automatic (affects UX)
+1. **Bin sensor data model:** Mock bins derived from order locations (BIN 1A, BIN 2B) but real BinSentry API contract not verified. **Handle:** Design bin service interface flexible enough to adapt, validate with actual API docs when available.
 
-**Technical gaps:**
-1. **Next.js 16 specifics** - Server Actions, server component data fetching patterns
-2. **React 19 features** - Whether new features (useOptimistic, useFormStatus) apply to this use case
-3. **Tailwind CSS 4** - Any new utility classes or patterns relevant to interactive tables
+2. **Customer aggregation performance:** Deriving customer list from orders works for MVP but may need optimization. **Handle:** Include performance test with 500+ orders across 50+ customers in Phase 1, establish benchmark.
 
-## Detailed Research Output
+3. **Timeline event priorities:** Which events should be expandable vs inline? **Handle:** Start with all expandable (simpler implementation), refine based on content length during Phase 4.
 
-This summary synthesizes findings from four detailed research files:
+4. **Bin threshold configuration:** Are thresholds global or per-customer/per-bin? **Handle:** Start with global constants (simplest), document need for customer-specific config in v1.3.
 
-### STACK.md
-**Purpose:** Technology recommendations with versions and rationale
-
-**Key Recommendations:**
-- **TanStack Table v8.20.0+** for headless data tables (filtering, sorting, searching)
-- **Zustand v5.0.0+** for lightweight state management (filters, selections, UI state)
-- **MSW v2.0.0+** (dev dependency) for API mocking with service worker
-- **@faker-js/faker v9.0.0+** (dev dependency) for realistic mock data generation
-- **clsx v2.1.0+** and **tailwind-merge v2.5.0+** for conditional className logic
-- **date-fns v4.1.0+** for date formatting and manipulation
-
-**Alternatives Rejected:**
-- AG Grid / MUI DataGrid (too heavy, bring own UI, design system conflicts)
-- Redux Toolkit (overkill for UI state, too much boilerplate)
-- Mirage.js / json-server (less active, more complex than MSW)
-- Moment.js / Luxon (deprecated or larger bundles than date-fns)
-
-**Bundle Impact:** ~36kb minified + gzipped for production dependencies
-
-### FEATURES.md
-**Purpose:** Feature landscape - what to build, what to defer, what to avoid
-
-**Table Stakes (Milestone 1):**
-- Status filtering (pills, multi-select)
-- Text search (customer, product, order number)
-- Sort by column (delivery date, status, quantity)
-- Row selection (visual highlight)
-- Status badges (color-coded)
-- Changes indicator (red dot when `hasChanges: true`)
-- Empty states (no results messaging)
-- Loading states (skeleton UI)
-
-**Differentiators (Future):**
-- Multi-column sorting (status + delivery date)
-- Column visibility toggle
-- Keyboard shortcuts (arrow keys, Enter to select)
-- Export to Excel
-- Saved filter presets
-
-**Anti-Features (Explicitly NOT building):**
-- Real-time updates via WebSocket (polling sufficient)
-- Inline editing (dedicated form better)
-- Drag-and-drop reordering (no use case)
-- Advanced query builder (simple filters sufficient)
-- Mobile app (web-first per project scope)
-
-### ARCHITECTURE.md
-**Purpose:** Component structure, data flow, patterns
-
-**Core Pattern:** Container/Presentation split
-- **Container:** Manages state, data fetching, event handlers (client component with "use client")
-- **Presentation:** Renders UI from props, no state or side effects (pure component)
-- **Service:** Provides data with identical interface whether mock or API
-
-**Data Flow:** Unidirectional (top-down)
-```
-User Interaction → Event Handler (Container) → State Update
-→ Re-render with New Props → Presentation Component Updates
-```
-
-**Mock-First Development:**
-1. **Phase 1:** Static mock data in component
-2. **Phase 2:** Extract to mock service with async interface
-3. **Phase 3:** Add client state and interactions
-4. **Phase 4:** Swap mock service for API calls (container code unchanged)
-
-**State Management Strategy:**
-- `useState` for component-local state (filters, search query)
-- `Context` for cross-component state (selected order ID)
-- `URL` for shareable state (status filter, search term)
-- NOT using Redux/Zustand for component state (over-engineering)
-
-**Server/Client Boundaries:**
-- Page components STAY server components
-- Add "use client" to interactive containers only
-- Presentation components inherit client context
-
-### PITFALLS.md
-**Purpose:** Common mistakes and how to avoid them
-
-**Critical Pitfalls:**
-1. **Filter state explosion** - Multiple filters create state management nightmare. Fix: URL state + single reducer
-2. **Mock data shape mismatch** - Mock array doesn't match API response structure. Fix: Define API contract first
-3. **Search naive loop** - Re-filtering on every keystroke. Fix: Debounce + useMemo
-4. **Selected row without URL** - Can't share/bookmark. Fix: Use query param for selection
-5. **Status config duplication** - Same constants in multiple files. Fix: Extract to shared constants
-
-**Moderate Pitfalls:**
-- Table re-renders on unrelated state changes (fix: React.memo, useCallback)
-- Filter pills non-functional (fix: wire onClick handlers immediately)
-- Missing key props (fix: use stable IDs, not index)
-- Inline event handlers (fix: useCallback or data attributes)
-- No empty states (fix: design alongside happy path)
-
-**Minor Pitfalls:**
-- Hardcoded static text (fix: audit for dynamic content)
-- Filter counts manually maintained (fix: compute from data)
-- No loading skeleton (fix: add skeleton UI)
-- Timezone confusion (fix: ISO timestamps, display with timezone)
-- Product display logic duplication (fix: shared utility functions)
-
-## Next Steps for Roadmap Creation
-
-**Use this research to inform:**
-
-1. **Milestone scoping** - Features.md table stakes → Milestone 1 requirements
-2. **Technical tasks** - Architecture.md patterns → implementation tasks
-3. **Risk mitigation** - Pitfalls.md → acceptance criteria and code review checklist
-4. **Dependency installation** - Stack.md → package.json updates
-5. **Phase ordering** - This summary's implications → roadmap phase structure
-
-**Validation recommendations:**
-
-Before implementing:
-1. **Verify library versions:** `npm view <package> version` for each library
-2. **Test installation:** Install in project, ensure no dependency conflicts
-3. **Review changelogs:** Check TanStack Table, Zustand for React 19 compatibility notes
-4. **Prototype patterns:** Create small proof-of-concept for container/presentation split
-5. **Design empty states:** Add to Pencil.dev designs before implementation
-
-**Open questions for product owner:**
-
-1. **Default filters:** Should table default to "All" or specific status (e.g., "Pending + Producing")?
-2. **Default sort:** Delivery date ascending (soonest first) or descending (furthest first)?
-3. **Search scope:** Customer + product only, or include document number, location, etc.?
-4. **Pagination:** Show all rows or paginate? Threshold for introducing pagination?
-5. **Mobile:** Tablet-responsive (768px+) sufficient, or phone support needed?
+5. **Real-time vs polling:** When does bin data need to update? **Handle:** Manual refresh for MVP, add polling strategy discussion to Phase 5 if needed.
 
 ## Sources
 
-**Note:** This research was conducted using training data current through January 2025. Web search and documentation fetch tools were unavailable during this research session.
+### Primary (HIGH confidence)
 
-**Primary Sources (training data):**
-- TanStack Table official documentation (tanstack.com/table)
-- Zustand GitHub repository (github.com/pmndrs/zustand)
-- MSW official documentation (mswjs.io)
-- React 19 documentation and release notes
-- Next.js 16 documentation
-- Established React patterns (Container/Presentation, service layer abstraction)
+**Existing Codebase:**
+- `src/components/OrderDetails.tsx` L16-24 — Timeline pattern to extend for UnifiedTimeline
+- `src/components/OrdersTable.tsx` — Search and filter pattern to reuse for CustomersTable
+- `src/services/orders.ts` — Mock service async pattern to replicate for customers/bins
+- `src/utils/formatDate.ts` — Native Intl API usage for timeline dates
+- `src/components/ui/StatusBadge.tsx` — Design token pattern for customer status indicators
+- `package.json` — Validated no new dependencies needed
 
-**Codebase Sources:**
-- .planning/PROJECT.md - Project context, requirements, constraints
-- .planning/codebase/STACK.md - Existing stack (Next.js 16, React 19, Tailwind CSS 4)
-- .planning/codebase/CONCERNS.md - Identified risks (mentioned in original analysis)
+**Industry Standards:**
+- [BinSentry Control Tower](https://www.feedandgrain.com/business-markets/company-news/news/15819605/binsentry-inc-binsentry-launches-control-tower-software-platform-for-feed-mills-and-grain-elevators) — Bin monitoring data model, dashboard patterns, alert thresholds
+- [BinMaster FeedView](https://binmaster.com/feedview) — Inventory management software, days-until-empty predictions
+- [Dynamics 365 Timeline](https://stoneridgesoftware.com/configuring-the-timeline-in-the-unified-interface-crm/) — Multi-type activity aggregation pattern
+- [Salesforce List View Patterns](https://trailhead.salesforce.com/trailblazer-community/feed/0D54S00000JgI7sSAF) — Default sorting, status indicators
 
-**Confidence Assessment:**
-- Stack recommendations: **MEDIUM** - Based on stable patterns and library ecosystems as of Jan 2025
-- Version numbers: **MEDIUM** - Versions current as of Jan 2025, may have newer releases
-- React 19 compatibility: **MEDIUM** - Libraries listed were React 19 compatible or planning compatibility as of Jan 2025
-- Architecture patterns: **HIGH** - Container/Presentation, service layer are timeless patterns
-- Feature recommendations: **HIGH** - Table stakes features are industry standard across all modern dashboards
-- Pitfalls: **HIGH** (React patterns), **MEDIUM** (domain-specific)
+### Secondary (MEDIUM confidence)
 
-**Recommended verification:**
-- Check npm registry for latest versions of all libraries
-- Review each library's changelog for React 19 compatibility confirmation
-- Test installation in Next.js 16 + React 19 environment
-- Verify TanStack Table API hasn't changed significantly since Jan 2025
-- Check MSW v2 setup for Next.js 16 App Router (browser vs server setup)
+**Performance & Pagination:**
+- [GreatFrontEnd Large Datasets](https://www.greatfrontend.com/blog/how-to-handle-large-datasets-in-front-end-applications) — Pagination strategies, virtualization patterns
+- [Keyset Pagination](https://medium.com/@fathullahmunadi1406/optimizing-sql-pagination-for-large-datasets-boost-performance-with-the-keyset-pagination-method-93678c528220) — Cursor-based pagination best practices
+
+**Activity Timeline:**
+- [Bitrix24 Unified Activity](https://www.newswire.com/news/bitrix24-redefines-crm-productivity-with-all-in-one-activity-view-22651303) — Activity feed design patterns
+- [Aubergine Activity Feeds](https://www.aubergine.co/insights/a-guide-to-designing-chronological-activity-feeds) — Progressive disclosure, event components
+- [Stream Aggregated Feeds](https://getstream.io/blog/aggregated-feeds-demystified/) — Timeline aggregation anti-patterns
+
+**Memory Leaks & Virtualization:**
+- [React Memory Leaks](https://dev.to/fazal_mansuri_/memory-leaks-in-javascript-react-the-hidden-enemy-74p) — Event listener cleanup, component unmounting
+- [Infinite Scroll Issues](https://utahedu.devcamp.com/dissecting-react-js/guide/refactoring-infinite-scroll-feature-fix-memory-leak) — Virtualization as solution
+
+**Bin Monitoring:**
+- [BinConnect Monitoring](https://www.nanolike.com/binconnect/) — Real-time volume tracking, alert systems
+- [BinMaster Grain Monitoring](https://binmaster.com/news/system-considerations-when-monitoring-bin-levels-in-the-grain-industry.html) — Sensor calibration, threshold tuning
+- [Sensor Calibration Drift](https://pollution.sustainability-directory.com/term/sensor-calibration-drift/) — False positive prevention
+
+**Next.js Performance:**
+- [Next.js Navigation Lag](https://dev.to/kcsujeet/debugging-nextjs-app-router-navigation-lag-dynamic-routes-and-prefetching-akk) — Prefetch optimization strategies
+- [Fast Next.js Navigation](https://upstash.com/blog/fast-nextjs) — Dynamic route performance patterns
+
+### Tertiary (LOW confidence)
+
+**Design Consistency:**
+- [Design System Best Practices](https://www.eleken.co/blog-posts/how-to-design-a-crm-system-all-you-need-to-know-about-custom-crm) — CRM pattern libraries (general guidance)
+- [Figma Design Consistency](https://www.figma.com/resource-library/consistency-in-design/) — Component reuse principles (general UX)
 
 ---
 
-*Research completed: 2026-03-11*
-*Research mode: Stack dimension for dashboard interactivity*
-*Confidence: MEDIUM (training data based, verification recommended)*
-*Feeds into: Milestone 1 roadmap creation and implementation tasks*
+*Research completed: 2026-05-01*
+*Ready for roadmap: Yes*
