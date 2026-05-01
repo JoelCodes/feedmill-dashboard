@@ -87,10 +87,10 @@ function ProductionCard({ order }: { order: ProductionOrder }) {
         <p className="text-card-label font-semibold text-muted">
           {order.orderNumber}
         </p>
-        <p className="mt-1 text-card-title font-bold text-text-primary">
+        <p className="mt-0.5 text-card-title font-bold text-text-primary">
           {order.customer}
         </p>
-        <p className="mt-2 text-sm font-medium text-medium">
+        <p className="mt-1 text-sm font-medium text-medium">
           {order.weightLbs.toLocaleString()} lbs &bull; {order.product}
         </p>
         <p className="mt-1.5 text-xs font-medium text-muted">
