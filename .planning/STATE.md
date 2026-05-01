@@ -163,9 +163,10 @@ Items acknowledged and deferred at milestone close on 2026-04-29:
 | 260426-c99 | Organize design files into separate .pen files | 2026-04-26 | 34f51af | [260426-c99-organize-design-files](./quick/260426-c99-organize-design-files/) |
 | 260427-mwc | Update pages to match .pen design files | 2026-04-27 | e17777f | [260427-mwc-update-pages-match-pen-files](./quick/260427-mwc-update-pages-match-pen-files/) |
 | 260429-rfn | Randomize farm names with fun parody names | 2026-04-29 | 0d225e1 | [260429-rfn-randomize-farm-names](./quick/260429-rfn-randomize-farm-names/) |
+| 260430-thf | Replace parody farm names with canonical design-spec names | 2026-05-01 | 1398c19 | [260430-thf-the-farm-labels-on-the-mill-production-p](./quick/260430-thf-the-farm-labels-on-the-mill-production-p/) |
 
 ## Session Continuity
 
-Last session: 2026-04-29T18:14:43Z
-Stopped at: Phase 9 complete - v1.1 milestone complete
+Last session: 2026-05-01T04:18:28Z
+Stopped at: Completed quick-260430-thf
 Resume file: None
