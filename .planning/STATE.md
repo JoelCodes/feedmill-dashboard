@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-01)
 
 ## Current Position
 
-**Phase:** 10 - Foundation (Data Layer)
+**Phase:** 10 - Design
 **Plan:** Not started
-**Status:** Not started
+**Status:** UI-SPEC approved
 
 ```
-Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/5 phases)
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/6 phases)
 ```
 
 **Next action:** `/gsd-plan-phase 10`
@@ -127,11 +127,12 @@ Recent decisions affecting current work:
 **Quick recovery:**
 
 - Current milestone: v1.2 Customers Page
-- Current phase: Phase 10 - Foundation (Data Layer)
+- Current phase: Phase 10 - Design
+- Resume file: `.planning/phases/10-design/10-UI-SPEC.md`
 - Next step: Plan the phase with `/gsd-plan-phase 10`
-- Requirements: 17 total in REQUIREMENTS.md
-- Coverage: 17/17 mapped to phases 10-14
+- Requirements: 20 total in REQUIREMENTS.md
+- Coverage: 20/20 mapped to phases 10-15
 
 ---
 *State initialized: 2026-05-01 for v1.2 milestone*
-*Last session: 2026-05-01*
+*Last session: 2026-05-01 - Phase 10 UI-SPEC approved*
