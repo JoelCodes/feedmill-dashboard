@@ -6,7 +6,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "1",
     orderNumber: "ORD-255154",
-    customer: "Chick Magnet Farms",
+    customer: "Westbridge Farm",
     product: "BROILER BRD 16% OS",
     weightLbs: 6000,
     deliveryTime: "6:30 AM",
@@ -18,7 +18,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "2",
     orderNumber: "ORD-255177",
-    customer: "Chick Magnet Farms",
+    customer: "Meadowview Poultry",
     product: "BROILER BRD 15% OS",
     weightLbs: 9000,
     deliveryTime: "7:00 AM",
@@ -30,7 +30,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "3",
     orderNumber: "ORD-255492",
-    customer: "Fowl Play Poultry",
+    customer: "Starbird @ Jaedel",
     product: "BROILER BRD LAY 1 T8",
     weightLbs: 12000,
     deliveryTime: "7:30 AM",
@@ -42,7 +42,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "4",
     orderNumber: "ORD-255437",
-    customer: "Eggs Benedict Arnold",
+    customer: "Severinski Farm",
     product: "LAYER BRD DEV 11-16WKS MASH",
     weightLbs: 5000,
     deliveryTime: "8:00 AM",
@@ -54,7 +54,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "5",
     orderNumber: "ORD-255255",
-    customer: "What The Cluck",
+    customer: "Jireh Farms",
     product: "LAY 1 FREE RANGE OS",
     weightLbs: 6000,
     deliveryTime: "8:30 AM",
@@ -67,7 +67,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "6",
     orderNumber: "ORD-255491",
-    customer: "Fowl Play Poultry",
+    customer: "Corner's Pride Farm",
     product: "BRD DEVELOP PLAIN T8",
     weightLbs: 8000,
     deliveryTime: "11:30 AM",
@@ -79,7 +79,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "7",
     orderNumber: "ORD-255403",
-    customer: "Lord of the Wings",
+    customer: "Trilean Makin Bacon",
     product: "LAY 2 MASH",
     weightLbs: 12000,
     deliveryTime: "1:00 PM",
@@ -91,7 +91,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "8",
     orderNumber: "ORD-255477",
-    customer: "Eggcellent Acres",
+    customer: "Rockwall @ Peardonville",
     product: "LAY 1 MASH",
     weightLbs: 3000,
     deliveryTime: "2:30 PM",
@@ -104,7 +104,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "9",
     orderNumber: "ORD-255421",
-    customer: "Cluckingham Palace",
+    customer: "Cedarcroft Poultry",
     product: "BRD PRE-START FINE CR",
     weightLbs: 6000,
     deliveryTime: "9:15 AM",
@@ -116,7 +116,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "10",
     orderNumber: "ORD-255400",
-    customer: "The Yolkels",
+    customer: "Triple H Farms",
     product: "OMEGA VEG LAY 1 MASH",
     weightLbs: 6000,
     deliveryTime: "10:00 AM",
@@ -129,7 +129,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "11",
     orderNumber: "ORD-255257",
-    customer: "Henhouse of Cards",
+    customer: "Whytebridge Farms",
     product: "LAY 5 FREE RANGE OS",
     weightLbs: 15000,
     deliveryTime: "9:45 AM",
@@ -144,7 +144,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "12",
     orderNumber: "ORD-255298",
-    customer: "Moo-licious Dairy",
+    customer: "Westbridge Farm",
     product: "MOOLICIOUS DAIRY MASH",
     weightLbs: 15000,
     deliveryTime: "7:00 AM",
@@ -156,7 +156,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "13",
     orderNumber: "ORD-255309",
-    customer: "Holy Cow Ranch",
+    customer: "Meadowview Poultry",
     product: "HOLY COW COMPUTER PELLET",
     weightLbs: 6000,
     deliveryTime: "7:45 AM",
@@ -168,7 +168,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "14",
     orderNumber: "ORD-255279",
-    customer: "Udderly Ridiculous",
+    customer: "Starbird @ Jaedel",
     product: "UDDERLY DAIRY MASH",
     weightLbs: 4000,
     deliveryTime: "8:15 AM",
@@ -180,7 +180,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "15",
     orderNumber: "ORD-255307",
-    customer: "Pasture Bedtime",
+    customer: "Severinski Farm",
     product: "17% ROBOT PELLET",
     weightLbs: 3000,
     deliveryTime: "8:45 AM",
@@ -192,7 +192,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "16",
     orderNumber: "ORD-255297",
-    customer: "The Dairy Godmother",
+    customer: "Jireh Farms",
     product: "DAIRY GODMOTHER MASH",
     weightLbs: 4000,
     deliveryTime: "9:00 AM",
@@ -205,7 +205,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "17",
     orderNumber: "ORD-255447",
-    customer: "Hogwarts Express",
+    customer: "Corner's Pride Farm",
     product: "FINISHER FEB 2026 WHEY",
     weightLbs: 6000,
     deliveryTime: "1:00 PM",
@@ -217,7 +217,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "18",
     orderNumber: "ORD-255445",
-    customer: "Pig Deal Farms",
+    customer: "Trilean Makin Bacon",
     product: "PREGROW 1 JUNE 2025",
     weightLbs: 3000,
     deliveryTime: "1:30 PM",
@@ -229,7 +229,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "19",
     orderNumber: "ORD-255306",
-    customer: "Got Milk? Incorporated",
+    customer: "Rockwall @ Peardonville",
     product: "GOT MILK DAIRY MASH",
     weightLbs: 9000,
     deliveryTime: "2:00 PM",
@@ -242,7 +242,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "20",
     orderNumber: "ORD-255300",
-    customer: "Legendairy Farms",
+    customer: "Cedarcroft Poultry",
     product: "LEGENDAIRY ROBOT GRAIN PELLET",
     weightLbs: 18000,
     deliveryTime: "10:30 AM",
@@ -254,7 +254,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "21",
     orderNumber: "ORD-255308",
-    customer: "Milky Way Ranch",
+    customer: "Triple H Farms",
     product: "MILKY WAY DAIRY SUPP",
     weightLbs: 6000,
     deliveryTime: "11:00 AM",
@@ -267,7 +267,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "22",
     orderNumber: "ORD-255299",
-    customer: "Hay There Neighbor",
+    customer: "Whytebridge Farms",
     product: "CORN75/BARLEY25",
     weightLbs: 6000,
     deliveryTime: "10:00 AM",
@@ -282,7 +282,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "23",
     orderNumber: "ORD-255393",
-    customer: "Winner Winner Chicken",
+    customer: "Westbridge Farm",
     product: "BROILER GROWER I MD",
     weightLbs: 15000,
     deliveryTime: "6:30 AM",
@@ -294,7 +294,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "24",
     orderNumber: "ORD-255396",
-    customer: "Pecking Order Farms",
+    customer: "Meadowview Poultry",
     product: "BROILER GROWER I MD",
     weightLbs: 9000,
     deliveryTime: "7:00 AM",
@@ -306,7 +306,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "25",
     orderNumber: "ORD-255383",
-    customer: "Drumstick Dynasty",
+    customer: "Starbird @ Jaedel",
     product: "BROILER PRESTART FINE CR FG",
     weightLbs: 15000,
     deliveryTime: "7:30 AM",
@@ -318,7 +318,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "26",
     orderNumber: "ORD-255428",
-    customer: "Feather Frenzy Farm",
+    customer: "Severinski Farm",
     product: "LAYER BRD PH 2 CR",
     weightLbs: 3000,
     deliveryTime: "8:00 AM",
@@ -330,7 +330,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "27",
     orderNumber: "ORD-255191",
-    customer: "Poultrygeist Manor",
+    customer: "Jireh Farms",
     product: "BROILER PRESTART FINE CR",
     weightLbs: 18000,
     deliveryTime: "8:30 AM",
@@ -343,7 +343,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "28",
     orderNumber: "ORD-255392",
-    customer: "Game of Chickens",
+    customer: "Corner's Pride Farm",
     product: "BROILER GROWER 2 MD",
     weightLbs: 15000,
     deliveryTime: "2:30 PM",
@@ -355,7 +355,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "29",
     orderNumber: "ORD-255329",
-    customer: "The Walking Hen",
+    customer: "Trilean Makin Bacon",
     product: "BROILER PRESTART FINE CR",
     weightLbs: 21000,
     deliveryTime: "2:45 PM",
@@ -367,7 +367,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "30",
     orderNumber: "ORD-255343",
-    customer: "Bawk to the Future",
+    customer: "Rockwall @ Peardonville",
     product: "BROILER GROWER 2 MD",
     weightLbs: 9000,
     deliveryTime: "3:00 PM",
@@ -380,7 +380,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "31",
     orderNumber: "ORD-255461",
-    customer: "Plucky Ducky Ranch",
+    customer: "Cedarcroft Poultry",
     product: "BROILER STARTER MD",
     weightLbs: 12000,
     deliveryTime: "9:45 AM",
@@ -392,7 +392,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "32",
     orderNumber: "ORD-255352",
-    customer: "Scrambled Priorities",
+    customer: "Triple H Farms",
     product: "BROILER STARTER MD",
     weightLbs: 9000,
     deliveryTime: "10:15 AM",
@@ -405,7 +405,7 @@ const mockOrders: ProductionOrder[] = [
   {
     id: "33",
     orderNumber: "ORD-255360",
-    customer: "Hen Solo Enterprises",
+    customer: "Whytebridge Farms",
     product: "BROIL FINISH 1 PELLET WD",
     weightLbs: 18000,
     deliveryTime: "11:15 AM",
