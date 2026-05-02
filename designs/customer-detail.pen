@@ -205,6 +205,19 @@
               "id": "customer-header",
               "name": "CustomerDetailHeader",
               "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000005",
+                "offset": {
+                  "x": 0,
+                  "y": 3.5
+                },
+                "blur": 5
+              },
+              "padding": [20, 24],
               "justifyContent": "space_between",
               "alignItems": "flex_start",
               "children": [
@@ -449,6 +462,19 @@
               "id": "bins-section",
               "name": "Bins Section",
               "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000005",
+                "offset": {
+                  "x": 0,
+                  "y": 3.5
+                },
+                "blur": 5
+              },
+              "padding": [20, 24],
               "layout": "vertical",
               "gap": 16,
               "children": [
@@ -781,6 +807,19 @@
               "id": "timeline-section",
               "name": "Timeline Section",
               "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000005",
+                "offset": {
+                  "x": 0,
+                  "y": 3.5
+                },
+                "blur": 5
+              },
+              "padding": [20, 24],
               "layout": "vertical",
               "gap": 16,
               "children": [

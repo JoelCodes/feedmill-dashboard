@@ -267,6 +267,19 @@
               "id": "customer-table-cust",
               "name": "CustomerTable",
               "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000005",
+                "offset": {
+                  "x": 0,
+                  "y": 3.5
+                },
+                "blur": 5
+              },
+              "padding": [16, 20],
               "layout": "vertical",
               "children": [
                 {
