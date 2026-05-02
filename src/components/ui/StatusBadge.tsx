@@ -20,7 +20,7 @@ export const STATUS_CONFIG: Record<OrderStatus, StatusConfig> = {
     bg: "bg-[var(--warning-light)]",
     text: "text-[var(--warning)]",
     dot: "bg-[var(--warning)]",
-    countBg: "bg-[#975a1622]",
+    countBg: "bg-[#f59e0b22]",
     label: "Producing"
   },
   "Ready": {

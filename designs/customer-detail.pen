@@ -675,7 +675,7 @@
                               "y": 77,
                               "width": 36,
                               "height": 21,
-                              "fill": "#975a16ff",
+                              "fill": "#f59e0bff",
                               "cornerRadius": [0, 0, 6, 6]
                             },
                             {
@@ -1106,7 +1106,7 @@
                               "type": "ellipse",
                               "id": "dot-3",
                               "name": "dot3",
-                              "fill": "#975a16ff",
+                              "fill": "#f59e0bff",
                               "width": 28,
                               "height": 28
                             },
@@ -1126,7 +1126,7 @@
                               "type": "rectangle",
                               "id": "stepline-3",
                               "name": "stepLine3",
-                              "fill": "#975a16ff",
+                              "fill": "#f59e0bff",
                               "width": 2,
                               "height": "fill_container"
                             }
@@ -1168,7 +1168,7 @@
                               "type": "text",
                               "id": "t3-date",
                               "name": "t3date",
-                              "fill": "#975a16ff",
+                              "fill": "#f59e0bff",
                               "content": "Apr 24, 2026 · 11:00 AM",
                               "lineHeight": 1.2,
                               "fontFamily": "Helvetica",

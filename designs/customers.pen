@@ -399,7 +399,7 @@
                           "height": 14,
                           "iconFontName": "alert-triangle",
                           "iconFontFamily": "lucide",
-                          "fill": "#975a16ff"
+                          "fill": "#f59e0bff"
                         }
                       ]
                     }
@@ -627,7 +627,7 @@
                           "height": 14,
                           "iconFontName": "alert-triangle",
                           "iconFontFamily": "lucide",
-                          "fill": "#975a16ff"
+                          "fill": "#f59e0bff"
                         }
                       ]
                     }

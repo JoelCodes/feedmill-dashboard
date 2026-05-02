@@ -20,7 +20,7 @@
   --success-dark: #2f855a;
   --success-light: #c6f6d5;
 
-  --warning: #975a16;
+  --warning: #f59e0b;
   --warning-light: #fefcbf;
 
   --error: #e53e3e;
@@ -57,8 +57,8 @@
   --status-completed-bg-22: #2f855a38;
 
   --status-mixing-border: #d69e2e;
-  --status-mixing-header: #975a16;
-  --status-mixing-bg-22: #975a1638;
+  --status-mixing-header: #f59e0b;
+  --status-mixing-bg-22: #f59e0b38;
 
   --status-blocked-border: #e53e3e;
   --status-blocked-header: #c53030;
