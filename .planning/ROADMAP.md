@@ -96,26 +96,26 @@ Plans:
 <details open>
 <summary>🚧 v1.2 Customers Page (Phases 10-15) — IN PROGRESS</summary>
 
-- [ ] **Phase 10: Design** - Create Pencil.dev design files for customers page components
+- [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [ ] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins
 - [ ] **Phase 12: Customer List Page** - Searchable customer table with status indicators
 - [ ] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats
 - [ ] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts
 - [ ] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding
 
-### Phase 10: Design
+### Phase 10: Design ✅ COMPLETED
 **Goal:** Customers page UI designed and approved in Pencil.dev
 **Depends on:** Nothing (first phase of v1.2)
-**Requirements:** DSGN-01, DSGN-02, DSGN-03
+**Requirements:** DSGN-01 ✓, DSGN-02 ✓, DSGN-03 ✓
 **Success Criteria** (what must be TRUE):
-  1. customers.pen file created with customer list view design
-  2. customer-detail.pen file created with detail page layout (header, timeline, bins)
-  3. Bin visualization component designed with fill bars and alert states
-  4. Design reviewed and approved before implementation begins
-**Plans:** 1 plan
+  1. ✅ customers.pen file created with customer list view design
+  2. ✅ customer-detail.pen file created with detail page layout (header, timeline, bins)
+  3. ✅ Bin visualization component designed with fill bars and alert states
+  4. ✅ Design reviewed and approved before implementation begins
+**Plans:** 1 plan (completed)
 
 Plans:
-- [ ] 10-01-PLAN.md — Create customers.pen and customer-detail.pen design files
+- [x] 10-01-PLAN.md — Create customers.pen and customer-detail.pen design files (2 tasks, 302s)
 
 ### Phase 11: Foundation (Data Layer)
 **Goal:** Data contracts and services exist for customers and bins
@@ -191,7 +191,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 1/? | In progress | - |
+| v1.2 Customers Page | 10-15 | 1/? (Phase 10: 1/1 ✓) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*

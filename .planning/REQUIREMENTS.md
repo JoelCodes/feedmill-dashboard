@@ -9,9 +9,9 @@ Requirements for Customers Page milestone. Each maps to roadmap phases.
 
 ### Design
 
-- [ ] **DSGN-01**: Customer list view designed in customers.pen
-- [ ] **DSGN-02**: Customer detail page layout designed in customer-detail.pen
-- [ ] **DSGN-03**: Bin visualization component designed with fill bars and alert states
+- [x] **DSGN-01**: Customer list view designed in customers.pen (completed 2026-05-02, Phase 10)
+- [x] **DSGN-02**: Customer detail page layout designed in customer-detail.pen (completed 2026-05-02, Phase 10)
+- [x] **DSGN-03**: Bin visualization component designed with fill bars and alert states (completed 2026-05-02, Phase 10)
 
 ### Data Layer
 
@@ -80,9 +80,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DSGN-01 | Phase 10 | Pending |
-| DSGN-02 | Phase 10 | Pending |
-| DSGN-03 | Phase 10 | Pending |
+| DSGN-01 | Phase 10 | ✅ Complete (2026-05-02) |
+| DSGN-02 | Phase 10 | ✅ Complete (2026-05-02) |
+| DSGN-03 | Phase 10 | ✅ Complete (2026-05-02) |
 | DATA-01 | Phase 11 | Pending |
 | DATA-02 | Phase 11 | Pending |
 | DATA-03 | Phase 11 | Pending |
