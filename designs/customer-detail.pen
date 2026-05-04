@@ -1849,6 +1849,1325 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "cust-detail-orders",
+      "x": 1960,
+      "y": 0,
+      "name": "Customer Detail - Orders Tab",
+      "clip": true,
+      "width": 1920,
+      "height": 1200,
+      "fill": "#f8f9faff",
+      "children": [
+        {
+          "type": "frame",
+          "id": "sidebar-orders",
+          "name": "Sidebar",
+          "width": 280,
+          "height": "fill_container",
+          "fill": "#ffffffff",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "logo-section-orders",
+              "name": "Logo Section",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [0, 0, 20, 0],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "logo-icon-orders",
+                  "name": "Logo Icon",
+                  "width": 32,
+                  "height": 32,
+                  "fill": "#4fd1c5ff",
+                  "cornerRadius": 8,
+                  "layout": "none"
+                },
+                {
+                  "type": "text",
+                  "id": "logo-text-orders",
+                  "name": "logoText",
+                  "fill": "#2d3748ff",
+                  "content": "FEEDMILL PRO",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "divider1-orders",
+              "name": "Divider",
+              "fill": "#e2e8f0ff",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "nav-label-orders",
+              "name": "navLabel",
+              "fill": "#a0aec0ff",
+              "content": "PRODUCTION",
+              "lineHeight": 1.5,
+              "fontFamily": "Helvetica",
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "nav-dashboard-orders",
+              "name": "Nav Dashboard",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [12, 16],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "nav-dash-icon-orders",
+                  "name": "navDashIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#ffffffff",
+                  "cornerRadius": 12,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": { "x": 0, "y": 3.5 },
+                    "blur": 5
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "nav-dash-icon-inner-orders",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navDashIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "layout-dashboard",
+                      "iconFontFamily": "lucide",
+                      "fill": "#a0aec0ff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nav-dash-text-orders",
+                  "name": "navDashText",
+                  "fill": "#a0aec0ff",
+                  "content": "Dashboard",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nav-customers-orders",
+              "name": "Nav Customers",
+              "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000008",
+                "offset": { "x": 0, "y": 3.5 },
+                "blur": 5
+              },
+              "gap": 12,
+              "padding": [12, 16],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "nav-cust-icon-orders",
+                  "name": "navCustIcon",
+                  "width": 30,
+                  "height": 30,
+                  "fill": "#4fd1c5ff",
+                  "cornerRadius": 12,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "nav-cust-icon-inner-orders",
+                      "x": 7.5,
+                      "y": 7.5,
+                      "name": "navCustIconInner",
+                      "width": 15,
+                      "height": 15,
+                      "iconFontName": "users",
+                      "iconFontFamily": "lucide",
+                      "fill": "#ffffffff"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nav-cust-text-orders",
+                  "name": "navCustText",
+                  "fill": "#2d3748ff",
+                  "content": "Customers",
+                  "lineHeight": 1.5,
+                  "fontFamily": "Helvetica",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "main-content-orders",
+          "name": "Main Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [24, 32],
+          "children": [
+            {
+              "type": "frame",
+              "id": "customer-header-orders",
+              "name": "CustomerDetailHeader",
+              "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000005",
+                "offset": { "x": 0, "y": 3.5 },
+                "blur": 5
+              },
+              "padding": [20, 24],
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "contact-stats-row-orders",
+                  "name": "Contact and Stats Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "flex_start",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "contact-card-orders",
+                      "name": "Contact Card",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "customer-name-orders",
+                          "name": "customerName",
+                          "fill": "#2d3748ff",
+                          "content": "Riverside Poultry Farm",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "location-row-orders",
+                          "name": "locationRow",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "location-icon-orders",
+                              "name": "locationIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "map-pin",
+                              "iconFontFamily": "lucide",
+                              "fill": "#a0aec0ff"
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-text-orders",
+                              "name": "locationText",
+                              "fill": "#a0aec0ff",
+                              "content": "123 Farm Road, Springfield, IL 62701",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "phone-row-orders",
+                          "name": "phoneRow",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "phone-icon-orders",
+                              "name": "phoneIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "phone",
+                              "iconFontFamily": "lucide",
+                              "fill": "#a0aec0ff"
+                            },
+                            {
+                              "type": "text",
+                              "id": "phone-text-orders",
+                              "name": "phoneText",
+                              "fill": "#a0aec0ff",
+                              "content": "(555) 123-4567",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "email-row-orders",
+                          "name": "emailRow",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "email-icon-orders",
+                              "name": "emailIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "mail",
+                              "iconFontFamily": "lucide",
+                              "fill": "#a0aec0ff"
+                            },
+                            {
+                              "type": "text",
+                              "id": "email-text-orders",
+                              "name": "emailText",
+                              "fill": "#a0aec0ff",
+                              "content": "orders@riversidepoultry.com",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "delivery-prefs-orders",
+                          "name": "deliveryPrefs",
+                          "fill": "#4fd1c5ff",
+                          "content": "Delivery: Mon/Wed/Fri, 6-8 AM",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "summary-stats-orders",
+                      "name": "Summary Stats",
+                      "gap": 16,
+                      "alignItems": "flex_start",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "stat1-orders",
+                          "name": "stat1",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "stat1-value-orders",
+                              "name": "stat1Value",
+                              "fill": "#2d3748ff",
+                              "content": "12",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "stat1-label-orders",
+                              "name": "stat1Label",
+                              "fill": "#a0aec0ff",
+                              "content": "Total Orders",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "stat2-orders",
+                          "name": "stat2",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "stat2-value-orders",
+                              "name": "stat2Value",
+                              "fill": "#2d3748ff",
+                              "content": "4",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "stat2-label-orders",
+                              "name": "stat2Label",
+                              "fill": "#a0aec0ff",
+                              "content": "Active Bins",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "stat3-orders",
+                          "name": "stat3",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "stat3-value-orders",
+                              "name": "stat3Value",
+                              "fill": "#2d3748ff",
+                              "content": "8",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "stat3-label-orders",
+                              "name": "stat3Label",
+                              "fill": "#a0aec0ff",
+                              "content": "Recent Activity",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "contact-bins-divider-orders",
+                  "name": "Contact Bins Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "bins-row-orders",
+                  "name": "Bins Row",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bin-gauge-row-orders",
+                      "name": "BinGaugeRow",
+                      "width": "fill_container",
+                      "gap": 24,
+                      "justifyContent": "flex_start",
+                      "alignItems": "flex_end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "bin1-orders",
+                          "name": "Bin Gauge 1",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-1-orders",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": { "align": "inside", "thickness": 2, "fill": "#e2e8f0ff" },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-1-orders",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 18,
+                                  "width": 36,
+                                  "height": 50,
+                                  "fill": "#48bb78ff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-1-orders",
+                                  "name": "Percentage",
+                                  "x": 8,
+                                  "y": 28,
+                                  "fill": "#ffffffff",
+                                  "content": "75%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-1-orders",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin A",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-1-orders",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Starter",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bin2-orders",
+                          "name": "Bin Gauge 2",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-2-orders",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": { "align": "inside", "thickness": 2, "fill": "#e2e8f0ff" },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-2-orders",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 27,
+                                  "width": 36,
+                                  "height": 41,
+                                  "fill": "#48bb78ff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-2-orders",
+                                  "name": "Percentage",
+                                  "x": 8,
+                                  "y": 28,
+                                  "fill": "#ffffffff",
+                                  "content": "62%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-2-orders",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin B",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-2-orders",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Grower",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bin3-orders",
+                          "name": "Bin Gauge 3",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-3-orders",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": { "align": "inside", "thickness": 2, "fill": "#e2e8f0ff" },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-3-orders",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 53,
+                                  "width": 36,
+                                  "height": 15,
+                                  "fill": "#f59e0bff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-3-orders",
+                                  "name": "Percentage",
+                                  "x": 8,
+                                  "y": 28,
+                                  "fill": "#2d3748ff",
+                                  "content": "22%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-3-orders",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin C",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-3-orders",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Finisher",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bin4-orders",
+                          "name": "Bin Gauge 4",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-4-orders",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": { "align": "inside", "thickness": 2, "fill": "#e2e8f0ff" },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-4-orders",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 63,
+                                  "width": 36,
+                                  "height": 5,
+                                  "fill": "#e53e3eff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-4-orders",
+                                  "name": "Percentage",
+                                  "x": 10,
+                                  "y": 28,
+                                  "fill": "#2d3748ff",
+                                  "content": "8%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-4-orders",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin D",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-4-orders",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Starter",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tab-bar-orders",
+              "name": "Tab Bar",
+              "width": "fill_container",
+              "gap": 0,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tab-activity-orders",
+                  "name": "Tab Activity Timeline",
+                  "padding": [12, 20],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tab-activity-label-orders",
+                      "name": "tabActivityLabel",
+                      "fill": "#a0aec0ff",
+                      "content": "Activity Timeline",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tab-orders-active",
+                  "name": "Tab Orders",
+                  "padding": [12, 20],
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 2,
+                    "fill": "#4fd1c5ff",
+                    "sides": ["bottom"]
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tab-orders-label-active",
+                      "name": "tabOrdersLabel",
+                      "fill": "#4fd1c5ff",
+                      "content": "Orders",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "orders-section",
+              "name": "Orders Section",
+              "width": "fill_container",
+              "fill": "#ffffffff",
+              "cornerRadius": 15,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000005",
+                "offset": { "x": 0, "y": 3.5 },
+                "blur": 5
+              },
+              "padding": [20, 24],
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "orders-table-header",
+                  "name": "Table Header",
+                  "width": "fill_container",
+                  "padding": [12, 0],
+                  "gap": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "th-order",
+                      "name": "thOrder",
+                      "width": 140,
+                      "fill": "#a0aec0ff",
+                      "content": "ORDER #",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "th-product",
+                      "name": "thProduct",
+                      "width": 160,
+                      "fill": "#a0aec0ff",
+                      "content": "PRODUCT",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "th-quantity",
+                      "name": "thQuantity",
+                      "width": 100,
+                      "fill": "#a0aec0ff",
+                      "content": "QUANTITY",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "th-delivery",
+                      "name": "thDelivery",
+                      "width": 120,
+                      "fill": "#a0aec0ff",
+                      "content": "DELIVERY",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "th-status",
+                      "name": "thStatus",
+                      "width": 100,
+                      "fill": "#a0aec0ff",
+                      "content": "STATUS",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "table-divider",
+                  "name": "Table Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "order-row-1",
+                  "name": "Order Row 1",
+                  "width": "fill_container",
+                  "padding": [12, 0],
+                  "gap": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "row1-order",
+                      "name": "row1Order",
+                      "width": 140,
+                      "fill": "#2d3748ff",
+                      "content": "ORD-2026-0847",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row1-product",
+                      "name": "row1Product",
+                      "width": 160,
+                      "fill": "#2d3748ff",
+                      "content": "Starter",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row1-quantity",
+                      "name": "row1Quantity",
+                      "width": 100,
+                      "fill": "#2d3748ff",
+                      "content": "20 tons",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row1-delivery",
+                      "name": "row1Delivery",
+                      "width": 120,
+                      "fill": "#2d3748ff",
+                      "content": "May 2, 2026",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "row1-status",
+                      "name": "row1Status",
+                      "width": 100,
+                      "fill": "#4fd1c51a",
+                      "cornerRadius": 6,
+                      "padding": [4, 8],
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "row1-status-text",
+                          "name": "row1StatusText",
+                          "fill": "#4fd1c5ff",
+                          "content": "In Production",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "order-row-2",
+                  "name": "Order Row 2",
+                  "width": "fill_container",
+                  "padding": [12, 0],
+                  "gap": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "row2-order",
+                      "name": "row2Order",
+                      "width": 140,
+                      "fill": "#2d3748ff",
+                      "content": "ORD-2026-0821",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row2-product",
+                      "name": "row2Product",
+                      "width": 160,
+                      "fill": "#2d3748ff",
+                      "content": "Finisher",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row2-quantity",
+                      "name": "row2Quantity",
+                      "width": 100,
+                      "fill": "#2d3748ff",
+                      "content": "18 tons",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row2-delivery",
+                      "name": "row2Delivery",
+                      "width": 120,
+                      "fill": "#2d3748ff",
+                      "content": "Apr 30, 2026",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "row2-status",
+                      "name": "row2Status",
+                      "width": 100,
+                      "fill": "#48bb781a",
+                      "cornerRadius": 6,
+                      "padding": [4, 8],
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "row2-status-text",
+                          "name": "row2StatusText",
+                          "fill": "#48bb78ff",
+                          "content": "Ready",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "order-row-3",
+                  "name": "Order Row 3",
+                  "width": "fill_container",
+                  "padding": [12, 0],
+                  "gap": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "row3-order",
+                      "name": "row3Order",
+                      "width": 140,
+                      "fill": "#2d3748ff",
+                      "content": "ORD-2026-0798",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row3-product",
+                      "name": "row3Product",
+                      "width": 160,
+                      "fill": "#2d3748ff",
+                      "content": "Grower",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row3-quantity",
+                      "name": "row3Quantity",
+                      "width": 100,
+                      "fill": "#2d3748ff",
+                      "content": "25 tons",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row3-delivery",
+                      "name": "row3Delivery",
+                      "width": 120,
+                      "fill": "#2d3748ff",
+                      "content": "Apr 25, 2026",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "row3-status",
+                      "name": "row3Status",
+                      "width": 100,
+                      "fill": "#48bb781a",
+                      "cornerRadius": 6,
+                      "padding": [4, 8],
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "row3-status-text",
+                          "name": "row3StatusText",
+                          "fill": "#48bb78ff",
+                          "content": "Complete",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "order-row-4",
+                  "name": "Order Row 4",
+                  "width": "fill_container",
+                  "padding": [12, 0],
+                  "gap": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "row4-order",
+                      "name": "row4Order",
+                      "width": 140,
+                      "fill": "#2d3748ff",
+                      "content": "ORD-2026-0775",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row4-product",
+                      "name": "row4Product",
+                      "width": 160,
+                      "fill": "#2d3748ff",
+                      "content": "Starter",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row4-quantity",
+                      "name": "row4Quantity",
+                      "width": 100,
+                      "fill": "#2d3748ff",
+                      "content": "22 tons",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row4-delivery",
+                      "name": "row4Delivery",
+                      "width": 120,
+                      "fill": "#2d3748ff",
+                      "content": "Apr 20, 2026",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "row4-status",
+                      "name": "row4Status",
+                      "width": 100,
+                      "fill": "#48bb781a",
+                      "cornerRadius": 6,
+                      "padding": [4, 8],
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "row4-status-text",
+                          "name": "row4StatusText",
+                          "fill": "#48bb78ff",
+                          "content": "Complete",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "order-row-5",
+                  "name": "Order Row 5",
+                  "width": "fill_container",
+                  "padding": [12, 0],
+                  "gap": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "row5-order",
+                      "name": "row5Order",
+                      "width": 140,
+                      "fill": "#2d3748ff",
+                      "content": "ORD-2026-0752",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row5-product",
+                      "name": "row5Product",
+                      "width": 160,
+                      "fill": "#2d3748ff",
+                      "content": "Grower",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row5-quantity",
+                      "name": "row5Quantity",
+                      "width": 100,
+                      "fill": "#2d3748ff",
+                      "content": "20 tons",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "row5-delivery",
+                      "name": "row5Delivery",
+                      "width": 120,
+                      "fill": "#2d3748ff",
+                      "content": "Apr 12, 2026",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "row5-status",
+                      "name": "row5Status",
+                      "width": 100,
+                      "fill": "#48bb781a",
+                      "cornerRadius": 6,
+                      "padding": [4, 8],
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "row5-status-text",
+                          "name": "row5StatusText",
+                          "fill": "#48bb78ff",
+                          "content": "Complete",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
