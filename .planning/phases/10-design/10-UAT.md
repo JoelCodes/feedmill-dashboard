@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 10-design
 source: 10-01-SUMMARY.md
 started: 2026-05-04T00:00:00Z
@@ -58,5 +58,11 @@ blocked: 0
   reason: "User reported: We've updated the design to have an activity timeline tab and an order history tab."
   severity: major
   test: 2
-  artifacts: []
-  missing: []
+  root_cause: "Design evolution - tabs added after original phase 10 work. Original deliverable was correct; design has since been updated to have Activity Timeline tab + Order History tab."
+  artifacts:
+    - path: "designs/customer-detail.pen"
+      issue: "Design needs update to reflect tabbed interface"
+  missing:
+    - "Update customer-detail.pen to show tabbed layout (Activity Timeline tab, Order History tab)"
+    - "Add Orders tab design with order history table"
+  debug_session: ""
