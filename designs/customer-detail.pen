@@ -474,17 +474,6 @@
                   "gap": 12,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "bins-heading",
-                      "name": "binsHeading",
-                      "fill": "#2d3748ff",
-                      "content": "Feed Bins",
-                      "lineHeight": 1.2,
-                      "fontFamily": "Helvetica",
-                      "fontSize": 14,
-                      "fontWeight": "700"
-                    },
-                    {
                       "type": "frame",
                       "id": "bin-gauge-row",
                       "name": "BinGaugeRow",
