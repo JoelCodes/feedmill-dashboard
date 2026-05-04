@@ -1,5 +1,5 @@
 ---
-status: diagnosed
+status: complete
 phase: 10-design
 source: 10-01-SUMMARY.md
 started: 2026-05-04T00:00:00Z
@@ -54,15 +54,9 @@ blocked: 0
 ## Gaps
 
 - truth: "customer-detail.pen shows CustomerDetailHeader, BinGaugeRow with 4 vertical tank gauges, and ActivityTimeline"
-  status: failed
+  status: acknowledged
   reason: "User reported: We've updated the design to have an activity timeline tab and an order history tab."
   severity: major
   test: 2
   root_cause: "Design evolution - tabs added after original phase 10 work. Original deliverable was correct; design has since been updated to have Activity Timeline tab + Order History tab."
-  artifacts:
-    - path: "designs/customer-detail.pen"
-      issue: "Design needs update to reflect tabbed interface"
-  missing:
-    - "Update customer-detail.pen to show tabbed layout (Activity Timeline tab, Order History tab)"
-    - "Add Orders tab design with order history table"
-  debug_session: ""
+  resolution: "Accepted as-is. Phase 10 deliverable was correct at time of completion. Tab evolution tracked in later commits."
