@@ -218,575 +218,572 @@
                 "blur": 5
               },
               "padding": [20, 24],
-              "justifyContent": "space_between",
-              "alignItems": "flex_start",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "contact-card",
-                  "name": "Contact Card",
-                  "layout": "vertical",
-                  "gap": 4,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "customer-name",
-                      "name": "customerName",
-                      "fill": "#2d3748ff",
-                      "content": "Riverside Poultry Farm",
-                      "lineHeight": 1.2,
-                      "fontFamily": "Helvetica",
-                      "fontSize": 20,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "location-row",
-                      "name": "locationRow",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "location-icon",
-                          "name": "locationIcon",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "map-pin",
-                          "iconFontFamily": "lucide",
-                          "fill": "#a0aec0ff"
-                        },
-                        {
-                          "type": "text",
-                          "id": "location-text",
-                          "name": "locationText",
-                          "fill": "#a0aec0ff",
-                          "content": "123 Farm Road, Springfield, IL 62701",
-                          "lineHeight": 1.5,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "phone-row",
-                      "name": "phoneRow",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "phone-icon",
-                          "name": "phoneIcon",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "phone",
-                          "iconFontFamily": "lucide",
-                          "fill": "#a0aec0ff"
-                        },
-                        {
-                          "type": "text",
-                          "id": "phone-text",
-                          "name": "phoneText",
-                          "fill": "#a0aec0ff",
-                          "content": "(555) 123-4567",
-                          "lineHeight": 1.5,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "email-row",
-                      "name": "emailRow",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "email-icon",
-                          "name": "emailIcon",
-                          "width": 14,
-                          "height": 14,
-                          "iconFontName": "mail",
-                          "iconFontFamily": "lucide",
-                          "fill": "#a0aec0ff"
-                        },
-                        {
-                          "type": "text",
-                          "id": "email-text",
-                          "name": "emailText",
-                          "fill": "#a0aec0ff",
-                          "content": "orders@riversidepoultry.com",
-                          "lineHeight": 1.5,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "delivery-prefs",
-                      "name": "deliveryPrefs",
-                      "fill": "#4fd1c5ff",
-                      "content": "Delivery: Mon/Wed/Fri, 6-8 AM",
-                      "lineHeight": 1.2,
-                      "fontFamily": "Helvetica",
-                      "fontSize": 10,
-                      "fontWeight": "700"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "summary-stats",
-                  "name": "Summary Stats",
-                  "gap": 16,
-                  "alignItems": "flex_start",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "stat1",
-                      "name": "stat1",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "stat1-value",
-                          "name": "stat1Value",
-                          "fill": "#2d3748ff",
-                          "content": "12",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 20,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "stat1-label",
-                          "name": "stat1Label",
-                          "fill": "#a0aec0ff",
-                          "content": "Total Orders",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "stat2",
-                      "name": "stat2",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "stat2-value",
-                          "name": "stat2Value",
-                          "fill": "#2d3748ff",
-                          "content": "4",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 20,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "stat2-label",
-                          "name": "stat2Label",
-                          "fill": "#a0aec0ff",
-                          "content": "Active Bins",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "stat3",
-                      "name": "stat3",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "stat3-value",
-                          "name": "stat3Value",
-                          "fill": "#2d3748ff",
-                          "content": "8",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 20,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "stat3-label",
-                          "name": "stat3Label",
-                          "fill": "#a0aec0ff",
-                          "content": "Recent Activity",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "rectangle",
-              "id": "divider2-detail",
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
-              "width": "fill_container",
-              "height": 1
-            },
-            {
-              "type": "frame",
-              "id": "bins-section",
-              "name": "Bins Section",
-              "width": "fill_container",
-              "fill": "#ffffffff",
-              "cornerRadius": 15,
-              "effect": {
-                "type": "shadow",
-                "shadowType": "outer",
-                "color": "#00000005",
-                "offset": {
-                  "x": 0,
-                  "y": 3.5
-                },
-                "blur": 5
-              },
-              "padding": [20, 24],
               "layout": "vertical",
               "gap": 16,
               "children": [
                 {
-                  "type": "text",
-                  "id": "bins-heading",
-                  "name": "binsHeading",
-                  "fill": "#2d3748ff",
-                  "content": "Feed Bins",
-                  "lineHeight": 1.2,
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "700"
-                },
-                {
                   "type": "frame",
-                  "id": "bin-gauge-row",
-                  "name": "BinGaugeRow",
+                  "id": "contact-stats-row",
+                  "name": "Contact and Stats Row",
                   "width": "fill_container",
-                  "gap": 24,
-                  "justifyContent": "flex_start",
-                  "alignItems": "flex_end",
+                  "justifyContent": "space_between",
+                  "alignItems": "flex_start",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "bin1",
-                      "name": "Bin Gauge 1",
-                      "width": 60,
+                      "id": "contact-card",
+                      "name": "Contact Card",
                       "layout": "vertical",
-                      "gap": 8,
-                      "alignItems": "center",
+                      "gap": 4,
                       "children": [
                         {
+                          "type": "text",
+                          "id": "customer-name",
+                          "name": "customerName",
+                          "fill": "#2d3748ff",
+                          "content": "Riverside Poultry Farm",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Helvetica",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
                           "type": "frame",
-                          "id": "gauge-container-1",
-                          "name": "Gauge Container",
-                          "width": 40,
-                          "height": 70,
-                          "cornerRadius": 8,
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 2,
-                            "fill": "#e2e8f0ff"
-                          },
-                          "layout": "none",
+                          "id": "location-row",
+                          "name": "locationRow",
+                          "gap": 8,
+                          "alignItems": "center",
                           "children": [
                             {
-                              "type": "rectangle",
-                              "id": "fill-bar-1",
-                              "name": "Fill Bar",
-                              "x": 2,
-                              "y": 18,
-                              "width": 36,
-                              "height": 50,
-                              "fill": "#48bb78ff",
-                              "cornerRadius": [0, 0, 6, 6]
+                              "type": "icon_font",
+                              "id": "location-icon",
+                              "name": "locationIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "map-pin",
+                              "iconFontFamily": "lucide",
+                              "fill": "#a0aec0ff"
                             },
                             {
                               "type": "text",
-                              "id": "percentage-1",
-                              "name": "Percentage",
-                              "x": 8,
-                              "y": 28,
-                              "fill": "#ffffffff",
-                              "content": "75%",
-                              "lineHeight": 1.2,
+                              "id": "location-text",
+                              "name": "locationText",
+                              "fill": "#a0aec0ff",
+                              "content": "123 Farm Road, Springfield, IL 62701",
+                              "lineHeight": 1.5,
                               "fontFamily": "Helvetica",
                               "fontSize": 12,
-                              "fontWeight": "700"
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "phone-row",
+                          "name": "phoneRow",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "phone-icon",
+                              "name": "phoneIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "phone",
+                              "iconFontFamily": "lucide",
+                              "fill": "#a0aec0ff"
+                            },
+                            {
+                              "type": "text",
+                              "id": "phone-text",
+                              "name": "phoneText",
+                              "fill": "#a0aec0ff",
+                              "content": "(555) 123-4567",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "email-row",
+                          "name": "emailRow",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "email-icon",
+                              "name": "emailIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "mail",
+                              "iconFontFamily": "lucide",
+                              "fill": "#a0aec0ff"
+                            },
+                            {
+                              "type": "text",
+                              "id": "email-text",
+                              "name": "emailText",
+                              "fill": "#a0aec0ff",
+                              "content": "orders@riversidepoultry.com",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
                         {
                           "type": "text",
-                          "id": "location-1",
-                          "name": "Location Label",
-                          "fill": "#2d3748ff",
-                          "content": "Bin A",
+                          "id": "delivery-prefs",
+                          "name": "deliveryPrefs",
+                          "fill": "#4fd1c5ff",
+                          "content": "Delivery: Mon/Wed/Fri, 6-8 AM",
                           "lineHeight": 1.2,
                           "fontFamily": "Helvetica",
                           "fontSize": 10,
                           "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "feedtype-1",
-                          "name": "Feed Type",
-                          "fill": "#a0aec0ff",
-                          "content": "Starter",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
                         }
                       ]
                     },
                     {
                       "type": "frame",
-                      "id": "bin2",
-                      "name": "Bin Gauge 2",
-                      "width": 60,
-                      "layout": "vertical",
-                      "gap": 8,
-                      "alignItems": "center",
+                      "id": "summary-stats",
+                      "name": "Summary Stats",
+                      "gap": 16,
+                      "alignItems": "flex_start",
                       "children": [
                         {
                           "type": "frame",
-                          "id": "gauge-container-2",
-                          "name": "Gauge Container",
-                          "width": 40,
-                          "height": 70,
-                          "cornerRadius": 8,
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 2,
-                            "fill": "#e2e8f0ff"
-                          },
-                          "layout": "none",
+                          "id": "stat1",
+                          "name": "stat1",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
                           "children": [
                             {
-                              "type": "rectangle",
-                              "id": "fill-bar-2",
-                              "name": "Fill Bar",
-                              "x": 2,
-                              "y": 27,
-                              "width": 36,
-                              "height": 41,
-                              "fill": "#48bb78ff",
-                              "cornerRadius": [0, 0, 6, 6]
-                            },
-                            {
                               "type": "text",
-                              "id": "percentage-2",
-                              "name": "Percentage",
-                              "x": 8,
-                              "y": 28,
-                              "fill": "#ffffffff",
-                              "content": "62%",
-                              "lineHeight": 1.2,
-                              "fontFamily": "Helvetica",
-                              "fontSize": 12,
-                              "fontWeight": "700"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "location-2",
-                          "name": "Location Label",
-                          "fill": "#2d3748ff",
-                          "content": "Bin B",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "feedtype-2",
-                          "name": "Feed Type",
-                          "fill": "#a0aec0ff",
-                          "content": "Grower",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "bin3",
-                      "name": "Bin Gauge 3",
-                      "width": 60,
-                      "layout": "vertical",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "gauge-container-3",
-                          "name": "Gauge Container",
-                          "width": 40,
-                          "height": 70,
-                          "cornerRadius": 8,
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 2,
-                            "fill": "#e2e8f0ff"
-                          },
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "id": "fill-bar-3",
-                              "name": "Fill Bar",
-                              "x": 2,
-                              "y": 53,
-                              "width": 36,
-                              "height": 15,
-                              "fill": "#f59e0bff",
-                              "cornerRadius": [0, 0, 6, 6]
-                            },
-                            {
-                              "type": "text",
-                              "id": "percentage-3",
-                              "name": "Percentage",
-                              "x": 8,
-                              "y": 28,
+                              "id": "stat1-value",
+                              "name": "stat1Value",
                               "fill": "#2d3748ff",
-                              "content": "22%",
+                              "content": "12",
                               "lineHeight": 1.2,
                               "fontFamily": "Helvetica",
-                              "fontSize": 12,
+                              "fontSize": 20,
                               "fontWeight": "700"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "text",
-                          "id": "location-3",
-                          "name": "Location Label",
-                          "fill": "#2d3748ff",
-                          "content": "Bin C",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "feedtype-3",
-                          "name": "Feed Type",
-                          "fill": "#a0aec0ff",
-                          "content": "Finisher",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "bin4",
-                      "name": "Bin Gauge 4",
-                      "width": 60,
-                      "layout": "vertical",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "gauge-container-4",
-                          "name": "Gauge Container",
-                          "width": 40,
-                          "height": 70,
-                          "cornerRadius": 8,
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 2,
-                            "fill": "#e2e8f0ff"
-                          },
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "id": "fill-bar-4",
-                              "name": "Fill Bar",
-                              "x": 2,
-                              "y": 63,
-                              "width": 36,
-                              "height": 5,
-                              "fill": "#e53e3eff",
-                              "cornerRadius": [0, 0, 6, 6]
                             },
                             {
                               "type": "text",
-                              "id": "percentage-4",
-                              "name": "Percentage",
-                              "x": 10,
-                              "y": 28,
-                              "fill": "#2d3748ff",
-                              "content": "8%",
+                              "id": "stat1-label",
+                              "name": "stat1Label",
+                              "fill": "#a0aec0ff",
+                              "content": "Total Orders",
                               "lineHeight": 1.2,
                               "fontFamily": "Helvetica",
-                              "fontSize": 12,
-                              "fontWeight": "700"
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
                         {
-                          "type": "text",
-                          "id": "location-4",
-                          "name": "Location Label",
-                          "fill": "#2d3748ff",
-                          "content": "Bin D",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "700"
+                          "type": "frame",
+                          "id": "stat2",
+                          "name": "stat2",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "stat2-value",
+                              "name": "stat2Value",
+                              "fill": "#2d3748ff",
+                              "content": "4",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "stat2-label",
+                              "name": "stat2Label",
+                              "fill": "#a0aec0ff",
+                              "content": "Active Bins",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
                         },
                         {
-                          "type": "text",
-                          "id": "feedtype-4",
-                          "name": "Feed Type",
-                          "fill": "#a0aec0ff",
-                          "content": "Starter",
-                          "lineHeight": 1.2,
-                          "fontFamily": "Helvetica",
-                          "fontSize": 10,
-                          "fontWeight": "normal"
+                          "type": "frame",
+                          "id": "stat3",
+                          "name": "stat3",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "stat3-value",
+                              "name": "stat3Value",
+                              "fill": "#2d3748ff",
+                              "content": "8",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 20,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "stat3-label",
+                              "name": "stat3Label",
+                              "fill": "#a0aec0ff",
+                              "content": "Recent Activity",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "contact-bins-divider",
+                  "name": "Contact Bins Divider",
+                  "fill": "#e2e8f0ff",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "bins-row",
+                  "name": "Bins Row",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bins-heading",
+                      "name": "binsHeading",
+                      "fill": "#2d3748ff",
+                      "content": "Feed Bins",
+                      "lineHeight": 1.2,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bin-gauge-row",
+                      "name": "BinGaugeRow",
+                      "width": "fill_container",
+                      "gap": 24,
+                      "justifyContent": "flex_start",
+                      "alignItems": "flex_end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "bin1",
+                          "name": "Bin Gauge 1",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-1",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#e2e8f0ff"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-1",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 18,
+                                  "width": 36,
+                                  "height": 50,
+                                  "fill": "#48bb78ff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-1",
+                                  "name": "Percentage",
+                                  "x": 8,
+                                  "y": 28,
+                                  "fill": "#ffffffff",
+                                  "content": "75%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-1",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin A",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-1",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Starter",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bin2",
+                          "name": "Bin Gauge 2",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-2",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#e2e8f0ff"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-2",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 27,
+                                  "width": 36,
+                                  "height": 41,
+                                  "fill": "#48bb78ff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-2",
+                                  "name": "Percentage",
+                                  "x": 8,
+                                  "y": 28,
+                                  "fill": "#ffffffff",
+                                  "content": "62%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-2",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin B",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-2",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Grower",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bin3",
+                          "name": "Bin Gauge 3",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-3",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#e2e8f0ff"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-3",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 53,
+                                  "width": 36,
+                                  "height": 15,
+                                  "fill": "#f59e0bff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-3",
+                                  "name": "Percentage",
+                                  "x": 8,
+                                  "y": 28,
+                                  "fill": "#2d3748ff",
+                                  "content": "22%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-3",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin C",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-3",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Finisher",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bin4",
+                          "name": "Bin Gauge 4",
+                          "width": 60,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "gauge-container-4",
+                              "name": "Gauge Container",
+                              "width": 40,
+                              "height": 70,
+                              "cornerRadius": 8,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#e2e8f0ff"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "fill-bar-4",
+                                  "name": "Fill Bar",
+                                  "x": 2,
+                                  "y": 63,
+                                  "width": 36,
+                                  "height": 5,
+                                  "fill": "#e53e3eff",
+                                  "cornerRadius": [0, 0, 6, 6]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "percentage-4",
+                                  "name": "Percentage",
+                                  "x": 10,
+                                  "y": 28,
+                                  "fill": "#2d3748ff",
+                                  "content": "8%",
+                                  "lineHeight": 1.2,
+                                  "fontFamily": "Helvetica",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "location-4",
+                              "name": "Location Label",
+                              "fill": "#2d3748ff",
+                              "content": "Bin D",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "feedtype-4",
+                              "name": "Feed Type",
+                              "fill": "#a0aec0ff",
+                              "content": "Starter",
+                              "lineHeight": 1.2,
+                              "fontFamily": "Helvetica",
+                              "fontSize": 10,
+                              "fontWeight": "normal"
+                            }
+                          ]
                         }
                       ]
                     }
