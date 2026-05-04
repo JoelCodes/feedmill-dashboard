@@ -101,6 +101,7 @@ Recent decisions affecting current work:
 |---|-------------|------|--------|-----------|
 | 260504-jfn | Add tabs under the customer detail header section | 2026-05-04 | 4c1c610 | [260504-jfn-customer-detail-tabs](./quick/260504-jfn-customer-detail-tabs/) |
 | 260504-j3v | Move feed bins into contact info section with divider | 2026-05-04 | 97f779a | [260504-j3v-more-design-feedback](./quick/260504-j3v-more-design-feedback/) |
+| 260504-kan | Add Orders tab view to customer detail design | 2026-05-04 | b21bfad | [260504-kan-add-orders-tab-view-to-customer-detail-d](./quick/260504-kan-add-orders-tab-view-to-customer-detail-d/) |
 
 ### Deferred Items
 
@@ -151,4 +152,4 @@ Recent decisions affecting current work:
 
 ---
 *State initialized: 2026-05-01 for v1.2 milestone*
-*Last activity: 2026-05-04 - Completed quick task 260504-jfn: Add tabs under customer detail header section*
+*Last activity: 2026-05-04 - Completed quick task 260504-kan: Add Orders tab view to customer detail design*
