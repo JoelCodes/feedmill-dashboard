@@ -781,12 +781,57 @@
               ]
             },
             {
-              "type": "rectangle",
-              "id": "divider3-detail",
-              "name": "Section Divider",
-              "fill": "#e2e8f0ff",
+              "type": "frame",
+              "id": "tab-bar",
+              "name": "Tab Bar",
               "width": "fill_container",
-              "height": 1
+              "gap": 0,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tab-activity",
+                  "name": "Tab Activity Timeline",
+                  "padding": [12, 20],
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 2,
+                    "fill": "#4fd1c5ff",
+                    "sides": ["bottom"]
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tab-activity-label",
+                      "name": "tabActivityLabel",
+                      "fill": "#4fd1c5ff",
+                      "content": "Activity Timeline",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tab-orders",
+                  "name": "Tab Orders",
+                  "padding": [12, 20],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tab-orders-label",
+                      "name": "tabOrdersLabel",
+                      "fill": "#a0aec0ff",
+                      "content": "Orders",
+                      "lineHeight": 1.5,
+                      "fontFamily": "Helvetica",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
             },
             {
               "type": "frame",
@@ -809,17 +854,6 @@
               "layout": "vertical",
               "gap": 16,
               "children": [
-                {
-                  "type": "text",
-                  "id": "timeline-heading",
-                  "name": "timelineHeading",
-                  "fill": "#2d3748ff",
-                  "content": "Activity Timeline",
-                  "lineHeight": 1.2,
-                  "fontFamily": "Helvetica",
-                  "fontSize": 16,
-                  "fontWeight": "700"
-                },
                 {
                   "type": "frame",
                   "id": "activity-timeline",
