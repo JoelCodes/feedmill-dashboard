@@ -80,22 +80,20 @@ describe("sortCustomersByRecentActivity", () => {
     expect(sorted[0].id).toBe("CUST-001");
   });
 
-  it("should preserve stable order for customers with same delivery date", () => {
-    // Create scenario where customers have same most recent delivery
-    // CUST-001 and CUST-005 both have orders, but we'll check stability
+  it("should sort by exact datetime not just date", () => {
+    // CUST-001: Mar 12 08:00, CUST-005: Mar 12 14:00
+    // Even though same day, CUST-005 is later in the day so should come first
     const customers = [
-      createCustomer("CUST-005", "Lakeside Aqua"),
       createCustomer("CUST-001", "Greenfield Farms"),
+      createCustomer("CUST-005", "Lakeside Aqua"),
     ];
 
     const sorted = sortCustomersByRecentActivity(customers);
 
-    // Both have different dates (Mar 12), so this tests that stable sort is used
-    // CUST-001: Mar 12, CUST-005: Mar 12
-    // Should preserve original order when dates are equal
+    // CUST-005 has later time on same day (14:00 vs 08:00)
     expect(sorted).toHaveLength(2);
-    expect(sorted[0].id).toBe("CUST-001"); // Mar 12 (same)
-    expect(sorted[1].id).toBe("CUST-005"); // Mar 12 (same)
+    expect(sorted[0].id).toBe("CUST-005"); // Mar 12 14:00
+    expect(sorted[1].id).toBe("CUST-001"); // Mar 12 08:00
   });
 
   it("should not mutate the input array", () => {
