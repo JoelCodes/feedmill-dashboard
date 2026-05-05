@@ -688,22 +688,22 @@ function calculateCustomerStats(customerId: string): CustomerStats {
 
 Note: All other claims were either verified via npm registry, cited from official TypeScript/Context7 documentation, or verified from existing codebase patterns.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Customer contact information (name, phone, email)**
+1. **Customer contact information (name, phone, email)** — RESOLVED
    - What we know: Phase 10 design shows contact card with contact fields, Order type only has customer name string
    - What's unclear: Should contact info be in mock data or left as optional/undefined for now?
-   - Recommendation: Define fields as optional (`contactName?: string`) in Customer interface, populate some records with realistic contact info and leave others undefined to test both states in UI
+   - Resolution: Define fields as optional (`contactName?: string`) in Customer interface, populate some records with realistic contact info and leave others undefined to test both states in UI
 
-2. **Bin capacity and fill level units**
+2. **Bin capacity and fill level units** — RESOLVED
    - What we know: Feed industry uses tons for quantity (Order.quantity is numeric, likely tons based on context)
    - What's unclear: Should bin capacity be in tons or pounds? Should fillPercentage be computed from tons or stored separately?
-   - Recommendation: Use tons for capacityTons and currentFillTons (matches order quantity units), compute fillPercentage as derived value: `Math.round((currentFillTons / capacityTons) * 100)`
+   - Resolution: Use tons for capacityTons and currentFillTons (matches order quantity units), compute fillPercentage as derived value: `Math.round((currentFillTons / capacityTons) * 100)`
 
-3. **Bin alert threshold values**
+3. **Bin alert threshold values** — RESOLVED
    - What we know: Design uses green/yellow/red color zones, industry systems use configurable thresholds
    - What's unclear: What percentage values define "low" (yellow) vs "critical" (red)?
-   - Recommendation: Use industry-standard thresholds: critical < 20%, low 20-40%, normal > 40%. Define as constants in bin service for easy tuning.
+   - Resolution: Use industry-standard thresholds: critical < 20%, low 20-40%, normal > 40%. Define as constants in bin service for easy tuning.
 
 ## Environment Availability
 
