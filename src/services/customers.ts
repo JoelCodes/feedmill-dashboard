@@ -43,12 +43,18 @@ function calculateCustomerStats(customerId: string): CustomerStats {
   // Calculate bin alert level
   const binAlertLevel = calculateBinAlertLevel(customerBins);
 
+  // Calculate active bins (bins requiring attention)
+  const activeBins = customerBins.filter(
+    (bin) => bin.alertLevel !== "none"
+  ).length;
+
   return {
     totalOrders,
     activeOrders,
     completedOrders,
     hasChanges,
     binAlertLevel,
+    activeBins,
   };
 }
 
