@@ -165,8 +165,15 @@ Plans:
   3. Customer detail page shows summary stats (total orders, active bins, recent activity count)
   4. User can click order in history and navigate to orders page with that order selected
   5. Implementation matches customer-detail.pen design file
-**Plans:** TBD
-**UI hint:** yes
+**Plans:** 3 plans
+
+Plans:
+**Wave 1**
+- [ ] 13-01-PLAN.md — Extend Customer/CustomerStats types with deliveryPreferences and activeBins fields
+- [ ] 13-02-PLAN.md — CustomerDetailHeader component (TDD)
+
+**Wave 2**
+- [ ] 13-03-PLAN.md — Customer detail page route with Server Component data fetching
 
 ### Phase 14: Activity Timeline
 **Goal:** Users can see unified chronological activity across orders, deliveries, and bin alerts
@@ -203,7 +210,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 9/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓) | In progress | - |
+| v1.2 Customers Page | 10-15 | 10/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 0/3) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
