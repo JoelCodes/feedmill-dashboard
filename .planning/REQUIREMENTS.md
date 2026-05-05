@@ -41,8 +41,8 @@ Requirements for Customers Page milestone. Each maps to roadmap phases.
 
 ### Bin Visualization
 
-- [ ] **BIN-01**: Bin shows fill level as horizontal percentage bar
-- [ ] **BIN-02**: Bin bar uses color thresholds (green normal, yellow low, red critical)
+- [x] **BIN-01**: Bin shows fill level as vertical percentage bar (completed 2026-05-05, Phase 15)
+- [x] **BIN-02**: Bin bar uses color thresholds (green normal, yellow low, red critical) (completed 2026-05-05, Phase 15)
 - [ ] **BIN-03**: Customer detail shows all bins in card layout
 
 ## Future Requirements
@@ -97,8 +97,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMLN-01 | Phase 14 | Complete |
 | TMLN-02 | Phase 14 | ✅ Complete (2026-05-05) |
 | TMLN-03 | Phase 14 | ✅ Complete (2026-05-05) |
-| BIN-01 | Phase 15 | Pending |
-| BIN-02 | Phase 15 | Pending |
+| BIN-01 | Phase 15 | ✅ Complete (2026-05-05) |
+| BIN-02 | Phase 15 | ✅ Complete (2026-05-05) |
 | BIN-03 | Phase 15 | Pending |
 
 **Coverage:**

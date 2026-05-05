@@ -210,7 +210,7 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 15-01-PLAN.md — BinGauge component with TDD (threshold-based coloring)
+- [x] 15-01-PLAN.md — BinGauge component with TDD (threshold-based coloring) (1 task, 180s)
 
 **Wave 2**
 - [ ] 15-02-PLAN.md — BinGaugeRow component and customer detail integration
@@ -223,7 +223,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 15/15 (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 3/3 ✓, Phase 15: 0/2) | In progress | - |
+| v1.2 Customers Page | 10-15 | 15/15 (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 3/3 ✓, Phase 15: 1/2) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
