@@ -19,6 +19,7 @@ const getPageTitle = (path: string): string => {
   if (path.startsWith('/mill-production')) return 'Production';
   if (path.startsWith('/inventory')) return 'Inventory';
   if (path.startsWith('/shipments')) return 'Shipments';
+  if (path.startsWith('/customers')) return 'Customers';
   if (path.startsWith('/settings')) return 'Settings';
   return 'Dashboard';
 };
