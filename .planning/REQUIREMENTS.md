@@ -22,9 +22,9 @@ Requirements for Customers Page milestone. Each maps to roadmap phases.
 
 ### Customer List
 
-- [ ] **CUST-01**: User can search customers by name
-- [ ] **CUST-02**: Customer row shows order count and changes flag
-- [ ] **CUST-03**: Customer row shows bin alert indicator (low/critical)
+- [x] **CUST-01**: User can search customers by name
+- [x] **CUST-02**: Customer row shows order count and changes flag
+- [x] **CUST-03**: Customer row shows bin alert indicator (low/critical)
 - [x] **CUST-04**: Customers sorted by recent activity
 
 ### Customer Detail
@@ -87,9 +87,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-02 | Phase 11 | ✅ Complete (2026-05-05) |
 | DATA-03 | Phase 11 | Complete |
 | DATA-04 | Phase 11 | Complete |
-| CUST-01 | Phase 12 | Pending |
-| CUST-02 | Phase 12 | Pending |
-| CUST-03 | Phase 12 | Pending |
+| CUST-01 | Phase 12 | Complete |
+| CUST-02 | Phase 12 | Complete |
+| CUST-03 | Phase 12 | Complete |
 | CUST-04 | Phase 12 | Complete |
 | CDET-01 | Phase 13 | Pending |
 | CDET-02 | Phase 13 | Pending |

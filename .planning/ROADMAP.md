@@ -152,7 +152,7 @@ Plans:
 - [x] 12-01-PLAN.md — Sort customers by recent activity (TDD)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 12-02-PLAN.md — Customer list page with search and status indicators
+- [x] 12-02-PLAN.md — Customer list page with search and status indicators
 
 ### Phase 13: Customer Detail Infrastructure
 **Goal:** Customer detail page displays header and summary information
