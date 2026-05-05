@@ -3,8 +3,10 @@ import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import CustomerDetailHeader from '@/components/CustomerDetailHeader';
 import { ActivityTimeline } from '@/components/ActivityTimeline';
+import { BinGaugeRow } from '@/components/BinGaugeRow';
 import { getCustomerById } from '@/services/customers';
 import { getActivityEvents } from '@/services/activity';
+import { getBinsByCustomerId } from '@/services/bins';
 
 export default async function CustomerDetailPage({
   params,
@@ -14,16 +16,17 @@ export default async function CustomerDetailPage({
   // CRITICAL: await params (Next.js 16 requirement)
   const { id } = await params;
 
-  // Fetch customer (includes stats)
-  const customer = await getCustomerById(id);
+  // Parallel fetch: customer, events, and bins (D-07)
+  const [customer, events, bins] = await Promise.all([
+    getCustomerById(id),
+    getActivityEvents(id),
+    getBinsByCustomerId(id),
+  ]);
 
   // 404 handling
   if (!customer) {
     notFound();
   }
-
-  // Fetch activity events for this customer
-  const events = await getActivityEvents(id);
 
   return (
     <div className="flex h-screen bg-bg-page">
@@ -32,7 +35,7 @@ export default async function CustomerDetailPage({
         <Header />
         <CustomerDetailHeader customer={customer} stats={customer.stats} />
         <ActivityTimeline events={events} />
-        {/* Bins section will be added in Phase 15 */}
+        <BinGaugeRow bins={bins} />
       </main>
     </div>
   );
