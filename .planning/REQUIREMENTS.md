@@ -17,7 +17,7 @@ Requirements for Customers Page milestone. Each maps to roadmap phases.
 
 - [x] **DATA-01**: Customer TypeScript types defined (Customer, CustomerStats) (completed 2026-05-05, Phase 11)
 - [x] **DATA-02**: Bin TypeScript types defined (Bin, BinAlertLevel) (completed 2026-05-05, Phase 11)
-- [ ] **DATA-03**: Mock customer service with async interface
+- [x] **DATA-03**: Mock customer service with async interface
 - [ ] **DATA-04**: Mock bin service with fill percentage and alert status
 
 ### Customer List
@@ -85,7 +85,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSGN-03 | Phase 10 | ✅ Complete (2026-05-02) |
 | DATA-01 | Phase 11 | ✅ Complete (2026-05-05) |
 | DATA-02 | Phase 11 | ✅ Complete (2026-05-05) |
-| DATA-03 | Phase 11 | Pending |
+| DATA-03 | Phase 11 | Complete |
 | DATA-04 | Phase 11 | Pending |
 | CUST-01 | Phase 12 | Pending |
 | CUST-02 | Phase 12 | Pending |

@@ -131,8 +131,8 @@ Plans:
 
 Plans:
 - [x] 11-01-PLAN.md — Define types and create shared mockData.ts module (3 tasks, 221s)
-- [ ] 11-02-PLAN.md — Customer service with stats aggregation (TDD)
-- [ ] 11-03-PLAN.md — Bin service with customer filtering (TDD)
+- [x] 11-02-PLAN.md — Customer service with stats aggregation (TDD)
+- [x] 11-03-PLAN.md — Bin service with customer filtering (TDD)
 
 ### Phase 12: Customer List Page
 **Goal:** Users can search and view customers with status indicators
