@@ -173,7 +173,7 @@ Plans:
 - [x] 13-02-PLAN.md — CustomerDetailHeader component (TDD) (2 tasks, 103s)
 
 **Wave 2**
-- [ ] 13-03-PLAN.md — Customer detail page route with Server Component data fetching
+- [x] 13-03-PLAN.md — Customer detail page route with Server Component data fetching
 
 ### Phase 14: Activity Timeline
 **Goal:** Users can see unified chronological activity across orders, deliveries, and bin alerts
