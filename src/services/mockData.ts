@@ -974,14 +974,16 @@ export const mockBins: Bin[] = [
   },
 ];
 
-// Validation at module load - ensure all customer IDs are consistent
-const allCustomerIds = new Set(mockCustomers.map((c) => c.id));
-const invalidOrders = mockOrders.filter((o) => !allCustomerIds.has(o.customerId));
-if (invalidOrders.length > 0) {
-  console.error("Invalid customerId references in orders:", invalidOrders.map((o) => o.id));
-}
+// Validation at module load - ensure all customer IDs are consistent (development only)
+if (process.env.NODE_ENV === 'development') {
+  const allCustomerIds = new Set(mockCustomers.map((c) => c.id));
+  const invalidOrders = mockOrders.filter((o) => !allCustomerIds.has(o.customerId));
+  if (invalidOrders.length > 0) {
+    console.error("Invalid customerId references in orders:", invalidOrders.map((o) => o.id));
+  }
 
-const invalidBins = mockBins.filter((b) => !allCustomerIds.has(b.customerId));
-if (invalidBins.length > 0) {
-  console.error("Invalid customerId references in bins:", invalidBins.map((b) => b.id));
+  const invalidBins = mockBins.filter((b) => !allCustomerIds.has(b.customerId));
+  if (invalidBins.length > 0) {
+    console.error("Invalid customerId references in bins:", invalidBins.map((b) => b.id));
+  }
 }
