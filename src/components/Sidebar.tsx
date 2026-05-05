@@ -8,6 +8,7 @@ import {
   Factory,
   Package,
   Truck,
+  Users,
   FlaskConical,
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", href: "/" },
   { icon: Factory, label: "Production", id: "production", href: "/mill-production" },
   { icon: ClipboardList, label: "Orders", id: "orders", href: "/orders" },
+  { icon: Users, label: "Customers", id: "customers", href: "/customers" },
   { icon: Package, label: "Inventory", id: "inventory", href: "/inventory" },
   { icon: Truck, label: "Shipments", id: "shipments", href: "/shipments" },
 ];
