@@ -194,7 +194,7 @@ Plans:
 - [x] 14-02-PLAN.md — ActivityTimeline component with expand/collapse (TDD) (1 task, 206s)
 
 **Wave 2**
-- [ ] 14-03-PLAN.md — Integrate ActivityTimeline into customer detail page
+- [x] 14-03-PLAN.md — Integrate ActivityTimeline into customer detail page
 
 ### Phase 15: Bin Visualization
 **Goal:** Users can see bin fill levels with visual thresholds
