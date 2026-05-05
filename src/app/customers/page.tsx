@@ -119,11 +119,19 @@ export default function CustomersPage() {
                   {/* Status Indicators */}
                   <div className="flex items-center gap-2" style={{ width: '120px' }}>
                     {customer.stats.activeOrders > 0 && (
-                      <Package
-                        className="h-4 w-4"
-                        style={{ color: 'var(--primary)' }}
-                        data-testid="status-orders"
-                      />
+                      <div className="flex items-center gap-1" data-testid="status-orders">
+                        <Package
+                          className="h-4 w-4"
+                          style={{ color: 'var(--primary)' }}
+                        />
+                        <span
+                          className="text-xs font-bold"
+                          style={{ color: 'var(--primary)' }}
+                          data-testid="order-count"
+                        >
+                          {customer.stats.activeOrders}
+                        </span>
+                      </div>
                     )}
                     {customer.stats.hasChanges && (
                       <div
