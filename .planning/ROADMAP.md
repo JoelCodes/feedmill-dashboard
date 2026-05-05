@@ -97,7 +97,7 @@ Plans:
 <summary>🚧 v1.2 Customers Page (Phases 10-15) — IN PROGRESS</summary>
 
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
-- [ ] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins
+- [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
 - [ ] **Phase 12: Customer List Page** - Searchable customer table with status indicators
 - [ ] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats
 - [ ] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts
@@ -196,7 +196,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 4/? (Phase 10: 1/1 ✓, Phase 11: 1/3) | In progress | - |
+| v1.2 Customers Page | 10-15 | 4/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*

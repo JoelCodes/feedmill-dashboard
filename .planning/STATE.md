@@ -149,11 +149,11 @@ Recent decisions affecting current work:
 **Quick recovery:**
 
 - Current milestone: v1.2 Customers Page
-- Current phase: Phase 11 - Foundation Data Layer (IN PROGRESS)
-- Resume file: `.planning/phases/11-foundation-data-layer/11-01-SUMMARY.md`
-- Next step: Execute 11-02-PLAN.md
+- Current phase: Phase 11 - Foundation Data Layer (COMPLETED)
+- Resume file: `.planning/phases/11-foundation-data-layer/11-03-SUMMARY.md`
+- Next step: Plan Phase 12 (Customer List Page)
 - Requirements: 20 total in REQUIREMENTS.md
-- Coverage: 17/20 mapped (3 design + 2 data requirements completed)
+- Coverage: 17/20 mapped (3 design + 4 data requirements completed)
 
 ---
 *State initialized: 2026-05-01 for v1.2 milestone*
