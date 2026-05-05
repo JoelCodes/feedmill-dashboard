@@ -100,7 +100,7 @@ Plans:
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
 - [x] **Phase 12: Customer List Page** - Searchable customer table with status indicators (COMPLETED 2026-05-05)
 - [x] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats (COMPLETED 2026-05-05)
-- [ ] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts
+- [x] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts (COMPLETED 2026-05-05)
 - [ ] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding
 
 ### Phase 10: Design ✅ COMPLETED
@@ -175,18 +175,18 @@ Plans:
 **Wave 2**
 - [x] 13-03-PLAN.md — Customer detail page route with Server Component data fetching
 
-### Phase 14: Activity Timeline
+### Phase 14: Activity Timeline ✅ COMPLETED
 **Goal:** Users can see unified chronological activity across orders, deliveries, and bin alerts
 **Depends on:** Phase 13 (requires detail page infrastructure)
-**Requirements:** TMLN-01, TMLN-02, TMLN-03
+**Requirements:** TMLN-01 ✓, TMLN-02 ✓, TMLN-03 ✓
 **Success Criteria** (what must be TRUE):
-  1. Timeline displays events from orders, deliveries, and bin alerts merged chronologically
-  2. User can click collapsed timeline event to expand and see full details
-  3. User can click expanded timeline event to collapse back to summary view
-  4. Expanded order event shows inline summary with link to full order details
-  5. Timeline handles 100+ events without performance degradation or memory leaks
-  6. Implementation matches customer-detail.pen timeline section design
-**Plans:** 3 plans
+  1. ✅ Timeline displays events from orders, deliveries, and bin alerts merged chronologically
+  2. ✅ User can click collapsed timeline event to expand and see full details
+  3. ✅ User can click expanded timeline event to collapse back to summary view
+  4. ✅ Expanded order event shows inline summary with link to full order details
+  5. ✅ Timeline handles 100+ events without performance degradation or memory leaks
+  6. ✅ Implementation matches customer-detail.pen timeline section design
+**Plans:** 3 plans (completed)
 
 Plans:
 **Wave 1**
@@ -201,13 +201,19 @@ Plans:
 **Depends on:** Phase 13 (requires detail page layout)
 **Requirements:** BIN-01, BIN-02, BIN-03
 **Success Criteria** (what must be TRUE):
-  1. Each bin displays horizontal fill level bar showing percentage filled
+  1. Each bin displays vertical fill level bar showing percentage filled
   2. Bin bar color changes based on threshold (green normal, yellow low, red critical)
-  3. Customer detail page displays all customer bins in card layout
-  4. Bin card shows metadata (location code, capacity, current level, feed type)
+  3. Customer detail page displays all customer bins in horizontal row layout
+  4. Bin gauge shows metadata (location code, feed type) below gauge
   5. Implementation matches customer-detail.pen bin visualization design
-**Plans:** TBD
-**UI hint:** yes
+**Plans:** 2 plans
+
+Plans:
+**Wave 1**
+- [ ] 15-01-PLAN.md — BinGauge component with TDD (threshold-based coloring)
+
+**Wave 2**
+- [ ] 15-02-PLAN.md — BinGaugeRow component and customer detail integration
 
 </details>
 
@@ -217,7 +223,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 13/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 0/3) | In progress | - |
+| v1.2 Customers Page | 10-15 | 15/15 (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 3/3 ✓, Phase 15: 0/2) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
