@@ -127,7 +127,12 @@ Plans:
   3. Mock bin service returns bins with fill percentages and alert status
   4. Existing Order interface includes customerId field for customer-order relationship
   5. Shared mock data singleton prevents stale data inconsistency across pages
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 11-01-PLAN.md — Define types and create shared mockData.ts module
+- [ ] 11-02-PLAN.md — Customer service with stats aggregation (TDD)
+- [ ] 11-03-PLAN.md — Bin service with customer filtering (TDD)
 
 ### Phase 12: Customer List Page
 **Goal:** Users can search and view customers with status indicators
@@ -191,7 +196,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 1/? (Phase 10: 1/1 ✓) | In progress | - |
+| v1.2 Customers Page | 10-15 | 4/? (Phase 10: 1/1 ✓, Phase 11: 0/3) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
