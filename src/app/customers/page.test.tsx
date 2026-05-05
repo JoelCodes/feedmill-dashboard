@@ -116,19 +116,24 @@ describe('CustomersPage', () => {
     }, { timeout: 500 });
   });
 
-  it('shows Package icon when stats.activeOrders > 0', async () => {
+  it('shows Package icon with numeric count when stats.activeOrders > 0', async () => {
     render(<CustomersPage />);
 
     await waitFor(() => {
       // Greenfield Farms has activeOrders = 2
       const greenfield = screen.getByText('Greenfield Farms').closest('div')?.parentElement;
-      const packageIcon = greenfield?.querySelector('[data-testid="status-orders"]');
-      expect(packageIcon).toBeInTheDocument();
+      const ordersIndicator = greenfield?.querySelector('[data-testid="status-orders"]');
+      expect(ordersIndicator).toBeInTheDocument();
 
-      // Highland Feed has activeOrders = 0
+      // Verify numeric count is displayed
+      const orderCount = greenfield?.querySelector('[data-testid="order-count"]');
+      expect(orderCount).toBeInTheDocument();
+      expect(orderCount).toHaveTextContent('2');
+
+      // Highland Feed has activeOrders = 0 — no indicator
       const highland = screen.getByText('Highland Feed').closest('div')?.parentElement;
-      const noPackageIcon = highland?.querySelector('[data-testid="status-orders"]');
-      expect(noPackageIcon).not.toBeInTheDocument();
+      const noOrdersIndicator = highland?.querySelector('[data-testid="status-orders"]');
+      expect(noOrdersIndicator).not.toBeInTheDocument();
     });
   });
 
