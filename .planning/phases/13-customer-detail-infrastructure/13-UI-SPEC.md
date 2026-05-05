@@ -1,7 +1,8 @@
 ---
 phase: 13
 slug: customer-detail-infrastructure
-status: draft
+status: approved
+reviewed_at: 2026-05-05
 shadcn_initialized: false
 preset: none
 created: 2026-05-05
