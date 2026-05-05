@@ -27,10 +27,16 @@ function getMostRecentDeliveryDate(customerId: string): Date | null {
 export function sortCustomersByRecentActivity(
   customers: CustomerWithStats[]
 ): CustomerWithStats[] {
+  // Pre-compute delivery dates to avoid repeated lookups during sorting
+  const customerDates = new Map<string, Date | null>();
+  customers.forEach((customer) => {
+    customerDates.set(customer.id, getMostRecentDeliveryDate(customer.id));
+  });
+
   // Use spread operator to avoid mutating input array
   return [...customers].sort((a, b) => {
-    const aDate = getMostRecentDeliveryDate(a.id);
-    const bDate = getMostRecentDeliveryDate(b.id);
+    const aDate = customerDates.get(a.id)!;
+    const bDate = customerDates.get(b.id)!;
 
     // If a has no date, move to end (return positive)
     if (aDate === null) return 1;
