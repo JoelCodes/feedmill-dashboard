@@ -145,8 +145,11 @@ Plans:
   4. Customer row displays bin alert indicator (yellow for low, red for critical)
   5. Customer list sorts by most recent activity by default
   6. Implementation matches customers.pen design file
-**Plans:** TBD
-**UI hint:** yes
+**Plans:** 2 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — Sort customers by recent activity (TDD)
+- [ ] 12-02-PLAN.md — Customer list page with search and status indicators
 
 ### Phase 13: Customer Detail Infrastructure
 **Goal:** Customer detail page displays header and summary information
@@ -196,7 +199,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 4/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓) | In progress | - |
+| v1.2 Customers Page | 10-15 | 6/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 0/2) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
