@@ -48,6 +48,81 @@ function formatTimelineDate(date: Date): string {
   }).format(date).replace(',', ' ·');
 }
 
+// Internal TimelineItem component
+interface TimelineItemProps {
+  event: ActivityEvent;
+  isExpanded: boolean;
+  showConnector: boolean;
+  onToggle: () => void;
+}
+
+function TimelineItem({ event, isExpanded, showConnector, onToggle }: TimelineItemProps) {
+  const showExpanded = isExpanded && event.orderId;
+  const colors = getEventColor(event.type);
+  const Icon = iconMap[event.type];
+
+  return (
+    <div className="flex gap-[14px]">
+      {/* Left column: Icon dot and connector line */}
+      <div className="flex flex-col items-center w-[36px] flex-shrink-0">
+        <div className={`w-[28px] h-[28px] rounded-full ${colors.dot} flex items-center justify-center`}>
+          <Icon className="w-[14px] h-[14px] text-white" />
+        </div>
+        {showConnector && <div className={`w-[2px] flex-1 ${colors.connector} min-h-[40px]`}></div>}
+      </div>
+
+      {/* Right column: Content */}
+      <div className="flex-1 pb-4">
+        <button
+          onClick={onToggle}
+          className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+          role="button"
+          aria-expanded={isExpanded}
+          tabIndex={0}
+          aria-label={event.title}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onToggle();
+            }
+          }}
+        >
+          <div className="space-y-1">
+            <h4 className="text-[13px] font-bold leading-[1.5] text-text-primary">{event.title}</h4>
+            <p className="text-[11px] font-normal leading-[1.5] text-text-secondary">
+              {event.description}
+            </p>
+            <p className={`text-[10px] font-bold leading-[1.2] ${colors.text}`}>
+              {formatTimelineDate(event.timestamp)}
+            </p>
+          </div>
+        </button>
+
+        {/* Expanded detail box (only for order events) */}
+        {showExpanded && (
+          <div className="mt-2 bg-[#f8f9fa] rounded-[8px] p-3 space-y-1">
+            <p className="text-[11px] font-normal leading-[1.5] text-text-primary">
+              Quantity: {event.orderQuantity} tons
+            </p>
+            <p className="text-[11px] font-normal leading-[1.5] text-text-primary">
+              Product: {event.orderProduct}
+            </p>
+            <p className="text-[11px] font-normal leading-[1.5] text-text-primary">
+              Status: {event.orderStatus}
+            </p>
+            <Link
+              href={`/orders?selected=${event.orderId}`}
+              className="text-[10px] font-normal leading-[1.5] text-primary underline inline-block mt-1"
+            >
+              View Order Details
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ActivityTimeline({ events }: ActivityTimelineProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -80,80 +155,15 @@ export function ActivityTimeline({ events }: ActivityTimelineProps) {
   return (
     <div className="bg-white rounded-[15px] shadow-[0_3.5px_5px_rgba(0,0,0,0.05)] p-[20px_24px]">
       <div className="space-y-0">
-        {events.map((event, index) => {
-          const isExpanded = expandedIds.has(event.id);
-          const showExpanded = isExpanded && event.orderId;
-          const colors = getEventColor(event.type);
-          const Icon = iconMap[event.type];
-          const showConnector = index < events.length - 1;
-
-          return (
-            <div key={event.id} className="flex gap-[14px]">
-              {/* Left column: Icon dot and connector line */}
-              <div className="flex flex-col items-center w-[36px] flex-shrink-0">
-                <div
-                  className={`w-[28px] h-[28px] rounded-full ${colors.dot} flex items-center justify-center`}
-                >
-                  <Icon className="w-[14px] h-[14px] text-white" />
-                </div>
-                {showConnector && (
-                  <div className={`w-[2px] flex-1 ${colors.connector} min-h-[40px]`}></div>
-                )}
-              </div>
-
-              {/* Right column: Content */}
-              <div className="flex-1 pb-4">
-                <button
-                  onClick={() => toggleExpand(event.id)}
-                  className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-                  role="button"
-                  aria-expanded={isExpanded}
-                  tabIndex={0}
-                  aria-label={event.title}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      toggleExpand(event.id);
-                    }
-                  }}
-                >
-                  <div className="space-y-1">
-                    <h4 className="text-[13px] font-bold leading-[1.5] text-text-primary">
-                      {event.title}
-                    </h4>
-                    <p className="text-[11px] font-normal leading-[1.5] text-text-secondary">
-                      {event.description}
-                    </p>
-                    <p className={`text-[10px] font-bold leading-[1.2] ${colors.text}`}>
-                      {formatTimelineDate(event.timestamp)}
-                    </p>
-                  </div>
-                </button>
-
-                {/* Expanded detail box (only for order events) */}
-                {showExpanded && (
-                  <div className="mt-2 bg-[#f8f9fa] rounded-[8px] p-3 space-y-1">
-                    <p className="text-[11px] font-normal leading-[1.5] text-text-primary">
-                      Quantity: {event.orderQuantity} tons
-                    </p>
-                    <p className="text-[11px] font-normal leading-[1.5] text-text-primary">
-                      Product: {event.orderProduct}
-                    </p>
-                    <p className="text-[11px] font-normal leading-[1.5] text-text-primary">
-                      Status: {event.orderStatus}
-                    </p>
-                    <Link
-                      href={`/orders?selected=${event.orderId}`}
-                      className="text-[10px] font-normal leading-[1.5] text-primary underline inline-block mt-1"
-                    >
-                      View Order Details
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+        {events.map((event, index) => (
+          <TimelineItem
+            key={event.id}
+            event={event}
+            isExpanded={expandedIds.has(event.id)}
+            showConnector={index < events.length - 1}
+            onToggle={() => toggleExpand(event.id)}
+          />
+        ))}
       </div>
     </div>
   );
