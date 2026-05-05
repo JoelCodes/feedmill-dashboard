@@ -30,7 +30,7 @@ Requirements for Customers Page milestone. Each maps to roadmap phases.
 ### Customer Detail
 
 - [ ] **CDET-01**: Customer detail page shows header with customer info
-- [ ] **CDET-02**: Customer detail shows summary stats (orders, bins)
+- [x] **CDET-02**: Customer detail shows summary stats (orders, bins)
 - [ ] **CDET-03**: Order in history links to orders page with that order selected
 
 ### Activity Timeline
@@ -92,7 +92,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CUST-03 | Phase 12 | Complete |
 | CUST-04 | Phase 12 | Complete |
 | CDET-01 | Phase 13 | Pending |
-| CDET-02 | Phase 13 | Pending |
+| CDET-02 | Phase 13 | Complete |
 | CDET-03 | Phase 13 | Pending |
 | TMLN-01 | Phase 14 | Pending |
 | TMLN-02 | Phase 14 | Pending |

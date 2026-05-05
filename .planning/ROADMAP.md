@@ -169,7 +169,7 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 13-01-PLAN.md — Extend Customer/CustomerStats types with deliveryPreferences and activeBins fields
+- [x] 13-01-PLAN.md — Extend Customer/CustomerStats types with deliveryPreferences and activeBins fields
 - [ ] 13-02-PLAN.md — CustomerDetailHeader component (TDD)
 
 **Wave 2**
