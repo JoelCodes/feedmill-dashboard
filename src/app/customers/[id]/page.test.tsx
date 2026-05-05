@@ -14,10 +14,21 @@ jest.mock('@/services/customers', () => ({
   getCustomerById: jest.fn(),
 }));
 
+jest.mock('@/services/activity', () => ({
+  getActivityEvents: jest.fn(),
+}));
+
+jest.mock('@/components/ActivityTimeline', () => ({
+  ActivityTimeline: jest.fn(() => <div data-testid="activity-timeline">ActivityTimeline Mock</div>),
+}));
+
 // Import mocks after jest.mock
 import { notFound } from 'next/navigation';
 import { getCustomerById } from '@/services/customers';
+import { getActivityEvents } from '@/services/activity';
+import { ActivityTimeline } from '@/components/ActivityTimeline';
 import { CustomerWithStats } from '@/types/customer';
+import { ActivityEvent } from '@/types/activity';
 
 const mockCustomer: CustomerWithStats = {
   id: 'CUST-001',
@@ -123,6 +134,90 @@ describe('CustomerDetailPage', () => {
       // ESCALATION NOTE: Implementation missing FALLBACK_STATS constant and graceful degradation logic
       // Per plan 13-03-PLAN.md lines 123-131, page should define and use FALLBACK_STATS
       // Current test manually provides fallback stats, but implementation should handle this
+    });
+  });
+
+  describe('ActivityTimeline integration', () => {
+    it('renders ActivityTimeline component with events from activity service', async () => {
+      // GAP-01: Verify ActivityTimeline integration
+      // Requirement: Customer detail page renders ActivityTimeline with events
+
+      const mockEvents: ActivityEvent[] = [
+        {
+          id: 'evt-1',
+          customerId: 'CUST-001',
+          type: 'order_placed',
+          timestamp: new Date('2026-05-01T10:00:00Z'),
+          title: 'Order #ORD-001 Placed',
+          description: '10 tons Textured Grower ordered for delivery',
+          orderId: 'ORD-001',
+          orderQuantity: 10,
+          orderProduct: 'Textured Grower',
+          orderStatus: 'Pending',
+        },
+        {
+          id: 'evt-2',
+          customerId: 'CUST-001',
+          type: 'bin_alert_low',
+          timestamp: new Date('2026-04-30T08:00:00Z'),
+          title: 'Low Feed Alert - Bin A1',
+          description: 'Starter level dropped below 30%',
+          binId: 'BIN-001',
+          binLocationCode: 'A1',
+          binFillPercentage: 25,
+        },
+      ];
+
+      (getCustomerById as jest.Mock).mockResolvedValue(mockCustomer);
+      (getActivityEvents as jest.Mock).mockResolvedValue(mockEvents);
+
+      const Page = await CustomerDetailPage({
+        params: Promise.resolve({ id: 'CUST-001' }),
+      });
+      render(Page);
+
+      // Verify getActivityEvents was called with correct customer ID
+      expect(getActivityEvents).toHaveBeenCalledWith('CUST-001');
+
+      // Verify ActivityTimeline component was rendered
+      expect(screen.getByTestId('activity-timeline')).toBeInTheDocument();
+
+      // Verify ActivityTimeline was called with the events
+      expect(ActivityTimeline).toHaveBeenCalledWith(
+        { events: mockEvents },
+        undefined
+      );
+    });
+
+    it('calls getActivityEvents after customer data is loaded', async () => {
+      // Verify service calls happen in correct order
+      (getCustomerById as jest.Mock).mockResolvedValue(mockCustomer);
+      (getActivityEvents as jest.Mock).mockResolvedValue([]);
+
+      await CustomerDetailPage({
+        params: Promise.resolve({ id: 'CUST-001' }),
+      });
+
+      // Both services should be called
+      expect(getCustomerById).toHaveBeenCalledWith('CUST-001');
+      expect(getActivityEvents).toHaveBeenCalledWith('CUST-001');
+    });
+
+    it('handles empty activity events array', async () => {
+      (getCustomerById as jest.Mock).mockResolvedValue(mockCustomer);
+      (getActivityEvents as jest.Mock).mockResolvedValue([]);
+
+      const Page = await CustomerDetailPage({
+        params: Promise.resolve({ id: 'CUST-001' }),
+      });
+      render(Page);
+
+      // ActivityTimeline should still be rendered with empty array
+      expect(ActivityTimeline).toHaveBeenCalledWith(
+        { events: [] },
+        undefined
+      );
+      expect(screen.getByTestId('activity-timeline')).toBeInTheDocument();
     });
   });
 });
