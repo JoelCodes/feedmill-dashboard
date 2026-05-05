@@ -149,7 +149,7 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 12-01-PLAN.md — Sort customers by recent activity (TDD)
+- [x] 12-01-PLAN.md — Sort customers by recent activity (TDD)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 12-02-PLAN.md — Customer list page with search and status indicators
