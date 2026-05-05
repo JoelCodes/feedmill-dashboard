@@ -98,7 +98,7 @@ Plans:
 
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
-- [ ] **Phase 12: Customer List Page** - Searchable customer table with status indicators
+- [x] **Phase 12: Customer List Page** - Searchable customer table with status indicators (COMPLETED 2026-05-05)
 - [ ] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats
 - [ ] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts
 - [ ] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding
@@ -134,24 +134,25 @@ Plans:
 - [x] 11-02-PLAN.md — Customer service with stats aggregation (TDD)
 - [x] 11-03-PLAN.md — Bin service with customer filtering (TDD)
 
-### Phase 12: Customer List Page
+### Phase 12: Customer List Page ✅ COMPLETED
 **Goal:** Users can search and view customers with status indicators
 **Depends on:** Phase 11 (requires customer service and types)
-**Requirements:** CUST-01, CUST-02, CUST-03, CUST-04
+**Requirements:** CUST-01 ✓, CUST-02 ✓, CUST-03 ✓, CUST-04 ✓
 **Success Criteria** (what must be TRUE):
-  1. User can type in search box and see customer list filter by name in real-time
-  2. Customer row displays order count badge showing number of active orders
-  3. Customer row displays changes flag indicator when customer has orders with changes
-  4. Customer row displays bin alert indicator (yellow for low, red for critical)
-  5. Customer list sorts by most recent activity by default
-  6. Implementation matches customers.pen design file
-**Plans:** 2 plans
+  1. ✅ User can type in search box and see customer list filter by name in real-time
+  2. ✅ Customer row displays order count badge showing number of active orders
+  3. ✅ Customer row displays changes flag indicator when customer has orders with changes
+  4. ✅ Customer row displays bin alert indicator (yellow for low, red for critical)
+  5. ✅ Customer list sorts by most recent activity by default
+  6. ✅ Implementation matches customers.pen design file
+**Plans:** 3 plans (completed)
 
 Plans:
 **Wave 1**
 - [x] 12-01-PLAN.md — Sort customers by recent activity (TDD)
+- [x] 12-03-PLAN.md — Gap closure: Add numeric order count badge
 
-**Wave 2** *(blocked on Wave 1 completion)*
+**Wave 2**
 - [x] 12-02-PLAN.md — Customer list page with search and status indicators
 
 ### Phase 13: Customer Detail Infrastructure
@@ -202,7 +203,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 6/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 0/2) | In progress | - |
+| v1.2 Customers Page | 10-15 | 9/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
