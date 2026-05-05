@@ -170,7 +170,7 @@ Plans:
 Plans:
 **Wave 1**
 - [x] 13-01-PLAN.md — Extend Customer/CustomerStats types with deliveryPreferences and activeBins fields
-- [ ] 13-02-PLAN.md — CustomerDetailHeader component (TDD)
+- [x] 13-02-PLAN.md — CustomerDetailHeader component (TDD) (2 tasks, 103s)
 
 **Wave 2**
 - [ ] 13-03-PLAN.md — Customer detail page route with Server Component data fetching
