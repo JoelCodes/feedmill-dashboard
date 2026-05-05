@@ -23,6 +23,7 @@ const mockCustomer: CustomerWithStats = {
   id: 'CUST-001',
   name: 'Greenfield Farms',
   location: 'Springfield, IL',
+  contactName: 'John Green',
   contactPhone: '(217) 555-0101',
   contactEmail: 'jgreen@greenfieldfarms.com',
   deliveryPreferences: 'Mon/Wed/Fri, 6-8 AM',
