@@ -82,4 +82,42 @@ describe("customers service", () => {
       expect(["none", "low", "critical"]).toContain(customer!.stats.binAlertLevel);
     });
   });
+
+  describe("activeBins calculation", () => {
+    it("calculates activeBins by counting bins where alertLevel is not none", async () => {
+      // CUST-001 (Greenfield Farms) has BIN-001 (fillPercentage: 74, alertLevel: 'none') and BIN-002 (fillPercentage: 15, alertLevel: 'critical')
+      // Only BIN-002 should be counted as active bin
+      const customer = await getCustomerById("CUST-001");
+      expect(customer).not.toBeNull();
+      expect(customer!.stats.activeBins).toBe(1);
+    });
+
+    it("customer with only none alert level bins has activeBins 0", async () => {
+      // Find a customer with all bins at 'none' alert level
+      const customers = await getCustomers();
+      const customerWithNoBins = customers.find(
+        (c) => c.stats.binAlertLevel === "none"
+      );
+      if (customerWithNoBins) {
+        expect(customerWithNoBins.stats.activeBins).toBe(0);
+      }
+    });
+
+    it("activeBins counts only low and critical bins, not none", async () => {
+      const customers = await getCustomers();
+      // Verify activeBins logic across all customers
+      for (const customer of customers) {
+        // activeBins should be >= 0
+        expect(customer.stats.activeBins).toBeGreaterThanOrEqual(0);
+        // If binAlertLevel is 'none', activeBins should be 0
+        if (customer.stats.binAlertLevel === "none") {
+          expect(customer.stats.activeBins).toBe(0);
+        }
+        // If binAlertLevel is 'low' or 'critical', activeBins should be > 0
+        if (["low", "critical"].includes(customer.stats.binAlertLevel)) {
+          expect(customer.stats.activeBins).toBeGreaterThan(0);
+        }
+      }
+    });
+  });
 });
