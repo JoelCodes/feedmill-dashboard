@@ -130,7 +130,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 11-01-PLAN.md — Define types and create shared mockData.ts module
+- [x] 11-01-PLAN.md — Define types and create shared mockData.ts module (3 tasks, 221s)
 - [ ] 11-02-PLAN.md — Customer service with stats aggregation (TDD)
 - [ ] 11-03-PLAN.md — Bin service with customer filtering (TDD)
 
@@ -196,7 +196,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 4/? (Phase 10: 1/1 ✓, Phase 11: 0/3) | In progress | - |
+| v1.2 Customers Page | 10-15 | 4/? (Phase 10: 1/1 ✓, Phase 11: 1/3) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*

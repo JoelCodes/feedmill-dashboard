@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Customers Page
 status: executing
-last_updated: "2026-05-05T00:30:56.801Z"
+last_updated: "2026-05-05T00:36:17Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 4
-  completed_plans: 1
-  percent: 25
+  completed_plans: 2
+  percent: 33
 ---
 
 # Project State
@@ -20,35 +20,34 @@ See: .planning/PROJECT.md (updated 2026-05-01)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Phase 10 — design
+**Current focus:** Phase 11 — Foundation Data Layer
 
 ## Current Position
 
-Phase: 10 (design) — COMPLETED
-Plan: 1 of 1 (completed)
-**Phase:** 11
-**Plan:** Not started
-**Status:** Ready to execute
+**Phase:** 11 (foundation-data-layer)
+**Plan:** 1 of 3 (completed)
+**Status:** Executing
 
 ```
-Progress: [███░░░░░░░░░░░░░░░░░] 17% (1/6 phases)
+Progress: [██████░░░░░░░░░░░░░░] 33% (2/6 plans)
 ```
 
-**Next action:** `/gsd-transition` to Phase 11
+**Next action:** Execute 11-02-PLAN.md (Customer service with stats aggregation)
 
 ## Performance Metrics
 
 **Milestone v1.2:**
 
 - Phases completed: 1/6
-- Plans completed: 1/1
-- Tasks completed: 2/2
+- Plans completed: 2/4
+- Tasks completed: 5/5
 - Days elapsed: 1
-- Velocity: 1 plan/day
+- Velocity: 2 plans/day
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 10 | 01 | 302s | 2 | 2 |
+| 11 | 01 | 221s | 3 | 5 |
 
 **Historical (v1.0-v1.1):**
 
@@ -87,6 +86,9 @@ Recent decisions affecting current work:
 - Vertical tank gauge for bin visualization: More literal representation of fill levels (Phase 10)
 - Stacked status indicators: Shows all customer states at once - orders + changes + alerts (Phase 10)
 - Bins before timeline on detail page: Quick-glance bin status first, detailed history below (Phase 10)
+- BinAlertLevel in bin.ts as canonical source, re-exported from customer.ts (Phase 11)
+- Customer IDs use CUST-NNN format for consistency (Phase 11)
+- Shared mockData.ts singleton prevents stale data inconsistency (Phase 11)
 
 ### Active Todos
 
@@ -146,12 +148,12 @@ Recent decisions affecting current work:
 **Quick recovery:**
 
 - Current milestone: v1.2 Customers Page
-- Current phase: Phase 10 - Design (COMPLETED)
-- Resume file: `.planning/phases/10-design/10-01-SUMMARY.md`
-- Next step: Transition to Phase 11 with `/gsd-transition`
+- Current phase: Phase 11 - Foundation Data Layer (IN PROGRESS)
+- Resume file: `.planning/phases/11-foundation-data-layer/11-01-SUMMARY.md`
+- Next step: Execute 11-02-PLAN.md
 - Requirements: 20 total in REQUIREMENTS.md
-- Coverage: 17/20 mapped (3 design requirements completed: DSGN-01, DSGN-02, DSGN-03)
+- Coverage: 17/20 mapped (3 design + 2 data requirements completed)
 
 ---
 *State initialized: 2026-05-01 for v1.2 milestone*
-*Last activity: 2026-05-04 - Completed quick task 260504-kgl: Enhance Orders tab with search, filters, and timeline*
+*Last activity: 2026-05-05 - Completed 11-01: Foundation data layer types and mock data*
