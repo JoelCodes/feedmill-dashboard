@@ -190,8 +190,8 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 14-01-PLAN.md — ActivityEvent type and activity service (TDD)
-- [ ] 14-02-PLAN.md — ActivityTimeline component with expand/collapse (TDD)
+- [x] 14-01-PLAN.md — ActivityEvent type and activity service (TDD)
+- [x] 14-02-PLAN.md — ActivityTimeline component with expand/collapse (TDD) (1 task, 206s)
 
 **Wave 2**
 - [ ] 14-03-PLAN.md — Integrate ActivityTimeline into customer detail page

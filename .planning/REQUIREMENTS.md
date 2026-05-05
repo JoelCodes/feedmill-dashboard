@@ -36,8 +36,8 @@ Requirements for Customers Page milestone. Each maps to roadmap phases.
 ### Activity Timeline
 
 - [ ] **TMLN-01**: Unified timeline shows orders, deliveries, and bin alerts chronologically
-- [ ] **TMLN-02**: User can expand timeline event to see details
-- [ ] **TMLN-03**: Expanded order shows inline summary with link to full details
+- [x] **TMLN-02**: User can expand timeline event to see details
+- [x] **TMLN-03**: Expanded order shows inline summary with link to full details
 
 ### Bin Visualization
 
@@ -95,8 +95,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CDET-02 | Phase 13 | ✅ Complete (2026-05-05) |
 | CDET-03 | Phase 13 | Complete |
 | TMLN-01 | Phase 14 | Pending |
-| TMLN-02 | Phase 14 | Pending |
-| TMLN-03 | Phase 14 | Pending |
+| TMLN-02 | Phase 14 | ✅ Complete (2026-05-05) |
+| TMLN-03 | Phase 14 | ✅ Complete (2026-05-05) |
 | BIN-01 | Phase 15 | Pending |
 | BIN-02 | Phase 15 | Pending |
 | BIN-03 | Phase 15 | Pending |
