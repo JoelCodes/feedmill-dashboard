@@ -4,6 +4,7 @@ export interface Order {
   id: string;
   documentNumber: string;
   customer: string;
+  customerId: string;
   textureType: string;
   formulaType: string;
   quantity: number;
