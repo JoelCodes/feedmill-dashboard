@@ -1,4 +1,4 @@
-import { Customer, CustomerStats, CustomerWithStats } from "@/types/customer";
+import { CustomerStats, CustomerWithStats } from "@/types/customer";
 import { Bin, BinAlertLevel } from "@/types/bin";
 import { mockCustomers, mockOrders, mockBins } from "./mockData";
 
