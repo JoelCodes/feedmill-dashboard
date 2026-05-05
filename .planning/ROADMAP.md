@@ -99,7 +99,7 @@ Plans:
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
 - [x] **Phase 12: Customer List Page** - Searchable customer table with status indicators (COMPLETED 2026-05-05)
-- [ ] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats
+- [x] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats (COMPLETED 2026-05-05)
 - [ ] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts
 - [ ] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding
 
@@ -155,17 +155,17 @@ Plans:
 **Wave 2**
 - [x] 12-02-PLAN.md — Customer list page with search and status indicators
 
-### Phase 13: Customer Detail Infrastructure
+### Phase 13: Customer Detail Infrastructure ✅ COMPLETED
 **Goal:** Customer detail page displays header and summary information
 **Depends on:** Phase 12 (requires customer routing established)
-**Requirements:** CDET-01, CDET-02, CDET-03
+**Requirements:** CDET-01 ✓, CDET-02 ✓, CDET-03 ✓
 **Success Criteria** (what must be TRUE):
-  1. User can click customer row and navigate to detail page at /customers/[id]
-  2. Customer detail page shows header with customer name and location
-  3. Customer detail page shows summary stats (total orders, active bins, recent activity count)
-  4. User can click order in history and navigate to orders page with that order selected
-  5. Implementation matches customer-detail.pen design file
-**Plans:** 3 plans
+  1. ✅ User can click customer row and navigate to detail page at /customers/[id]
+  2. ✅ Customer detail page shows header with customer name and location
+  3. ✅ Customer detail page shows summary stats (total orders, active bins, recent activity count)
+  4. ✅ User can click order in history and navigate to orders page with that order selected
+  5. ✅ Implementation matches customer-detail.pen design file
+**Plans:** 3 plans (completed)
 
 Plans:
 **Wave 1**
@@ -186,8 +186,15 @@ Plans:
   4. Expanded order event shows inline summary with link to full order details
   5. Timeline handles 100+ events without performance degradation or memory leaks
   6. Implementation matches customer-detail.pen timeline section design
-**Plans:** TBD
-**UI hint:** yes
+**Plans:** 3 plans
+
+Plans:
+**Wave 1**
+- [ ] 14-01-PLAN.md — ActivityEvent type and activity service (TDD)
+- [ ] 14-02-PLAN.md — ActivityTimeline component with expand/collapse (TDD)
+
+**Wave 2**
+- [ ] 14-03-PLAN.md — Integrate ActivityTimeline into customer detail page
 
 ### Phase 15: Bin Visualization
 **Goal:** Users can see bin fill levels with visual thresholds
@@ -210,7 +217,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 10/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 0/3) | In progress | - |
+| v1.2 Customers Page | 10-15 | 13/? (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 0/3) | In progress | - |
 
 ---
 *Roadmap created: 2026-03-11*
