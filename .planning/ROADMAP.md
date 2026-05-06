@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
 - ✅ **v1.1 Mill Production Dashboard** — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
-- 🚧 **v1.2 Customers Page** — Phases 10-15 — in progress
+- ✅ **v1.2 Customers Page** — Phases 10-15 — shipped 2026-05-05
 
 ## Phases
 
@@ -93,15 +93,15 @@ Plans:
 
 </details>
 
-<details open>
-<summary>🚧 v1.2 Customers Page (Phases 10-15) — IN PROGRESS</summary>
+<details>
+<summary>✅ v1.2 Customers Page (Phases 10-15) — SHIPPED 2026-05-05</summary>
 
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
 - [x] **Phase 12: Customer List Page** - Searchable customer table with status indicators (COMPLETED 2026-05-05)
 - [x] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats (COMPLETED 2026-05-05)
 - [x] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts (COMPLETED 2026-05-05)
-- [ ] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding
+- [x] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding (COMPLETED 2026-05-05)
 
 ### Phase 10: Design ✅ COMPLETED
 **Goal:** Customers page UI designed and approved in Pencil.dev
@@ -196,24 +196,24 @@ Plans:
 **Wave 2**
 - [x] 14-03-PLAN.md — Integrate ActivityTimeline into customer detail page
 
-### Phase 15: Bin Visualization
+### Phase 15: Bin Visualization ✅ COMPLETED
 **Goal:** Users can see bin fill levels with visual thresholds
 **Depends on:** Phase 13 (requires detail page layout)
-**Requirements:** BIN-01, BIN-02, BIN-03
+**Requirements:** BIN-01 ✓, BIN-02 ✓, BIN-03 ✓
 **Success Criteria** (what must be TRUE):
-  1. Each bin displays vertical fill level bar showing percentage filled
-  2. Bin bar color changes based on threshold (green normal, yellow low, red critical)
-  3. Customer detail page displays all customer bins in horizontal row layout
-  4. Bin gauge shows metadata (location code, feed type) below gauge
-  5. Implementation matches customer-detail.pen bin visualization design
-**Plans:** 2 plans
+  1. ✅ Each bin displays vertical fill level bar showing percentage filled
+  2. ✅ Bin bar color changes based on threshold (green normal, yellow low, red critical)
+  3. ✅ Customer detail page displays all customer bins in horizontal row layout
+  4. ✅ Bin gauge shows metadata (location code, feed type) below gauge
+  5. ✅ Implementation matches customer-detail.pen bin visualization design
+**Plans:** 2 plans (completed)
 
 Plans:
 **Wave 1**
 - [x] 15-01-PLAN.md — BinGauge component with TDD (threshold-based coloring) (1 task, 180s)
 
 **Wave 2**
-- [ ] 15-02-PLAN.md — BinGaugeRow component and customer detail integration
+- [x] 15-02-PLAN.md — BinGaugeRow component and customer detail integration (2 tasks, 131s)
 
 </details>
 
@@ -223,7 +223,7 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 15/15 (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 3/3 ✓, Phase 15: 1/2) | In progress | - |
+| v1.2 Customers Page | 10-15 | 15/15 (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 3/3 ✓, Phase 15: 2/2 ✓) | Complete | 2026-05-05 |
 
 ---
 *Roadmap created: 2026-03-11*
