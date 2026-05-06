@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system.
+A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators.
 
 ## Core Value
 
@@ -10,8 +10,8 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ## Current State
 
-**Shipped:** v1.1 Mill Production Dashboard (2026-04-29)
-**Codebase:** 3,191 LOC TypeScript
+**Shipped:** v1.2 Customers Page (2026-05-06)
+**Codebase:** 6,426 LOC TypeScript
 **Tech stack:** Next.js 15, React 19, Tailwind CSS 4
 
 **What's working:**
@@ -23,20 +23,19 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Mill production view with 3 columns, state cards, and multi-select filter pills
 - Design token system for status colors, typography, and spacing
 - 33 mock production orders with realistic Book1.xlsx data
+- **Customer list page** with search, sort by recent activity, status indicators
+- **Customer detail page** with header, contact info, summary stats
+- **Activity timeline** merging orders, deliveries, bin alerts with expand/collapse
+- **Bin visualization** with vertical tank gauges and threshold coloring (green/yellow/red)
+- 18 mock customers with stats aggregation, 38 mock bins with fill percentages
 
 **Known gaps (deferred):**
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 
-## Current Milestone: v1.2 Customers Page
+## Next Milestone Goals
 
-**Goal:** Sales/delivery team can look up customers, see their order history and bin status, and track activity across orders and deliveries.
-
-**Target features:**
-- Customers list page with search and order/change status indicators
-- Customer detail page with unified activity timeline
-- Bin visualization with fill level bars and alert thresholds
-- Mock bin data following Bin Sentry patterns
+Planning next milestone. Run `/gsd-new-milestone` to start.
 
 ## Requirements
 
@@ -77,18 +76,22 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - ✓ Design tokens for status colors, typography, and shadows — v1.1
 - ✓ Reusable FilterPill component with TDD (11 tests) — v1.1
 
+**v1.2:**
+- ✓ Customer list page with search and sort by recent activity — v1.2
+- ✓ Customer row shows order count, change flag, and bin alert indicator — v1.2
+- ✓ Customer detail page with header (contact info, summary stats) — v1.2
+- ✓ Unified activity timeline (orders, deliveries, bin alerts) with expand/collapse — v1.2
+- ✓ Order timeline events link to orders page with that order selected — v1.2
+- ✓ Bin visualization with vertical tank gauges and fill percentage — v1.2
+- ✓ Threshold-based coloring (green >25%, yellow 10-25%, red <10%) — v1.2
+- ✓ Mock customer service with stats aggregation (18 customers) — v1.2
+- ✓ Mock bin service with fill percentages and alert levels (38 bins) — v1.2
+
 ### Active
 
-<!-- Current scope for v1.2 Customers Page -->
+<!-- Current scope - empty after milestone completion -->
 
-- [ ] Customers list page with search functionality
-- [ ] Customer row shows order status and change flags
-- [ ] Customer detail page with header info
-- [ ] Unified activity timeline (orders, deliveries, bin alerts)
-- [ ] Order history with inline summary and link to full details
-- [ ] Bin visualization with fill level bars
-- [ ] Low/critical alert thresholds on bins
-- [ ] Mock bin data service (Bin Sentry-style)
+(None - planning next milestone)
 
 ### Deferred
 
@@ -153,6 +156,13 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 | Generic FilterPill with color props | Enables reuse across orders and mill-production with different status types | ✓ Good |
 | Design tokens in globals.css | Centralized styling, eliminates hardcoded hex values, enables theme consistency | ✓ Good |
 | TDD for FilterPill component | 11 tests ensure correctness, documents behavior for future maintainers | ✓ Good |
+| Vertical tank gauge for bin visualization | More literal representation of fill levels, matches customer-detail.pen design | ✓ Good |
+| Stacked status indicators on customer row | Shows all customer states at once - orders + changes + alerts | ✓ Good |
+| Bins inside CustomerDetailHeader | Per design: bins below contact/stats in header card, not separate section | ✓ Good |
+| Shared mockData.ts singleton | Prevents stale data inconsistency across pages (orders, customers, bins) | ✓ Good |
+| TDD for services and components | 104 tests total ensure correctness and document behavior | ✓ Good |
+| Multiple timeline events can expand | No accordion behavior - users often compare multiple events | ✓ Good |
+| Promise.all for parallel data fetching | Customer detail fetches customer, events, bins concurrently | ✓ Good |
 
 ## Evolution
 
@@ -172,4 +182,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-01 after v1.2 milestone started*
+*Last updated: 2026-05-06 after v1.2 milestone completed*

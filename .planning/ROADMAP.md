@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
 - ✅ **v1.1 Mill Production Dashboard** — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
-- ✅ **v1.2 Customers Page** — Phases 10-15 — shipped 2026-05-05
+- ✅ **v1.2 Customers Page** — Phases 10-15 ([archived](./milestones/v1.2-ROADMAP.md)) — shipped 2026-05-06
 
 ## Phases
 
@@ -94,7 +94,7 @@ Plans:
 </details>
 
 <details>
-<summary>✅ v1.2 Customers Page (Phases 10-15) — SHIPPED 2026-05-05</summary>
+<summary>✅ v1.2 Customers Page (Phases 10-15) — SHIPPED 2026-05-06</summary>
 
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
@@ -223,10 +223,10 @@ Plans:
 |-----------|--------|-------|--------|---------|
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 15/15 (Phase 10: 1/1 ✓, Phase 11: 3/3 ✓, Phase 12: 3/3 ✓, Phase 13: 3/3 ✓, Phase 14: 3/3 ✓, Phase 15: 2/2 ✓) | Complete | 2026-05-05 |
+| v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
 
 ---
 *Roadmap created: 2026-03-11*
 *v1.0 shipped: 2026-04-29*
 *v1.1 shipped: 2026-04-29*
-*v1.2 started: 2026-05-01*
+*v1.2 shipped: 2026-05-06*
