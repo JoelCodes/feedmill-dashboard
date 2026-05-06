@@ -3,7 +3,6 @@ import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import CustomerDetailHeader from '@/components/CustomerDetailHeader';
 import { ActivityTimeline } from '@/components/ActivityTimeline';
-import { BinGaugeRow } from '@/components/BinGaugeRow';
 import { getCustomerById } from '@/services/customers';
 import { getActivityEvents } from '@/services/activity';
 import { getBinsByCustomerId } from '@/services/bins';
@@ -33,9 +32,8 @@ export default async function CustomerDetailPage({
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header />
-        <CustomerDetailHeader customer={customer} stats={customer.stats} />
+        <CustomerDetailHeader customer={customer} stats={customer.stats} bins={bins} />
         <ActivityTimeline events={events} />
-        <BinGaugeRow bins={bins} />
       </main>
     </div>
   );

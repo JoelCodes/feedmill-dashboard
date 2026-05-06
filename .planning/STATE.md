@@ -184,3 +184,4 @@ Recent decisions affecting current work:
 ---
 *State initialized: 2026-05-01 for v1.2 milestone*
 *Last activity: 2026-05-05 - Phase 15 Plan 02 complete (BinGaugeRow + customer detail integration)*
+| 2026-05-05 | fast | Add selected query param handling to orders page | ✅ |

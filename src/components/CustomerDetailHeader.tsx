@@ -1,14 +1,18 @@
 import { Customer, CustomerStats } from '@/types/customer';
+import { Bin } from '@/types/bin';
 import { MapPin, Phone, Mail } from 'lucide-react';
+import { BinGaugeRow } from './BinGaugeRow';
 
 interface CustomerDetailHeaderProps {
   customer: Customer;
   stats: CustomerStats;
+  bins?: Bin[];
 }
 
 export default function CustomerDetailHeader({
   customer,
   stats,
+  bins = [],
 }: CustomerDetailHeaderProps) {
   return (
     <div className="rounded-[15px] bg-white p-5 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
@@ -77,6 +81,14 @@ export default function CustomerDetailHeader({
           </div>
         </div>
       </div>
+
+      {/* Bins Section - below contact/stats per customer-detail.pen */}
+      {bins.length > 0 && (
+        <>
+          <div className="my-4 h-px w-full" style={{ backgroundColor: '#e2e8f0' }} />
+          <BinGaugeRow bins={bins} />
+        </>
+      )}
     </div>
   );
 }

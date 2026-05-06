@@ -77,9 +77,9 @@ export function BinGauge({ fillPercentage, locationCode, feedType }: BinGaugePro
         </span>
       </div>
 
-      {/* Labels below gauge */}
-      <span className="text-[10px] font-bold text-[#2d3748]">{locationCode}</span>
-      <span className="text-[10px] text-[#a0aec0]">{feedType}</span>
+      {/* Labels below gauge - centered */}
+      <span className="text-[10px] font-bold text-[#2d3748] text-center">{locationCode}</span>
+      <span className="text-[10px] text-[#a0aec0] text-center">{feedType}</span>
     </div>
   );
 }
