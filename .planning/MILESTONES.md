@@ -1,5 +1,25 @@
 # Milestones
 
+## v1.2 Customers Page (Shipped: 2026-05-06)
+
+**Phases completed:** 6 phases (10-15), 15 plans
+**Files modified:** 128 | **Lines of code:** 6,426 TypeScript
+**Timeline:** 5 days (2026-05-01 → 2026-05-05)
+
+**Key accomplishments:**
+
+- Customer list page with search, sort by recent activity, and status indicators (order counts, change flags, bin alerts)
+- Customer detail page with header (contact info, summary stats) and navigation from list view
+- Unified activity timeline merging orders, deliveries, and bin alerts with expand/collapse behavior
+- Bin visualization with vertical tank gauges showing fill percentage and threshold-based coloring (green/yellow/red)
+- Data layer foundation with type-safe Customer and Bin interfaces, mock services, and stats aggregation
+
+**Deferred items at close:** 2 verification gaps (Phase 10 & 12 design sign-off - human_needed)
+
+**Archive:** [v1.2-ROADMAP.md](./milestones/v1.2-ROADMAP.md), [v1.2-REQUIREMENTS.md](./milestones/v1.2-REQUIREMENTS.md)
+
+---
+
 ## v1.1 Mill Production Dashboard (Shipped: 2026-04-29)
 
 **Phases completed:** 4 phases (6-9), 5 plans, 10 tasks
