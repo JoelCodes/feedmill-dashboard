@@ -18,7 +18,7 @@ jest.mock('@/services/activity', () => ({
   getActivityEvents: jest.fn(),
 }));
 
-jest.mock('@/components/ActivityTimeline', () => ({
+jest.mock('@/components/ui/Timeline', () => ({
   ActivityTimeline: jest.fn(() => <div data-testid="activity-timeline">ActivityTimeline Mock</div>),
 }));
 
@@ -26,7 +26,7 @@ jest.mock('@/components/ActivityTimeline', () => ({
 import { notFound } from 'next/navigation';
 import { getCustomerById } from '@/services/customers';
 import { getActivityEvents } from '@/services/activity';
-import { ActivityTimeline } from '@/components/ActivityTimeline';
+import { ActivityTimeline } from '@/components/ui/Timeline';
 import { CustomerWithStats } from '@/types/customer';
 import { ActivityEvent } from '@/types/activity';
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ActivityTimeline } from "@/components/ActivityTimeline";
+import { ActivityTimeline } from "@/components/ui/Timeline";
 import CustomerOrdersTab from "@/components/CustomerOrdersTab";
 import { ActivityEvent } from "@/types/activity";
 import { Order } from "@/types/order";
