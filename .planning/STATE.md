@@ -28,24 +28,24 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 Phase: 17 (component-library) — EXECUTING
 Plan: 5 of 5
 **Phase:** 18
-**Plan:** 4 of 7
+**Plan:** 5 of 7
 **Status:** Executing
-**Progress:** [██████░░░░] 57%
+**Progress:** [███████░░░] 71%
 
-Last activity: 2026-05-07 -- 18-04 complete: Gauge and Timeline components extracted to ui/
+Last activity: 2026-05-07 -- 18-05 complete: Orders page migrated to design tokens
 
 **Active work:**
 
-- Phase 18 in progress (4/7 plans complete)
-- Next: 18-05 (Orders page migration)
+- Phase 18 in progress (5/7 plans complete)
+- Next: 18-06 (Customers page migration)
 
 **Recent accomplishment:**
 
-- 18-04 complete: Gauge and Timeline extracted to ui/ with design tokens
-- Generic APIs: label/sublabel instead of locationCode/feedType
-- Card component wraps Timeline (provides shadow/radius tokens)
-- 30 tests passing (14 Gauge + 16 Timeline)
-- Backwards-compatible exports: BinGauge, ActivityTimeline
+- 18-05 complete: Orders page fully migrated to design tokens
+- OrdersTable uses ui/FilterPill with token-based STATUS_PILL_CONFIG
+- OrderDetails uses Card component with token-based colorMap
+- Old FilterPill.tsx deleted (all imports use ui/ location)
+- Zero hardcoded hex values in Orders components
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Last activity: 2026-05-07 -- 18-04 complete: Gauge and Timeline components extra
 | 18 | 02 | 180s | 2 | 2 |
 | 18 | 03 | 300s | 4 | 4 |
 | 18 | 04 | 480s | 4 | 4 |
+| 18 | 05 | 240s | 4 | 5 |
 
 **Historical (v1.0-v1.1):**
 

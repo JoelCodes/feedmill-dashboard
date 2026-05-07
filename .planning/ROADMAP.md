@@ -93,7 +93,7 @@ Plans:
 - [x] 18-04-PLAN.md — Extract BinGauge and ActivityTimeline to ui/ as Gauge and Timeline (MIG-02)
 
 **Wave 3** (depends on Wave 2)
-- [ ] 18-05-PLAN.md — Migrate Orders page (OrdersTable, OrderDetails) (MIG-01)
+- [x] 18-05-PLAN.md — Migrate Orders page (OrdersTable, OrderDetails) (MIG-01)
 
 **Wave 4** (depends on Wave 3)
 - [ ] 18-06-PLAN.md — Migrate Customers page (list, detail, bin gauges, timeline) (MIG-02)
