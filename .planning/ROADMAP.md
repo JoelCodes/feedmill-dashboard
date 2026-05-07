@@ -42,7 +42,7 @@ Plans:
 - [x] 16-03-PLAN.md — Integrate next-themes for dark mode with flash prevention (FOUND-02)
 
 **Wave 2** (depends on Wave 1)
-- [ ] 16-04-PLAN.md — Create ESLint rule blocking hardcoded hex/px values (FOUND-04)
+- [x] 16-04-PLAN.md — Create ESLint rule blocking hardcoded hex/px values (FOUND-04)
 - [x] 16-05-PLAN.md — Create component-library.pen and token documentation (DES-01, DES-02, DES-03)
 
 ### Phase 17: Component Library
