@@ -97,19 +97,19 @@ function NavItem({
   return (
     <Link
       href={href}
-      className={`flex w-full items-center gap-3 rounded-[15px] px-4 py-3 ${
+      className={`flex w-full items-center gap-3 rounded-[var(--radius-xl)] px-4 py-3 ${
         active
-          ? "bg-white shadow-[0_3.5px_5px_rgba(0,0,0,0.03)]"
+          ? "bg-white shadow-[var(--shadow-card)]"
           : "bg-transparent"
       }`}
     >
       <div
-        className={`flex h-[30px] w-[30px] items-center justify-center rounded-xl shadow-[0_3.5px_5px_rgba(0,0,0,0.03)] ${
+        className={`flex h-[30px] w-[30px] items-center justify-center rounded-[var(--radius-lg)] shadow-[var(--shadow-card)] ${
           active ? "bg-[var(--primary)]" : "bg-white"
         }`}
       >
         <Icon
-          className={`h-4 w-4 ${active ? "text-white" : "text-[--primary]"}`}
+          className={`h-4 w-4 ${active ? "text-white" : "text-[var(--primary)]"}`}
         />
       </div>
       <span
