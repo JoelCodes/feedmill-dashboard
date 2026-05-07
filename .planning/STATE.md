@@ -28,23 +28,23 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 Phase: 17 (component-library) — EXECUTING
 Plan: 5 of 5
 **Phase:** 18
-**Plan:** 1 of 7
+**Plan:** 2 of 7
 **Status:** Executing
-**Progress:** [█░░░░░░░░░] 14%
+**Progress:** [██░░░░░░░░] 29%
 
-Last activity: 2026-05-07 -- 18-01 complete: Settings page migrated to design system
+Last activity: 2026-05-07 -- 18-02 complete: FilterPill extracted to ui/ with design tokens
 
 **Active work:**
 
-- Phase 18 in progress (1/7 plans complete)
-- Next: 18-02 (FilterPill extraction)
+- Phase 18 in progress (2/7 plans complete)
+- Next: 18-03 (Orders page migration)
 
 **Recent accomplishment:**
 
-- 18-01 complete: Settings page migrated to design system components
-- MIG-04 requirement delivered
-- Button, Select, ThemeToggle integrated
-- 179/179 tests passing
+- 18-02 complete: FilterPill extracted to design system directory
+- MIG-01 and MIG-03 requirements in progress
+- 8 token replacements applied (gray classes -> CSS variables)
+- 16/16 tests passing including token verification
 
 ## Performance Metrics
 
@@ -82,6 +82,7 @@ Last activity: 2026-05-07 -- 18-01 complete: Settings page migrated to design sy
 | 17 | 03 | 180s | 3 | 6 |
 | 17 | 05 | 88s | 2 | 2 |
 | 18 | 01 | 69s | 1 | 1 |
+| 18 | 02 | 180s | 2 | 2 |
 
 **Historical (v1.0-v1.1):**
 
