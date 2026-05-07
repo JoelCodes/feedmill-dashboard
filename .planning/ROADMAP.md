@@ -64,7 +64,7 @@ Plans:
 - [x] 17-02-PLAN.md — ThemeToggle component with useTheme() hook (COMP-04)
 
 **Wave 2** (depends on Wave 1)
-- [ ] 17-03-PLAN.md — Input/Select/Textarea components with validation states (COMP-02)
+- [x] 17-03-PLAN.md — Input/Select/Textarea components with validation states (COMP-02)
 - [ ] 17-04-PLAN.md — Card compound component with dot notation pattern (COMP-03)
 
 **Wave 3** (depends on Wave 2)
