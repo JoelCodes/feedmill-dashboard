@@ -9,10 +9,10 @@ Requirements for Design Hardening milestone. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUND-01**: Semantic token system defines colors, typography, spacing, and shadows using two-tier naming (primitives → semantic)
-- [ ] **FOUND-02**: Light/dark theme infrastructure uses next-themes with ThemeProvider and CSS variable overrides
-- [ ] **FOUND-03**: CVA and utility setup provides class-variance-authority, tailwind-merge, and cn() helper function
-- [ ] **FOUND-04**: ESLint rules block hardcoded color and spacing values to enforce token usage
+- [x] **FOUND-01**: Semantic token system defines colors, typography, spacing, and shadows using two-tier naming (primitives → semantic)
+- [x] **FOUND-02**: Light/dark theme infrastructure uses next-themes with ThemeProvider and CSS variable overrides
+- [x] **FOUND-03**: CVA and utility setup provides class-variance-authority, tailwind-merge, and cn() helper function
+- [x] **FOUND-04**: ESLint rules block hardcoded color and spacing values to enforce token usage
 
 ### Components
 
@@ -38,9 +38,9 @@ Requirements for Design Hardening milestone. Each maps to roadmap phases.
 
 ### Design Files
 
-- [ ] **DES-01**: Component library .pen file created as single source of truth for reusable components
-- [ ] **DES-02**: Existing .pen files consolidated and organized with clear hierarchy
-- [ ] **DES-03**: Token sync process established between Pencil.dev and CSS design tokens
+- [x] **DES-01**: Component library .pen file created as single source of truth for reusable components
+- [x] **DES-02**: Existing .pen files consolidated and organized with clear hierarchy
+- [x] **DES-03**: Token sync process established between Pencil.dev and CSS design tokens
 
 ## Future Requirements
 
@@ -76,13 +76,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 16 | Pending |
-| FOUND-02 | Phase 16 | Pending |
-| FOUND-03 | Phase 16 | Pending |
-| FOUND-04 | Phase 16 | Pending |
-| DES-01 | Phase 16 | Pending |
-| DES-02 | Phase 16 | Pending |
-| DES-03 | Phase 16 | Pending |
+| FOUND-01 | Phase 16 | Complete |
+| FOUND-02 | Phase 16 | Complete |
+| FOUND-03 | Phase 16 | Complete |
+| FOUND-04 | Phase 16 | Complete |
+| DES-01 | Phase 16 | Complete |
+| DES-02 | Phase 16 | Complete |
+| DES-03 | Phase 16 | Complete |
 | COMP-01 | Phase 17 | Pending |
 | COMP-02 | Phase 17 | Pending |
 | COMP-03 | Phase 17 | Pending |
