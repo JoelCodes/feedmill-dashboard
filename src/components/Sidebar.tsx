@@ -35,7 +35,7 @@ function isActive(href: string, pathname: string): boolean {
 export default function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="flex h-full w-[280px] flex-col gap-2 bg-white p-6">
+    <aside className="flex h-full w-[var(--sidebar-width)] flex-col gap-2 bg-white p-6">
       {/* Logo */}
       <div className="flex items-center gap-2.5 pb-5">
         <div className="h-8 w-8 rounded-lg bg-[var(--primary)]" />
@@ -48,7 +48,7 @@ export default function Sidebar() {
       <div className="h-px w-full bg-[var(--divider)]" />
 
       {/* Production Section */}
-      <span className="mt-2 text-[10px] font-bold tracking-wide text-[var(--text-secondary)]">
+      <span className="mt-2 text-[var(--text-10)] font-bold tracking-wide text-[var(--text-secondary)]">
         PRODUCTION
       </span>
 
@@ -66,7 +66,7 @@ export default function Sidebar() {
       <div className="mt-2 h-px w-full bg-[var(--divider)]" />
 
       {/* Settings Section */}
-      <span className="mt-2 text-[10px] font-bold tracking-wide text-[var(--text-secondary)]">
+      <span className="mt-2 text-[var(--text-10)] font-bold tracking-wide text-[var(--text-secondary)]">
         SETTINGS
       </span>
 
@@ -104,7 +104,7 @@ function NavItem({
       }`}
     >
       <div
-        className={`flex h-[30px] w-[30px] items-center justify-center rounded-[var(--radius-lg)] shadow-[var(--shadow-card)] ${
+        className={`flex h-[var(--nav-icon-size)] w-[var(--nav-icon-size)] items-center justify-center rounded-[var(--radius-lg)] shadow-[var(--shadow-card)] ${
           active ? "bg-[var(--primary)]" : "bg-white"
         }`}
       >

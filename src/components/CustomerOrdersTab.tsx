@@ -67,7 +67,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
   }, [orders]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[15px] bg-white p-5 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-white p-5 shadow-[var(--shadow-sm)]">
       {/* Search Bar */}
       <div className="relative">
         <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -98,7 +98,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
               }`}
             />
             {status === "Producing" ? "In Production" : status}
-            <span className="ml-0.5 text-[10px] opacity-70">
+            <span className="ml-0.5 text-[var(--text-10)] opacity-70">
               {statusCounts[status]}
             </span>
           </button>
@@ -109,22 +109,22 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
       <div className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto">
         {/* Table Header */}
         <div className="flex py-2.5">
-          <div className="text-text-secondary w-[150px] text-[10px] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-lg)] text-[var(--text-10)] font-bold">
             DOCUMENT #
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             PRODUCT
           </div>
-          <div className="text-text-secondary w-[80px] text-[10px] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--text-10)] font-bold">
             QTY (TONS)
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             LOCATION
           </div>
-          <div className="text-text-secondary w-[80px] text-[10px] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--text-10)] font-bold">
             DELIVERY
           </div>
-          <div className="text-text-secondary w-[100px] text-[10px] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-md)] text-[var(--text-10)] font-bold">
             STATUS
           </div>
         </div>
@@ -159,7 +159,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
                 href={`/orders?selected=${order.id}`}
                 className={`flex cursor-pointer items-center py-3 transition-colors hover:bg-gray-50`}
               >
-                <div className="flex w-[150px] items-center gap-2">
+                <div className="flex w-[var(--table-col-lg)] items-center gap-2">
                   <div className="bg-primary flex h-6 w-6 items-center justify-center rounded-md">
                     <Package className="h-3 w-3 text-white" />
                   </div>
@@ -173,16 +173,16 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
                 <div className="text-text-primary flex-1 text-xs">
                   {order.textureType} {order.formulaType}
                 </div>
-                <div className="text-text-primary w-[80px] text-xs font-bold">
+                <div className="text-text-primary w-[var(--table-col-sm)] text-xs font-bold">
                   {order.quantity}
                 </div>
                 <div className="text-text-primary flex-1 text-xs">
                   {order.location}
                 </div>
-                <div className="text-text-primary w-[80px] text-xs">
+                <div className="text-text-primary w-[var(--table-col-sm)] text-xs">
                   {formatDeliveryDate(order.deliveryDate)}
                 </div>
-                <div className="w-[100px]">
+                <div className="w-[var(--table-col-md)]">
                   <StatusBadge status={order.status} />
                 </div>
               </Link>

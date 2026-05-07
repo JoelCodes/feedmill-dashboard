@@ -15,7 +15,7 @@ export default function CustomerDetailHeader({
   bins = [],
 }: CustomerDetailHeaderProps) {
   return (
-    <div className="rounded-[15px] bg-white p-5 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="rounded-[var(--radius-xl)] bg-white p-5 shadow-[var(--shadow-sm)]">
       <div className="flex items-start justify-between">
         {/* Left - Contact Card */}
         <div className="flex flex-col gap-1">
@@ -44,7 +44,7 @@ export default function CustomerDetailHeader({
 
           {customer.deliveryPreferences && (
             <div className="mt-1">
-              <span className="text-[10px] font-bold" style={{ color: '#4fd1c5' }}>
+              <span className="text-[var(--text-10)] font-bold" style={{ color: '#4fd1c5' }}>
                 Delivery: {customer.deliveryPreferences}
               </span>
             </div>
@@ -57,7 +57,7 @@ export default function CustomerDetailHeader({
             <span className="text-xl font-bold" style={{ color: '#2d3748' }}>
               {stats.totalOrders}
             </span>
-            <span className="text-[10px]" style={{ color: '#a0aec0' }}>
+            <span className="text-[var(--text-10)]" style={{ color: '#a0aec0' }}>
               Total Orders
             </span>
           </div>
@@ -66,7 +66,7 @@ export default function CustomerDetailHeader({
             <span className="text-xl font-bold" style={{ color: '#2d3748' }}>
               {stats.activeBins}
             </span>
-            <span className="text-[10px]" style={{ color: '#a0aec0' }}>
+            <span className="text-[var(--text-10)]" style={{ color: '#a0aec0' }}>
               Active Bins
             </span>
           </div>
@@ -75,7 +75,7 @@ export default function CustomerDetailHeader({
             <span className="text-xl font-bold" style={{ color: '#2d3748' }}>
               —
             </span>
-            <span className="text-[10px]" style={{ color: '#a0aec0' }}>
+            <span className="text-[var(--text-10)]" style={{ color: '#a0aec0' }}>
               Recent Activity
             </span>
           </div>

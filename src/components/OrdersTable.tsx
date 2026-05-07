@@ -247,7 +247,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-white p-5.25 shadow-[var(--shadow-sm)]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
@@ -331,25 +331,25 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
       >
         {/* Table Header */}
         <div className="flex py-2.5">
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             DOCUMENT #
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             CUSTOMER
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             PRODUCT
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             QTY (TONS)
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             LOCATION
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             DELIVERY
           </div>
-          <div className="text-text-secondary flex-1 text-[10px] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
             STATUS
           </div>
         </div>

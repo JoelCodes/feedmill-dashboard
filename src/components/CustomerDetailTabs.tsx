@@ -22,7 +22,7 @@ export default function CustomerDetailTabs({ events, orders }: CustomerDetailTab
       <div className="flex w-full">
         <button
           onClick={() => setActiveTab("activity")}
-          className={`px-5 py-3 text-[13px] font-medium transition-colors ${
+          className={`px-5 py-3 text-[var(--text-13)] font-medium transition-colors ${
             activeTab === "activity"
               ? "border-b-2 border-primary font-bold text-primary"
               : "text-text-secondary hover:text-text-primary"
@@ -32,7 +32,7 @@ export default function CustomerDetailTabs({ events, orders }: CustomerDetailTab
         </button>
         <button
           onClick={() => setActiveTab("orders")}
-          className={`px-5 py-3 text-[13px] font-medium transition-colors ${
+          className={`px-5 py-3 text-[var(--text-13)] font-medium transition-colors ${
             activeTab === "orders"
               ? "border-b-2 border-primary font-bold text-primary"
               : "text-text-secondary hover:text-text-primary"

@@ -1,6 +1,6 @@
 export default function TableSkeleton() {
   return (
-    <div className="flex flex-1 flex-col gap-4 rounded-[15px] bg-white p-[21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+    <div className="flex flex-1 flex-col gap-4 rounded-[var(--radius-xl)] bg-white p-[var(--card-padding-lg)] shadow-[var(--shadow-sm)]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">

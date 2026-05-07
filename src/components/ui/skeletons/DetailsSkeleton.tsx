@@ -1,6 +1,6 @@
 export default function DetailsSkeleton() {
   return (
-    <div className="flex flex-1 flex-col gap-6 rounded-[15px] bg-white p-[21px]">
+    <div className="flex flex-1 flex-col gap-6 rounded-[var(--radius-xl)] bg-white p-[var(--card-padding-lg)]">
       {/* Header Area */}
       <div className="flex flex-col gap-2">
         <div className="h-6 w-40 animate-pulse rounded bg-gray-200" />

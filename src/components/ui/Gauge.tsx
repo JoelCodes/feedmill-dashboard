@@ -59,17 +59,17 @@ export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
   return (
     <div
       data-testid="gauge"
-      className="flex flex-col items-center gap-2 w-[60px]"
+      className="flex flex-col items-center gap-2 w-[var(--gauge-width)]"
     >
       {/* Gauge container */}
       <div
         data-testid="gauge-container"
-        className="relative w-[40px] h-[70px] rounded-lg border-2 border-[var(--divider)]"
+        className="relative w-[var(--gauge-container-w)] h-[var(--gauge-container-h)] rounded-lg border-2 border-[var(--divider)]"
       >
         {/* Fill bar - anchored to bottom, grows upward */}
         <div
           data-testid="fill-bar"
-          className={`absolute bottom-[2px] left-[2px] w-[36px] rounded-b-[6px] ${thresholdColor}`}
+          className={`absolute bottom-[var(--gauge-fill-inset)] left-[var(--gauge-fill-inset)] w-[var(--gauge-fill-width)] rounded-b-[var(--gauge-fill-radius)] ${thresholdColor}`}
           style={{ height: `${fillHeight}px` }}
         />
         {/* Percentage text - centered in gauge */}
@@ -81,9 +81,9 @@ export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
       </div>
 
       {/* Labels below gauge - centered */}
-      <span className="text-[10px] font-bold text-[var(--text-primary)] text-center">{label}</span>
+      <span className="text-[var(--text-10)] font-bold text-[var(--text-primary)] text-center">{label}</span>
       {sublabel && (
-        <span className="text-[10px] text-[var(--text-secondary)] text-center">{sublabel}</span>
+        <span className="text-[var(--text-10)] text-[var(--text-secondary)] text-center">{sublabel}</span>
       )}
     </div>
   );

@@ -115,7 +115,7 @@ export default function NotificationDropdown({
                   <p className="text-xs text-text-secondary mb-1">
                     {notification.message}
                   </p>
-                  <p className="text-[10px] text-text-secondary">
+                  <p className="text-[var(--text-10)] text-text-secondary">
                     {formatTimestamp(notification.timestamp)}
                   </p>
                 </div>

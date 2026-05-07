@@ -188,7 +188,7 @@ function PendingBadge() {
   return (
     <div className="flex items-center gap-1.5 bg-[var(--pending-light)] rounded-md px-2 py-1 my-3">
       <Timer className="h-3 w-3 text-[var(--text-secondary)]" />
-      <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Pending</span>
+      <span className="text-[var(--text-10)] font-bold text-[var(--text-secondary)] uppercase">Pending</span>
     </div>
   );
 }
@@ -284,7 +284,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
             <h3 className="text-[var(--text-primary)] text-sm font-bold">Timeline</h3>
             <button
               onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-              className="text-[var(--primary)] text-[10px] font-medium hover:underline"
+              className="text-[var(--primary)] text-[var(--text-10)] font-medium hover:underline"
             >
               {sortOrder === 'desc' ? 'Newest first' : 'Oldest first'}
             </button>
@@ -342,22 +342,22 @@ function StatCard({
 }) {
   return (
     <div className="bg-[var(--bg-page)] flex flex-1 flex-col items-center gap-1 rounded-xl p-3.5">
-      <span className="text-[var(--text-secondary)] text-[10px] font-bold">
+      <span className="text-[var(--text-secondary)] text-[var(--text-10)] font-bold">
         {label}
       </span>
-      <span className="text-[var(--text-primary)] text-[22px] font-bold">
+      <span className="text-[var(--text-primary)] text-[var(--text-22)] font-bold">
         {value}
       </span>
       {unit && (
-        <span className="text-[var(--text-secondary)] text-[10px]">{unit}</span>
+        <span className="text-[var(--text-secondary)] text-[var(--text-10)]">{unit}</span>
       )}
       {percentage && (
-        <span className="text-[var(--success)] text-[10px] font-bold">
+        <span className="text-[var(--success)] text-[var(--text-10)] font-bold">
           {percentage}
         </span>
       )}
       {subtext && (
-        <span className="text-[var(--text-secondary)] text-[10px]">{subtext}</span>
+        <span className="text-[var(--text-secondary)] text-[var(--text-10)]">{subtext}</span>
       )}
     </div>
   );
@@ -398,15 +398,15 @@ function TimelineItem({
 
       {/* Right - Content */}
       <div className="flex flex-1 flex-col gap-0.5 pb-8">
-        <span className="text-[var(--text-primary)] text-[13px] font-bold">
+        <span className="text-[var(--text-primary)] text-[var(--text-13)] font-bold">
           {title}
         </span>
-        <p className="text-[var(--text-secondary)] text-[11px] leading-relaxed">
+        <p className="text-[var(--text-secondary)] text-[var(--text-11)] leading-relaxed">
           {description}
         </p>
         <div className="flex items-center gap-1">
           {isPending && <Timer className="h-2.5 w-2.5 text-[var(--text-secondary)]" />}
-          <span className={`text-[10px] font-bold ${colors.text}`}>{date}</span>
+          <span className={`text-[var(--text-10)] font-bold ${colors.text}`}>{date}</span>
         </div>
       </div>
     </div>
