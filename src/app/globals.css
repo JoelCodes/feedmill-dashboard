@@ -4,6 +4,9 @@
   /* Primary Colors */
   --primary: #4fd1c5;
   --primary-dark: #38b2ac;
+  --primary-hover: #45b8ad;
+  --primary-active: #3a9d94;
+  --primary-disabled: #a8d5d0;
 
   /* Background Colors */
   --bg-page: #f8f9fa;
@@ -19,16 +22,28 @@
   --success: #48bb78;
   --success-dark: #2f855a;
   --success-light: #c6f6d5;
+  --success-hover: #38a169;
+  --success-active: #2f855a;
+  --success-disabled: #9ae6b4;
 
   --warning: #f59e0b;
   --warning-light: #fefcbf;
+  --warning-hover: #d97706;
+  --warning-active: #b45309;
+  --warning-disabled: #fcd34d;
 
   --error: #e53e3e;
   --error-dark: #c53030;
   --error-light: #fed7d7;
+  --error-hover: #d53f3f;
+  --error-active: #c53030;
+  --error-disabled: #fc8181;
 
   --info: #2b6cb0;
   --info-light: #bee3f8;
+  --info-hover: #2563eb;
+  --info-active: #1d4ed8;
+  --info-disabled: #93c5fd;
 
   --purple: #9333ea;
   --purple-dark: #7e22ce;
@@ -50,6 +65,17 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 15px;
+
+  /* Spacing Scale */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.5rem;    /* 24px */
+  --space-6: 2rem;      /* 32px */
+  --space-8: 3rem;      /* 48px */
+  --space-10: 4rem;     /* 64px */
+  --space-12: 6rem;     /* 96px */
 
   /* Status-specific color tokens (D-01, D-02, D-03) */
   --status-completed-border: #38a169;
@@ -118,6 +144,34 @@
   /* Text color utilities */
   --color-text-muted: var(--text-muted);
   --color-text-medium: var(--text-medium);
+
+  /* Interactive state aliases */
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-disabled: var(--primary-disabled);
+
+  --color-success-hover: var(--success-hover);
+  --color-success-active: var(--success-active);
+  --color-success-disabled: var(--success-disabled);
+
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-active: var(--warning-active);
+  --color-warning-disabled: var(--warning-disabled);
+
+  --color-error-hover: var(--error-hover);
+  --color-error-active: var(--error-active);
+  --color-error-disabled: var(--error-disabled);
+
+  --color-info-hover: var(--info-hover);
+  --color-info-active: var(--info-active);
+  --color-info-disabled: var(--info-disabled);
+
+  /* Spacing aliases */
+  --spacing-xs: var(--space-1);
+  --spacing-sm: var(--space-2);
+  --spacing-md: var(--space-4);
+  --spacing-lg: var(--space-6);
+  --spacing-xl: var(--space-8);
 }
 
 body {
