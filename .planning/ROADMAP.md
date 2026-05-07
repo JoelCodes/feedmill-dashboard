@@ -65,7 +65,7 @@ Plans:
 
 **Wave 2** (depends on Wave 1)
 - [x] 17-03-PLAN.md — Input/Select/Textarea components with validation states (COMP-02)
-- [ ] 17-04-PLAN.md — Card compound component with dot notation pattern (COMP-03)
+- [x] 17-04-PLAN.md — Card compound component with dot notation pattern (COMP-03)
 
 **Wave 3** (depends on Wave 2)
 - [x] 17-05-PLAN.md — StatusBadge refactor to use design tokens (COMP-05)
