@@ -1,4 +1,5 @@
 import { Wheat, ClipboardList, Truck, Activity, LucideIcon } from "lucide-react";
+import Card from "@/components/ui/Card";
 
 interface KPICardProps {
   label: string;
@@ -52,23 +53,25 @@ export default function KPICards() {
 function KPICard({ label, value, change, changeType, icon: Icon }: KPICardProps) {
   const changeColor =
     changeType === "positive"
-      ? "text-success"
+      ? "text-[var(--success)]"
       : changeType === "negative"
-      ? "text-error"
-      : "text-text-secondary";
+      ? "text-[var(--error)]"
+      : "text-[var(--text-secondary)]";
 
   return (
-    <div className="flex flex-1 items-center justify-between rounded-[15px] bg-white p-[18px_21px] shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
-      <div className="flex flex-col gap-0.5">
-        <span className="text-text-secondary text-xs font-bold">{label}</span>
-        <div className="flex items-end gap-1.5">
-          <span className="text-text-primary text-lg font-bold">{value}</span>
-          <span className={`text-sm font-bold ${changeColor}`}>{change}</span>
+    <Card className="flex-1">
+      <Card.Content className="flex items-center justify-between p-[18px_21px]">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[var(--text-secondary)] text-xs font-bold">{label}</span>
+          <div className="flex items-end gap-1.5">
+            <span className="text-[var(--text-primary)] text-lg font-bold">{value}</span>
+            <span className={`text-sm font-bold ${changeColor}`}>{change}</span>
+          </div>
         </div>
-      </div>
-      <div className="bg-primary flex h-11.25 w-11.25 items-center justify-center rounded-xl shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
-        <Icon className="h-5.5 w-5.5 text-white" />
-      </div>
-    </div>
+        <div className="bg-[var(--primary)] flex h-11.25 w-11.25 items-center justify-center rounded-xl shadow-[var(--shadow-card)]">
+          <Icon className="h-5.5 w-5.5 text-white" />
+        </div>
+      </Card.Content>
+    </Card>
   );
 }
