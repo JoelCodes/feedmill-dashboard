@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Package, AlertTriangle, Search, Users } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
+import Card from '@/components/ui/Card';
 import { getCustomers } from '@/services/customers';
 import { sortCustomersByRecentActivity } from '@/utils/customerSort';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -16,12 +17,12 @@ function CustomerTableSkeleton() {
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="flex items-center py-3" data-testid="skeleton-row">
           <div className="flex-1">
-            <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+            <div className="h-4 w-32 animate-pulse rounded bg-[var(--divider)]" />
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-pulse rounded bg-gray-200" />
-            <div className="h-2 w-2 animate-pulse rounded-full bg-gray-200" />
-            <div className="h-4 w-4 animate-pulse rounded bg-gray-200" />
+            <div className="h-4 w-4 animate-pulse rounded bg-[var(--divider)]" />
+            <div className="h-2 w-2 animate-pulse rounded-full bg-[var(--divider)]" />
+            <div className="h-4 w-4 animate-pulse rounded bg-[var(--divider)]" />
           </div>
         </div>
       ))}
@@ -32,7 +33,7 @@ function CustomerTableSkeleton() {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <Users className="mb-4 h-12 w-12 text-gray-300" />
+      <Users className="mb-4 h-12 w-12 text-[var(--text-secondary)]" />
       <p className="text-text-primary text-sm font-bold">No customers found</p>
       <p className="text-text-secondary text-sm">
         Try adjusting your search or check back later for customer data.
@@ -75,7 +76,8 @@ export default function CustomersPage() {
         <Header />
 
         {/* Customer List Card */}
-        <div className="flex flex-1 flex-col rounded-[15px] bg-white p-5 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+        <Card className="flex flex-1 flex-col">
+          <Card.Content className="p-5">
           {/* Header */}
           <div className="mb-5">
             <h2 className="text-text-primary text-lg font-bold">
@@ -85,13 +87,13 @@ export default function CustomersPage() {
 
           {/* Search Bar */}
           <div className="relative mb-5">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--text-secondary)]" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search customers by name..."
-              className="border-divider focus:border-primary focus:ring-primary w-full rounded-lg border py-2 pr-3 pl-10 text-sm placeholder:text-gray-400 focus:ring-1 focus:outline-none"
+              className="border-[var(--divider)] focus:border-[var(--primary)] focus:ring-[var(--primary)] w-full rounded-lg border py-2 pr-3 pl-10 text-sm placeholder:text-[var(--text-secondary)] focus:ring-1 focus:outline-none"
             />
           </div>
 
@@ -107,7 +109,7 @@ export default function CustomersPage() {
                   key={customer.id}
                   data-customer-id={customer.id}
                   onClick={() => handleRowClick(customer.id)}
-                  className="flex cursor-pointer items-center py-3 hover:bg-gray-50"
+                  className="flex cursor-pointer items-center py-3 hover:bg-[var(--bg-page)]"
                 >
                   {/* Customer Name */}
                   <div className="flex-1">
@@ -158,7 +160,8 @@ export default function CustomersPage() {
               ))
             )}
           </div>
-        </div>
+          </Card.Content>
+        </Card>
       </main>
     </div>
   );
