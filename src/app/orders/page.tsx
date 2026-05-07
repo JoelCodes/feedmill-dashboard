@@ -33,7 +33,7 @@ export default function OrdersPage() {
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header />
-        <Suspense fallback={<div className="flex-1 animate-pulse rounded-[15px] bg-gray-100" />}>
+        <Suspense fallback={<div className="flex-1 animate-pulse rounded-[var(--radius-xl)] bg-[var(--divider)]" />}>
           <OrdersContent />
         </Suspense>
       </main>
