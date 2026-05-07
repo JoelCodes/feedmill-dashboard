@@ -2,6 +2,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import tailwindcss from "eslint-plugin-tailwindcss";
+import noHardcodedValues from "./eslint-rules/no-hardcoded-values.js";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -24,6 +25,19 @@ const eslintConfig = defineConfig([
         callees: ["classnames", "clsx", "ctl", "cn"],
         config: null, // Disable config loading
       },
+    },
+  },
+  {
+    plugins: {
+      custom: {
+        rules: {
+          "no-hardcoded-values": noHardcodedValues,
+        },
+      },
+    },
+    rules: {
+      // Per D-08: Error severity blocks builds
+      "custom/no-hardcoded-values": "error",
     },
   },
   // Override default ignores of eslint-config-next.
