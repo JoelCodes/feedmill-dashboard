@@ -20,7 +20,7 @@ describe("Input", () => {
     render(<Input placeholder="Enter text" error="This field is required" />);
     const icon = document.querySelector('svg');
     expect(icon).toBeInTheDocument();
-    expect(icon?.parentElement).toHaveClass("text-[var(--error)]");
+    expect(icon).toHaveClass("text-[var(--error)]");
   });
 
   it("has aria-invalid=true when error prop provided", () => {
