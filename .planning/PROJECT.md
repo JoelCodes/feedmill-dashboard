@@ -33,9 +33,15 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 
-## Next Milestone Goals
+## Current Milestone: v1.3 Design Hardening
 
-Planning next milestone. Run `/gsd-new-milestone` to start.
+**Goal:** Establish a unified design system with tokens, components, and theming — then migrate existing pages to use it.
+
+**Target features:**
+- Token system — Audit hardcoded values, consolidate into design tokens, add light/dark theming
+- Component library — Unified components: buttons, form inputs, cards/panels, tables/lists, status indicators, timeline, typography
+- Design file structure — Single component library .pen file + separate page layout files
+- Codebase migration — Refactor existing pages to consume the new design system
 
 ## Requirements
 
@@ -89,9 +95,9 @@ Planning next milestone. Run `/gsd-new-milestone` to start.
 
 ### Active
 
-<!-- Current scope - empty after milestone completion -->
+<!-- Current scope for v1.3 Design Hardening -->
 
-(None - planning next milestone)
+(Defining requirements — see REQUIREMENTS.md after roadmap creation)
 
 ### Deferred
 
@@ -182,4 +188,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-06 after v1.2 milestone completed*
+*Last updated: 2026-05-07 after v1.3 milestone started*
