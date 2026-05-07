@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { CheckCircle, Package, Search } from "lucide-react";
 import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
-import FilterPill, { FilterPillColorConfig } from "@/components/FilterPill";
+import FilterPill, { FilterPillColorConfig } from "@/components/ui/FilterPill";
 import { OrderStatus, Order } from "@/types/order";
 import { getOrders } from "@/services/orders";
 import { formatDeliveryDate } from "@/utils/formatDate";
@@ -11,34 +11,34 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 const STATUS_PILL_CONFIG: Record<OrderStatus, FilterPillColorConfig> = {
   "Pending": {
-    bg: "bg-gray-100",
-    text: "text-gray-600",
-    dot: "bg-gray-600",
-    countBg: "bg-gray-200",
+    bg: "bg-[var(--pending-light)]",
+    text: "text-[var(--text-secondary)]",
+    dot: "bg-[var(--pending)]",
+    countBg: "bg-[var(--status-pending-bg-22)]",
   },
   "Producing": {
     bg: "bg-[var(--warning-light)]",
     text: "text-[var(--warning)]",
     dot: "bg-[var(--warning)]",
-    countBg: "bg-[#f59e0b22]",
+    countBg: "bg-[var(--status-mixing-bg-22)]",
   },
   "Ready": {
     bg: "bg-[var(--info-light)]",
     text: "text-[var(--info)]",
     dot: "bg-[var(--info)]",
-    countBg: "bg-[#2b6cb022]",
+    countBg: "bg-[color-mix(in_srgb,var(--info)_13%,transparent)]",
   },
   "In Transit": {
     bg: "bg-[var(--purple-light)]",
     text: "text-[var(--purple)]",
     dot: "bg-[var(--purple)]",
-    countBg: "bg-[#9333ea22]",
+    countBg: "bg-[color-mix(in_srgb,var(--purple)_13%,transparent)]",
   },
   "Complete": {
     bg: "bg-[var(--success-light)]",
     text: "text-[var(--success-dark)]",
     dot: "bg-[var(--success-dark)]",
-    countBg: "bg-[#2f855a22]",
+    countBg: "bg-[var(--status-completed-bg-22)]",
   },
 };
 
@@ -94,7 +94,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
 
     return parts.map((part, i) =>
       regex.test(part)
-        ? <mark key={i} className="bg-primary/20 rounded px-0.5 font-semibold">{part}</mark>
+        ? <mark key={i} className="bg-[color-mix(in_srgb,var(--primary)_20%,transparent)] rounded px-0.5 font-semibold">{part}</mark>
         : part
     );
   };
@@ -265,13 +265,13 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[var(--text-secondary)]" />
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by customer or product..."
-          className="border-divider focus:border-primary focus:ring-primary w-full rounded-lg border py-2 pr-3 pl-10 text-sm placeholder:text-gray-400 focus:ring-1 focus:outline-none"
+          className="border-divider focus:border-primary focus:ring-primary w-full rounded-lg border py-2 pr-3 pl-10 text-sm placeholder:text-[var(--text-secondary)] focus:ring-1 focus:outline-none"
         />
       </div>
 
@@ -359,7 +359,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
         {/* Table Rows */}
         {filteredOrders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Package className="mb-4 h-12 w-12 text-gray-300" />
+            <Package className="mb-4 h-12 w-12 text-[var(--text-secondary)]" />
             <p className="text-text-secondary text-sm">
               No orders match your current filters
             </p>
@@ -382,8 +382,8 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
                 onClick={() => handleSelectOrder(order.id)}
                 className={`flex cursor-pointer items-center py-3 transition-colors
                   ${validSelectedId === order.id
-                    ? 'bg-primary/10'
-                    : 'hover:bg-gray-50'
+                    ? 'bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]'
+                    : 'hover:bg-[var(--bg-page)]'
                   }`}
               >
               <div className="flex flex-1 items-center gap-2">
