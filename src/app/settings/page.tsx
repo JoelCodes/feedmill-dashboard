@@ -65,7 +65,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     updateNotificationSetting("orderStatus", e.target.checked)
                   }
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-[var(--primary)]"
                 />
                 <span className="text-sm">Order Status Updates</span>
               </label>
@@ -77,7 +77,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     updateNotificationSetting("alerts", e.target.checked)
                   }
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-[var(--primary)]"
                 />
                 <span className="text-sm">Alerts</span>
               </label>
@@ -89,7 +89,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     updateNotificationSetting("system", e.target.checked)
                   }
-                  className="h-4 w-4"
+                  className="h-4 w-4 accent-[var(--primary)]"
                 />
                 <span className="text-sm">System Messages</span>
               </label>
