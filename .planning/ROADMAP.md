@@ -96,7 +96,7 @@ Plans:
 - [x] 18-05-PLAN.md — Migrate Orders page (OrdersTable, OrderDetails) (MIG-01)
 
 **Wave 4** (depends on Wave 3)
-- [ ] 18-06-PLAN.md — Migrate Customers page (list, detail, bin gauges, timeline) (MIG-02)
+- [x] 18-06-PLAN.md — Migrate Customers page (list, detail, bin gauges, timeline) (MIG-02)
 
 **Wave 5** (depends on all)
 - [ ] 18-07-PLAN.md — Final ESLint validation and dark mode verification (MIG-05)

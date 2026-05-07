@@ -28,24 +28,25 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 Phase: 17 (component-library) — EXECUTING
 Plan: 5 of 5
 **Phase:** 18
-**Plan:** 5 of 7
+**Plan:** 6 of 7
 **Status:** Executing
-**Progress:** [███████░░░] 71%
+**Progress:** [████████░░] 86%
 
-Last activity: 2026-05-07 -- 18-05 complete: Orders page migrated to design tokens
+Last activity: 2026-05-07 -- 18-06 complete: Customers pages migrated to design system
 
 **Active work:**
 
-- Phase 18 in progress (5/7 plans complete)
-- Next: 18-06 (Customers page migration)
+- Phase 18 in progress (6/7 plans complete)
+- Next: 18-07 (Final cleanup and verification)
 
 **Recent accomplishment:**
 
-- 18-05 complete: Orders page fully migrated to design tokens
-- OrdersTable uses ui/FilterPill with token-based STATUS_PILL_CONFIG
-- OrderDetails uses Card component with token-based colorMap
-- Old FilterPill.tsx deleted (all imports use ui/ location)
-- Zero hardcoded hex values in Orders components
+- 18-06 complete: Customers pages fully migrated to design system
+- Customers list uses Card component and CSS variable tokens
+- CustomerDetailTabs imports ActivityTimeline from ui/Timeline
+- BinGaugeRow imports Gauge from ui/Gauge with mapped props
+- Old BinGauge.tsx and ActivityTimeline.tsx deleted
+- All 192 tests passing, zero hardcoded values
 
 ## Performance Metrics
 
@@ -87,6 +88,7 @@ Last activity: 2026-05-07 -- 18-05 complete: Orders page migrated to design toke
 | 18 | 03 | 300s | 4 | 4 |
 | 18 | 04 | 480s | 4 | 4 |
 | 18 | 05 | 240s | 4 | 5 |
+| 18 | 06 | 160s | 4 | 8 |
 
 **Historical (v1.0-v1.1):**
 
