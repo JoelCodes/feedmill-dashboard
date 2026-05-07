@@ -10,38 +10,38 @@ export interface StatusConfig {
 
 export const STATUS_CONFIG: Record<OrderStatus, StatusConfig> = {
   "Pending": {
-    bg: "bg-gray-100",
-    text: "text-gray-600",
-    dot: "bg-gray-600",
-    countBg: "bg-gray-100",
+    bg: "bg-[var(--pending-light)]",
+    text: "text-[var(--text-secondary)]",
+    dot: "bg-[var(--pending)]",
+    countBg: "bg-[var(--status-pending-bg-22)]",
     label: "Pending"
   },
   "Producing": {
     bg: "bg-[var(--warning-light)]",
     text: "text-[var(--warning)]",
     dot: "bg-[var(--warning)]",
-    countBg: "bg-[#f59e0b22]",
+    countBg: "bg-[var(--status-mixing-bg-22)]",
     label: "Producing"
   },
   "Ready": {
     bg: "bg-[var(--info-light)]",
     text: "text-[var(--info)]",
     dot: "bg-[var(--info)]",
-    countBg: "bg-[#2b6cb022]",
+    countBg: "bg-[color-mix(in_srgb,var(--info)_13%,transparent)]",
     label: "Ready"
   },
   "In Transit": {
     bg: "bg-[var(--purple-light)]",
     text: "text-[var(--purple)]",
     dot: "bg-[var(--purple)]",
-    countBg: "bg-[#9333ea22]",
+    countBg: "bg-[color-mix(in_srgb,var(--purple)_13%,transparent)]",
     label: "Transit"
   },
   "Complete": {
     bg: "bg-[var(--success-light)]",
     text: "text-[var(--success-dark)]",
     dot: "bg-[var(--success-dark)]",
-    countBg: "bg-[#2f855a22]",
+    countBg: "bg-[var(--status-completed-bg-22)]",
     label: "Complete"
   }
 };
