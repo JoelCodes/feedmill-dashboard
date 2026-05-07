@@ -37,13 +37,13 @@
 
 Plans:
 **Wave 1** (parallel)
-- [ ] 16-01-PLAN.md — Expand token system with interactive states and spacing scale (FOUND-01)
-- [ ] 16-02-PLAN.md — Install CVA + tailwind-merge + clsx and create cn() utility (FOUND-03)
-- [ ] 16-03-PLAN.md — Integrate next-themes for dark mode with flash prevention (FOUND-02)
+- [x] 16-01-PLAN.md — Expand token system with interactive states and spacing scale (FOUND-01)
+- [x] 16-02-PLAN.md — Install CVA + tailwind-merge + clsx and create cn() utility (FOUND-03)
+- [x] 16-03-PLAN.md — Integrate next-themes for dark mode with flash prevention (FOUND-02)
 
 **Wave 2** (depends on Wave 1)
 - [ ] 16-04-PLAN.md — Create ESLint rule blocking hardcoded hex/px values (FOUND-04)
-- [ ] 16-05-PLAN.md — Create component-library.pen and token documentation (DES-01, DES-02, DES-03)
+- [x] 16-05-PLAN.md — Create component-library.pen and token documentation (DES-01, DES-02, DES-03)
 
 ### Phase 17: Component Library
 **Goal**: Reusable component primitives available for page migration
