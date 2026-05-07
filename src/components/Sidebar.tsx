@@ -35,7 +35,7 @@ function isActive(href: string, pathname: string): boolean {
 export default function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="flex h-full w-[var(--sidebar-width)] flex-col gap-2 bg-white p-6">
+    <aside className="flex h-full w-[var(--sidebar-width)] flex-col gap-2 bg-[var(--bg-card)] p-6">
       {/* Logo */}
       <div className="flex items-center gap-2.5 pb-5">
         <div className="h-8 w-8 rounded-lg bg-[var(--primary)]" />
@@ -99,13 +99,13 @@ function NavItem({
       href={href}
       className={`flex w-full items-center gap-3 rounded-[var(--radius-xl)] px-4 py-3 ${
         active
-          ? "bg-white shadow-[var(--shadow-card)]"
+          ? "bg-[var(--bg-card)] shadow-[var(--shadow-card)]"
           : "bg-transparent"
       }`}
     >
       <div
         className={`flex h-[var(--nav-icon-size)] w-[var(--nav-icon-size)] items-center justify-center rounded-[var(--radius-lg)] shadow-[var(--shadow-card)] ${
-          active ? "bg-[var(--primary)]" : "bg-white"
+          active ? "bg-[var(--primary)]" : "bg-[var(--bg-card)]"
         }`}
       >
         <Icon
