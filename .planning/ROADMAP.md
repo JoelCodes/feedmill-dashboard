@@ -61,7 +61,7 @@ Plans:
 Plans:
 **Wave 1** (parallel)
 - [x] 17-01-PLAN.md — Button component with CVA variants (COMP-01)
-- [ ] 17-02-PLAN.md — ThemeToggle component with useTheme() hook (COMP-04)
+- [x] 17-02-PLAN.md — ThemeToggle component with useTheme() hook (COMP-04)
 
 **Wave 2** (depends on Wave 1)
 - [ ] 17-03-PLAN.md — Input/Select/Textarea components with validation states (COMP-02)
