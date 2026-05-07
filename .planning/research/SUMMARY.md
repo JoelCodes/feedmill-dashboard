@@ -1,299 +1,321 @@
 # Project Research Summary
 
-**Project:** CGM Dashboard v1.2 - Customer Management & Bin Monitoring
-**Domain:** Feed mill operations dashboard with customer activity tracking and bin inventory management
-**Researched:** 2026-05-01
+**Project:** CGM Dashboard v1.3 - Design System & Theming
+**Domain:** React/Tailwind Design System for Enterprise Dashboard
+**Researched:** 2026-05-07
 **Confidence:** HIGH
 
 ## Executive Summary
 
-v1.2 adds customer-centric functionality to an existing feed mill operations dashboard, integrating customer management with order tracking and bin inventory monitoring. The good news: the existing Next.js/React/Tailwind stack is **completely sufficient** for all new features with **zero new dependencies required**. Research shows this milestone can leverage established patterns from v1.0-v1.1 (search from OrdersTable, timeline from OrderDetails, StatusBadge, FilterPill) while extending them to handle multi-source activity aggregation and bin fill visualizations.
+This research covers adding a design system foundation to an existing Next.js 15/React 19/Tailwind CSS 4 dashboard application (6,426 LOC) that already has partial design tokens and UI components. The goal is to establish systematic theming (light/dark mode), unify component patterns, and create a maintainable foundation for future development.
 
-The recommended approach is to build incrementally starting with the data layer (customer/bin services and types), then list view (reusing OrdersTable patterns), then detail view (combining timeline + bin visualization components). Critical success factors include: (1) implementing shared mock data layer to avoid stale data across pages, (2) using virtualization from the start for timeline to avoid memory leaks, (3) establishing cursor-based pagination pattern for order history before scale hits, and (4) avoiding charting library bloat by using CSS-only bin fill bars.
+The recommended approach is incremental migration using the Strangler Fig pattern: establish a CSS-first token system with Tailwind v4's `@theme` directive, implement type-safe component variants using Class Variance Authority (CVA), and add theme switching via `next-themes`. The key insight from research is that design systems fail most often during the "last 20%" of migration when enforcement weakens—success requires strict ESLint rules, page-level migration tracking, and ruthless deprecation of old patterns.
 
-Key risk is **performance degradation from naive timeline aggregation**: fetching all events from multiple sources then merging client-side will fail at scale. Mitigation: structure mock services to return pre-aggregated ActivityEvent arrays, test with 100+ events per customer, and design data layer anticipating future backend aggregation table. Secondary risk is **inconsistent patterns**: new customer pages must audit and reuse existing components (StatusBadge, FilterPill, TimelineEvent structure) rather than reinventing similar UI.
+The primary risks are token naming inconsistency (preventing dark mode), premature component abstraction (creating inflexible APIs), and incomplete migration (maintaining two parallel systems indefinitely). Mitigation strategies include: establishing semantic token naming from day one, building only essential components (Button, Input, Card, Badge) in v1.3, and enforcing migration page-by-page with ESLint rules that block hardcoded values.
 
 ## Key Findings
 
 ### Recommended Stack
 
-**No new dependencies required.** All v1.2 features can be implemented with the existing v1.0-v1.1 stack: Next.js 16.1.6 App Router for customer routes (`/customers/[id]`), React 19.2.3 with hooks for state management, Tailwind CSS 4 for bin visualization bars, TypeScript for type safety, and lucide-react for icons (Container, Gauge, AlertTriangle, Bell already available).
+The research identified a minimal but complete stack for design system foundation. Current project already has Tailwind CSS 4, which provides CSS-first design tokens via the `@theme` directive—no additional build tools needed. The key additions are focused on theming infrastructure and type-safe variant management.
 
 **Core technologies:**
-- **Next.js App Router:** Dynamic customer detail routes with server components and parallel data fetching
-- **Native Array methods:** Customer search with `Array.filter()` and timeline merging with `Array.sort()` — no fuse.js or date-fns needed
-- **CSS + Tailwind:** Bin fill level bars using `<div style={{ width: ${percent}% }}>` with design token colors — no charting library needed
-- **Existing patterns:** Extend OrderDetails timeline for unified activity, reuse OrdersTable search pattern for customer list, continue mock service async pattern from orders.ts
+- **next-themes (^0.4.6)**: Theme management and persistence — Industry standard for Next.js dark mode with zero-flash SSR-safe switching, 2,900+ GitHub stars, actively maintained
+- **class-variance-authority (^0.7.1)**: Type-safe component variants — TypeScript-first utility for variant-based components, framework-agnostic, battle-tested pattern used by shadcn/ui
+- **tailwind-merge (^3.5.0)**: Class conflict resolution — Intelligently merges Tailwind classes with automatic conflict handling, essential for components accepting className props
+- **clsx (^2.1.1)**: Conditional class names — Lightweight (228 bytes) utility for conditional className logic, perfect companion to tailwind-merge
+- **tw-animate-css (^1.4.0)**: Tailwind v4 animations — Modern replacement for tailwindcss-animate, pure CSS solution compatible with Tailwind v4's architecture
 
-**Explicitly rejected:**
-- date-fns/dayjs (codebase uses native Intl API)
-- recharts/chart.js (overkill for simple horizontal fill bars)
-- Zustand/Redux (component-local state sufficient)
-- fuse.js (dataset <100 customers, native string matching adequate)
+**Radix UI primitives (as-needed only):**
+- Install selectively when building specific components (Dialog, DropdownMenu, Select, Tooltip)
+- Each primitive is 10-20KB, so selective installation keeps bundle size down
+- Current recommendation: Start without any Radix primitives, add for specific use cases as they arise
+
+**Notable alternatives rejected:**
+- shadcn/ui: Excellent but overkill for this stage, requires CLI workflow and components.json config
+- tailwind-variants: Adds 10KB for responsive variants/slots that aren't needed (CVA at 2KB is sufficient)
+- Style Dictionary: Adds build complexity; existing CSS variables already serve as design tokens
+- CSS-in-JS libraries: Conflicts with Tailwind's utility-first approach
 
 ### Expected Features
 
-Research validated customer management features against industry patterns from CRM systems (Salesforce, Dynamics 365, Bitrix24) and bin monitoring platforms (BinSentry, BinMaster FeedView).
+Research identified three tiers of features for a modern React/Tailwind design system. The CGM Dashboard already has partial implementations (globals.css with design tokens, StatusBadge component, card patterns) that need systematization rather than full rewrites.
 
 **Must have (table stakes):**
-- Customer list with search by name — standard in all CRM/account management systems
-- Status indicators on customer rows — operations teams expect at-a-glance account health (active orders, changes flag)
-- Customer detail page with header + summary stats — universal CRM pattern
-- Unified activity timeline (orders + deliveries + bin alerts) — industry standard chronological history
-- Expandable timeline events — progressive disclosure prevents clutter
-- Bin fill level visualization with percentage bars — table stakes in bin monitoring systems
-- Alert thresholds with color coding (green/yellow/red) — automated alerts are expected in bin monitoring
-- Multiple bins per customer — realistic scenario (2-5 bins for different feed types)
+- Design Tokens (Colors/Typography/Spacing/Shadows) — Single source of truth eliminates hardcoded values, enables theming
+- Light/Dark Theme — User expectation for dashboard apps; CSS variables + data-theme attribute pattern
+- Button Component — Fundamental interactive element with variants (primary/secondary/ghost/destructive) and states
+- Input Components — Text, number, select, textarea with validation states meeting WCAG 2.1 AA
+- Status Badge — Already exists, needs variant system integration
+- Card/Panel Components — Already have card patterns, need unification
+- Table Component — OrdersTable exists, extract reusable primitives
+- Accessible Focus Management — WCAG 2.1 AA requirement, keyboard navigation, visible focus indicators
+- Semantic Color System — Colors named by function (bg-surface, text-primary) not appearance (bg-white)
 
-**Should have (competitive advantage):**
-- Unified timeline across orders + bins + deliveries — BinSentry separates these, combining creates single customer view and reduces context switching
-- Bin alerts in customer timeline — ties bin status to customer context rather than isolated monitoring
-- Recent activity sorting on customer list — helps operations prioritize daily workflow
+**Should have (differentiators):**
+- Tailwind v4 @theme Integration — CSS-first tokens become utilities automatically, no tailwind.config.js
+- CVA (Class Variance Authority) — Type-safe variant management with compound variants
+- Component Composition (Compound Pattern) — Flexible primitives (Table.Header, Table.Row) vs monolithic props
+- Timeline Component Library — Already have ActivityTimeline; extract as reusable primitive
+- Bin Gauge Visualization — Domain-specific primitive already tested; useful for inventory displays
+- Incremental Migration Strategy — Strangler Fig pattern avoids big-bang rewrite
+- Design Token Documentation — Token usage examples prevent misuse
 
 **Defer (v2+):**
-- Days-until-empty prediction (requires consumption rate calculation from historical data)
-- Customer health indicators in list (requires complex business logic combining bins + orders)
-- Real-time bin updates (WebSocket complexity, minimal operational value for slow-changing feed levels)
-- Trend graphs per bin (visual clutter, days-until-empty metric more actionable)
-- Customer grouping/hierarchy (scope creep into territory management)
+- Storybook Integration — High value but not blocking; add in future milestone
+- Advanced Timeline Primitives — ActivityTimeline works; generalize when second use case emerges
+- Visual Regression Testing — Important for scale but overkill for v1.3
+
+**Explicitly don't build (anti-features):**
+- Over-abstracted Components — God components with 50+ props create maintenance nightmares
+- @apply Directive Overuse — Defeats utility-first purpose, creates CSS bloat
+- Big-Bang Design System Rewrite — High risk of collapse; use incremental migration instead
+- Framework-Specific Tokens — CSS-first tokens are portable across tools
+- Variants for Every Edge Case — 100+ variants create unmanageable complexity; use composition
 
 ### Architecture Approach
 
-Extend existing three-layer architecture (Presentation → Service → Types) with new customer domain alongside existing orders domain. Keep flat component structure, add customer routes to Next.js App Router, create separate services per entity (customers.ts, bins.ts) following established mock async pattern.
+The recommended architecture uses three layers: Design System Foundation (tokens, theme, utilities), Component Library (primitives, composites, patterns), and Application Pages. The design system foundation centralizes all design concerns (tokens, theme config, variant utilities) in a dedicated folder structure, making it easy to extract into a separate package later if needed.
 
 **Major components:**
-1. **CustomersTable** — List view with search, reuses OrdersTable pattern with customer-specific columns and status indicators
-2. **UnifiedTimeline** — Merges events from multiple sources (orders, deliveries, bin alerts) into chronological ActivityEvent[] array, extends existing OrderDetails timeline pattern
-3. **BinVisualization** — Displays multiple bins per customer with CSS fill level bars (no charting library), threshold-based color coding using design tokens
-4. **Customer/Bin Services** — Mock async services following orders.ts pattern, customers service aggregates from orders to compute stats, bins service calculates fill percentages and alert status server-side
+1. **Design System Layer** — CSS tokens (@theme), theme management (ThemeProvider), variant utilities (CVA/cn) — Foundation that all components consume
+2. **Primitives Layer** — Atomic components (Button, Input, Badge, Typography) with CVA variants — Pure presentation, no business logic, folder-per-component structure
+3. **Composites Layer** — Molecules combining primitives (Card, Panel, FilterPill, FormField, Table) — More complex but still generic, compound component pattern for flexibility
+4. **Patterns Layer** — Page-level components (KPICard, OrdersTable, CustomerDetailHeader, ActivityTimeline, Sidebar) — Domain-specific with business logic, consume primitives/composites
+5. **Theme Infrastructure** — Light/dark modes via CSS variable overrides on [data-theme] attribute — Uses next-themes for SSR-safe switching, semantic tokens enable theming without code changes
 
-**Critical integration points:**
-- Add `customerId` field to existing Order interface to enable customer-order relationship
-- Extract unique customers from existing mock orders in orders.ts
-- Reuse StatusBadge component with customer-specific status colors
-- Add Customers nav item to existing Sidebar between Orders and Inventory
-- Create shared mock data singleton to avoid stale data inconsistency across pages
+**Key architectural patterns:**
+- **Tailwind v4 @theme with CSS Variables**: Define tokens as CSS custom properties that auto-generate utilities AND expose runtime variables
+- **Semantic Theming**: Two-tier system (primitives → semantic tokens), theme variants override semantic tokens only
+- **CVA for Component Variants**: Type-safe variant composition with defaults and compound variants
+- **Strangler Fig Migration**: Build new primitives alongside old code, migrate page-by-page, maintain adapter pattern during transition
+- **Compound Components**: Export subcomponents for flexibility (Card.Header, Card.Content, Card.Footer)
+- **Server/Client Split**: Keep primitives as client components but allow server-rendered children via React.ReactNode
+
+**File structure recommendation:**
+```
+src/
+├── design-system/          # NEW: Foundation
+│   ├── tokens/            # Design token CSS files
+│   ├── theme/             # ThemeProvider, themes.css
+│   └── utils/             # cn(), variant helpers
+├── components/
+│   ├── primitives/        # Atomic (Button, Input, Badge)
+│   ├── composites/        # Molecules (Card, FilterPill, Table)
+│   └── patterns/          # Page-level (KPICard, OrdersTable)
+└── app/                   # Next.js pages (unchanged)
+```
 
 ### Critical Pitfalls
 
-Based on research into CRM systems, bin monitoring platforms, and Next.js performance patterns:
+Research identified 10 major pitfalls, with 5 directly applicable to the CGM Dashboard migration. The most dangerous is the "Last 20% Migration Trap" where teams successfully migrate 80% but abandon the final 20%, resulting in two parallel systems requiring indefinite maintenance.
 
-1. **Timeline aggregation performance** — Fetching all events from multiple sources (orders, deliveries, bins) then merging client-side creates massive database load and slow rendering with 1000+ events. **Avoid:** Design services to return pre-aggregated ActivityEvent[] from day one. Mock with 100+ events to expose early. Plan for future backend aggregation table.
+1. **Last 20% Migration Trap** — Final 20% of migration takes 80% of effort and gets abandoned. Create ESLint backstops, make migration blocking for new features, allocate 30% sprint capacity, remove deprecated components entirely once alternatives exist.
 
-2. **Infinite scroll memory leaks** — Timeline events stay mounted in DOM as users scroll, causing browser memory to climb from 50MB to 500MB+ until tab crashes. **Avoid:** Use react-virtuoso or react-window for virtualization from the start. Keep max 50 items in DOM. Test with 100+ timeline items in mock data.
+2. **Token Naming Disaster** — Poor token names (--blue-500) make dark mode impossible. Use two-tier system: primitives (--color-blue-600) → semantic (--color-primary). Component code only references semantic tokens. Theme variants override semantic tokens, never primitives.
 
-3. **Stale data across pages** — Customer list shows "3 pending orders", detail page shows "2 pending orders" due to independent caching. Users lose trust. **Avoid:** Implement shared mock data layer (singleton pattern), not separate arrays per service. Add cache invalidation when order status changes. Use React Query or SWR if data fetching complexity increases.
+3. **Inconsistent Half-Migration** — Half the codebase uses tokens, half uses hardcoded values. Dark mode works on some pages only. Migrate page-by-page (not component-by-component), add ESLint rules blocking hardcoded colors/spacing, track migration by route in dashboard.
 
-4. **Bin alert false positives** — Sensor drift, improper thresholds, displaying raw values without smoothing leads to "alert fatigue" where teams ignore all alerts and miss real critical events. **Avoid:** Implement threshold hysteresis (don't clear warning immediately), use 5-minute rolling average not instant values, document expected alert frequency, mock edge cases (threshold crossing scenarios).
+4. **Tailwind @apply Overuse** — Using @apply recreates CSS maintenance problems Tailwind solves. Never use @apply in component code; extract React components instead. Long className strings are fine. Official Tailwind docs warn against this anti-pattern.
 
-5. **Offset-based pagination breaks at scale** — Customer with 1000+ orders experiences 10+ second load times for order history deep in list as database scans all preceding records. **Avoid:** Use cursor-based pagination (`WHERE id > cursor`) not offset/limit. Test with 100+ orders per customer in mock data. Add database indexes (customer_id, order_date, order_id) before real API.
+5. **Flash of Incorrect Theme (FOIT)** — Users see light theme flash before switching to dark on page load. Use next-themes which handles SSR correctly, store theme in cookie for SSR access, block render with script in <head> reading localStorage before hydration.
+
+**Additional pitfalls to monitor:**
+- Premature Component Abstraction — Don't create shared components until pattern appears 3+ times; duplication is cheaper than wrong abstraction
+- No Deprecation Strategy — Old components accumulate (Button, ButtonV2, PrimaryButton); mark deprecated immediately with console warnings and ESLint errors
+- Design-Code Drift — Figma/Pencil designs diverge from code; establish tokens as sync point, require design approval for component PRs
+- Missing Component Composition — Components don't compose well; use compound component pattern (Select.Option, Card.Header)
+- Overbuilding Before Validation — Building 50 components when only 10 are used; start with 5-10 most-used components, ship incrementally based on demand
 
 ## Implications for Roadmap
 
-Based on dependencies discovered in research and component build-order requirements, suggested 4-phase structure:
+Based on research, the migration requires careful sequencing to establish foundation before building components, and page-level migration to ensure completion. The research strongly recommends 4 phases with strict enforcement mechanisms.
 
-### Phase 1: Foundation (Data Layer)
-**Rationale:** Type definitions and services must exist before any UI can consume them. Establishing shared data layer prevents stale data pitfall. Customer service aggregates from existing orders service, creating integration point that must work before building dependent views.
-
-**Delivers:**
-- `types/customer.ts` and `types/bin.ts` with Customer, Bin, BinAlert, ActivityEvent interfaces
-- `services/customers.ts` mock service with order aggregation logic
-- `services/bins.ts` mock service with fill percentage calculation and alert status logic
-- Add `customerId` field to existing Order interface
-- Shared mock data singleton pattern to avoid inconsistency
-- Mock data includes 100+ orders for one customer and 100+ timeline events to expose performance issues early
-
-**Addresses:** Mock-to-real API type mismatch pitfall, stale data across pages pitfall
-
-**Avoids:** Building UI before data contracts are defined, creating separate mock data per page
-
-**Research flag:** Standard mock service pattern (skip phase research) — follows established orders.ts pattern
-
----
-
-### Phase 2: Customer List Page
-**Rationale:** List is entry point for navigation to detail pages. Testing search and status indicators here validates reuse of OrdersTable patterns before more complex detail page. Customer list proves services work before building timeline aggregation.
+### Phase 1: Foundation & Token Audit
+**Rationale:** Design tokens must exist before components can consume them. Semantic token naming must be established before any migration to prevent costly refactoring later. Research shows token naming mistakes are the hardest pitfall to recover from (HIGH cost).
 
 **Delivers:**
-- `app/customers/page.tsx` route with layout
-- `components/CustomersTable.tsx` with search (reuses OrdersTable pattern)
-- Customer status indicators (active orders count, changes flag, bin alerts)
-- Empty state for no search results
-- Add Customers to Sidebar navigation with Users icon
+- Expanded globals.css with full semantic token system (colors, typography, spacing, shadows)
+- Light/dark theme CSS variables (:root and [data-theme="dark"])
+- CVA setup and cn() utility function
+- ThemeProvider integration in layout.tsx
+- ESLint rules preventing hardcoded values
+- Deprecation policy and enforcement mechanisms
+- Token naming convention documentation
 
-**Uses:** Existing useDebounce hook for search, StatusBadge component for indicators, FilterPill if filtering needed
+**Addresses (from FEATURES.md):**
+- Design Tokens (Colors/Typography/Spacing/Shadows)
+- Semantic Color System
+- Light/Dark Theme infrastructure
 
-**Addresses:** Inconsistent design pattern pitfall by auditing and reusing existing components
+**Avoids (from PITFALLS.md):**
+- Token Naming Disaster (Pitfall 2) — Establish semantic naming before migration
+- No Deprecation Strategy (Pitfall 9) — Define policy from day one
+- Design-Code Drift (Pitfall 8) — Establish tokens as sync point
 
-**Avoids:** Reinventing search, creating new status badge component, inconsistent navigation patterns
+**Research flag:** Standard pattern, skip phase research. Tailwind v4 @theme and next-themes patterns are well-documented.
 
-**Research flag:** Standard list/search pattern (skip phase research) — well-documented, matches existing orders page
-
----
-
-### Phase 3: Customer Detail Infrastructure
-**Rationale:** Detail page structure and layout must exist before populating with timeline and bin components. Parallel data fetching pattern (customer metadata + orders + bins) establishes multi-source aggregation that timeline depends on. Setting up cursor-based pagination now prevents painful refactor later.
-
-**Delivers:**
-- `app/customers/[id]/page.tsx` dynamic route with parallel data fetching
-- `components/CustomerDetail.tsx` layout shell (header + grid for timeline + bins)
-- Customer header with summary stats
-- Cursor-based pagination helper for order history
-- Loading and error states (reuse existing skeleton patterns)
-
-**Implements:** Architectural pattern from ARCHITECTURE.md for multi-source data fetching with Promise.all
-
-**Addresses:** Offset pagination performance pitfall, Next.js prefetch overload pitfall
-
-**Avoids:** Building offset pagination that breaks at scale, automatic prefetch on all customer links
-
-**Research flag:** Needs research — pagination strategy requires validation against real data patterns
-
----
-
-### Phase 4: Unified Activity Timeline
-**Rationale:** Timeline is most complex component, requires multi-source aggregation working correctly. Depends on customer detail page infrastructure and shared data layer. Implementing virtualization from start avoids memory leak refactor later.
+### Phase 2: Component Library Foundation
+**Rationale:** Build only essential primitives (Button, Input, Card, Badge) to validate design system patterns before expanding. Research warns against overbuilding—start with 5-10 most-used components, ship incrementally. This phase establishes reuse patterns for Phase 3 migration.
 
 **Delivers:**
-- `components/UnifiedTimeline.tsx` with ActivityEvent merging from orders + bins + deliveries
-- Timeline event transformation utilities (transformOrderToEvent, transformBinAlertToEvent)
-- Expandable event details (click to expand from summary)
-- Event type icons and color coding (reuses existing timeline pattern from OrderDetails)
-- Virtualization using react-virtuoso or react-window
-- Consistent time display utilities using native Intl API
+- Button component with CVA variants (primary/secondary/ghost/destructive)
+- Input components (text, number, select, textarea) with validation states
+- Card/Panel component with compound pattern (Card.Header, Card.Content, Card.Footer)
+- Badge component (refactor existing StatusBadge to use primitives)
+- Theme toggle UI component
+- Component documentation (usage guidelines, variants)
 
-**Uses:** Extract and generalize TimelineItem from existing OrderDetails component
+**Addresses (from FEATURES.md):**
+- Button Component (table stakes)
+- Input Components (table stakes)
+- Card/Panel Components (table stakes)
+- Status Badge (table stakes)
+- CVA variant management (differentiator)
+- Component Composition (differentiator)
 
-**Addresses:** Timeline aggregation performance pitfall, infinite scroll memory leak pitfall, timezone display pitfall
+**Uses (from STACK.md):**
+- class-variance-authority for variants
+- tailwind-merge and clsx for className composition
+- tw-animate-css for transitions
 
-**Avoids:** Fetching all events then filtering client-side, keeping all items mounted in DOM, inconsistent time formatting
+**Avoids (from PITFALLS.md):**
+- Premature Component Abstraction (Pitfall 2) — Build only 4-5 primitives, defer complex components
+- Tailwind @apply Overuse (Pitfall 5) — Establish React components as reuse mechanism
+- Missing Component Composition (Pitfall 6) — Design composable APIs from start
+- Flash of Incorrect Theme (Pitfall 7) — Implement next-themes correctly for SSR
+- Overbuilding Before Validation (Pitfall 10) — Ship 4-5 components in v1.3, expand in v1.4+ based on demand
 
-**Research flag:** Needs research — virtualization library choice and timeline aggregation pattern need validation
+**Research flag:** Standard pattern, skip phase research. CVA and compound component patterns are well-established.
 
----
-
-### Phase 5: Bin Visualization
-**Rationale:** Standalone component that can be built independently after timeline. Uses services from Phase 1. CSS-only implementation avoids charting library decisions.
+### Phase 3: Page-Level Migration
+**Rationale:** Migrate complete pages rather than scattered components to avoid incomplete migration trap. Research shows wave-based migration (entire features/pages atomically) is critical to completion. Orders page is good starting point (has OrdersTable, StatusBadge, cards).
 
 **Delivers:**
-- `components/BinVisualization.tsx` with fill level bars
-- Multiple bins per customer in card layout
-- Threshold-based color coding (green/yellow/red) using design tokens
-- Bin metadata display (location, capacity, current level, contents)
-- Add bin threshold design tokens to globals.css
+- Orders page migrated to design system
+- Customers page migrated to design system
+- Settings page migrated (likely has theme toggle)
+- Table component extracted from OrdersTable
+- FilterPill migrated to design system tokens
+- KPICard migrated to Card primitive
+- All hardcoded values eliminated from migrated pages
 
-**Uses:** CSS + Tailwind for horizontal bars with dynamic width percentage, existing design token system
+**Addresses (from FEATURES.md):**
+- Table Component extraction (table stakes)
+- Page-by-page migration (differentiator)
+- FilterPill migration (existing component)
 
-**Addresses:** Bin alert false positive pitfall, mixing charting libraries pitfall
+**Avoids (from PITFALLS.md):**
+- Last 20% Migration Trap (Pitfall 1) — Page-level migration prevents scattered incomplete work
+- Inconsistent Half-Migration (Pitfall 4) — Enforce complete migration per page via ESLint and PR checklist
 
-**Avoids:** Adding recharts/chart.js for simple bars, hardcoding thresholds in components
+**Research flag:** Standard pattern, skip phase research. Table extraction and page migration patterns are straightforward.
 
-**Research flag:** Standard visualization pattern (skip phase research) — CSS progress bars are well-documented
+### Phase 4: Refinement & Documentation
+**Rationale:** After core migration, address polish items and create adoption documentation. This phase ensures the design system is maintainable and usable by future developers.
 
----
+**Delivers:**
+- Component documentation in Storybook or similar
+- Migration guide for remaining components
+- Token usage guidelines
+- Accessibility audit of all components
+- Visual regression test setup (if budget allows)
+- Remove deprecated components entirely
+- Design-code parity verification
+
+**Addresses (from FEATURES.md):**
+- Component Documentation (table stakes)
+- Design Token Documentation (differentiator)
+- Accessible Focus Management (table stakes)
+
+**Avoids (from PITFALLS.md):**
+- Design-Code Drift (Pitfall 8) — Verify Figma/Pencil designs match code
+- Last 20% Migration Trap (Pitfall 1) — Delete deprecated components to force completion
+
+**Research flag:** Documentation patterns are standard, but accessibility audit may need specific WCAG guidance.
 
 ### Phase Ordering Rationale
 
-- **Data layer first:** Services and types must exist before any UI. Shared data layer prevents stale data pitfall across pages.
-- **List before detail:** Customer list is entry point, proves services work, validates pattern reuse before complex detail page.
-- **Infrastructure before components:** Detail page layout and data fetching must work before building timeline and bins.
-- **Timeline before bins:** Timeline is more complex (multi-source aggregation, virtualization), bins are simpler standalone component.
-- **Incremental validation:** Each phase produces testable output that validates patterns before building dependent phases.
+- **Foundation must come first**: Design tokens are dependency for all other work. Research shows token naming mistakes are hardest to recover from (HIGH cost in PITFALLS.md recovery table).
+
+- **Primitives before migration**: Can't migrate pages without replacement components. Building 4-5 core primitives validates design system patterns before committing to full migration.
+
+- **Page-level not component-level migration**: Research strongly recommends wave-based migration (entire pages atomically) to avoid incomplete migration trap. Prevents the "80% done, never finishes" scenario.
+
+- **Documentation after implementation**: Can't document patterns until they're validated with real usage. Research warns against premature documentation of unproven patterns.
 
 **Dependency chain:**
 ```
-Phase 1 (Data Layer)
-    ├──> Phase 2 (List) requires customer service
-    └──> Phase 3 (Detail Infrastructure) requires customer + bin services
-            ├──> Phase 4 (Timeline) requires detail page + aggregation pattern
-            └──> Phase 5 (Bins) requires detail page + bin service
+Phase 1 (Tokens) → Phase 2 (Primitives) → Phase 3 (Migration) → Phase 4 (Documentation)
+                                                ↓
+                                        Avoids Pitfall 1 (Last 20% Trap)
+                                        Avoids Pitfall 4 (Inconsistent Migration)
 ```
 
 ### Research Flags
 
-**Phases needing deeper research during planning:**
-- **Phase 3 (Detail Infrastructure):** Pagination strategy and prefetch optimization need validation against expected data volumes and navigation patterns
-- **Phase 4 (Unified Timeline):** Virtualization library choice (react-virtuoso vs react-window) and multi-source aggregation pattern need performance testing
-
 **Phases with standard patterns (skip research-phase):**
-- **Phase 1 (Data Layer):** Mock service pattern established in orders.ts, TypeScript interfaces are standard
-- **Phase 2 (List Page):** Search/filter patterns match existing OrdersTable, well-documented
-- **Phase 5 (Bin Visualization):** CSS progress bars are standard, threshold-based color coding is simple design token usage
+- **Phase 1 (Foundation)**: Tailwind v4 @theme, next-themes, and CVA patterns are well-documented with official docs and Context7 verification
+- **Phase 2 (Primitives)**: CVA variant patterns and compound component architecture have extensive examples in shadcn/ui and Radix UI docs
+- **Phase 3 (Migration)**: Page-level migration patterns are straightforward React refactoring; table extraction is standard component decomposition
+
+**Phases needing validation during execution:**
+- **Phase 4 (Refinement)**: Accessibility audit may need WCAG 2.1 AA specific guidance for interactive components. Storybook setup has many configuration options that may need research for Next.js 15 App Router compatibility.
+
+**No phases require deep pre-planning research** — all patterns are well-established. However, each phase should begin with quick verification that chosen libraries (next-themes, CVA) are compatible with project's Next.js 15/React 19 versions.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Validated against existing codebase files (package.json, OrderDetails.tsx, OrdersTable.tsx, orders.ts). Zero new dependencies needed, all features achievable with current stack. |
-| Features | MEDIUM | Validated against multiple industry sources (BinSentry, BinMaster, Salesforce, Dynamics 365). Table stakes clear, differentiators identified, but some feature priorities based on inference from patterns. |
-| Architecture | HIGH | Direct extension of existing patterns verified in codebase (services/orders.ts, components/OrderDetails.tsx). Three-layer architecture proven in v1.0-v1.1. Integration points identified. |
-| Pitfalls | MEDIUM | Performance pitfalls validated via multiple sources (pagination best practices, feed aggregation patterns, memory leak prevention). Bin monitoring pitfalls from domain-specific sources. Some pitfalls inferred from general patterns. |
+| Stack | HIGH | Official documentation for all recommended libraries (next-themes, CVA, tailwind-merge). Context7 verification of Tailwind v4 patterns. Package versions verified via npm registry (May 2026). |
+| Features | HIGH | Multiple authoritative sources on design system components (UXPin, Carbon Design System, Nielsen Norman Group). Clear consensus on table stakes vs differentiators. |
+| Architecture | HIGH | Official Next.js docs, Tailwind CSS docs, CVA docs. Atomic Design patterns widely adopted. Strangler Fig migration pattern proven in legacy modernization literature. |
+| Pitfalls | HIGH | Multiple case studies of design system failures. Consistent patterns across sources. Pitfall-to-phase mapping derived from migration case studies and best practices. |
 
 **Overall confidence:** HIGH
 
+Research is based on official documentation (Tailwind, Next.js, CVA), Context7-verified libraries, and established design system patterns from authoritative sources (Nielsen Norman Group, Carbon Design System, shadcn/ui). All recommended technologies have 2,000+ GitHub stars and active maintenance. Package versions verified current as of May 2026.
+
 ### Gaps to Address
 
-**Open questions needing validation during implementation:**
+**Token value decisions:** Research provides token structure and naming conventions, but specific token values (color hex codes, spacing scale multipliers, typography scale) must be decided based on existing globals.css and design files. Recommendation: Audit current globals.css tokens, expand to full system, validate against Pencil.dev design files.
 
-1. **Bin sensor data model:** Mock bins derived from order locations (BIN 1A, BIN 2B) but real BinSentry API contract not verified. **Handle:** Design bin service interface flexible enough to adapt, validate with actual API docs when available.
+**Radix UI primitive selection:** Research recommends installing Radix primitives selectively as needed, but doesn't specify which ones will be needed for CGM Dashboard. Recommendation: Start without any Radix primitives in Phase 2, add specific primitives (likely Dialog, Tooltip) when building features that require them.
 
-2. **Customer aggregation performance:** Deriving customer list from orders works for MVP but may need optimization. **Handle:** Include performance test with 500+ orders across 50+ customers in Phase 1, establish benchmark.
+**Migration enforcement tooling:** Research recommends ESLint rules to block hardcoded values, but specific ESLint plugin configuration needs definition. Recommendation: Phase 1 should include configuring `eslint-plugin-tailwindcss` and potentially custom rules for semantic token usage.
 
-3. **Timeline event priorities:** Which events should be expandable vs inline? **Handle:** Start with all expandable (simpler implementation), refine based on content length during Phase 4.
+**Accessibility testing specifics:** Research identifies WCAG 2.1 AA as requirement but doesn't detail specific testing tools or process. Recommendation: Phase 4 should use Axe DevTools for automated testing (catches 57% of issues per research) plus manual screen reader testing with VoiceOver/NVDA.
 
-4. **Bin threshold configuration:** Are thresholds global or per-customer/per-bin? **Handle:** Start with global constants (simplest), document need for customer-specific config in v1.3.
-
-5. **Real-time vs polling:** When does bin data need to update? **Handle:** Manual refresh for MVP, add polling strategy discussion to Phase 5 if needed.
+**Design file sync process:** Research identifies design-code drift as pitfall but doesn't specify workflow for this project's Pencil.dev files. Recommendation: Establish token sync process between Pencil.dev and globals.css in Phase 1, verify parity in Phase 4.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-
-**Existing Codebase:**
-- `src/components/OrderDetails.tsx` L16-24 — Timeline pattern to extend for UnifiedTimeline
-- `src/components/OrdersTable.tsx` — Search and filter pattern to reuse for CustomersTable
-- `src/services/orders.ts` — Mock service async pattern to replicate for customers/bins
-- `src/utils/formatDate.ts` — Native Intl API usage for timeline dates
-- `src/components/ui/StatusBadge.tsx` — Design token pattern for customer status indicators
-- `package.json` — Validated no new dependencies needed
-
-**Industry Standards:**
-- [BinSentry Control Tower](https://www.feedandgrain.com/business-markets/company-news/news/15819605/binsentry-inc-binsentry-launches-control-tower-software-platform-for-feed-mills-and-grain-elevators) — Bin monitoring data model, dashboard patterns, alert thresholds
-- [BinMaster FeedView](https://binmaster.com/feedview) — Inventory management software, days-until-empty predictions
-- [Dynamics 365 Timeline](https://stoneridgesoftware.com/configuring-the-timeline-in-the-unified-interface-crm/) — Multi-type activity aggregation pattern
-- [Salesforce List View Patterns](https://trailhead.salesforce.com/trailblazer-community/feed/0D54S00000JgI7sSAF) — Default sorting, status indicators
+- Context7: /tailwindlabs/tailwindcss.com — Tailwind v4 @theme documentation, design token patterns
+- Context7: /joe-bell/cva — Class Variance Authority API and TypeScript integration
+- Context7: /vercel/next.js — Next.js App Router architecture, project structure
+- Context7: /reactjs/react.dev — Component composition patterns, anti-patterns
+- [next-themes README](https://github.com/pacocoursey/next-themes) — Installation and SSR setup
+- [CVA Documentation](https://cva.style/docs) — Variants and TypeScript integration
+- [Radix UI Primitives](https://www.radix-ui.com/primitives) — Component primitives overview
+- [shadcn/ui Tailwind v4 Guide](https://ui.shadcn.com/docs/tailwind-v4) — Migration patterns
 
 ### Secondary (MEDIUM confidence)
+- [Design Systems 101 - Nielsen Norman Group](https://www.nngroup.com/articles/design-systems-101/) — Design system best practices
+- [Carbon Design System - Component Checklist](https://carbondesignsystem.com/contributing/component-checklist/) — Essential components
+- [UXPin - Essential Design System Components](https://www.uxpin.com/studio/blog/design-system-components/) — Component library requirements
+- [Atomic Design Methodology - Brad Frost](https://atomicdesign.bradfrost.com/chapter-2/) — Component hierarchy patterns
+- [How to Implement a Design System - Design Systems Collective](https://www.designsystemscollective.com/how-to-implement-a-design-system-reasons-approach-and-migration-path-051c41734caf) — Migration strategies
+- [Why Most Design Systems Fail - Multiple Sources](https://ui-patterns.com/blog/why-most-design-systems-fail-and-how-to-cultivate-success) — Adoption pitfalls
+- [Tailwind CSS Best Practices](https://dev.to/frontendtoolstech/tailwind-css-best-practices-design-system-patterns-54pi) — @apply anti-patterns, component extraction
+- [Design Tokens Explained - Contentful](https://www.contentful.com/blog/design-token-system/) — Token architecture
 
-**Performance & Pagination:**
-- [GreatFrontEnd Large Datasets](https://www.greatfrontend.com/blog/how-to-handle-large-datasets-in-front-end-applications) — Pagination strategies, virtualization patterns
-- [Keyset Pagination](https://medium.com/@fathullahmunadi1406/optimizing-sql-pagination-for-large-datasets-boost-performance-with-the-keyset-pagination-method-93678c528220) — Cursor-based pagination best practices
-
-**Activity Timeline:**
-- [Bitrix24 Unified Activity](https://www.newswire.com/news/bitrix24-redefines-crm-productivity-with-all-in-one-activity-view-22651303) — Activity feed design patterns
-- [Aubergine Activity Feeds](https://www.aubergine.co/insights/a-guide-to-designing-chronological-activity-feeds) — Progressive disclosure, event components
-- [Stream Aggregated Feeds](https://getstream.io/blog/aggregated-feeds-demystified/) — Timeline aggregation anti-patterns
-
-**Memory Leaks & Virtualization:**
-- [React Memory Leaks](https://dev.to/fazal_mansuri_/memory-leaks-in-javascript-react-the-hidden-enemy-74p) — Event listener cleanup, component unmounting
-- [Infinite Scroll Issues](https://utahedu.devcamp.com/dissecting-react-js/guide/refactoring-infinite-scroll-feature-fix-memory-leak) — Virtualization as solution
-
-**Bin Monitoring:**
-- [BinConnect Monitoring](https://www.nanolike.com/binconnect/) — Real-time volume tracking, alert systems
-- [BinMaster Grain Monitoring](https://binmaster.com/news/system-considerations-when-monitoring-bin-levels-in-the-grain-industry.html) — Sensor calibration, threshold tuning
-- [Sensor Calibration Drift](https://pollution.sustainability-directory.com/term/sensor-calibration-drift/) — False positive prevention
-
-**Next.js Performance:**
-- [Next.js Navigation Lag](https://dev.to/kcsujeet/debugging-nextjs-app-router-navigation-lag-dynamic-routes-and-prefetching-akk) — Prefetch optimization strategies
-- [Fast Next.js Navigation](https://upstash.com/blog/fast-nextjs) — Dynamic route performance patterns
-
-### Tertiary (LOW confidence)
-
-**Design Consistency:**
-- [Design System Best Practices](https://www.eleken.co/blog-posts/how-to-design-a-crm-system-all-you-need-to-know-about-custom-crm) — CRM pattern libraries (general guidance)
-- [Figma Design Consistency](https://www.figma.com/resource-library/consistency-in-design/) — Component reuse principles (general UX)
+### Tertiary (LOW confidence, needs validation)
+- Various Medium articles on CVA vs tailwind-variants comparison — Feature differences need validation with actual benchmarks
+- Blog posts on Tailwind v4 migration experiences — May not reflect final v4 release patterns
+- Community discussions on design system versioning — Practices vary by organization
 
 ---
-
-*Research completed: 2026-05-01*
-*Ready for roadmap: Yes*
+*Research completed: 2026-05-07*
+*Ready for roadmap: yes*

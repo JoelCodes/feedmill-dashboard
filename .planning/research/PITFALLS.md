@@ -1,506 +1,445 @@
-# Domain Pitfalls: Dashboard Interactivity
+# Pitfalls Research: Design System Migration
 
-**Domain:** Feed mill operations dashboard — adding interactivity to existing static React prototype
-**Researched:** 2026-03-11
-**Confidence:** MEDIUM (based on training data, existing codebase analysis, and domain patterns)
+**Domain:** Design system and theming for existing React/Tailwind application
+**Researched:** 2026-05-07
+**Confidence:** HIGH
+
+**Context:** This research focuses on common mistakes when ADDING a design system to an existing React/Tailwind codebase (6,426 LOC) that already has some design tokens, UI components, and multiple .pen design files.
+
+---
 
 ## Critical Pitfalls
 
-Mistakes that cause rewrites or major issues.
+### Pitfall 1: The Last 20% Migration Trap
 
-### Pitfall 1: Filter State Explosion
-**What goes wrong:** Multiple filter dimensions (status pills, search input, "has changes" flag) create combinatorial state management nightmare. Each filter adds state, and state updates trigger re-renders of unrelated components.
-
-**Why it happens:**
-- Starting with component-level `useState` for each filter
-- No single source of truth for filter state
-- Filters don't coordinate updates (race conditions)
-- URL state and component state diverge
-- Filter counts computed on every render instead of memoized
-
-**Consequences:**
-- Performance degrades as table grows (re-filtering entire dataset on every keystroke)
-- Back button doesn't restore filters (no URL state)
-- Filters reset when navigating away and back
-- Can't share filtered views (no URL persistence)
-- Inconsistent state between status counts and visible rows
-- Race conditions when multiple filters change simultaneously
-
-**Prevention:**
-1. **Use URL as state source** — encode filters in query params from day one (`?status=shipped&search=greenfield&changes=true`)
-2. **Single reducer for all filter state** — one `useReducer` hook managing all filter dimensions
-3. **Debounce search input** — 300ms delay before applying search filter
-4. **Memoize filtered results** — `useMemo` for expensive filter operations
-5. **Compute counts from filtered data** — don't maintain separate count state
-
-**Detection:**
-- Multiple `useState` calls for filters in same component
-- Filter pill counts hardcoded instead of computed
-- Search triggers immediate re-render on keystroke
-- URL doesn't change when filters applied
-- Console shows excessive re-renders during filtering
-
-**Phase impact:** Milestone 1 (Orders Table) — implement filter architecture correctly from start, or face rewrite before Milestone 2
-
----
-
-### Pitfall 2: Mock Data Shape Mismatch
-**What goes wrong:** Mock data structure doesn't match real API response structure. Code works with `orders: Order[]` mock array but real API returns `{ data: { orders: Order[], pagination: {...}, meta: {...} } }`. Entire data layer breaks on integration.
+**What goes wrong:**
+The final 20% of design system migration takes 80% of the effort and frequently gets abandoned. Teams successfully migrate high-visibility pages but leave niche areas (settings, admin panels, error states) using old patterns indefinitely. This creates two parallel systems that both require maintenance.
 
 **Why it happens:**
-- Mock data created by developer, not from API contract
-- No API schema validation (no Zod, TypeScript-only types)
-- Frontend defines data structure, backend defines differently
-- Pagination, error states, loading states not in mock
-- Real API has nested objects, mock has flat structure
-- No API documentation/contract to reference
+Product engineering teams prioritize new features over "cleanup" work. Removing old components feels less important than shipping new functionality to stakeholders. Design system engineers lack familiarity with niche product areas and can't migrate them without product engineering support.
 
-**Consequences:**
-- Week-long rewrite when switching to real API
-- Every component using order data breaks
-- Loading/error states bolted on as afterthought
-- Pagination requires full component refactor
-- Type assertions (`as Order[]`) mask real structure
-- Integration tests fail because mock doesn't match reality
+**How to avoid:**
+- Create "backstops" to prevent continued use of deprecated components (ESLint rules, PropTypes warnings, console errors)
+- Track migration progress with automated tooling (grep for old class patterns, run codemods)
+- Make migration blocking: new features cannot merge until their page is migrated
+- Allocate 30% of sprint capacity to migration work, not "when we have time"
+- Remove deprecated components from the codebase entirely once alternatives exist, even if some references break
 
-**Prevention:**
-1. **Define API contract first** — OpenAPI/Swagger spec or JSON schema before mock data
-2. **Mock the entire response shape** — include `data`, `meta`, `pagination`, `errors` wrapper
-3. **Use Zod schemas** — runtime validation catches shape mismatches
-4. **Include edge cases in mock** — empty arrays, null values, error responses
-5. **Mock loading/error states** — simulate network delay and failures
-6. **Generate mocks from schema** — tools like MSW, faker-js with Zod
-7. **Create data fetching abstraction early** — custom hooks like `useOrders()` that handle response unwrapping
+**Warning signs:**
+- Migration dashboard shows >80% complete for 3+ sprints without progress
+- New PRs introduce usage of deprecated components
+- Team says "we'll finish migration after [next feature]" repeatedly
+- Old and new button styles both exist in production
 
-**Detection:**
-- Mock data is flat array, not wrapped in response object
-- No `loading`, `error`, `isValidating` states in components
-- No pagination properties in mock
-- TypeScript types don't include API metadata
-- Components import mock data directly instead of via hook
-- No error boundary around data-dependent components
-
-**Phase impact:** Infrastructure phase before Milestone 1 — mock data layer architecture determines integration difficulty
+**Phase to address:**
+Phase 1 (Foundation & Token Audit) — Establish deprecation policy and enforcement mechanisms from the start. Don't wait until Phase 4 to decide how to enforce migration.
 
 ---
 
-### Pitfall 3: Search Implementation Naive Loop
-**What goes wrong:** Search filters on every keystroke by looping through all orders with `.includes()`. Works fine with 5 orders. Becomes unusable at 500 orders, crawls to halt at 5000+ orders.
+### Pitfall 2: Premature Component Abstraction
+
+**What goes wrong:**
+Creating shared components too early prevents real-world use cases from informing the API design. Over-abstracted components become rigid with dozens of props to handle every edge case, making them harder to use than writing custom code. Teams route around the design system instead of using it.
 
 **Why it happens:**
-- No debouncing on search input
-- Case-sensitive string matching (`.includes()` instead of `.toLowerCase().includes()`)
-- Searching entire object instead of specific fields
-- Re-running search on every render, not just when search term changes
-- No search index or optimization
-- Filtering happens in render function, not in memo
+Well-intentioned desire to avoid duplication leads to extracting patterns after 1-2 instances instead of waiting for 3+ examples. Fear of "technical debt" pushes premature abstraction. The official React guidance warns: "duplication is far cheaper than the wrong abstraction."
 
-**Consequences:**
-- UI freezes on every keystroke with large datasets
-- Typing "greenfield" triggers 10 filter operations (one per character)
-- Mobile devices become unusable (slower JS execution)
-- Battery drain from constant re-filtering
-- Users abandon search and manually scroll
-- Performance regression not caught until production with real data
+**How to avoid:**
+- **Rule of Three**: Don't create shared components until pattern appears 3+ times in different contexts
+- Start with larger, page-specific components; extract smaller shared pieces only when truly reused
+- Prefer composition over configuration — export sub-components that can be assembled flexibly
+- Allow "escape hatches" with className props for one-off adjustments
+- Copy-paste for first 2 instances, abstract on the third
 
-**Prevention:**
-1. **Debounce search input** — 300-500ms delay using `useDeferredValue` or custom debounce hook
-2. **Memoize search results** — `useMemo` with dependency on debounced search term
-3. **Case-insensitive search** — normalize both term and data to lowercase
-4. **Search specific fields only** — whitelist `[customer, product, documentNumber]`, not entire object
-5. **Consider server-side search** — if dataset grows beyond 1000 items
-6. **Use fuzzy search library** — fuse.js for better UX, pre-builds search index
-7. **Show "searching..." indicator** — during debounce delay, show loading state
+**Warning signs:**
+- Button component has >10 props (variant, size, color, loading, disabled, icon, iconPosition, fullWidth, ...)
+- Developers create one-off components instead of using the design system version
+- Component has conditional rendering for 4+ different "modes"
+- PRs add new props to existing components more often than using them
 
-**Detection:**
-- Input onChange handler directly updates filter state
-- Filter logic in component body, not `useMemo`
-- No debounce delay between typing and filtering
-- Console shows render on every keystroke
-- Performance profiler shows filter function taking >16ms
-- Users report "laggy typing" or "frozen table"
-
-**Phase impact:** Milestone 1 (Orders Table) — search architecture determines scalability
+**Phase to address:**
+Phase 2 (Component Library Foundation) — Resist abstracting every component. Focus on truly reusable patterns (Button, Input) and defer domain-specific abstractions (OrderCard, CustomerRow) until v1.4+.
 
 ---
 
-### Pitfall 4: Selected Row State Without URL
-**What goes wrong:** Row selection stored in component state (`useState`). Clicking row opens details panel, but refreshing page or sharing URL loses selection. No deep linking to specific orders.
+### Pitfall 3: Token Naming Disaster
+
+**What goes wrong:**
+Poor token naming schemes make dark mode impossible and create maintenance hell. `--blue-500` is not semantic — what happens when the brand color changes to purple? Mixing primitive tokens (`--spacing-4`) with semantic tokens (`--button-padding`) without clear hierarchy creates confusion about which to use when.
 
 **Why it happens:**
-- Using `useState` for selected order ID
-- Not considering shareable state
-- Details panel coupled to table selection state
-- No routing for detail view
-- Developer thinking "it's just a panel, not a page"
+Teams start with color values from designs without considering theming. Developers create tokens ad-hoc as needed without a naming convention. No distinction between "what it is" (primitive) vs "where it's used" (semantic).
 
-**Consequences:**
-- Can't share link to specific order with colleagues
-- Refresh loses selected order (frustrating in production use)
-- Browser back button doesn't close panel
-- Can't open multiple orders in tabs
-- No way to bookmark specific order
-- Analytics can't track which orders viewed most
+**How to avoid:**
+- **Two-tier system**: Primitives (`--color-blue-600`, `--space-4`) → Semantic (`--color-primary`, `--button-padding`)
+- Semantic tokens ONLY in component code; primitives referenced only by semantic tokens
+- Use role-based names: `--color-text-primary`, `--color-surface-raised`, `--color-border-subtle`
+- Theme variants override semantic tokens, never primitives
+- Document every token with usage guidelines in Storybook
 
-**Prevention:**
-1. **Use URL for selection** — `?order=ORD-2847` query param
-2. **Sync selection to URL** — update URL when row clicked, read URL on mount
-3. **Close panel when URL cleared** — back button removes query param, panel closes
-4. **Support direct navigation** — `/orders/ORD-2847` route for detail view
-5. **Validate order ID from URL** — handle invalid/missing orders gracefully
+**Warning signs:**
+- Component code references `--blue-600` directly instead of `--color-primary`
+- 20+ color tokens but no clear pattern to names
+- Team asks "which token should I use for this?" frequently
+- Dark mode implemented by duplicating every token with `-dark` suffix
 
-**Detection:**
-- Selection state in `useState`, not from URL
-- Sharing URL doesn't restore UI state
-- Back button doesn't close panel
-- No query params in browser address bar when panel open
-- Selection lost on page refresh
-
-**Phase impact:** Milestone 2 (Order Details) — determines navigation UX and shareability
+**Phase to address:**
+Phase 1 (Foundation & Token Audit) — Establish naming convention BEFORE migrating existing hardcoded values. Refactoring names later breaks everything.
 
 ---
 
-### Pitfall 5: Status Config Duplication
-**What goes wrong:** `statusConfig` object duplicated in `OrdersTable.tsx` and `OrderDetails.tsx`. Adding new status requires updating both files. Status colors drift out of sync, badges show different colors than pills.
+### Pitfall 4: Inconsistent Half-Migration State
+
+**What goes wrong:**
+Half the codebase uses design tokens, half uses hardcoded values. New components mix both approaches. The complexity of maintaining two systems exceeds the benefit of either system alone. Dark mode only works on some pages.
 
 **Why it happens:**
-- Copy-paste reuse instead of shared constants
-- No design tokens for status colors
-- Urgency to ship prevents refactoring
-- "I'll clean it up later" that never happens
-- Different developers working on different components
+Incremental migration without enforcement. No tooling prevents hardcoded values. Developers unfamiliar with the design system copy-paste old code. No "definition of done" for migration.
 
-**Consequences:**
-- Design inconsistency (status "shipped" is green in table, teal in details)
-- Adding "cancelled" status requires 4 file edits (2 configs, 2 type definitions)
-- Bug where one config updated, other forgotten
-- Increased bundle size (duplicate objects)
-- Maintenance nightmare as status list grows
+**How to avoid:**
+- **Wave-based migration**: Migrate entire features/pages atomically, not individual components scattered across the app
+- Add ESLint rules to block hardcoded colors/spacing (use `@stylistic/no-hardcoded-colors` equivalent)
+- Use Tailwind's `theme()` function exclusively; delete `extend` config for migrated values
+- PR checklist: "Does this page use design tokens exclusively?"
+- Track migration by route in a dashboard (e.g., `/orders` = 100% migrated, `/settings` = 40%)
 
-**Prevention:**
-1. **Extract to shared constants** — `src/constants/orderStatus.ts` from start
-2. **Single source of truth** — one `OrderStatus` type, one `statusConfig` object
-3. **Design tokens for colors** — CSS variables already exist, use them
-4. **Status enum** — not string union, prevents typos
-5. **Linting rule** — prevent duplicate constants in codebase
+**Warning signs:**
+- `git grep "bg-\[#" src/` returns results
+- Component uses `className="px-4"` in some places, `className="px-[--spacing-4]"` in others
+- Theme toggle switches some UI elements but not others
+- Developers ask "should I use tokens or just ship this quickly?"
 
-**Detection:**
-- Grep for "statusConfig" shows multiple definitions
-- Status colors differ between components
-- TypeScript type for OrderStatus defined in multiple files
-- Adding new status requires editing >2 files
-- StatusBadge component duplicated across files
-
-**Phase impact:** Milestone 1 cleanup — technical debt that compounds with each milestone
+**Phase to address:**
+Phase 3 (Migration) — Migrate page-by-page, not component-by-component. Orders page → Customers page → Settings page. Mark pages as "complete" only when fully migrated.
 
 ---
 
-## Moderate Pitfalls
+### Pitfall 5: Tailwind @apply Overuse
 
-### Pitfall 6: Data Table Re-renders on Unrelated State Changes
-**What goes wrong:** Entire table re-renders when unrelated state changes (e.g., opening settings modal, notification badge update). Each row re-mounts, performance degrades.
+**What goes wrong:**
+Using `@apply` for everything recreates CSS maintenance problems Tailwind was meant to solve. Team spends time inventing class names (`.btn-primary`, `.card-elevated`) and jumping between files to make changes. CSS bundle grows because @apply duplicates utility classes instead of reusing them. The official Tailwind docs warn: "you are basically just writing CSS again and throwing away all of the workflow and maintainability advantages Tailwind gives you."
 
 **Why it happens:**
-- No React.memo on row components
-- Table component not memoized
-- Parent component state changes trigger full tree re-render
-- Props reference changes (inline functions, new objects each render)
+Developers accustomed to traditional CSS/BEM feel uncomfortable with long className strings. Misunderstanding that React components (not @apply) are the reuse mechanism in modern frameworks. Premature optimization — assuming long classNames hurt performance (they don't).
 
-**Prevention:**
-1. **Memo table rows** — `React.memo(OrderRow, (prev, next) => prev.order.id === next.order.id)`
-2. **Stable callbacks** — use `useCallback` for onClick handlers passed to rows
-3. **Separate state contexts** — notification state shouldn't trigger table re-render
-4. **React DevTools Profiler** — measure re-renders, identify unnecessary updates
+**How to avoid:**
+- **Never use @apply** unless you're NOT using a framework like React
+- Extract React components instead: `<Button variant="primary">` not `.btn-primary`
+- Long className strings are fine in single-use components
+- For truly global styles (typography resets, base form styles), use @layer base, not @apply
+- Tailwind's JIT mode handles duplicate utilities efficiently
 
-**Detection:**
-- React DevTools shows table highlighted on unrelated state changes
-- Console.log in row component fires when it shouldn't
-- Performance degrades as features added
-- Profiler shows row components re-rendering with identical props
+**Warning signs:**
+- Multiple files with `.card { @apply bg-white rounded-lg ... }`
+- Developers create new CSS files instead of extending components
+- Same pattern extracted into @apply class AND React component
+- Team debates "what should we name this class?" regularly
 
-**Phase impact:** Performance optimization phase (likely after Milestone 3)
+**Phase to address:**
+Phase 2 (Component Library Foundation) — Establish React components as the primary reuse mechanism. Explicitly document "@apply is NOT recommended" in contribution guidelines.
 
 ---
 
-### Pitfall 7: Filter Pills Active State Not Controlled
-**What goes wrong:** FilterPill components have `active` prop but clicking them doesn't update active state. Filter pills non-functional, look interactive but don't work.
+### Pitfall 6: Missing Component Composition
+
+**What goes wrong:**
+Components don't compose well, forcing developers to duplicate code or create variant explosion. `<Select>` component doesn't expose its subcomponents (`<Option>`, `<OptGroup>`), preventing custom layouts. Complex components become inflexible monoliths instead of composable building blocks.
 
 **Why it happens:**
-- Active state hardcoded in JSX (`<FilterPill active />`)
-- No onClick handler wired up
-- No state management for active filter
-- Visual design implemented before interaction logic
-- "Make it look right first, make it work later"
+Attempting to provide "simple" API by hiding implementation details. Not considering advanced use cases until after component is shipped. Fear that exposing internals creates maintenance burden.
 
-**Prevention:**
-1. **Controlled components from start** — `active={activeFilter === 'shipped'}` not `active`
-2. **Wire onClick immediately** — even if handler just logs for now
-3. **Test interaction in dev** — click every interactive element to verify it works
-4. **TypeScript strict mode** — require onClick when interactive={true}
+**How to avoid:**
+- **Compound components pattern**: Export subcomponents as properties (`Select.Option`, `Select.Group`)
+- Provide both simple (`<Select options={[...]} />`) and composable (`<Select><Select.Option>...`) APIs
+- Use `children` prop for maximum flexibility
+- Allow `className` pass-through for escape hatches
+- Reference Radix UI's composition patterns as gold standard
 
-**Detection:**
-- Clicking filter pills does nothing
-- Active state never changes
-- No onClick handlers in FilterPill component
-- Active prop is boolean, not derived from state
+**Warning signs:**
+- Component PRs add new props to handle edge cases instead of improving composition
+- Developers build custom versions instead of using design system component
+- Component has `renderHeader`, `renderFooter`, `renderAction` render prop variants
+- Team requests `disabled` variants for subcomponents that aren't exported
 
-**Phase impact:** Milestone 1 (Orders Table) — filters must work, not just look functional
+**Phase to address:**
+Phase 2 (Component Library Foundation) — Design composable APIs from the start. Harder to refactor later without breaking changes.
 
 ---
 
-### Pitfall 8: Missing Key Prop on Mapped Elements
-**What goes wrong:** Timeline items, table rows, filter pills missing `key` prop. React console warnings in dev, re-order bugs in production.
+### Pitfall 7: Flash of Incorrect Theme (FOIT)
+
+**What goes wrong:**
+Dark mode enabled users see light theme flash for 200-500ms on page load before theme switches to dark. This happens on every navigation in Next.js. Creates poor UX and makes the app feel janky.
 
 **Why it happens:**
-- Developer silences warnings with `key={index}`
-- Not understanding React reconciliation
-- Works with static data, breaks with dynamic sorting/filtering
-- Copy-paste from tutorial code
+Theme state stored in `useState` initializes with default value (light). `useEffect` runs AFTER first render, reads `localStorage`, then updates state. React hydration mismatch between SSR and client causes flash.
 
-**Consequences:**
-- React can't efficiently update list when order changes
-- Sorting table causes wrong rows to highlight
-- Filtering causes input focus loss
-- State attached to wrong items after re-order
-- Animations glitch on reordering
+**How to avoid:**
+- Use `next-themes` library which handles SSR correctly
+- Block render with script tag in `<head>` that reads `localStorage` before hydration
+- Store theme in cookie for SSR access (not just localStorage)
+- Use CSS variables that can be set synchronously before React mounts
+- Test dark mode with cache disabled and in incognito mode
 
-**Prevention:**
-1. **Use stable unique IDs** — `key={order.id}`, never `key={index}`
-2. **Linting rule** — enforce key prop on mapped elements
-3. **Generate IDs for items without them** — `uuid()` or nanoid for timeline steps
-4. **Test reordering** — sort table, ensure selection persists correctly
+**Warning signs:**
+- Users report "flicker" on page load
+- Theme toggle works but reverts on refresh
+- DevTools show `data-theme="light"` briefly then switches to `dark`
+- Theme CSS exists but isn't applied on first paint
 
-**Detection:**
-- React warning in console: "Each child should have unique key prop"
-- Using `key={index}` in map functions
-- Sorting table causes selected row to change
-- Timeline items with key={step.title} (titles might duplicate)
-
-**Phase impact:** Code quality issue, fix during Milestone 1 implementation
+**Phase to address:**
+Phase 2 (Component Library Foundation) — Implement theming infrastructure correctly from the start. Fixing FOIT after launch requires refactoring all theme consumers.
 
 ---
 
-### Pitfall 9: Inline Event Handlers Create New Functions Every Render
-**What goes wrong:** `onClick={() => handleRowClick(order.id)}` creates new function on every render. Breaks memo optimization, causes unnecessary re-renders.
+### Pitfall 8: Design-Code Drift
+
+**What goes wrong:**
+Figma/Pencil designs diverge from implemented components. Designers iterate in Figma but changes don't propagate to code. Engineers build components that don't match designs. Neither is source of truth. Both teams frustrated.
 
 **Why it happens:**
-- Convenience of inline arrow functions
-- Not understanding JavaScript closure creation
-- Works fine in small apps, doesn't scale
-- Linters don't catch by default
+No single source of truth. Designs updated without engineering notification. Code changes made "temporarily" without updating designs. No process for syncing changes bidirectionally.
 
-**Prevention:**
-1. **useCallback for handlers** — `const handleClick = useCallback(() => {...}, [deps])`
-2. **Data attributes** — `onClick={handleRowClick} data-order-id={order.id}`, read from `event.currentTarget.dataset`
-3. **Curried functions** — `onClick={handleRowClick(order.id)}` where handleRowClick returns a function
-4. **ESLint rule** — react/jsx-no-bind or similar
+**How to avoid:**
+- Design files AND Storybook both maintained as documentation
+- PR reviews require design approval for component changes
+- Version components in Figma with changelog matching code versions
+- Use tokens in Figma that map 1:1 to CSS variables
+- Weekly design-engineering sync to review divergence
+- Automated visual regression tests catch unintended changes
 
-**Detection:**
-- Inline arrow functions in JSX
-- React.memo not preventing re-renders
-- Profiler shows components re-rendering despite identical props
-- Performance degrades with table size
+**Warning signs:**
+- Designers share mockups that use components that don't match production
+- Engineers say "the design is wrong" or designers say "the code is wrong"
+- Button component in Figma has 6 variants, production has 4
+- Token values in Figma don't match globals.css
 
-**Phase impact:** Performance optimization, address in Milestone 1 or 2
+**Phase to address:**
+Phase 1 (Foundation & Token Audit) — Establish tokens as sync point. Phase 4 (Documentation) — Treat Storybook as contract between design and engineering.
 
 ---
 
-### Pitfall 10: Search UX Has No Empty State
-**What goes wrong:** Searching for non-existent customer shows empty table with no message. User doesn't know if search is broken, loading, or actually no results.
+### Pitfall 9: No Deprecation Strategy
+
+**What goes wrong:**
+Old components never get removed. Codebase accumulates `Button`, `ButtonV2`, `PrimaryButton`, `DesignSystemButton`. No one knows which to use. Maintenance burden doubles as bugs must be fixed in multiple places.
 
 **Why it happens:**
-- Only designing happy path (results exist)
-- Not considering edge cases
-- Filtering returns empty array, table renders nothing
-- No UX design for "no results" state
+Fear of breaking changes. No process for communicating deprecations. Removing code feels risky. "If it's not broken, don't touch it" mentality prevents cleanup.
 
-**Prevention:**
-1. **Empty state component** — "No orders match your search. Try different terms."
-2. **Show search term in message** — "No results for 'zzzz'"
-3. **Suggest actions** — "Clear filters" button, "View all orders" link
-4. **Differentiate empty states** — "No orders yet" vs "No matching orders" vs "Loading..."
-5. **Design empty states upfront** — include in Pencil.dev designs
+**How to avoid:**
+- Mark deprecated components with console warnings immediately: `console.warn("Button is deprecated, use DesignSystemButton")`
+- Add ESLint rule to error on deprecated imports
+- Set sunset date: "Will be removed in v2.0 (3 months)"
+- Provide automated codemod for migration
+- Remove deprecated code on schedule even if usage remains (forces migration)
+- Document migration path in JSDoc and Storybook
 
-**Detection:**
-- Blank white space when no results
-- No feedback when search returns nothing
-- Users confused whether search is working
-- No way to recover except manual URL edit
+**Warning signs:**
+- Multiple button components in codebase
+- Component has "Legacy" or "Old" in filename
+- PR reviews ask "which component should I use?"
+- Grep shows deprecated component used in 50+ files but "no one has time" to migrate
 
-**Phase impact:** UX polish in Milestone 1, can be added incrementally
+**Phase to address:**
+Phase 1 (Foundation & Token Audit) — Define deprecation policy. Phase 3 (Migration) — Execute it ruthlessly.
 
 ---
 
-## Minor Pitfalls
+### Pitfall 10: Overbuilding Before Validation
 
-### Pitfall 11: Hardcoded "18 dispatched this week" Static Text
-**What goes wrong:** Stat text "18 dispatched this week" is hardcoded string. Doesn't update with real data, looks broken when real numbers show.
+**What goes wrong:**
+Design system team builds 50 components based on assumptions, then discovers 40 are unused or don't fit real product needs. Wasted effort. Components lack features teams actually need because they weren't informed by real usage.
 
 **Why it happens:**
-- Design includes specific example text
-- Developer copies exact text from design
-- Not thinking about data source for secondary stats
-- "Ship the MVP, fix later"
+Treating design system as a project ("ship 50 components") instead of a product (solve real user problems). Building in isolation without involving product teams. Desire to "cover everything" before launch.
 
-**Prevention:**
-1. **Identify all dynamic text during planning** — audit design for numbers/dates
-2. **Mock data includes all displayed values** — if it's shown, it's in the data
-3. **Flag TODOs** — `// TODO: Calculate from real dispatch data`
-4. **Use realistic ranges in mock** — vary the number between 12-25 to make dynamic nature obvious
+**How to avoid:**
+- Start with 5-10 most-used components (Button, Input, Select, Card, Modal)
+- Ship incrementally — 5 components in v1.0, add 5 more in v1.1 based on demand
+- Require product team requests before building new components
+- Track component usage with telemetry
+- Delete unused components after 2 releases
 
-**Detection:**
-- Grep for hardcoded numbers in JSX
-- Values never change despite data changing
-- Numbers don't match actual order counts
-- Copy-paste from design file includes static numbers
+**Warning signs:**
+- Design system has 50 components but product uses 10
+- Components built "because other design systems have them"
+- No usage data or download statistics
+- Features added based on "best practices" not product needs
 
-**Phase impact:** Data architecture in Infrastructure phase, noticed in testing
-
----
-
-### Pitfall 12: Filter Counts Manually Maintained
-**What goes wrong:** `statusCounts` object manually updated when mock data changes. Real data requires recomputing counts, but code structure assumes hardcoded counts.
-
-**Why it happens:**
-- Static mock data approach
-- Counts easier to hardcode than compute
-- Not thinking about dynamic data
-- Copy from design spec which shows example counts
-
-**Prevention:**
-1. **Compute counts from data** — `const counts = useMemo(() => orders.reduce((acc, o) => {...}, {}), [orders])`
-2. **Derive, don't duplicate** — single source of truth (orders array), derive everything else
-3. **Test with varying data** — change mock data, verify counts update automatically
-4. **Make derivation obvious** — function named `computeStatusCounts(orders)`
-
-**Detection:**
-- Separate `statusCounts` object exists
-- Counts don't update when filtering
-- Adding mock order doesn't change count badge
-- Filtered view shows wrong counts
-
-**Phase impact:** Milestone 1 implementation, fixing requires refactor
+**Phase to address:**
+Phase 2 (Component Library Foundation) — Build only Button, Input, Card, Badge for v1.3. Defer complex components (DataTable, DatePicker) to later milestones.
 
 ---
 
-### Pitfall 13: No Loading Skeleton for Table
-**What goes wrong:** Table switches instantly from empty to full data. With real API, there's 200-500ms loading time showing blank screen.
+## Technical Debt Patterns
 
-**Why it happens:**
-- Mock data loads synchronously
-- No loading state in component
-- Didn't simulate async loading in dev
-- Skeleton states seem like "nice to have"
+Shortcuts that seem reasonable but create long-term problems.
 
-**Prevention:**
-1. **Add loading prop to table** — `<OrdersTable loading={isLoading} />`
-2. **Render skeleton rows** — 5 animated skeleton rows during load
-3. **Simulate delay in mock** — `await sleep(300)` in mock data hook
-4. **Loading states in all data components** — KPIs, table, details all need skeletons
-
-**Detection:**
-- No loading indicator when fetching data
-- Flash of empty content before data appears
-- No skeleton UI in codebase
-- Components assume data always available immediately
-
-**Phase impact:** Infrastructure phase, before real API integration
+| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
+|----------|-------------------|----------------|-----------------|
+| Hardcode color values "just this once" | Ship feature 10min faster | Breaks dark mode, compounds inconsistency, cannot theme | Never — always use tokens |
+| Skip ESLint rules during migration | Avoid noisy PR diffs | No enforcement = migration never completes | Never — enable from day 1 |
+| Use inline styles for "edge cases" | Bypass component limitations | Cannot theme, breaks SSR, bypasses design system | Never — extend component API instead |
+| Copy-paste component instead of fixing API | Unblock feature quickly | Duplicate maintenance, divergent behavior | Only once — fix API on second duplication |
+| @apply instead of React component | Feels like "real CSS" | CSS bundle bloat, naming churn, maintenance hell | Never in React projects |
+| Store theme in useState only | Simple implementation | Flash of wrong theme on load | Never — use SSR-compatible solution |
+| Skip Storybook docs for "simple" components | Ship faster | Teams don't know component exists or how to use it | Never — docs are deliverable, not nice-to-have |
 
 ---
 
-### Pitfall 14: Timezone Handling Assumptions
-**What goes wrong:** Timeline shows dates like "Mar 18, 2026 · 9:15 AM" but doesn't specify timezone. Server stores UTC, display shows user's local time, causing confusion ("order says 9:15 AM but I placed it at 11:15 AM").
+## Performance Traps
 
-**Why it happens:**
-- Mock data has formatted strings, not Date objects
-- No consideration of multi-timezone users
-- JavaScript Date defaults to local timezone
-- Backend and frontend timezone mismatch
+Patterns that work at small scale but fail as usage grows.
 
-**Prevention:**
-1. **Store dates as ISO 8601** — `"2026-03-18T09:15:00Z"` not formatted strings
-2. **Display with timezone** — "Mar 18, 2026 · 9:15 AM CST" or use relative time "2 hours ago"
-3. **Use date library** — date-fns or day.js for formatting
-4. **Consistent timezone in app** — all times in mill's local timezone, or all in user's timezone (decide and document)
-5. **Include timezone in API response** — `{ timestamp: "...", timezone: "America/Chicago" }`
-
-**Detection:**
-- Date strings in mock data instead of ISO timestamps
-- No timezone indicator in UI
-- Using `new Date().toString()` instead of library
-- Date formatting inconsistent across components
-
-**Phase impact:** Data modeling phase, harder to fix after launch
+| Trap | Symptoms | Prevention | When It Breaks |
+|------|----------|------------|----------------|
+| CSS variables overuse (1000+ tokens) | Slow style recalculation on theme change | Limit to 50-100 semantic tokens; use static values where theming unnecessary | >500 tokens, 0.5s+ paint time |
+| Global CSS bundle (all components) | 500KB+ CSS file on every page | Use CSS modules or Tailwind JIT to eliminate unused styles | >50 components |
+| Inline SVG icons in every component | Slow initial render, memory overhead | Icon component with sprite sheet or SVG imports | >100 icon usages |
+| React Context for every token | Deep re-render trees on theme change | CSS variables (not Context) for theme values | >20 components consuming context |
+| Visual regression tests for all states | 30min+ CI runs, massive storage costs | Test high-value components only; use snapshot tests for simple components | >500 screenshots |
 
 ---
 
-### Pitfall 15: Product Display Logic Duplication
-**What goes wrong:** Product column shows "Layer Mash" (combining Texture Type + Formula Type). Logic exists in table but when detail view needs same formatting, it's duplicated or inconsistent.
+## Integration Gotchas
 
-**Why it happens:**
-- No utility functions for display logic
-- Each component formats data independently
-- "Just interpolate the string in JSX"
-- Data transformation scattered across components
+Common mistakes when connecting design system to existing patterns.
 
-**Prevention:**
-1. **Utility functions for formatting** — `formatProductName(order)` in `src/utils/formatting.ts`
-2. **Derive display values in data layer** — add `displayName` to order object during fetch
-3. **Shared display components** — `<ProductName order={order} />` used everywhere
-4. **Document formatting rules** — "Product = {texture} {formula}" in data docs
-
-**Detection:**
-- String interpolation for product name in multiple files
-- Grep for "order.product" shows different formatting logic
-- Detail panel shows "Mash" but table shows "Layer Mash"
-- No shared formatting utilities
-
-**Phase impact:** Code organization, refactor before Milestone 2
+| Integration | Common Mistake | Correct Approach |
+|-------------|----------------|------------------|
+| Tailwind v4 migration | Running codemod and assuming it's done; tool only handles 90% | Manually verify @theme output, remove duplicate CSS variables, test all components |
+| Next.js SSR | Using useEffect for theme detection causes flash | Use `next-themes` or cookie-based SSR approach |
+| TypeScript | Exporting components without proper type definitions | Generate .d.ts files, use ComponentProps utility type |
+| Existing components | Trying to migrate all at once | Migrate page-by-page; colocate old and new until migration complete |
+| Status badges | Hardcoding colors per status type | Use semantic tokens (`--color-status-pending`) that map to theme |
+| Form validation | Inline error styling diverges from design system | Extract FormField wrapper with consistent error states |
 
 ---
 
-## Phase-Specific Warnings
+## UX Pitfalls
 
-| Phase Topic | Likely Pitfall | Mitigation |
-|-------------|---------------|------------|
-| **Milestone 1: Orders Table** | Filter state explosion (Critical #1) | Implement URL-based filter state from start, use single reducer |
-| **Milestone 1: Orders Table** | Search naive loop (Critical #3) | Debounce input, memoize results, test with 500+ items |
-| **Milestone 1: Orders Table** | Filter pills non-functional (Moderate #7) | Wire onClick handlers before visual polish |
-| **Milestone 1: Orders Table** | Missing keys on rows (Moderate #8) | Use order.id as key, enable ESLint rule |
-| **Milestone 1: Orders Table** | Hardcoded counts (Minor #12) | Compute from filtered data, don't maintain separate count state |
-| **Infrastructure before M1** | Mock data shape mismatch (Critical #2) | Define API contract first, mock entire response structure including meta/pagination |
-| **Infrastructure before M1** | No loading states (Minor #13) | Add skeleton UI, simulate async loading in dev |
-| **Milestone 2: Order Details** | Selected row without URL (Critical #4) | Use query param for selected order, sync with URL state |
-| **Milestone 2: Order Details** | Status config duplication (Critical #5) | Extract to shared constants before adding features |
-| **Milestone 2: Order Details** | Timezone confusion (Minor #14) | Use ISO timestamps, display with timezone or relative time |
-| **Milestone 3: KPI Cards** | Table re-renders on KPI click (Moderate #6) | Memo table components, use stable callbacks |
-| **Cross-cutting** | Inline event handlers (Moderate #9) | Use useCallback or data attributes from start |
-| **Cross-cutting** | Product formatting duplication (Minor #15) | Create shared utility functions for display logic |
-| **Design → Code** | Empty states missing (Moderate #10) | Design empty states in Pencil.dev, implement alongside happy path |
-| **Design → Code** | Static text hardcoded (Minor #11) | Audit designs for dynamic content, add to data model |
+Common user experience mistakes in this domain.
+
+| Pitfall | User Impact | Better Approach |
+|---------|-------------|-----------------|
+| Inconsistent motion | Jarring experience as some elements animate, others don't | Define motion tokens (duration, easing) and apply consistently |
+| Missing focus states | Keyboard navigation broken or invisible | Audit all interactive components for visible focus indicators |
+| Insufficient color contrast | Accessibility violations (WCAG AA failure) | Test all color combinations with contrast checker; aim for WCAG AAA |
+| Theme toggle without transition | Abrupt flash when switching light/dark | Add CSS transition: `* { transition: background 150ms, color 150ms }` on theme change |
+| Overriding component styles | User customizations break on design system updates | Provide stable CSS classes with lower specificity; avoid !important |
+| Missing loading states | Buttons feel unresponsive on click | All async actions show loading state (spinner, disabled) |
 
 ---
 
-## Research Notes
+## "Looks Done But Isn't" Checklist
 
-**Confidence assessment:**
-- **HIGH confidence:** Pitfalls #1, #2, #3, #5, #7, #8 are well-documented React patterns from training data and existing codebase analysis shows these exact risks
-- **MEDIUM confidence:** Pitfalls #4, #6, #9, #10, #12, #13, #15 are general React best practices applicable to this domain
-- **LOW confidence:** Pitfalls #11, #14 are domain-specific assumptions based on feed mill operations context
+Things that appear complete but are missing critical pieces.
 
-**Sources:**
-- Existing codebase analysis (.planning/codebase/CONCERNS.md identified many of these risks)
-- React documentation patterns (training data)
-- Dashboard interactivity patterns from training data
-- Feed mill domain context from PROJECT.md
+- [ ] **Tokens:** Token values exist but no documentation on when to use each — verify usage guidelines in Storybook
+- [ ] **Components:** Component works in isolation but breaks in real product context — verify integration in 2+ pages
+- [ ] **Dark mode:** Theme toggle exists but some components still hardcode colors — verify every component uses tokens exclusively
+- [ ] **Accessibility:** Component looks good but missing ARIA attributes or keyboard navigation — verify with screen reader and keyboard-only testing
+- [ ] **Responsive:** Component designed for desktop but breaks on mobile — verify all breakpoints with real devices
+- [ ] **Edge cases:** Component works with "happy path" data but breaks with empty state, long text, or unusual data — verify with realistic test data
+- [ ] **Type safety:** Component accepts any props but TypeScript types are incomplete — verify intellisense shows all valid props
+- [ ] **Documentation:** Component exists but no Storybook story or usage examples — verify docs exist for every exported component
+- [ ] **Testing:** Component renders but no tests for interactions or edge cases — verify unit tests cover prop variations and user interactions
+- [ ] **Migration:** New component exists but old component still in use — verify deprecated component has removal plan
 
-**Gaps:**
-- Real-world feed mill operations workflows not researched (would improve domain-specific pitfalls)
-- Specific React 19 gotchas not verified (training data from Jan 2025)
-- Next.js 16 specific patterns not researched (version released after training cutoff)
-- TanStack Table or other table library patterns not researched (might be better than custom implementation)
+---
 
-**Recommendations for deeper research:**
-- Phase-specific: Before Milestone 1, research React table libraries (TanStack Table, react-window) for performance patterns
-- Phase-specific: Before Infrastructure phase, research Next.js 15+ data fetching patterns (Server Components, Server Actions)
-- Phase-specific: Before Milestone 2, research URL state management libraries (nuqs, next-usequerystate)
+## Recovery Strategies
+
+When pitfalls occur despite prevention, how to recover.
+
+| Pitfall | Recovery Cost | Recovery Steps |
+|---------|---------------|----------------|
+| Token naming disaster | HIGH | 1. Create naming convention doc; 2. Create migration script with token map; 3. Run codemod across codebase; 4. Delete old tokens to prevent usage |
+| Premature abstraction | MEDIUM | 1. Fork component for specific use case; 2. Mark original as deprecated; 3. Inline into consuming components; 4. Extract again when 3rd real pattern emerges |
+| Design-code drift | MEDIUM | 1. Audit all components with side-by-side comparison; 2. Create sync issues in backlog; 3. Agree on single source of truth; 4. Establish review process |
+| Last 20% migration trap | HIGH | 1. Enforce with ESLint errors (not warnings); 2. Add telemetry to track old component usage; 3. Delete deprecated components (forces migration); 4. Allocate dedicated sprint |
+| @apply overuse | MEDIUM | 1. Create equivalent React component for each @apply class; 2. Add ESLint rule against @apply; 3. Run codemod to replace; 4. Delete @apply classes |
+| No deprecation strategy | LOW | 1. Mark all old components deprecated today; 2. Set 30-day sunset; 3. Create migration guide; 4. Run codemods; 5. Delete on schedule |
+| FOIT | MEDIUM | 1. Install `next-themes`; 2. Move theme detection to SSR; 3. Add blocking script in `<head>`; 4. Test in incognito |
+| Overbuilt library | LOW | 1. Delete unused components after audit; 2. Simplify overcomplex APIs; 3. Focus on top 10 used components; 4. Require usage metrics before building new |
+
+---
+
+## Pitfall-to-Phase Mapping
+
+How roadmap phases should address these pitfalls.
+
+| Pitfall | Prevention Phase | Verification |
+|---------|------------------|--------------|
+| Token naming disaster | Phase 1: Foundation & Token Audit | Run grep for hardcoded values = 0 results; all tokens follow naming convention |
+| Inconsistent half-migration | Phase 3: Migration | All routes marked "complete" in dashboard; ESLint passes with no hardcoded value violations |
+| Premature abstraction | Phase 2: Component Library | Only Button, Input, Select, Card, Badge built — no domain-specific components yet |
+| @apply overuse | Phase 2: Component Library | Grep for `@apply` in component code = 0 results (only in base layer) |
+| FOIT | Phase 2: Component Library | Test theme toggle in incognito mode — no flash visible |
+| Design-code drift | Phase 1 & 4 | Token values match between Figma and globals.css; Storybook stories match designs |
+| No deprecation strategy | Phase 1: Foundation & Token Audit | Deprecation policy documented; console warnings added to old components |
+| Missing composition | Phase 2: Component Library | Complex components export subcomponents; `className` pass-through enabled |
+| Overbuilding | Phase 2: Component Library | v1.3 ships with ≤8 components; additional components deferred to v1.4+ based on demand |
+| Last 20% trap | Phase 3: Migration | Migration plan includes enforcement mechanism; progress tracked weekly; 100% completion = old code deleted |
+
+---
+
+## Sources
+
+### Design System Migration
+- [How to Implement a Design System: Reasons, Approach, and Migration Path](https://www.designsystemscollective.com/how-to-implement-a-design-system-reasons-approach-and-migration-path-051c41734caf)
+- [Tips and tricks for Design System migrations](https://medium.com/@nonisnilukshi/tips-and-tricks-for-design-system-migrations-5beafb8e58c5)
+- [Lessons from migrating a web application to a design system](https://dev.to/victorandcode/lessons-from-migrating-a-web-application-to-a-design-system-2701)
+- [Pro Tips for Design System Migration in Large Projects](https://medium.com/@houhoucoop/pro-tips-for-ui-library-migration-in-large-projects-d54f0fbcd083)
+- [Migrations are the hardest part of design systems work](https://maecapozzi.com/newsletter/75)
+
+### Design System Adoption Failures
+- [Why most Design Systems fail – and how to cultivate success](https://ui-patterns.com/blog/why-most-design-systems-fail-and-how-to-cultivate-success)
+- [Increasing Design System Adoption: Part 1](https://figr.design/blog/why-design-systems-fail-to-get-adopted)
+- [Why Design Systems Fail - Knapsack](https://www.knapsack.cloud/blog/why-design-systems-fail)
+- [Why Most Design Systems Fail](https://medium.com/@codefarmer/why-most-design-systems-fail-03cf8c93a2d6)
+- [Design System Adoption Pitfalls](https://www.netguru.com/blog/design-system-adoption-pitfalls)
+
+### React & Component Design
+- [Solving Common Design System Implementation Challenges](https://www.uxpin.com/studio/blog/solving-common-design-system-implementation-challenges/)
+- [How to avoid premature abstractions in React](https://www.falldowngoboone.com/blog/how-to-avoid-premature-abstractions-in-react/)
+- [Don't overabstract your components](https://kirjai.com/component-abstraction/)
+- [React Anti-Patterns](https://tylerwray.me/blog/react-anti-patterns/)
+- [6 Common React Anti-Patterns That Are Hurting Your Code Quality](https://itnext.io/6-common-react-anti-patterns-that-are-hurting-your-code-quality-904b9c32e933)
+
+### Tailwind CSS Best Practices
+- [Tailwind CSS - Reusing Styles (Official)](https://tailwindcss.com/docs/reusing-styles) — Context7 /tailwindlabs/tailwindcss.com
+- [Tailwind v4 Design Tokens Migration Guide](https://www.oneminutebranding.com/blog/tailwind-v4-design-tokens)
+- [How to Build a Design Token System for Tailwind](https://hexshift.medium.com/how-to-build-a-design-token-system-for-tailwind-that-scales-forever-84c4c0873e6d)
+- [I was using Tailwind wrong, so you don't have to](https://dev.to/aloisseckar/i-was-using-tailwind-wrong-so-you-dont-have-to-4h7j)
+
+### Design Tokens
+- [Linting Your Design Tokens, what and why](https://www.alwaystwisted.com/articles/linting-your-design-tokens)
+- [Design Tokens Explained: Design Meets Code](https://www.oneminutebranding.com/blog/design-tokens-explained)
+
+### Theming & Dark Mode
+- [Implementing Dark Mode In React Apps Using styled-components](https://www.smashingmagazine.com/2020/04/dark-mode-react-apps-styled-components/)
+- [Implement Dark Mode in Vue/React Component Library](https://medium.com/@magenta2127/implement-dark-mode-in-vue-react-component-library-9fb3f12b4206)
+- [Easy Dark Mode (and Multiple Color Themes!) in React](https://css-tricks.com/easy-dark-mode-and-multiple-color-themes-in-react/)
+
+### Documentation & Testing
+- [Common Design System Documentation Mistakes](https://www.uxpin.com/studio/blog/common-design-system-documentation-mistakes/)
+- [The UI Visual Regression Testing Best Practices Playbook](https://medium.com/@ss-tech/the-ui-visual-regression-testing-best-practices-playbook-dc27db61ebe0)
+- [Keeping a React Design System consistent: using visual regression testing](https://techblog.commercetools.com/keeping-a-react-design-system-consistent-f055160d5166)
+- [Flaky Visual Regression Tests, and what to do about them](https://www.shakacode.com/blog/flaky-visual-regression-tests-and-what-to-do-about-them/)
+
+### Versioning
+- [Design System Version Control: Managing Axiom](https://www.designsystemscollective.com/version-control-for-design-systems-how-we-manage-axiom-3aade0f5c11c)
+- [How to Version Design Systems: 8 Real-World Examples](https://www.supernova.io/blog/8-examples-of-versioning-in-leading-design-systems)
+- [Component Versioning vs. Design System Versioning](https://www.uxpin.com/studio/blog/component-versioning-vs-design-system-versioning/)
+- [Versioning Design Systems](https://medium.com/eightshapes-llc/versioning-design-systems-48cceb5ace4d)
+
+### Official Documentation
+- React.dev - Component composition patterns and anti-patterns (Context7 /reactjs/react.dev)
+- Tailwind CSS - Extracting components and reusing styles (Context7 /tailwindlabs/tailwindcss.com)
+
+---
+
+*Pitfalls research for: CGM Dashboard v1.3 Design Hardening*
+*Researched: 2026-05-07*

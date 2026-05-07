@@ -1,604 +1,845 @@
-# Architecture Research: Customers Page Integration
+# Architecture Research: Design System Integration
 
-**Domain:** Feed mill operations dashboard — Customer management with activity timeline and bin monitoring
-**Researched:** 2026-05-01
+**Domain:** Design system and theming for Next.js/Tailwind dashboard
+**Researched:** 2026-05-07
 **Confidence:** HIGH
 
-## Existing Architecture Analysis
+## Standard Architecture
 
-### Current System Overview
+### System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      Presentation Layer                      │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │ Sidebar  │  │  Header  │  │  Orders  │  │   Mill   │    │
-│  │          │  │  Search  │  │  Table   │  │Production│    │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘    │
-│       │             │              │              │          │
-├───────┴─────────────┴──────────────┴──────────────┴──────────┤
-│                       Service Layer                          │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
-│  │ orders.ts       │  │ notifications.ts│  │ millProd.ts │ │
-│  │ (mock async)    │  │ (mock async)    │  │ (mock async)│ │
-│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│                         Types Layer                          │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │ order.ts │  │settings  │  │millProd  │  │notifs.ts │    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                       Design System Layer                        │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│  │  Tokens  │  │  Theme   │  │  Utils   │  │   Docs   │        │
+│  │   CSS    │  │  Config  │  │   (CVA)  │  │ (.pen)   │        │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──────────┘        │
+│       │             │             │                              │
+│       └─────────────┴─────────────┘                              │
+│                     │                                            │
+├─────────────────────┴────────────────────────────────────────────┤
+│                    Component Library Layer                       │
+├─────────────────────────────────────────────────────────────────┤
+│  Primitives (Atoms)          Composites (Molecules)             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│  │  Button  │  │  Input   │  │   Card   │  │  Table   │        │
+│  │  Badge   │  │  Select  │  │  Panel   │  │Timeline  │        │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘        │
+│       │             │             │             │                │
+├───────┴─────────────┴─────────────┴─────────────┴────────────────┤
+│                     Page-Level Components                        │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   Sidebar    │  │    Header    │  │  KPICards    │          │
+│  │ FilterPills  │  │CustomerDetail│  │OrdersTable   │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘          │
+├─────────────────────────────────────────────────────────────────┤
+│                          App Router Pages                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│  │  orders  │  │customers │  │mill-prod │  │ settings │        │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘        │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Existing Component Responsibilities
+### Component Responsibilities
 
-| Component | Responsibility | Implementation Pattern |
+| Component | Responsibility | Typical Implementation |
 |-----------|----------------|------------------------|
-| Page Components | Route definition, layout composition, data fetching orchestration | Server/Client components with async data loading |
-| Table Components | Data display, filtering, search, row selection | Client components with useState, useEffect, useMemo |
-| Detail Components | Order/entity details, timeline visualization | Client components with derived timeline from status |
-| Service Layer | Mock data with async interface (200-300ms delay) | Async functions returning typed data |
-| Shared UI | StatusBadge, FilterPill, Skeletons | Reusable components with design token integration |
-
-## New Architecture for v1.2 Customers
-
-### Extended System Overview
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Presentation Layer                      │
-├─────────────────────────────────────────────────────────────┤
-│  EXISTING              │              NEW (v1.2)             │
-│  ┌──────────┐          │  ┌──────────┐  ┌──────────┐       │
-│  │  Orders  │          │  │Customers │  │Customer  │       │
-│  │  Table   │          │  │  List    │  │  Detail  │       │
-│  └──────────┘          │  └────┬─────┘  └────┬─────┘       │
-│                        │       │              │             │
-│                        │       │    ┌─────────┴─────────┐   │
-│                        │       │    │ UnifiedTimeline   │   │
-│                        │       │    │ BinVisualization  │   │
-│                        │       │    └───────────────────┘   │
-├────────────────────────┴─────────────────────────────────────┤
-│                       Service Layer                          │
-├─────────────────────────────────────────────────────────────┤
-│  EXISTING              │              NEW (v1.2)             │
-│  ┌─────────────────┐   │  ┌──────────────┐  ┌────────────┐ │
-│  │ orders.ts       │   │  │ customers.ts │  │  bins.ts   │ │
-│  │ millProduction  │   │  │ (mock async) │  │ (mock)     │ │
-│  └─────────────────┘   │  └──────────────┘  └────────────┘ │
-├────────────────────────┴─────────────────────────────────────┤
-│                         Types Layer                          │
-│  EXISTING              │              NEW (v1.2)             │
-│  ┌──────────┐          │  ┌──────────┐  ┌──────────┐       │
-│  │ order.ts │          │  │customer  │  │  bin.ts  │       │
-│  └──────────┘          │  │  .ts     │  │          │       │
-│                        │  └──────────┘  └──────────┘       │
-└────────────────────────┴─────────────────────────────────────┘
-```
-
-### New Component Responsibilities
-
-| Component | Responsibility | Implementation Pattern |
-|-----------|----------------|------------------------|
-| CustomersTable | List customers, search by name, show order status indicators | Reuse OrdersTable pattern with customer-specific columns |
-| CustomerDetail | Display customer header, unified activity timeline, bins | Layout component orchestrating UnifiedTimeline + BinVisualization |
-| UnifiedTimeline | Merge orders, deliveries, bin alerts into single chronological view | Extend OrderDetails timeline pattern with multi-source events |
-| BinVisualization | Show bins with fill level bars, low/critical thresholds | New component with bar chart visualization |
-| CustomersService | Fetch customer list, customer details, customer-specific orders | Mock async service following orders.ts pattern |
-| BinsService | Fetch bin data for customer, calculate fill levels, alert status | Mock async service with BinSentry-style data structure |
+| **Design Tokens** | Single source of truth for colors, spacing, typography, shadows | CSS custom properties in `@theme` block (Tailwind v4) |
+| **Theme Config** | Light/dark mode variants, semantic token aliases | CSS variables with `[data-theme]` selectors |
+| **Variant Utils** | Type-safe component variants with Tailwind classes | Class Variance Authority (CVA) |
+| **Primitives** | Atomic UI elements: buttons, inputs, badges, typography | Reusable components with CVA variants |
+| **Composites** | Molecules combining primitives: cards, panels, tables, forms | Components consuming primitives + custom logic |
+| **Page Components** | Feature-specific complex components | Domain-specific implementations |
 
 ## Recommended Project Structure
 
+### Current State (Existing)
 ```
 src/
-├── app/
-│   ├── customers/              # NEW: Customer routes
-│   │   ├── page.tsx            # Customer list page
-│   │   └── [id]/               # Dynamic customer detail route
-│   │       └── page.tsx        # Customer detail page
-├── components/
-│   ├── CustomersTable.tsx      # NEW: Customer list with search
-│   ├── CustomerDetail.tsx      # NEW: Customer detail layout
-│   ├── UnifiedTimeline.tsx     # NEW: Multi-source timeline
-│   ├── BinVisualization.tsx    # NEW: Bin fill level bars
-│   ├── OrdersTable.tsx         # EXISTING: Keep for /orders route
-│   └── OrderDetails.tsx        # EXISTING: Keep for order-specific details
-├── services/
-│   ├── customers.ts            # NEW: Customer data service
-│   ├── bins.ts                 # NEW: Bin data service
-│   ├── orders.ts               # EXISTING: Reference for customer orders
-│   └── millProduction.ts       # EXISTING: No changes
-├── types/
-│   ├── customer.ts             # NEW: Customer, Activity types
-│   ├── bin.ts                  # NEW: Bin, BinAlert types
-│   ├── order.ts                # EXISTING: May add customerId reference
-│   └── millProduction.ts       # EXISTING: No changes
-├── hooks/                      # EXISTING: Reuse across new components
-│   ├── useDebounce.ts          # For customer search
-│   └── useLocalStorage.ts      # For timeline sort preference
-└── utils/
-    └── formatDate.ts           # EXISTING: Reuse for timeline dates
+├── app/                    # Next.js App Router pages
+│   ├── layout.tsx          # Root layout
+│   ├── globals.css         # CSS tokens (existing but will expand)
+│   ├── orders/page.tsx
+│   ├── customers/[id]/page.tsx
+│   └── mill-production/page.tsx
+├── components/             # Mixed component levels (will reorganize)
+│   ├── FilterPill.tsx      # Has color config (to migrate)
+│   ├── KPICard.tsx         # Hardcoded styles (to migrate)
+│   ├── OrdersTable.tsx     # Page-level component
+│   ├── CustomerDetailHeader.tsx
+│   └── ui/                 # Partial UI separation exists
+│       └── StatusBadge.tsx # Has STATUS_CONFIG (to migrate)
+├── types/                  # TypeScript types
+├── services/               # Mock data services
+└── hooks/                  # React hooks
+```
+
+### Target Structure (After Design System)
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── layout.tsx          # Root layout with theme provider
+│   ├── globals.css         # Expanded design tokens (@theme)
+│   └── [pages]/            # Unchanged
+│
+├── design-system/          # NEW: Design system foundation
+│   ├── tokens/             # Design token definitions
+│   │   ├── colors.css      # Color tokens (including light/dark)
+│   │   ├── typography.css  # Font sizes, weights, line-heights
+│   │   ├── spacing.css     # Margin, padding scales
+│   │   ├── shadows.css     # Box shadows
+│   │   └── index.css       # Aggregates all tokens
+│   │
+│   ├── theme/              # Theming system
+│   │   ├── ThemeProvider.tsx  # Client component for theme switching
+│   │   ├── useTheme.ts     # Hook for theme state
+│   │   └── themes.css      # Light/dark theme overrides
+│   │
+│   └── utils/              # Design system utilities
+│       ├── cn.ts           # Tailwind class merge utility
+│       └── variants.ts     # CVA helper functions
+│
+├── components/             # Reorganized component library
+│   ├── primitives/         # Atomic components (NEW)
+│   │   ├── Button/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Button.test.tsx
+│   │   │   └── index.ts
+│   │   ├── Input/
+│   │   ├── Badge/
+│   │   ├── StatusBadge/    # MIGRATED from ui/
+│   │   └── Typography/     # NEW: Text, Heading components
+│   │
+│   ├── composites/         # Molecule components (NEW)
+│   │   ├── Card/
+│   │   ├── Panel/
+│   │   ├── FormField/      # Label + Input + Error
+│   │   ├── FilterPill/     # MIGRATED from root
+│   │   └── Table/          # Table primitives
+│   │
+│   ├── patterns/           # Page-level components (RENAMED)
+│   │   ├── KPICard.tsx     # MIGRATED from root
+│   │   ├── OrdersTable.tsx
+│   │   ├── CustomerDetailHeader.tsx
+│   │   ├── ActivityTimeline.tsx
+│   │   ├── Sidebar.tsx
+│   │   └── Header.tsx
+│   │
+│   └── ui/                 # DEPRECATED - components migrated
+│       └── skeletons/      # Keep loading states here temporarily
+│
+├── types/                  # TypeScript types (unchanged)
+├── services/               # Mock data services (unchanged)
+└── hooks/                  # React hooks (unchanged)
 ```
 
 ### Structure Rationale
 
-- **app/customers/:** Follows Next.js App Router conventions with dynamic [id] route for customer details
-- **components/:** Keeps flat structure matching existing pattern (no nested /customers folder to avoid over-organization)
-- **services/:** Separate service per domain entity (customers, bins) with mock async pattern
-- **types/:** One type file per domain entity for clear boundaries
+- **design-system/:** Centralizes all design system concerns (tokens, theme, utilities) in one place. Makes it easy to extract into a separate package later if needed. Follows industry standard of separating design system from application code.
+
+- **components/primitives/:** Atomic design principle - smallest reusable units. Each primitive has its own folder with component, tests, and barrel export. These components are purely presentational with no business logic. Uses CVA for type-safe variants.
+
+- **components/composites/:** Molecules combining primitives. More complex than primitives but still generic enough to reuse across pages. Examples: Card (primitive elements + layout), FilterPill (badge + counter), FormField (label + input + error message).
+
+- **components/patterns/:** Page-level components with business logic or domain-specific implementations. These consume primitives and composites but are less likely to be reused across different pages. Can access services, hooks, and contain complex state.
+
+- **Folder-per-component pattern:** Each significant component gets its own folder with index.ts barrel export. Keeps tests, stories (if using Storybook), and related files colocated. Makes components easy to move or extract.
 
 ## Architectural Patterns
 
-### Pattern 1: Unified Activity Timeline
+### Pattern 1: Tailwind v4 @theme with CSS Variables
 
-**What:** Merge events from multiple sources (orders, deliveries, bin alerts) into single chronological timeline
+**What:** Define design tokens as CSS custom properties using the `@theme` directive. Tailwind automatically generates utility classes AND exposes tokens as runtime CSS variables.
 
-**When to use:** Customer detail page needs to show all activity across different systems
+**When to use:** Always for design systems. This is the recommended Tailwind v4 approach for design tokens.
 
 **Trade-offs:**
-- **Pro:** Single view reduces cognitive load, easier to spot patterns
-- **Pro:** Extends existing OrderDetails timeline pattern (familiar code structure)
-- **Con:** More complex data fetching (need to query multiple services)
-- **Con:** Timeline events need common interface despite different source data
+- ✅ Single source of truth for design values
+- ✅ Type-safe utilities auto-generated
+- ✅ Runtime access via CSS variables
+- ✅ Theming support via CSS variable overrides
+- ⚠️ Requires Tailwind v4 (project already uses it)
 
 **Example:**
-```typescript
-// types/customer.ts
-export type ActivityEventType = "order" | "delivery" | "bin_alert" | "order_change";
+```css
+/* app/globals.css */
+@import "tailwindcss";
 
-export interface ActivityEvent {
-  id: string;
-  type: ActivityEventType;
-  timestamp: Date;
-  title: string;
-  description: string;
-  icon: React.ComponentType;
-  color: "primary" | "success" | "error" | "warning";
-  metadata?: Record<string, unknown>; // Type-specific data
+@theme {
+  /* Colors - generates bg-primary, text-primary, etc. */
+  --color-primary: #4fd1c5;
+  --color-primary-dark: #38b2ac;
+
+  /* Status colors - semantic naming */
+  --color-status-success: #48bb78;
+  --color-status-warning: #f59e0b;
+  --color-status-error: #e53e3e;
+
+  /* Spacing - generates gap-*, p-*, m-* utilities */
+  --spacing-card: 18px;
+  --spacing-section: 24px;
+
+  /* Typography - generates text-* utilities */
+  --text-label: 0.6875rem; /* 11px */
+  --text-body: 0.9375rem;  /* 15px */
+
+  /* Shadows - generates shadow-* utilities */
+  --shadow-card: 0 3.5px 5px rgba(0, 0, 0, 0.03);
+
+  /* Border radius - generates rounded-* utilities */
+  --radius-sm: 6px;
+  --radius-card: 12px;
 }
 
-// components/UnifiedTimeline.tsx
-function UnifiedTimeline({ customerId }: { customerId: string }) {
-  const [events, setEvents] = useState<ActivityEvent[]>([]);
+/* These are now available as utilities AND CSS variables */
+/* Utility: class="bg-primary text-body shadow-card" */
+/* Variable: style={{ background: 'var(--color-primary)' }} */
+```
+
+### Pattern 2: Semantic Theming with CSS Variable Overrides
+
+**What:** Separate primitive tokens (raw values) from semantic tokens (meaningful names). Use data attributes to override semantic tokens for theming.
+
+**When to use:** When implementing light/dark mode or multiple theme variants.
+
+**Trade-offs:**
+- ✅ Enables theming without changing component code
+- ✅ Clear semantic meaning (bg-surface vs bg-white)
+- ✅ User preference detection with prefers-color-scheme
+- ⚠️ Requires more CSS setup than single theme
+- ⚠️ Need consistent semantic naming convention
+
+**Example:**
+```css
+/* design-system/theme/themes.css */
+@import "tailwindcss";
+
+/* Light theme (default in :root) */
+@theme {
+  --color-bg-page: #f8f9fa;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #ffffff;
+  --color-text-primary: #2d3748;
+  --color-text-secondary: #a0aec0;
+  --color-border: #e2e8f0;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --color-bg-page: #1a202c;
+  --color-bg-card: #2d3748;
+  --color-bg-elevated: #4a5568;
+  --color-text-primary: #f7fafc;
+  --color-text-secondary: #a0aec0;
+  --color-border: #4a5568;
+
+  /* Status colors might stay the same or adjust for contrast */
+  --color-status-success: #68d391; /* Lighter for dark bg */
+  --color-status-warning: #fbd38d;
+  --color-status-error: #fc8181;
+}
+
+/* Respect user system preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg-page: #1a202c;
+    --color-bg-card: #2d3748;
+    /* ...other dark mode tokens */
+  }
+}
+```
+
+```tsx
+// design-system/theme/ThemeProvider.tsx
+'use client';
+
+import { createContext, useContext, useEffect, useState } from 'react';
+
+type Theme = 'light' | 'dark' | 'system';
+
+const ThemeContext = createContext<{
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+}>({ theme: 'system', setTheme: () => {} });
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('system');
 
   useEffect(() => {
-    // Fetch from multiple sources
-    Promise.all([
-      getCustomerOrders(customerId),
-      getCustomerBinAlerts(customerId),
-      // ... other sources
-    ]).then(([orders, binAlerts]) => {
-      // Transform to common ActivityEvent interface
-      const orderEvents = orders.map(transformOrderToEvent);
-      const alertEvents = binAlerts.map(transformAlertToEvent);
+    const root = document.documentElement;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
 
-      // Merge and sort by timestamp
-      const merged = [...orderEvents, ...alertEvents].sort(
-        (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
-      );
-      setEvents(merged);
-    });
-  }, [customerId]);
+    const effectiveTheme = theme === 'system' ? systemTheme : theme;
+    root.setAttribute('data-theme', effectiveTheme);
+  }, [theme]);
 
-  // Render using existing TimelineItem pattern from OrderDetails
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
+
+export const useTheme = () => useContext(ThemeContext);
 ```
 
-### Pattern 2: Bin Data Service with Calculated Metrics
+### Pattern 3: Class Variance Authority (CVA) for Component Variants
 
-**What:** Service layer calculates fill percentages, days until empty, alert thresholds from raw sensor data
+**What:** Type-safe component variant system using CVA to compose Tailwind classes with proper defaults, compound variants, and TypeScript inference.
 
-**When to use:** Bin monitoring requires derived metrics beyond raw sensor readings
+**When to use:** For all primitive and composite components with multiple visual variants (size, color, state).
 
 **Trade-offs:**
-- **Pro:** Single source of truth for calculation logic
-- **Pro:** Components receive ready-to-display data (no calculation in render)
-- **Con:** Mock service needs realistic calculations to validate UI
+- ✅ Type-safe variant props with autocomplete
+- ✅ Compound variants for complex combinations
+- ✅ Default variants documented in code
+- ✅ Works perfectly with Tailwind utilities
+- ⚠️ Small runtime overhead (negligible)
+- ⚠️ Adds dependency (~3kb gzipped)
 
 **Example:**
-```typescript
-// services/bins.ts
-export interface BinData {
-  id: string;
-  binNumber: string;
-  location: string;
-  capacity: number; // in tons
-  currentLevel: number; // in tons
-  fillPercentage: number; // calculated: (currentLevel / capacity) * 100
-  daysUntilEmpty: number | null; // calculated from consumption rate
-  alertStatus: "normal" | "low" | "critical";
-  lastUpdated: Date;
+```tsx
+// components/primitives/Button/Button.tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const buttonVariants = cva(
+  // Base classes (always applied)
+  'inline-flex items-center justify-center rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-primary text-white hover:bg-primary-dark',
+        secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
+        outline: 'border-2 border-primary text-primary hover:bg-primary/10',
+        ghost: 'text-gray-800 hover:bg-gray-100',
+        danger: 'bg-error text-white hover:bg-error-dark',
+      },
+      size: {
+        sm: 'px-2.5 py-1.5 text-sm',
+        md: 'px-4 py-2 text-base',
+        lg: 'px-6 py-3 text-lg',
+      },
+      fullWidth: {
+        true: 'w-full',
+      },
+    },
+    compoundVariants: [
+      // When primary + large, make text uppercase
+      {
+        variant: 'primary',
+        size: 'lg',
+        className: 'uppercase',
+      },
+    ],
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  isLoading?: boolean;
 }
 
-export async function getCustomerBins(customerId: string): Promise<BinData[]> {
-  await delay(200);
-
-  // Mock data with realistic calculations
-  const rawBins = mockBinSensorData.filter(b => b.customerId === customerId);
-
-  return rawBins.map(bin => {
-    const fillPercentage = (bin.currentLevel / bin.capacity) * 100;
-    const dailyConsumption = bin.avgDailyConsumption || 0;
-    const daysUntilEmpty = dailyConsumption > 0
-      ? Math.round(bin.currentLevel / dailyConsumption)
-      : null;
-
-    let alertStatus: "normal" | "low" | "critical" = "normal";
-    if (fillPercentage <= 10) alertStatus = "critical";
-    else if (fillPercentage <= 25) alertStatus = "low";
-
-    return {
-      ...bin,
-      fillPercentage,
-      daysUntilEmpty,
-      alertStatus,
-    };
-  });
+export function Button({
+  className,
+  variant,
+  size,
+  fullWidth,
+  isLoading,
+  disabled,
+  children,
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      className={buttonVariants({ variant, size, fullWidth, className })}
+      disabled={disabled || isLoading}
+      {...props}
+    >
+      {isLoading ? 'Loading...' : children}
+    </button>
+  );
 }
+
+// Usage with full TypeScript support
+<Button variant="primary" size="lg">Click me</Button>
+<Button variant="outline" size="sm" fullWidth>Submit</Button>
 ```
 
-### Pattern 3: Customer-Order Relationship via Service Aggregation
+### Pattern 4: Migration Strategy - Strangler Fig Pattern
 
-**What:** Customer service aggregates data from orders service to show customer-level stats
+**What:** Incrementally refactor existing components to use the design system without breaking existing pages. Build new primitives alongside old code, then gradually replace usage.
 
-**When to use:** Need to display customer metadata derived from multiple orders
+**When to use:** When migrating an existing codebase to a design system (current situation).
 
 **Trade-offs:**
-- **Pro:** Keeps services decoupled (orders service doesn't know about customers service)
-- **Pro:** Reuses existing orders service without modification
-- **Con:** More service calls (customer service → orders service → data)
+- ✅ Low risk - no big bang rewrites
+- ✅ Delivers value incrementally
+- ✅ Can validate design system with real usage
+- ⚠️ Temporary duplication of components
+- ⚠️ Requires discipline to complete migration
 
 **Example:**
-```typescript
-// services/customers.ts
-import { getOrders } from "./orders";
+```tsx
+// PHASE 1: Build primitive alongside existing code
+// components/primitives/Badge/Badge.tsx (NEW)
+const badgeVariants = cva('inline-flex items-center gap-1 rounded-lg px-2.5 py-1', {
+  variants: {
+    status: {
+      success: 'bg-success-light text-success-dark',
+      warning: 'bg-warning-light text-warning',
+      error: 'bg-error-light text-error',
+      info: 'bg-info-light text-info',
+      neutral: 'bg-gray-100 text-gray-600',
+    },
+    size: {
+      sm: 'text-[10px]',
+      md: 'text-xs',
+    },
+    showDot: {
+      true: 'gap-1.5',
+      false: 'gap-1',
+    },
+  },
+  defaultVariants: { status: 'neutral', size: 'sm', showDot: false },
+});
 
-export interface Customer {
-  id: string;
-  name: string;
-  activeOrdersCount: number;
-  hasChanges: boolean; // true if any order has changes
-  lastOrderDate: Date | null;
+export function Badge({ status, size, showDot, children }: BadgeProps) {
+  return (
+    <div className={badgeVariants({ status, size, showDot })}>
+      {showDot && <div className="h-1.5 w-1.5 rounded-full bg-current" />}
+      {children}
+    </div>
+  );
 }
 
-export async function getCustomers(): Promise<Customer[]> {
-  const orders = await getOrders();
+// PHASE 2: Create adapter for existing StatusBadge
+// components/ui/StatusBadge.tsx (MODIFIED)
+import { Badge } from '@/components/primitives/Badge';
+import { OrderStatus } from '@/types/order';
 
-  // Group by customer
-  const customerMap = new Map<string, Order[]>();
-  orders.forEach(order => {
-    const existing = customerMap.get(order.customer) || [];
-    customerMap.set(order.customer, [...existing, order]);
-  });
+const STATUS_TO_BADGE_MAP: Record<OrderStatus, ComponentProps<typeof Badge>['status']> = {
+  'Pending': 'neutral',
+  'Producing': 'warning',
+  'Ready': 'info',
+  'In Transit': 'info',
+  'Complete': 'success',
+};
 
-  // Transform to Customer objects
-  return Array.from(customerMap.entries()).map(([name, orders]) => {
-    const activeOrders = orders.filter(o =>
-      !["Complete"].includes(o.status)
-    );
-    const hasChanges = orders.some(o => o.hasChanges);
-    const lastOrder = orders.sort((a, b) =>
-      b.createdAt.getTime() - a.createdAt.getTime()
-    )[0];
+export default function StatusBadge({ status }: { status: OrderStatus }) {
+  return (
+    <Badge status={STATUS_TO_BADGE_MAP[status]} size="sm" showDot>
+      {status}
+    </Badge>
+  );
+}
+// Existing code continues to work, now uses design system under the hood
 
-    return {
-      id: nameToId(name), // Generate stable ID from name
-      name,
-      activeOrdersCount: activeOrders.length,
-      hasChanges,
-      lastOrderDate: lastOrder?.createdAt || null,
-    };
-  });
+// PHASE 3: New code uses Badge primitive directly
+// components/patterns/CustomerDetailHeader.tsx (NEW CODE)
+<Badge status="warning" size="md" showDot>Low Inventory</Badge>
+```
+
+### Pattern 5: Composite Components with Compound Pattern
+
+**What:** Build composite components that encapsulate multiple primitives with a compound component API for flexibility.
+
+**When to use:** For composites that have distinct sections but need flexible content (cards, panels, forms).
+
+**Trade-offs:**
+- ✅ Flexible API with type safety
+- ✅ Clear component structure
+- ✅ Easy to understand and maintain
+- ⚠️ Slightly more verbose than single component
+- ⚠️ Requires understanding of compound pattern
+
+**Example:**
+```tsx
+// components/composites/Card/Card.tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const cardVariants = cva('bg-bg-card rounded-card overflow-hidden', {
+  variants: {
+    shadow: {
+      none: '',
+      sm: 'shadow-sm',
+      md: 'shadow-card',
+    },
+    padding: {
+      none: '',
+      sm: 'p-3',
+      md: 'p-4',
+      lg: 'p-6',
+    },
+  },
+  defaultVariants: {
+    shadow: 'md',
+    padding: 'md',
+  },
+});
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement>,
+  VariantProps<typeof cardVariants> {}
+
+function CardRoot({ className, shadow, padding, ...props }: CardProps) {
+  return <div className={cardVariants({ shadow, padding, className })} {...props} />;
+}
+
+function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={`border-b border-border pb-3 ${className}`} {...props} />;
+}
+
+function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  return <h3 className={`text-body font-bold text-text-primary ${className}`} {...props} />;
+}
+
+function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={`pt-3 ${className}`} {...props} />;
+}
+
+function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={`border-t border-border pt-3 mt-3 ${className}`} {...props} />;
+}
+
+// Compound export
+export const Card = Object.assign(CardRoot, {
+  Header: CardHeader,
+  Title: CardTitle,
+  Content: CardContent,
+  Footer: CardFooter,
+});
+
+// Usage
+<Card shadow="md" padding="lg">
+  <Card.Header>
+    <Card.Title>Customer Details</Card.Title>
+  </Card.Header>
+  <Card.Content>
+    {/* Content here */}
+  </Card.Content>
+  <Card.Footer>
+    <Button>Save</Button>
+  </Card.Footer>
+</Card>
+```
+
+### Pattern 6: Server/Client Component Split for Design System
+
+**What:** Keep design system primitives as client components (need interactivity), but allow them to accept server component children via React.ReactNode.
+
+**When to use:** In Next.js App Router when building interactive components that wrap server-rendered content.
+
+**Trade-offs:**
+- ✅ Maximizes server component usage
+- ✅ Reduces client-side JavaScript
+- ✅ Primitives can still be interactive
+- ⚠️ Need to mark components 'use client' appropriately
+- ⚠️ Understanding of RSC boundary important
+
+**Example:**
+```tsx
+// components/primitives/Button/Button.tsx
+'use client'; // This is a client component (needs onClick, hover states)
+
+export function Button({ children, onClick, ...props }: ButtonProps) {
+  return (
+    <button onClick={onClick} {...props}>
+      {children} {/* children can be server components */}
+    </button>
+  );
+}
+
+// app/customers/page.tsx (Server Component)
+import { Button } from '@/components/primitives/Button';
+
+export default async function CustomersPage() {
+  const customers = await fetchCustomers(); // Server-side data fetch
+
+  return (
+    <div>
+      <h1>Customers</h1>
+      {customers.map(customer => (
+        <div key={customer.id}>
+          <p>{customer.name}</p>
+          {/* Button is client component but content is server-rendered */}
+          <Button variant="primary">
+            View {customer.name}
+          </Button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// components/composites/Card/Card.tsx
+// Note: NOT marked 'use client' - this can be a server component
+export function Card({ children, ...props }: CardProps) {
+  return <div {...props}>{children}</div>;
 }
 ```
 
 ## Data Flow
 
-### Customer List Page Flow
+### Design Token Flow
 
 ```
-User navigates to /customers
+.pen Design Files (Source of Truth)
     ↓
-CustomersPage (page.tsx)
+CSS Token Definitions (@theme)
     ↓
-CustomersTable → getCustomers() → orders.ts (aggregation)
-    ↓                    ↓
-Render list      Compute stats per customer
+Tailwind v4 Compiler
     ↓
-User searches → useDebounce → filter in-memory
-    ↓
-Click customer → navigate to /customers/[id]
+    ├─→ Generated Utility Classes (bg-primary, text-body, etc.)
+    └─→ CSS Variables (--color-primary, --text-body, etc.)
+            ↓
+    ┌───────┴───────┐
+    ↓               ↓
+Components      Inline Styles
+(className)     (CSS variables)
 ```
 
-### Customer Detail Page Flow
+### Component Consumption Flow
 
 ```
-User navigates to /customers/[id]
-    ↓
-CustomerDetailPage (page.tsx) → parallel data fetching:
-    ├─→ getCustomerById(id) → customer metadata
-    ├─→ getCustomerOrders(id) → order history
-    └─→ getCustomerBins(id) → bin data with calculations
-    ↓
-CustomerDetail component receives all data
-    ↓
-    ├─→ UnifiedTimeline (merge orders + bins into ActivityEvent[])
-    └─→ BinVisualization (render fill level bars with thresholds)
+Design System Primitives (Button, Input, Badge)
+    ↓ (imported by)
+Design System Composites (Card, FilterPill, FormField)
+    ↓ (imported by)
+Page-Level Patterns (KPICard, OrdersTable, Sidebar)
+    ↓ (imported by)
+Next.js Pages (orders/page.tsx, customers/[id]/page.tsx)
 ```
 
-### Bin Alert Timeline Integration Flow
+### Theme Switching Flow
 
 ```
-getCustomerBins(customerId)
+User Action (Settings page toggle)
     ↓
-Calculate alertStatus per bin
+useTheme hook (setTheme('dark'))
     ↓
-Filter bins with alertStatus !== "normal"
+document.documentElement.setAttribute('data-theme', 'dark')
     ↓
-Transform to ActivityEvent[]
+CSS Variable Overrides Applied ([data-theme="dark"] { ... })
     ↓
-Merge with order events
-    ↓
-Sort by timestamp (desc)
-    ↓
-Render in UnifiedTimeline
+All Components Re-render with New Token Values
 ```
+
+### Key Data Flows
+
+1. **Token cascading:** Primitive tokens → Semantic tokens → Theme overrides → Component usage. This hierarchy makes theming possible without changing component code.
+
+2. **Component composition:** Primitives are imported by composites, composites by patterns, patterns by pages. This ensures changes to primitives cascade properly and prevents circular dependencies.
+
+3. **Server-to-client boundary:** Pages (server) → Patterns (mixed) → Composites (server-compatible) → Primitives (client when interactive). Minimize client components to reduce JavaScript bundle size.
 
 ## Integration Points
 
-### New Routes in Sidebar Navigation
+### New Components → Existing Codebase
 
-**Modification:** `src/components/Sidebar.tsx`
+| Integration | Pattern | Notes |
+|-------------|---------|-------|
+| **globals.css expansion** | Append new @theme tokens to existing file | Keep existing tokens, add new semantic tokens, migrate hardcoded values gradually |
+| **Primitive imports** | Import from @/components/primitives/ | New components use primitives directly |
+| **Existing component migration** | Adapter pattern (see Pattern 4) | Wrap old components with new primitives, keep old API working |
+| **Page-level patterns** | Move to components/patterns/ | Rename only, keep functionality identical initially |
 
-Add Customers to PRODUCTION section:
+### Design System → Application Boundary
 
-```typescript
-import { Users } from "lucide-react";
-
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", href: "/" },
-  { icon: Factory, label: "Production", id: "production", href: "/mill-production" },
-  { icon: ClipboardList, label: "Orders", id: "orders", href: "/orders" },
-  { icon: Users, label: "Customers", id: "customers", href: "/customers" }, // NEW
-  { icon: Package, label: "Inventory", id: "inventory", href: "/inventory" },
-  { icon: Truck, label: "Shipments", id: "shipments", href: "/shipments" },
-];
-```
-
-### Existing Component Reuse
-
-| Existing Component | How to Reuse in v1.2 |
-|--------------------|----------------------|
-| StatusBadge | Reuse for order status in customer detail order history |
-| FilterPill | Reuse for bin alert status filters if needed |
-| TimelineItem (from OrderDetails) | Extract to shared component, reuse in UnifiedTimeline |
-| TableSkeleton | Reuse for CustomersTable loading state |
-| DetailsSkeleton | Reuse for CustomerDetail loading state |
-| useDebounce | Reuse for customer search filtering |
-| useLocalStorage | Reuse for timeline sort order preference |
-| formatDate | Reuse for timeline event dates |
-
-### New Type Definitions
-
-**File:** `src/types/customer.ts`
-
-```typescript
-export interface Customer {
-  id: string;
-  name: string;
-  activeOrdersCount: number;
-  hasChanges: boolean;
-  lastOrderDate: Date | null;
-}
-
-export type ActivityEventType = "order" | "delivery" | "bin_alert" | "order_change";
-
-export interface ActivityEvent {
-  id: string;
-  type: ActivityEventType;
-  timestamp: Date;
-  title: string;
-  description: string;
-  color: "primary" | "success" | "error" | "warning";
-  isPending?: boolean;
-  metadata?: Record<string, unknown>;
-}
-```
-
-**File:** `src/types/bin.ts`
-
-```typescript
-export type BinAlertStatus = "normal" | "low" | "critical";
-
-export interface Bin {
-  id: string;
-  customerId: string;
-  binNumber: string;
-  location: string; // "BIN 1A", "BIN 2B", etc.
-  capacity: number; // tons
-  currentLevel: number; // tons
-  fillPercentage: number; // 0-100
-  daysUntilEmpty: number | null;
-  alertStatus: BinAlertStatus;
-  lastUpdated: Date;
-  avgDailyConsumption?: number; // tons per day
-}
-
-export interface BinAlert {
-  id: string;
-  binId: string;
-  timestamp: Date;
-  alertType: "low" | "critical" | "empty";
-  message: string;
-}
-```
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| **Tokens → Components** | Via Tailwind utilities + CSS variables | Components should ONLY use design tokens, never hardcoded values |
+| **Primitives → Patterns** | Direct imports + TypeScript props | Patterns consume primitive components and compose them |
+| **Design System → Pages** | Through patterns primarily | Pages should rarely import primitives directly, use patterns instead |
+| **Theme → All Layers** | CSS variable overrides cascade automatically | No prop drilling needed, theme changes apply globally |
 
 ## Scaling Considerations
 
 | Scale | Architecture Adjustments |
 |-------|--------------------------|
-| MVP (v1.2) | Mock services with in-memory aggregation (current approach) — sufficient for demo |
-| 10-100 customers | Keep mock services, optimize aggregation with Map/Set for O(n) instead of nested loops |
-| 100-1000 customers | Add backend API, database with indexed customer-order relationships, paginate customer list |
-| Real-time bins | Replace mock bin service with actual BinSentry API integration, WebSocket for live updates |
+| **Current (6.4k LOC)** | Implement design system foundation, migrate components incrementally over 2-3 milestones |
+| **10k-20k LOC** | Extract design system to separate package (@company/design-system), version independently from app |
+| **20k+ LOC or multi-app** | Publish design system to private npm, add Storybook for documentation, implement visual regression testing |
 
 ### Scaling Priorities
 
-1. **First bottleneck:** Customer list aggregation from orders (O(n²) in current pattern)
-   - **Fix:** Use Map to group orders by customer in single pass O(n)
-   - **When:** When customer count > 50 or orders > 500
+1. **First bottleneck: Token inconsistency** - Happens around 10k LOC when multiple pages have hardcoded values. Fix: Complete token migration ASAP, add ESLint rule to prevent hardcoded colors/spacing.
 
-2. **Second bottleneck:** Timeline event merging (fetching from multiple sources sequentially)
-   - **Fix:** Use Promise.all for parallel fetching, pre-compute timeline on backend
-   - **When:** Timeline has > 100 events or > 3 event sources
+2. **Second bottleneck: Component duplication** - Happens when second app/project needs same components. Fix: Extract design system to separate package, use npm workspaces for monorepo if multiple apps exist.
+
+3. **Third bottleneck: Design-dev handoff** - Happens when design team can't verify implementations. Fix: Add Storybook, integrate with Figma, implement visual regression tests with Chromatic.
 
 ## Anti-Patterns
 
-### Anti-Pattern 1: Fetching Orders Multiple Times
+### Anti-Pattern 1: Mixing Hardcoded Values with Design Tokens
 
-**What people do:** Fetch all orders in customer list, then fetch again for customer detail, then again for timeline
+**What people do:** Start using design tokens but leave some hardcoded values in components.
 
-**Why it's wrong:**
-- Wastes network bandwidth
-- Causes loading spinners when data already exists
-- Orders can go stale between fetches
+**Why it's wrong:** Destroys single source of truth. Theming breaks. Some elements don't update with theme changes. Creates maintenance burden tracking down all hardcoded values.
 
 **Do this instead:**
-- Fetch orders once in customer list, pass to detail via state/context if navigating directly
-- OR implement client-side cache (React Query pattern for future)
-- OR accept that detail page re-fetches (acceptable for MVP with 300ms mock delay)
+- Audit codebase for hardcoded hex colors, px values, font sizes
+- Add ESLint rule: `no-hardcoded-colors` plugin
+- During code review, reject any new hardcoded design values
+- Use `eslint-plugin-tailwindcss` to enforce utility usage
 
-### Anti-Pattern 2: Calculating Fill Percentage in Component Render
+### Anti-Pattern 2: Creating Too Many Component Variants
 
-**What people do:**
-```typescript
-// BAD: In BinVisualization component
-const fillPercentage = (bin.currentLevel / bin.capacity) * 100;
+**What people do:** Add variant for every possible visual combination (primary-small-rounded, primary-large-square, secondary-small-rounded, etc.)
+
+**Why it's wrong:** Combinatorial explosion makes components unmaintainable. Should use composition instead. CVA compound variants exist for rare combinations.
+
+**Do this instead:**
+```tsx
+// BAD: Too many variants
+<Button variant="primary-large-rounded-shadow" />
+
+// GOOD: Compose orthogonal properties
+<Button variant="primary" size="large" rounded shadow />
+
+// GOOD: Use CVA compound variants for special cases
+const buttonVariants = cva('...', {
+  variants: {
+    variant: { primary: '...', secondary: '...' },
+    size: { sm: '...', lg: '...' },
+  },
+  compoundVariants: [
+    { variant: 'primary', size: 'lg', className: 'uppercase' }
+  ],
+});
 ```
 
-**Why it's wrong:**
-- Calculation runs on every render (performance hit)
-- Business logic leaks into presentation layer
-- Can't unit test calculation separately
+### Anti-Pattern 3: Creating Primitives with Business Logic
+
+**What people do:** Put API calls, business rules, or domain logic inside primitive components.
+
+**Why it's wrong:** Primitives become coupled to specific use cases, can't be reused across different domains, harder to test and document.
 
 **Do this instead:**
-```typescript
-// GOOD: In bins.ts service
-export async function getCustomerBins(customerId: string): Promise<BinData[]> {
-  const rawBins = await fetchRawBins(customerId);
-  return rawBins.map(bin => ({
-    ...bin,
-    fillPercentage: (bin.currentLevel / bin.capacity) * 100, // Calculate once
-  }));
+- Primitives = pure presentation (Button, Input, Badge)
+- Composites = composition + light logic (FormField, FilterPill)
+- Patterns = business logic + domain data (OrdersTable, CustomerHeader)
+
+```tsx
+// BAD: Primitive with business logic
+function Button({ orderId, onClick }) {
+  const { data: order } = useOrder(orderId); // API call in primitive
+  const canSubmit = order.status === 'pending'; // Business rule
+  return <button disabled={!canSubmit} onClick={onClick}>Submit Order</button>;
+}
+
+// GOOD: Primitive is pure presentation
+function Button({ disabled, onClick, children }) {
+  return <button disabled={disabled} onClick={onClick}>{children}</button>;
+}
+
+// GOOD: Pattern component contains business logic
+function OrderSubmitButton({ orderId }) {
+  const { data: order } = useOrder(orderId);
+  const canSubmit = order.status === 'pending';
+
+  return (
+    <Button disabled={!canSubmit} onClick={() => submitOrder(orderId)}>
+      Submit Order
+    </Button>
+  );
 }
 ```
 
-### Anti-Pattern 3: Hardcoding Bin Alert Thresholds in Components
+### Anti-Pattern 4: Premature Design System Extraction
 
-**What people do:**
-```typescript
-// BAD: Thresholds in component
-const isLow = bin.fillPercentage <= 25;
-const isCritical = bin.fillPercentage <= 10;
-```
+**What people do:** Extract design system to separate package before validating it with real usage.
 
-**Why it's wrong:**
-- Thresholds should be configurable per customer or bin type
-- Duplicates logic if used in multiple places
-- Can't change without code deploy
+**Why it's wrong:** Leads to frequent breaking changes, version mismatch issues, slows down iteration. Design systems need real-world usage to stabilize API.
 
 **Do this instead:**
-```typescript
-// GOOD: Centralize in service or constants
-// types/bin.ts
-export const BIN_THRESHOLDS = {
-  critical: 10,
-  low: 25,
-} as const;
+- Keep design system in same repo initially (monolith)
+- Use strict folder boundaries (design-system/, components/)
+- Extract to package ONLY when:
+  - Used successfully across 3+ pages
+  - API stable for 2+ months
+  - Second application needs it
+  - Team has bandwidth for versioning/publishing
 
-// services/bins.ts
-function calculateAlertStatus(fillPercentage: number): BinAlertStatus {
-  if (fillPercentage <= BIN_THRESHOLDS.critical) return "critical";
-  if (fillPercentage <= BIN_THRESHOLDS.low) return "low";
-  return "normal";
-}
-```
+### Anti-Pattern 5: Skipping the Migration Phase
 
-## Component Build Order
+**What people do:** Build complete design system, then try to migrate all pages at once in one PR.
 
-Based on dependency graph and validation needs:
+**Why it's wrong:** Massive risk, breaks existing functionality, blocks other work, hard to review, all-or-nothing deployment.
 
-### Phase 1: Foundation (Types + Services)
-1. **types/customer.ts** — Define Customer, ActivityEvent interfaces
-2. **types/bin.ts** — Define Bin, BinAlert interfaces
-3. **services/customers.ts** — Mock customer data service with order aggregation
-4. **services/bins.ts** — Mock bin data service with calculations
+**Do this instead:**
+- Use Strangler Fig pattern (Pattern 4)
+- Migrate one page/feature at a time
+- Keep old components working during migration
+- Delete old code only after all usage replaced
+- Each migration = separate PR, can be deployed independently
 
-**Validation:** Service functions return correct TypeScript types, calculations are accurate
+### Anti-Pattern 6: Inconsistent Naming Between Design and Code
 
-### Phase 2: Customer List
-5. **app/customers/page.tsx** — Basic route with layout (reuse orders page pattern)
-6. **components/CustomersTable.tsx** — List view with search (reuse OrdersTable pattern)
+**What people do:** Design files use different names than code (Button/Primary in Figma, PrimaryButton in code).
 
-**Validation:** Can view customer list, search works, indicators show correctly
+**Why it's wrong:** Slows down handoff, causes confusion, makes it harder to find components, breaks design-dev sync.
 
-### Phase 3: Customer Detail Page Structure
-7. **app/customers/[id]/page.tsx** — Dynamic route with data fetching
-8. **components/CustomerDetail.tsx** — Layout shell (header + grid for timeline + bins)
-
-**Validation:** Can navigate to customer detail, header shows correct data
-
-### Phase 4: Timeline
-9. **Extract TimelineItem from OrderDetails** → shared component if needed
-10. **components/UnifiedTimeline.tsx** — Multi-source timeline with ActivityEvent merging
-
-**Validation:** Timeline shows orders and bin alerts merged chronologically
-
-### Phase 5: Bin Visualization
-11. **components/BinVisualization.tsx** — Fill level bars with threshold indicators
-
-**Validation:** Bins display with correct fill levels, colors match alert status
-
-### Phase 6: Integration
-12. **Update Sidebar.tsx** — Add Customers nav item
-13. **Polish & responsive tweaks** — Ensure consistent with existing pages
-
-**Validation:** Full navigation flow works, design tokens applied consistently
-
-## Design Token Usage
-
-Reuse existing tokens from `globals.css`:
-
-**Bin alert colors:**
-- `critical` → `var(--error)` background, `var(--error-dark)` border
-- `low` → `var(--warning)` background, `var(--warning)` border
-- `normal` → `var(--success-light)` background, `var(--success)` border
-
-**Timeline event colors:**
-- Order events → `var(--primary)`
-- Deliveries → `var(--success)`
-- Bin alerts → `var(--error)` (critical), `var(--warning)` (low)
-- Order changes → `var(--warning)`
+**Do this instead:**
+- Establish naming convention before building
+- Use same names in .pen files, component files, and documentation
+- Format: `<Component>` with variants, not `<Variant><Component>`
+- Example: `Button variant="primary"` not `PrimaryButton`
+- Document naming convention in CONVENTIONS.md
 
 ## Sources
 
-**BinSentry Dashboard Patterns:**
-- [BinSentry Dashboard Overview](https://knowledge.binsentry.com/what-is-the-binsentry-horizon-dashboard) — Dashboard features for bin fill level visualization
-- [BinSentry Bin Page Details](https://knowledge.binsentry.com/what-is-bin-page) — Individual bin page structure with level history
+**Tailwind CSS v4 (HIGH confidence):**
+- [Tailwind CSS v4.0 - Theme Variables](https://tailwindcss.com/docs/theme)
+- [Tailwind CSS v4.0 Blog Post](https://tailwindcss.com/blog/tailwindcss-v4)
+- Context7: /tailwindlabs/tailwindcss.com
 
-**Feed Bin Monitoring Systems:**
-- [BinMaster FeedView Software](https://binmaster.com/feedview) — Inventory management software showing data structure and alert patterns
-- [BinMaster Agriculture Level Sensors](https://binmaster.com/agriculture) — Grain bin monitoring with height readings, thresholds, and alerts
-- [BinConnect Livestock Feed Monitoring](https://www.nanolike.com/binconnect/) — Real-time monitoring showing volume tracking and alert systems
+**Class Variance Authority (HIGH confidence):**
+- [CVA Documentation](https://cva.style)
+- Context7: /joe-bell/cva
+- [CVA GitHub Repository](https://github.com/joe-bell/cva)
 
-**Existing Codebase:**
-- `.planning/codebase/ARCHITECTURE.md` — Current Next.js SSR architecture
-- `.planning/codebase/STRUCTURE.md` — Directory layout and naming conventions
-- `src/components/OrderDetails.tsx` — Timeline pattern to extend for UnifiedTimeline
-- `src/services/orders.ts` — Mock service pattern to replicate for customers/bins
+**Next.js App Router Architecture (HIGH confidence):**
+- [Next.js Architecture Documentation](https://nextjs.org/docs/architecture)
+- [Next.js Project Structure](https://nextjs.org/docs/app/getting-started/project-structure)
+- Context7: /vercel/next.js
+
+**Design System Best Practices (MEDIUM confidence):**
+- [Design Systems 101 - Nielsen Norman Group](https://www.nngroup.com/articles/design-systems-101/)
+- [Best Practices for Scalable Component Libraries - UXPin](https://www.uxpin.com/studio/blog/best-practices-for-scalable-component-libraries/)
+- [Building and maintaining component libraries - Vaadin](https://vaadin.com/blog/building-and-maintaining-the-component-library-of-a-design-system)
+
+**Atomic Design (MEDIUM confidence):**
+- [Atomic Design Methodology - Brad Frost](https://atomicdesign.bradfrost.com/chapter-2/)
+- [Atomic Design in Practice](https://blog.logrocket.com/ux-design/atomic-design-components-ui-design/)
+
+**Design Tokens Architecture (MEDIUM confidence):**
+- [The Developer's Guide to Design Tokens and CSS Variables - Penpot](https://penpot.app/blog/the-developers-guide-to-design-tokens-and-css-variables/)
+- [Design Tokens Explained - Contentful](https://www.contentful.com/blog/design-token-system/)
+- [CSS Variables as Design Tokens - Plain English](https://javascript.plainenglish.io/css-variables-as-design-tokens-your-frontends-best-friend-and-why-you-ll-wonder-how-you-lived-5cbc68dd6de8)
+
+**Theming Implementation (MEDIUM confidence):**
+- [Creating Dark and Light Themes with CSS Variables - Medium](https://medium.com/@antonio.hg/creating-dark-and-light-themes-with-css-variables-respecting-user-preferences-and-adding-a-toggle-0ce1f96e592b)
+- [Dark Mode and CSS Variables - Better Programming](https://betterprogramming.pub/dark-mode-and-css-variables-ed6dc250232c)
+
+**Migration Strategy (MEDIUM confidence):**
+- [Refactoring Your Way to a Design System - 24 Ways](https://24ways.org/2017/refactoring-your-way-to-a-design-system/)
+- [How Teams Incrementally Modernize Large Frontend Codebases - AlterSquare](https://altersquare.io/how-teams-incrementally-modernize-large-frontend-codebases/)
+- [Lessons from Migrating to a Design System - DEV](https://dev.to/victorandcode/lessons-from-migrating-a-web-application-to-a-design-system-2701)
+
+**React Component Structure (MEDIUM confidence):**
+- [Component Folder Pattern - Styled Components](https://medium.com/styled-components/component-folder-pattern-ee42df37ec68)
+- [React File Structure - Josh W. Comeau](https://www.joshwcomeau.com/react/file-structure/)
+- [React Folder Structure - Robin Wieruch](https://www.robinwieruch.de/react-folder-structure/)
 
 ---
-*Architecture research for: CGM Dashboard v1.2 Customers Page*
-*Researched: 2026-05-01*
+*Architecture research for: CGM Dashboard Design System Integration*
+*Researched: 2026-05-07*
