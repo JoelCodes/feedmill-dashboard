@@ -2,10 +2,10 @@
 
 ## Milestones
 
-- ✅ **v1.0 MVP** — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
-- ✅ **v1.1 Mill Production Dashboard** — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
-- ✅ **v1.2 Customers Page** — Phases 10-15 ([archived](./milestones/v1.2-ROADMAP.md)) — shipped 2026-05-06
-- 🚧 **v1.3 Design Hardening** — Phases 16-19 (see details below) — in progress
+- v1.0 MVP — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
+- v1.1 Mill Production Dashboard — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
+- v1.2 Customers Page — Phases 10-15 ([archived](./milestones/v1.2-ROADMAP.md)) — shipped 2026-05-06
+- **v1.3 Design Hardening** — Phases 16-19 (see details below) — in progress
 
 ## v1.3 Design Hardening (Phases 16-19)
 
@@ -16,7 +16,7 @@
 
 ### Phases
 
-- [ ] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization
+- [x] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization
 - [ ] **Phase 17: Component Library** - Build reusable primitives (Button, Input, Card, Badge, Theme Toggle)
 - [ ] **Phase 18: Page Migration** - Migrate all pages to design system and eliminate hardcoded values
 - [ ] **Phase 19: Documentation & Accessibility** - Document usage patterns and verify WCAG compliance
@@ -55,8 +55,20 @@ Plans:
   3. Card/Panel component uses compound pattern (Card.Header, Card.Content, Card.Footer) for flexibility
   4. Theme toggle allows users to switch between light and dark modes from any page
   5. StatusBadge component refactored to use design system primitives while maintaining existing API
-**Plans**: TBD
+**Plans**: 5 plans
 **UI hint**: yes
+
+Plans:
+**Wave 1** (parallel)
+- [ ] 17-01-PLAN.md — Button component with CVA variants (COMP-01)
+- [ ] 17-02-PLAN.md — ThemeToggle component with useTheme() hook (COMP-04)
+
+**Wave 2** (depends on Wave 1)
+- [ ] 17-03-PLAN.md — Input/Select/Textarea components with validation states (COMP-02)
+- [ ] 17-04-PLAN.md — Card compound component with dot notation pattern (COMP-03)
+
+**Wave 3** (depends on Wave 2)
+- [ ] 17-05-PLAN.md — StatusBadge refactor to use design tokens (COMP-05)
 
 ### Phase 18: Page Migration
 **Goal**: All existing pages migrated to design system with zero hardcoded values
@@ -88,12 +100,12 @@ Plans:
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
 | v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 5 | In progress | - |
+| v1.3 Design Hardening | 16-19 | 10 | In progress | - |
 
 ---
 
 <details>
-<summary>✅ v1.0 MVP (Phases 0-5) — SHIPPED 2026-04-29</summary>
+<summary>v1.0 MVP (Phases 0-5) — SHIPPED 2026-04-29</summary>
 
 ### Phase 0: Infrastructure
 **Goal**: Foundation for orders table with type-safe data
@@ -144,7 +156,7 @@ Plans:
 </details>
 
 <details>
-<summary>✅ v1.1 Mill Production Dashboard (Phases 6-9) — SHIPPED 2026-04-29</summary>
+<summary>v1.1 Mill Production Dashboard (Phases 6-9) — SHIPPED 2026-04-29</summary>
 
 ### Phase 6: Design
 **Goal**: Status filter pills designed and approved in mill-production.pen
@@ -178,7 +190,7 @@ Plans:
 </details>
 
 <details>
-<summary>✅ v1.2 Customers Page (Phases 10-15) — SHIPPED 2026-05-06</summary>
+<summary>v1.2 Customers Page (Phases 10-15) — SHIPPED 2026-05-06</summary>
 
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
@@ -187,15 +199,15 @@ Plans:
 - [x] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts (COMPLETED 2026-05-05)
 - [x] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding (COMPLETED 2026-05-05)
 
-### Phase 10: Design ✅ COMPLETED
+### Phase 10: Design COMPLETED
 **Goal:** Customers page UI designed and approved in Pencil.dev
 **Depends on:** Nothing (first phase of v1.2)
-**Requirements:** DSGN-01 ✓, DSGN-02 ✓, DSGN-03 ✓
+**Requirements:** DSGN-01, DSGN-02, DSGN-03
 **Success Criteria** (what must be TRUE):
-  1. ✅ customers.pen file created with customer list view design
-  2. ✅ customer-detail.pen file created with detail page layout (header, timeline, bins)
-  3. ✅ Bin visualization component designed with fill bars and alert states
-  4. ✅ Design reviewed and approved before implementation begins
+  1. customers.pen file created with customer list view design
+  2. customer-detail.pen file created with detail page layout (header, timeline, bins)
+  3. Bin visualization component designed with fill bars and alert states
+  4. Design reviewed and approved before implementation begins
 **Plans:** 1 plan (completed)
 
 Plans:
@@ -218,17 +230,17 @@ Plans:
 - [x] 11-02-PLAN.md — Customer service with stats aggregation (TDD)
 - [x] 11-03-PLAN.md — Bin service with customer filtering (TDD)
 
-### Phase 12: Customer List Page ✅ COMPLETED
+### Phase 12: Customer List Page COMPLETED
 **Goal:** Users can search and view customers with status indicators
 **Depends on:** Phase 11 (requires customer service and types)
-**Requirements:** CUST-01 ✓, CUST-02 ✓, CUST-03 ✓, CUST-04 ✓
+**Requirements:** CUST-01, CUST-02, CUST-03, CUST-04
 **Success Criteria** (what must be TRUE):
-  1. ✅ User can type in search box and see customer list filter by name in real-time
-  2. ✅ Customer row displays order count badge showing number of active orders
-  3. ✅ Customer row displays changes flag indicator when customer has orders with changes
-  4. ✅ Customer row displays bin alert indicator (yellow for low, red for critical)
-  5. ✅ Customer list sorts by most recent activity by default
-  6. ✅ Implementation matches customers.pen design file
+  1. User can type in search box and see customer list filter by name in real-time
+  2. Customer row displays order count badge showing number of active orders
+  3. Customer row displays changes flag indicator when customer has orders with changes
+  4. Customer row displays bin alert indicator (yellow for low, red for critical)
+  5. Customer list sorts by most recent activity by default
+  6. Implementation matches customers.pen design file
 **Plans:** 3 plans (completed)
 
 Plans:
@@ -239,16 +251,16 @@ Plans:
 **Wave 2**
 - [x] 12-02-PLAN.md — Customer list page with search and status indicators
 
-### Phase 13: Customer Detail Infrastructure ✅ COMPLETED
+### Phase 13: Customer Detail Infrastructure COMPLETED
 **Goal:** Customer detail page displays header and summary information
 **Depends on:** Phase 12 (requires customer routing established)
-**Requirements:** CDET-01 ✓, CDET-02 ✓, CDET-03 ✓
+**Requirements:** CDET-01, CDET-02, CDET-03
 **Success Criteria** (what must be TRUE):
-  1. ✅ User can click customer row and navigate to detail page at /customers/[id]
-  2. ✅ Customer detail page shows header with customer name and location
-  3. ✅ Customer detail page shows summary stats (total orders, active bins, recent activity count)
-  4. ✅ User can click order in history and navigate to orders page with that order selected
-  5. ✅ Implementation matches customer-detail.pen design file
+  1. User can click customer row and navigate to detail page at /customers/[id]
+  2. Customer detail page shows header with customer name and location
+  3. Customer detail page shows summary stats (total orders, active bins, recent activity count)
+  4. User can click order in history and navigate to orders page with that order selected
+  5. Implementation matches customer-detail.pen design file
 **Plans:** 3 plans (completed)
 
 Plans:
@@ -259,17 +271,17 @@ Plans:
 **Wave 2**
 - [x] 13-03-PLAN.md — Customer detail page route with Server Component data fetching
 
-### Phase 14: Activity Timeline ✅ COMPLETED
+### Phase 14: Activity Timeline COMPLETED
 **Goal:** Users can see unified chronological activity across orders, deliveries, and bin alerts
 **Depends on:** Phase 13 (requires detail page infrastructure)
-**Requirements:** TMLN-01 ✓, TMLN-02 ✓, TMLN-03 ✓
+**Requirements:** TMLN-01, TMLN-02, TMLN-03
 **Success Criteria** (what must be TRUE):
-  1. ✅ Timeline displays events from orders, deliveries, and bin alerts merged chronologically
-  2. ✅ User can click collapsed timeline event to expand and see full details
-  3. ✅ User can click expanded timeline event to collapse back to summary view
-  4. ✅ Expanded order event shows inline summary with link to full order details
-  5. ✅ Timeline handles 100+ events without performance degradation or memory leaks
-  6. ✅ Implementation matches customer-detail.pen timeline section design
+  1. Timeline displays events from orders, deliveries, and bin alerts merged chronologically
+  2. User can click collapsed timeline event to expand and see full details
+  3. User can click expanded timeline event to collapse back to summary view
+  4. Expanded order event shows inline summary with link to full order details
+  5. Timeline handles 100+ events without performance degradation or memory leaks
+  6. Implementation matches customer-detail.pen timeline section design
 **Plans:** 3 plans (completed)
 
 Plans:
@@ -280,16 +292,16 @@ Plans:
 **Wave 2**
 - [x] 14-03-PLAN.md — Integrate ActivityTimeline into customer detail page
 
-### Phase 15: Bin Visualization ✅ COMPLETED
+### Phase 15: Bin Visualization COMPLETED
 **Goal:** Users can see bin fill levels with visual thresholds
 **Depends on:** Phase 13 (requires detail page layout)
-**Requirements:** BIN-01 ✓, BIN-02 ✓, BIN-03 ✓
+**Requirements:** BIN-01, BIN-02, BIN-03
 **Success Criteria** (what must be TRUE):
-  1. ✅ Each bin displays vertical fill level bar showing percentage filled
-  2. ✅ Bin bar color changes based on threshold (green normal, yellow low, red critical)
-  3. ✅ Customer detail page displays all customer bins in horizontal row layout
-  4. ✅ Bin gauge shows metadata (location code, feed type) below gauge
-  5. ✅ Implementation matches customer-detail.pen bin visualization design
+  1. Each bin displays vertical fill level bar showing percentage filled
+  2. Bin bar color changes based on threshold (green normal, yellow low, red critical)
+  3. Customer detail page displays all customer bins in horizontal row layout
+  4. Bin gauge shows metadata (location code, feed type) below gauge
+  5. Implementation matches customer-detail.pen bin visualization design
 **Plans:** 2 plans (completed)
 
 Plans:
