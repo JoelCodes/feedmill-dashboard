@@ -92,7 +92,7 @@ export default function Header({ onSearch }: HeaderProps) {
       {/* Right Side - Actions */}
       <div className="flex items-center gap-4">
         {/* Search */}
-        <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-2 rounded-lg bg-[var(--bg-card)] px-3 py-2 shadow-[var(--shadow-sm)]">
           <Search className="text-text-secondary h-4 w-4" />
           <input
             type="text"
