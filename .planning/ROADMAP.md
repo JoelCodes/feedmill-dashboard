@@ -33,7 +33,17 @@
   3. CVA and utility functions (cn) available for all component development
   4. ESLint blocks any new hardcoded color or spacing values in code
   5. Component library .pen file exists as single source of truth for design tokens
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+**Wave 1** (parallel)
+- [ ] 16-01-PLAN.md — Expand token system with interactive states and spacing scale (FOUND-01)
+- [ ] 16-02-PLAN.md — Install CVA + tailwind-merge + clsx and create cn() utility (FOUND-03)
+- [ ] 16-03-PLAN.md — Integrate next-themes for dark mode with flash prevention (FOUND-02)
+
+**Wave 2** (depends on Wave 1)
+- [ ] 16-04-PLAN.md — Create ESLint rule blocking hardcoded hex/px values (FOUND-04)
+- [ ] 16-05-PLAN.md — Create component-library.pen and token documentation (DES-01, DES-02, DES-03)
 
 ### Phase 17: Component Library
 **Goal**: Reusable component primitives available for page migration
@@ -78,7 +88,7 @@
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
 | v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 0 | In progress | - |
+| v1.3 Design Hardening | 16-19 | 5 | In progress | - |
 
 ---
 
