@@ -8,6 +8,9 @@ import {
   UserPreferences,
   defaultPreferences,
 } from "@/types/settings";
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function SettingsPage() {
   const [savedPreferences, setSavedPreferences] = useLocalStorage<UserPreferences>(
@@ -16,7 +19,9 @@ export default function SettingsPage() {
   );
   const [formState, setFormState] = useState<UserPreferences>(savedPreferences);
 
-  const hasChanges = JSON.stringify(formState) !== JSON.stringify(savedPreferences);
+  // Only track density changes since theme is managed by ThemeToggle via next-themes
+  const hasChanges = formState.density !== savedPreferences.density ||
+    JSON.stringify(formState.notifications) !== JSON.stringify(savedPreferences.notifications);
 
   const updateNotificationSetting = (
     key: keyof UserPreferences["notifications"],
@@ -28,13 +33,6 @@ export default function SettingsPage() {
         ...prev.notifications,
         [key]: value,
       },
-    }));
-  };
-
-  const updateTheme = (value: "light" | "dark") => {
-    setFormState((prev) => ({
-      ...prev,
-      theme: value,
     }));
   };
 
@@ -104,48 +102,34 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-bold">Theme</label>
-                <select
-                  value={formState.theme}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === 'light' || value === 'dark') {
-                      updateTheme(value);
-                    }
-                  }}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
-                >
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                </select>
+                <ThemeToggle />
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold">Display Density</label>
-                <select
-                  value={formState.density}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === 'comfortable' || value === 'compact') {
-                      updateDensity(value);
-                    }
-                  }}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
-                >
-                  <option value="comfortable">Comfortable</option>
-                  <option value="compact">Compact</option>
-                </select>
-              </div>
+              <Select
+                label="Display Density"
+                options={[
+                  { value: "comfortable", label: "Comfortable" },
+                  { value: "compact", label: "Compact" },
+                ]}
+                value={formState.density}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "comfortable" || value === "compact") {
+                    updateDensity(value);
+                  }
+                }}
+              />
             </div>
           </section>
 
           {/* Save Button */}
-          <button
-            onClick={handleSave}
+          <Button
+            variant="primary"
             disabled={!hasChanges}
-            className="rounded-lg bg-primary px-4 py-2 text-white disabled:opacity-50"
+            onClick={handleSave}
           >
             Save Preferences
-          </button>
+          </Button>
         </div>
       </main>
     </div>
