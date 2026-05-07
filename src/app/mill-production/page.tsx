@@ -9,7 +9,7 @@ import {
 import { getProductionOrders } from "@/services/millProduction";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
-import FilterPill, { FilterPillColorConfig } from "@/components/FilterPill";
+import FilterPill, { FilterPillColorConfig } from "@/components/ui/FilterPill";
 
 const STATE_ORDER: ProductionState[] = [
   "Completed",
@@ -179,14 +179,14 @@ function LoadingSkeleton() {
       {[1, 2, 3].map((col) => (
         <div key={col} className="flex flex-1 flex-col gap-5">
           <div>
-            <div className="h-8 w-24 animate-pulse rounded bg-gray-200" />
-            <div className="mt-1 h-5 w-32 animate-pulse rounded bg-gray-200" />
+            <div className="h-8 w-24 animate-pulse rounded bg-[var(--divider)]" />
+            <div className="mt-1 h-5 w-32 animate-pulse rounded bg-[var(--divider)]" />
           </div>
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((card) => (
               <div
                 key={card}
-                className="h-24 animate-pulse rounded-xl bg-gray-200"
+                className="h-24 animate-pulse rounded-xl bg-[var(--divider)]"
               />
             ))}
           </div>
