@@ -534,22 +534,25 @@ export default function FilterPill({ label, count, isActive, onClick }: FilterPi
 
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Hardcoded value → token mapping table format**
    - What we know: Decision D-04 requires upfront mapping table in first plan
    - What's unclear: Preferred format (Markdown table? JSON? Inline comments?)
    - Recommendation: Use Markdown table in first plan (01-settings-migration) documenting all common mappings discovered via ESLint; subsequent plans reference this table
+   - **RESOLVED:** Use Markdown table format. Already documented in 18-PATTERNS.md "Hardcoded Value → Token Mapping Table" section.
 
 2. **Arbitrary values without token equivalents**
    - What we know: ESLint blocks `[Npx]` patterns; not all px values have token equivalents (e.g., icon sizes)
    - What's unclear: When to request new tokens vs. when to document exception
    - Recommendation: If value used in 3+ places, create token; if single-use, document exception with comment `// No token: icon-specific size`
+   - **RESOLVED:** Apply 3+ uses rule. Exception pattern documented in 18-PATTERNS.md shared patterns section.
 
 3. **Visual regression testing scope**
    - What we know: 179 passing tests validate behavior; visual regression adds screenshot comparison [CITED: sparkbox.com/foundry]
    - What's unclear: Whether to add visual regression tooling during Phase 18 or defer
    - Recommendation: Defer visual regression to future phase; existing tests + token usage tests sufficient for validation
+   - **RESOLVED:** Defer visual regression to future phase. Token usage tests + ESLint enforcement sufficient for Phase 18.
 
 ## Environment Availability
 
