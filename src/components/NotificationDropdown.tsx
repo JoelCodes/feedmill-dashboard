@@ -60,7 +60,7 @@ export default function NotificationDropdown({
         (dropdownRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
       }}
       tabIndex={-1}
-      className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-white shadow-lg focus:outline-none"
+      className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-[var(--bg-card)] shadow-lg focus:outline-none"
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-label="Notifications"

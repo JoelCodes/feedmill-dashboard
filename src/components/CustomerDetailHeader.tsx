@@ -15,7 +15,7 @@ export default function CustomerDetailHeader({
   bins = [],
 }: CustomerDetailHeaderProps) {
   return (
-    <div className="rounded-[var(--radius-xl)] bg-white p-5 shadow-[var(--shadow-sm)]">
+    <div className="rounded-[var(--radius-xl)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-sm)]">
       <div className="flex items-start justify-between">
         {/* Left - Contact Card */}
         <div className="flex flex-col gap-1">

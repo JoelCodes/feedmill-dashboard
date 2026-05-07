@@ -67,7 +67,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
   }, [orders]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-white p-5 shadow-[var(--shadow-sm)]">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-sm)]">
       {/* Search Bar */}
       <div className="relative">
         <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />

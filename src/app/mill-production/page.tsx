@@ -78,7 +78,7 @@ function ProductionCard({ order }: { order: ProductionOrder }) {
   const borderColor = STATE_COLORS[order.state].border;
 
   return (
-    <div className="relative overflow-hidden rounded-r-xl bg-white shadow-card">
+    <div className="relative overflow-hidden rounded-r-xl bg-[var(--bg-card)] shadow-card">
       <div
         className="absolute left-0 top-0 h-full w-1 rounded-l-xl"
         style={{ backgroundColor: borderColor }}

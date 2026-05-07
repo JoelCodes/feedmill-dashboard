@@ -247,7 +247,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-white p-5.25 shadow-[var(--shadow-sm)]">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-card)] p-5.25 shadow-[var(--shadow-sm)]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
