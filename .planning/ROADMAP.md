@@ -90,7 +90,7 @@ Plans:
 
 **Wave 2** (depends on Wave 1)
 - [x] 18-03-PLAN.md — Migrate Mill Production page and update KPICard, Sidebar, Header (MIG-03)
-- [ ] 18-04-PLAN.md — Extract BinGauge and ActivityTimeline to ui/ as Gauge and Timeline (MIG-02)
+- [x] 18-04-PLAN.md — Extract BinGauge and ActivityTimeline to ui/ as Gauge and Timeline (MIG-02)
 
 **Wave 3** (depends on Wave 2)
 - [ ] 18-05-PLAN.md — Migrate Orders page (OrdersTable, OrderDetails) (MIG-01)

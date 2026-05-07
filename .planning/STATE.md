@@ -28,24 +28,24 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 Phase: 17 (component-library) — EXECUTING
 Plan: 5 of 5
 **Phase:** 18
-**Plan:** 3 of 7
+**Plan:** 4 of 7
 **Status:** Executing
-**Progress:** [████░░░░░░] 43%
+**Progress:** [██████░░░░] 57%
 
-Last activity: 2026-05-07 -- 18-03 complete: Mill Production page and layout components migrated to tokens
+Last activity: 2026-05-07 -- 18-04 complete: Gauge and Timeline components extracted to ui/
 
 **Active work:**
 
-- Phase 18 in progress (3/7 plans complete)
-- Next: 18-04 (Orders page migration)
+- Phase 18 in progress (4/7 plans complete)
+- Next: 18-05 (Orders page migration)
 
 **Recent accomplishment:**
 
-- 18-03 complete: Mill Production page, KPICard, Sidebar, Header migrated
-- Fixed Sidebar text-[--primary] typo bug
-- KPICard now uses Card compound component
-- 10 token replacements across 4 files
-- 209/209 tests passing
+- 18-04 complete: Gauge and Timeline extracted to ui/ with design tokens
+- Generic APIs: label/sublabel instead of locationCode/feedType
+- Card component wraps Timeline (provides shadow/radius tokens)
+- 30 tests passing (14 Gauge + 16 Timeline)
+- Backwards-compatible exports: BinGauge, ActivityTimeline
 
 ## Performance Metrics
 
@@ -85,6 +85,7 @@ Last activity: 2026-05-07 -- 18-03 complete: Mill Production page and layout com
 | 18 | 01 | 69s | 1 | 1 |
 | 18 | 02 | 180s | 2 | 2 |
 | 18 | 03 | 300s | 4 | 4 |
+| 18 | 04 | 480s | 4 | 4 |
 
 **Historical (v1.0-v1.1):**
 
