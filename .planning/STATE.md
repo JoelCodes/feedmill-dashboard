@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Design Hardening
 status: executing
-last_updated: "2026-05-07T21:28:15.266Z"
-last_activity: 2026-05-07 -- Completed 17-01-PLAN.md (Button component)
+last_updated: "2026-05-07T21:35:03.000Z"
+last_activity: 2026-05-07 -- Completed 17-05-PLAN.md (StatusBadge Token Migration)
 progress:
   total_phases: 20
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 10
-  completed_plans: 8
-  percent: 80
+  completed_plans: 10
+  percent: 100
 ---
 
 # Project State
@@ -26,24 +26,25 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 ## Current Position
 
 Phase: 17 (component-library) — EXECUTING
-Plan: 3 of 5
+Plan: 5 of 5
 **Phase:** 17
-**Plan:** 17-03 (Form Input Components) — COMPLETE
+**Plan:** 17-05 (StatusBadge Token Migration) — COMPLETE
 **Status:** Executing Phase 17
-**Progress:** [████████░░] 80%
+**Progress:** [██████████] 100%
 
-Last activity: 2026-05-07 -- Completed 17-03-PLAN.md (Form Input Components)
+Last activity: 2026-05-07 -- Completed 17-05-PLAN.md (StatusBadge Token Migration)
 
 **Active work:**
 
-- Phase 17 in progress (3/5 plans complete)
-- Next: 17-04 (Card compound component)
+- Phase 17 in progress (5/5 plans complete)
+- Next: Ready for phase transition
 
 **Recent accomplishment:**
 
-- 17-03 complete: Input, Select, Textarea components with validation states
-- COMP-02 requirement delivered
-- 24/24 tests passing (10 Input + 7 Select + 7 Textarea)
+- 17-05 complete: StatusBadge refactored to use design tokens
+- COMP-05 requirement delivered
+- 10/10 tests passing (StatusBadge token verification)
+- Dark mode support enabled
 
 ## Performance Metrics
 
@@ -79,6 +80,7 @@ Last activity: 2026-05-07 -- Completed 17-03-PLAN.md (Form Input Components)
 | 15 | 02 | 131s | 2 | 3 |
 | 17 | 01 | 84s | 1 | 2 |
 | 17 | 03 | 180s | 3 | 6 |
+| 17 | 05 | 88s | 2 | 2 |
 
 **Historical (v1.0-v1.1):**
 

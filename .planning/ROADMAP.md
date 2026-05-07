@@ -68,7 +68,7 @@ Plans:
 - [ ] 17-04-PLAN.md — Card compound component with dot notation pattern (COMP-03)
 
 **Wave 3** (depends on Wave 2)
-- [ ] 17-05-PLAN.md — StatusBadge refactor to use design tokens (COMP-05)
+- [x] 17-05-PLAN.md — StatusBadge refactor to use design tokens (COMP-05)
 
 ### Phase 18: Page Migration
 **Goal**: All existing pages migrated to design system with zero hardcoded values
