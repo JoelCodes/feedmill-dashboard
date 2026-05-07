@@ -5,8 +5,82 @@
 - ✅ **v1.0 MVP** — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
 - ✅ **v1.1 Mill Production Dashboard** — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
 - ✅ **v1.2 Customers Page** — Phases 10-15 ([archived](./milestones/v1.2-ROADMAP.md)) — shipped 2026-05-06
+- 🚧 **v1.3 Design Hardening** — Phases 16-19 (see details below) — in progress
 
-## Phases
+## v1.3 Design Hardening (Phases 16-19)
+
+**Goal:** Establish a unified design system with tokens, components, and theming — then migrate existing pages to use it.
+
+**Started:** 2026-05-07
+**Status:** In progress
+
+### Phases
+
+- [ ] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization
+- [ ] **Phase 17: Component Library** - Build reusable primitives (Button, Input, Card, Badge, Theme Toggle)
+- [ ] **Phase 18: Page Migration** - Migrate all pages to design system and eliminate hardcoded values
+- [ ] **Phase 19: Documentation & Accessibility** - Document usage patterns and verify WCAG compliance
+
+## Phase Details
+
+### Phase 16: Foundation & Design System Setup
+**Goal**: Design token system and theme infrastructure ready for component development
+**Depends on**: Nothing (first phase of v1.3)
+**Requirements**: FOUND-01, FOUND-02, FOUND-03, FOUND-04, DES-01, DES-02, DES-03
+**Success Criteria** (what must be TRUE):
+  1. Semantic token system defines all colors, typography, spacing, and shadows using two-tier naming
+  2. Light and dark themes switch without flash, with theme preference persisted across sessions
+  3. CVA and utility functions (cn) available for all component development
+  4. ESLint blocks any new hardcoded color or spacing values in code
+  5. Component library .pen file exists as single source of truth for design tokens
+**Plans**: TBD
+
+### Phase 17: Component Library
+**Goal**: Reusable component primitives available for page migration
+**Depends on**: Phase 16
+**Requirements**: COMP-01, COMP-02, COMP-03, COMP-04, COMP-05
+**Success Criteria** (what must be TRUE):
+  1. Button component supports all variants (primary/secondary/ghost/destructive) and sizes (sm/md/lg)
+  2. Form inputs (text, number, select, textarea) show validation states and have proper ARIA attributes
+  3. Card/Panel component uses compound pattern (Card.Header, Card.Content, Card.Footer) for flexibility
+  4. Theme toggle allows users to switch between light and dark modes from any page
+  5. StatusBadge component refactored to use design system primitives while maintaining existing API
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 18: Page Migration
+**Goal**: All existing pages migrated to design system with zero hardcoded values
+**Depends on**: Phase 17
+**Requirements**: MIG-01, MIG-02, MIG-03, MIG-04, MIG-05
+**Success Criteria** (what must be TRUE):
+  1. Orders page (table, filter pills, status badges, cards) uses only design system tokens and components
+  2. Customers page (list, detail header, timeline, bin gauges) uses only design system tokens and components
+  3. Mill Production page (production cards, filter pills, columns) uses only design system tokens and components
+  4. Settings page integrated with theme toggle and uses design system components
+  5. ESLint reports zero violations for hardcoded colors or spacing across all migrated pages
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 19: Documentation & Accessibility
+**Goal**: Design system documented and accessible to all users
+**Depends on**: Phase 18
+**Requirements**: DOC-01, DOC-02, DOC-03
+**Success Criteria** (what must be TRUE):
+  1. Token usage documentation clearly explains when to use each semantic token
+  2. Component guidelines provide usage examples with do/don't patterns for all components
+  3. All components pass WCAG 2.1 AA automated testing and manual screen reader verification
+**Plans**: TBD
+
+## Progress
+
+| Milestone | Phases | Plans | Status | Shipped |
+|-----------|--------|-------|--------|---------|
+| v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
+| v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
+| v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
+| v1.3 Design Hardening | 16-19 | 0 | In progress | - |
+
+---
 
 <details>
 <summary>✅ v1.0 MVP (Phases 0-5) — SHIPPED 2026-04-29</summary>
@@ -217,16 +291,9 @@ Plans:
 
 </details>
 
-## Progress
-
-| Milestone | Phases | Plans | Status | Shipped |
-|-----------|--------|-------|--------|---------|
-| v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
-| v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-
 ---
 *Roadmap created: 2026-03-11*
 *v1.0 shipped: 2026-04-29*
 *v1.1 shipped: 2026-04-29*
 *v1.2 shipped: 2026-05-06*
+*v1.3 started: 2026-05-07*

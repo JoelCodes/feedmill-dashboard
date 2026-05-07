@@ -76,32 +76,32 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | TBD | Pending |
-| FOUND-02 | TBD | Pending |
-| FOUND-03 | TBD | Pending |
-| FOUND-04 | TBD | Pending |
-| COMP-01 | TBD | Pending |
-| COMP-02 | TBD | Pending |
-| COMP-03 | TBD | Pending |
-| COMP-04 | TBD | Pending |
-| COMP-05 | TBD | Pending |
-| MIG-01 | TBD | Pending |
-| MIG-02 | TBD | Pending |
-| MIG-03 | TBD | Pending |
-| MIG-04 | TBD | Pending |
-| MIG-05 | TBD | Pending |
-| DOC-01 | TBD | Pending |
-| DOC-02 | TBD | Pending |
-| DOC-03 | TBD | Pending |
-| DES-01 | TBD | Pending |
-| DES-02 | TBD | Pending |
-| DES-03 | TBD | Pending |
+| FOUND-01 | Phase 16 | Pending |
+| FOUND-02 | Phase 16 | Pending |
+| FOUND-03 | Phase 16 | Pending |
+| FOUND-04 | Phase 16 | Pending |
+| DES-01 | Phase 16 | Pending |
+| DES-02 | Phase 16 | Pending |
+| DES-03 | Phase 16 | Pending |
+| COMP-01 | Phase 17 | Pending |
+| COMP-02 | Phase 17 | Pending |
+| COMP-03 | Phase 17 | Pending |
+| COMP-04 | Phase 17 | Pending |
+| COMP-05 | Phase 17 | Pending |
+| MIG-01 | Phase 18 | Pending |
+| MIG-02 | Phase 18 | Pending |
+| MIG-03 | Phase 18 | Pending |
+| MIG-04 | Phase 18 | Pending |
+| MIG-05 | Phase 18 | Pending |
+| DOC-01 | Phase 19 | Pending |
+| DOC-02 | Phase 19 | Pending |
+| DOC-03 | Phase 19 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 20 total
-- Mapped to phases: 0
-- Unmapped: 20 (pending roadmap creation)
+- Mapped to phases: 20/20 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-07*
-*Last updated: 2026-05-07 after initial definition*
+*Last updated: 2026-05-07 after roadmap creation*
