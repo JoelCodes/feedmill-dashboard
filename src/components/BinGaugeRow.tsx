@@ -1,5 +1,5 @@
 import { Bin } from '@/types/bin';
-import { BinGauge } from './BinGauge';
+import { Gauge } from '@/components/ui/Gauge';
 
 interface BinGaugeRowProps {
   bins: Bin[];
@@ -23,11 +23,11 @@ export function BinGaugeRow({ bins }: BinGaugeRowProps) {
       className="flex flex-row gap-6 items-end"
     >
       {bins.map((bin) => (
-        <BinGauge
+        <Gauge
           key={bin.id}
           fillPercentage={bin.fillPercentage}
-          locationCode={bin.locationCode}
-          feedType={bin.feedType}
+          label={bin.locationCode}
+          sublabel={bin.feedType}
         />
       ))}
     </div>
