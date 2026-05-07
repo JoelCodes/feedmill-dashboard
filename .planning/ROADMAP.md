@@ -17,7 +17,7 @@
 ### Phases
 
 - [x] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization
-- [ ] **Phase 17: Component Library** - Build reusable primitives (Button, Input, Card, Badge, Theme Toggle)
+- [x] **Phase 17: Component Library** - Build reusable primitives (Button, Input, Card, Badge, Theme Toggle)
 - [ ] **Phase 18: Page Migration** - Migrate all pages to design system and eliminate hardcoded values
 - [ ] **Phase 19: Documentation & Accessibility** - Document usage patterns and verify WCAG compliance
 
@@ -80,8 +80,26 @@ Plans:
   3. Mill Production page (production cards, filter pills, columns) uses only design system tokens and components
   4. Settings page integrated with theme toggle and uses design system components
   5. ESLint reports zero violations for hardcoded colors or spacing across all migrated pages
-**Plans**: TBD
+**Plans**: 7 plans
 **UI hint**: yes
+
+Plans:
+**Wave 1** (parallel)
+- [ ] 18-01-PLAN.md — Migrate Settings page to design system components (MIG-04)
+- [ ] 18-02-PLAN.md — Extract FilterPill to ui/ with token-based styling (MIG-01, MIG-03)
+
+**Wave 2** (depends on Wave 1)
+- [ ] 18-03-PLAN.md — Migrate Mill Production page and update KPICard, Sidebar, Header (MIG-03)
+- [ ] 18-04-PLAN.md — Extract BinGauge and ActivityTimeline to ui/ as Gauge and Timeline (MIG-02)
+
+**Wave 3** (depends on Wave 2)
+- [ ] 18-05-PLAN.md — Migrate Orders page (OrdersTable, OrderDetails) (MIG-01)
+
+**Wave 4** (depends on Wave 3)
+- [ ] 18-06-PLAN.md — Migrate Customers page (list, detail, bin gauges, timeline) (MIG-02)
+
+**Wave 5** (depends on all)
+- [ ] 18-07-PLAN.md — Final ESLint validation and dark mode verification (MIG-05)
 
 ### Phase 19: Documentation & Accessibility
 **Goal**: Design system documented and accessible to all users
@@ -100,7 +118,7 @@ Plans:
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
 | v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 10 | In progress | - |
+| v1.3 Design Hardening | 16-19 | 17 | In progress | - |
 
 ---
 
