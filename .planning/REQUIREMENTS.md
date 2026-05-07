@@ -27,7 +27,7 @@ Requirements for Design Hardening milestone. Each maps to roadmap phases.
 - [ ] **MIG-01**: Orders page fully migrated to design system (OrdersTable, StatusBadge, FilterPill, cards)
 - [ ] **MIG-02**: Customers page fully migrated to design system (list, detail header, timeline, bin gauges)
 - [ ] **MIG-03**: Mill Production page fully migrated to design system (production cards, filter pills, columns)
-- [ ] **MIG-04**: Settings page fully migrated to design system with theme toggle integration
+- [x] **MIG-04**: Settings page fully migrated to design system with theme toggle integration
 - [ ] **MIG-05**: All hardcoded color and spacing values eliminated from migrated pages
 
 ### Documentation
@@ -91,7 +91,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MIG-01 | Phase 18 | Pending |
 | MIG-02 | Phase 18 | Pending |
 | MIG-03 | Phase 18 | Pending |
-| MIG-04 | Phase 18 | Pending |
+| MIG-04 | Phase 18 | Complete |
 | MIG-05 | Phase 18 | Pending |
 | DOC-01 | Phase 19 | Pending |
 | DOC-02 | Phase 19 | Pending |

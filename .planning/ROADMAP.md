@@ -85,7 +85,7 @@ Plans:
 
 Plans:
 **Wave 1** (parallel)
-- [ ] 18-01-PLAN.md — Migrate Settings page to design system components (MIG-04)
+- [x] 18-01-PLAN.md — Migrate Settings page to design system components (MIG-04)
 - [ ] 18-02-PLAN.md — Extract FilterPill to ui/ with token-based styling (MIG-01, MIG-03)
 
 **Wave 2** (depends on Wave 1)
