@@ -49,18 +49,21 @@ describe('Gauge', () => {
     expect(fillBar).toHaveStyle({ height: '33px' });
   });
 
-  it('applies correct dimensions from UI-SPEC', () => {
+  it('applies correct dimensions from UI-SPEC using design tokens', () => {
     render(<Gauge fillPercentage={50} label="A1" />);
 
     const container = screen.getByTestId('gauge');
-    expect(container).toHaveClass('w-[60px]');
+    // Uses token-based class for 60px width
+    expect(container).toHaveClass('w-[var(--gauge-width)]');
 
     const gaugeContainer = screen.getByTestId('gauge-container');
-    expect(gaugeContainer).toHaveClass('w-[40px]');
-    expect(gaugeContainer).toHaveClass('h-[70px]');
+    // Uses token-based classes for 40px width and 70px height
+    expect(gaugeContainer).toHaveClass('w-[var(--gauge-container-w)]');
+    expect(gaugeContainer).toHaveClass('h-[var(--gauge-container-h)]');
 
     const fillBar = screen.getByTestId('fill-bar');
-    expect(fillBar).toHaveClass('w-[36px]');
+    // Uses token-based class for 36px fill width
+    expect(fillBar).toHaveClass('w-[var(--gauge-fill-width)]');
   });
 
   // TOKEN USAGE TESTS
