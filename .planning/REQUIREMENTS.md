@@ -16,7 +16,7 @@ Requirements for Design Hardening milestone. Each maps to roadmap phases.
 
 ### Components
 
-- [ ] **COMP-01**: Button component has CVA variants (primary/secondary/ghost/destructive) and sizes (sm/md/lg)
+- [x] **COMP-01**: Button component has CVA variants (primary/secondary/ghost/destructive) and sizes (sm/md/lg)
 - [ ] **COMP-02**: Input components (text, number, select, textarea) include validation states and accessibility attributes
 - [ ] **COMP-03**: Card/Panel component uses compound pattern (Card.Header, Card.Content, Card.Footer)
 - [ ] **COMP-04**: Theme toggle UI component allows switching between light and dark modes
@@ -83,7 +83,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DES-01 | Phase 16 | Complete |
 | DES-02 | Phase 16 | Complete |
 | DES-03 | Phase 16 | Complete |
-| COMP-01 | Phase 17 | Pending |
+| COMP-01 | Phase 17 | Complete |
 | COMP-02 | Phase 17 | Pending |
 | COMP-03 | Phase 17 | Pending |
 | COMP-04 | Phase 17 | Pending |
