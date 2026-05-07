@@ -10,6 +10,7 @@ import {
 import { getOrderById } from '@/services/orders';
 import { Order } from '@/types/order';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Card from '@/components/ui/Card';
 import { formatDeliveryDate } from '@/utils/formatDate';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
@@ -25,24 +26,24 @@ interface TimelineEvent {
 
 const colorMap = {
   primary: {
-    bg: "bg-primary",
-    bar: "bg-primary",
-    text: "text-primary",
+    bg: "bg-[var(--primary)]",
+    bar: "bg-[var(--primary)]",
+    text: "text-[var(--primary)]",
   },
   success: {
-    bg: "bg-success",
-    bar: "bg-success",
-    text: "text-success",
+    bg: "bg-[var(--success)]",
+    bar: "bg-[var(--success)]",
+    text: "text-[var(--success)]",
   },
   error: {
-    bg: "bg-error",
-    bar: "bg-error",
-    text: "text-error",
+    bg: "bg-[var(--error)]",
+    bar: "bg-[var(--error)]",
+    text: "text-[var(--error)]",
   },
   pending: {
-    bg: "bg-white border-2 border-pending",
-    bar: "bg-pending",
-    text: "text-text-secondary",
+    bg: "bg-white border-2 border-[var(--pending)]",
+    bar: "bg-[var(--pending)]",
+    text: "text-[var(--text-secondary)]",
   },
 };
 
@@ -185,9 +186,9 @@ function formatTimelineDate(date: Date, isPending?: boolean): string {
 
 function PendingBadge() {
   return (
-    <div className="flex items-center gap-1.5 bg-pending-light rounded-md px-2 py-1 my-3">
-      <Timer className="h-3 w-3 text-text-secondary" />
-      <span className="text-[10px] font-bold text-text-secondary uppercase">Pending</span>
+    <div className="flex items-center gap-1.5 bg-[var(--pending-light)] rounded-md px-2 py-1 my-3">
+      <Timer className="h-3 w-3 text-[var(--text-secondary)]" />
+      <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Pending</span>
     </div>
   );
 }
@@ -226,11 +227,13 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
   // Show placeholder when no order selected
   if (!orderId || !displayOrder) {
     return (
-      <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
-        <div className="flex flex-col items-center justify-center py-12">
-          <p className="text-text-secondary text-sm">Select an order to view details</p>
-        </div>
-      </div>
+      <Card className="flex w-120 flex-col gap-4">
+        <Card.Content className="p-5.25">
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-[var(--text-secondary)] text-sm">Select an order to view details</p>
+          </div>
+        </Card.Content>
+      </Card>
     );
   }
 
@@ -253,72 +256,74 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
   });
 
   return (
-    <div className="flex w-120 flex-col gap-4 rounded-[15px] bg-white p-5.25 shadow-[0_3.5px_5px_rgba(0,0,0,0.02)]">
-      {/* Header */}
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <h2 className="text-text-primary text-lg font-bold">
-            {displayOrder.documentNumber} - {displayOrder.customer}
-          </h2>
-          <StatusBadge status={displayOrder.status} />
+    <Card className="flex w-120 flex-col gap-4">
+      <Card.Content className="p-5.25">
+        {/* Header */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-[var(--text-primary)] text-lg font-bold">
+              {displayOrder.documentNumber} - {displayOrder.customer}
+            </h2>
+            <StatusBadge status={displayOrder.status} />
+          </div>
+          <p className="text-[var(--text-secondary)] text-sm">
+            {displayOrder.quantity} tons {displayOrder.textureType} · {displayOrder.location}
+          </p>
         </div>
-        <p className="text-text-secondary text-sm">
-          {displayOrder.quantity} tons {displayOrder.textureType} · {displayOrder.location}
-        </p>
-      </div>
 
-      {/* Stats */}
-      <div className="flex gap-3">
-        <StatCard label="Quantity" value={displayOrder.quantity.toString()} unit="tons" />
-        <StatCard label="Delivery" value={formatDeliveryDate(displayOrder.deliveryDate)} />
-        <StatCard label="Texture" value={displayOrder.textureType} subtext={displayOrder.formulaType} />
-      </div>
-
-      {/* Timeline */}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-text-primary text-sm font-bold">Timeline</h3>
-          <button
-            onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-            className="text-primary text-[10px] font-medium hover:underline"
-          >
-            {sortOrder === 'desc' ? 'Newest first' : 'Oldest first'}
-          </button>
+        {/* Stats */}
+        <div className="flex gap-3 mt-4">
+          <StatCard label="Quantity" value={displayOrder.quantity.toString()} unit="tons" />
+          <StatCard label="Delivery" value={formatDeliveryDate(displayOrder.deliveryDate)} />
+          <StatCard label="Texture" value={displayOrder.textureType} subtext={displayOrder.formulaType} />
         </div>
-        <div className="flex flex-col">
-          {/* Completed events */}
-          {sortedCompleted.map((event, index) => (
-            <TimelineItem
-              key={event.id}
-              icon={event.icon}
-              title={event.title}
-              description={event.description}
-              date={formatTimelineDate(event.date, event.isPending)}
-              color={event.color}
-              isPending={event.isPending}
-              showConnector={index < sortedCompleted.length - 1}
-            />
-          ))}
 
-          {/* Pending badge divider */}
-          {sortedPending.length > 0 && <PendingBadge />}
+        {/* Timeline */}
+        <div className="flex flex-col gap-4 mt-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-[var(--text-primary)] text-sm font-bold">Timeline</h3>
+            <button
+              onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+              className="text-[var(--primary)] text-[10px] font-medium hover:underline"
+            >
+              {sortOrder === 'desc' ? 'Newest first' : 'Oldest first'}
+            </button>
+          </div>
+          <div className="flex flex-col">
+            {/* Completed events */}
+            {sortedCompleted.map((event, index) => (
+              <TimelineItem
+                key={event.id}
+                icon={event.icon}
+                title={event.title}
+                description={event.description}
+                date={formatTimelineDate(event.date, event.isPending)}
+                color={event.color}
+                isPending={event.isPending}
+                showConnector={index < sortedCompleted.length - 1}
+              />
+            ))}
 
-          {/* Pending events */}
-          {sortedPending.map((event, index) => (
-            <TimelineItem
-              key={event.id}
-              icon={event.icon}
-              title={event.title}
-              description={event.description}
-              date={formatTimelineDate(event.date, event.isPending)}
-              color={event.color}
-              isPending={event.isPending}
-              showConnector={index < sortedPending.length - 1}
-            />
-          ))}
+            {/* Pending badge divider */}
+            {sortedPending.length > 0 && <PendingBadge />}
+
+            {/* Pending events */}
+            {sortedPending.map((event, index) => (
+              <TimelineItem
+                key={event.id}
+                icon={event.icon}
+                title={event.title}
+                description={event.description}
+                date={formatTimelineDate(event.date, event.isPending)}
+                color={event.color}
+                isPending={event.isPending}
+                showConnector={index < sortedPending.length - 1}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </Card.Content>
+    </Card>
   );
 }
 
@@ -336,23 +341,23 @@ function StatCard({
   subtext?: string;
 }) {
   return (
-    <div className="bg-bg-page flex flex-1 flex-col items-center gap-1 rounded-xl p-3.5">
-      <span className="text-text-secondary text-[10px] font-bold">
+    <div className="bg-[var(--bg-page)] flex flex-1 flex-col items-center gap-1 rounded-xl p-3.5">
+      <span className="text-[var(--text-secondary)] text-[10px] font-bold">
         {label}
       </span>
-      <span className="text-text-primary text-[22px] font-bold">
+      <span className="text-[var(--text-primary)] text-[22px] font-bold">
         {value}
       </span>
       {unit && (
-        <span className="text-text-secondary text-[10px]">{unit}</span>
+        <span className="text-[var(--text-secondary)] text-[10px]">{unit}</span>
       )}
       {percentage && (
-        <span className="text-success text-[10px] font-bold">
+        <span className="text-[var(--success)] text-[10px] font-bold">
           {percentage}
         </span>
       )}
       {subtext && (
-        <span className="text-text-secondary text-[10px]">{subtext}</span>
+        <span className="text-[var(--text-secondary)] text-[10px]">{subtext}</span>
       )}
     </div>
   );
@@ -384,7 +389,7 @@ function TimelineItem({
         <div
           className={`h-7 w-7 ${colors.bg} flex shrink-0 items-center justify-center rounded-full`}
         >
-          <Icon className={`h-3.5 w-3.5 ${isPending ? 'text-pending' : 'text-white'}`} />
+          <Icon className={`h-3.5 w-3.5 ${isPending ? 'text-[var(--pending)]' : 'text-white'}`} />
         </div>
         {showConnector && (
           <div className={`w-0.5 flex-1 ${colors.bar}`} />
@@ -393,14 +398,14 @@ function TimelineItem({
 
       {/* Right - Content */}
       <div className="flex flex-1 flex-col gap-0.5 pb-8">
-        <span className="text-text-primary text-[13px] font-bold">
+        <span className="text-[var(--text-primary)] text-[13px] font-bold">
           {title}
         </span>
-        <p className="text-text-secondary text-[11px] leading-relaxed">
+        <p className="text-[var(--text-secondary)] text-[11px] leading-relaxed">
           {description}
         </p>
         <div className="flex items-center gap-1">
-          {isPending && <Timer className="h-2.5 w-2.5 text-text-secondary" />}
+          {isPending && <Timer className="h-2.5 w-2.5 text-[var(--text-secondary)]" />}
           <span className={`text-[10px] font-bold ${colors.text}`}>{date}</span>
         </div>
       </div>
