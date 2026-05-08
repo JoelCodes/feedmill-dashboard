@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import Textarea from "./Textarea";
 
 describe("Textarea", () => {
@@ -45,5 +46,41 @@ describe("Textarea", () => {
     render(<Textarea placeholder="Enter text" disabled />);
     const textarea = screen.getByPlaceholderText("Enter text");
     expect(textarea).toBeDisabled();
+  });
+});
+
+describe("Textarea - Accessibility", () => {
+  it("has no accessibility violations with label", async () => {
+    const { container } = render(
+      <Textarea label="Description" placeholder="Enter description" />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations in error state", async () => {
+    const { container } = render(
+      <Textarea
+        label="Description"
+        placeholder="Enter description"
+        error="Description is required"
+      />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations when disabled", async () => {
+    const { container } = render(
+      <Textarea label="Description" placeholder="Enter description" disabled />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

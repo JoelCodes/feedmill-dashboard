@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import Select from "./Select";
 
 describe("Select", () => {
@@ -51,5 +52,42 @@ describe("Select", () => {
     render(<Select options={options} disabled />);
     const select = screen.getByRole("combobox");
     expect(select).toBeDisabled();
+  });
+});
+
+describe("Select - Accessibility", () => {
+  const options = [
+    { value: "us", label: "United States" },
+    { value: "ca", label: "Canada" },
+  ];
+
+  it("has no accessibility violations with label", async () => {
+    const { container } = render(
+      <Select label="Country" options={options} />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations in error state", async () => {
+    const { container } = render(
+      <Select label="Country" options={options} error="Please select a country" />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations when disabled", async () => {
+    const { container } = render(
+      <Select label="Country" options={options} disabled />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import StatusBadge, { STATUS_CONFIG } from "./StatusBadge";
 import { OrderStatus } from "@/types/order";
 
@@ -100,5 +101,26 @@ describe("StatusBadge", () => {
         expect(STATUS_CONFIG[key]).toHaveProperty("label");
       });
     });
+  });
+});
+
+describe("StatusBadge - Accessibility", () => {
+  it("has no accessibility violations", async () => {
+    const { container } = render(<StatusBadge status="Pending" />);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations for each status variant", async () => {
+    const statuses: OrderStatus[] = ["Pending", "Producing", "Ready", "In Transit", "Complete"];
+    for (const status of statuses) {
+      const { container } = render(<StatusBadge status={status} />);
+      const results = await axe(container, {
+        rules: { region: { enabled: false } },
+      });
+      expect(results).toHaveNoViolations();
+    }
   });
 });
