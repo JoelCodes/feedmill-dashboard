@@ -52,26 +52,33 @@ export default function NotificationDropdown({
     return `${days}d ago`;
   };
 
+  const combinedRef = (node: HTMLDivElement | null) => {
+    if (clickOutsideRef && typeof clickOutsideRef === 'object') {
+      // eslint-disable-next-line react-hooks/immutability -- Combining refs from hook requires mutable assignment
+      (clickOutsideRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    }
+    if (dropdownRef) {
+      (dropdownRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    }
+  };
+
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Dialog needs keyboard dismissal
     <div
-      ref={(node) => {
-        // Combine refs: one for click-outside, one for focus management
-        (clickOutsideRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-        (dropdownRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-      }}
+      ref={combinedRef}
       tabIndex={-1}
-      className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg bg-[var(--bg-card)] shadow-lg focus:outline-none"
+      className="absolute top-full right-0 z-50 mt-2 w-80 rounded-lg bg-[var(--bg-card)] shadow-lg focus:outline-none"
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-label="Notifications"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-200 p-4">
-        <h3 className="text-sm font-bold text-text-primary">Notifications</h3>
+        <h3 className="text-text-primary text-sm font-bold">Notifications</h3>
         {notifications.length > 0 && (
           <button
             onClick={onClearAll}
-            className="text-xs font-medium text-primary hover:underline"
+            className="text-primary text-xs font-medium hover:underline"
           >
             Clear All
           </button>
@@ -83,8 +90,8 @@ export default function NotificationDropdown({
         {notifications.length === 0 ? (
           /* Empty State */
           <div className="flex flex-col items-center justify-center p-8 text-center">
-            <h4 className="text-sm font-bold text-text-primary mb-1">All caught up</h4>
-            <p className="text-xs text-text-secondary">
+            <h4 className="text-text-primary mb-1 text-sm font-bold">All caught up</h4>
+            <p className="text-text-secondary text-xs">
               You&apos;ll see order updates and system alerts here.
             </p>
           </div>
@@ -95,27 +102,35 @@ export default function NotificationDropdown({
               <div
                 key={notification.id}
                 onClick={() => onMarkAsRead(notification.id)}
-                className="flex gap-3 p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onMarkAsRead(notification.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                className="flex cursor-pointer gap-3 p-3 transition-colors hover:bg-gray-50"
               >
                 {/* Unread Indicator */}
                 {!readNotificationIds.includes(notification.id) && (
                   <div className="flex-shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-blue-500 mt-1" />
+                    <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
                   </div>
                 )}
                 {readNotificationIds.includes(notification.id) && (
-                  <div className="flex-shrink-0 w-2" />
+                  <div className="w-2 flex-shrink-0" />
                 )}
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-text-primary mb-0.5">
+                <div className="min-w-0 flex-1">
+                  <p className="text-text-primary mb-0.5 text-xs font-medium">
                     {notification.title}
                   </p>
-                  <p className="text-xs text-text-secondary mb-1">
+                  <p className="text-text-secondary mb-1 text-xs">
                     {notification.message}
                   </p>
-                  <p className="text-[var(--fs-10)] text-text-secondary">
+                  <p className="text-text-secondary text-[var(--fs-10)]">
                     {formatTimestamp(notification.timestamp)}
                   </p>
                 </div>
