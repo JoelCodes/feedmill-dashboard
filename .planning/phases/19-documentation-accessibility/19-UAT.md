@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 19-documentation-accessibility
 source:
   - 19-01-SUMMARY.md
@@ -59,5 +59,19 @@ blocked: 0
   reason: "User reported: I got this error many times: 'Cannot resolve default tailwindcss config path. Please manually set the config option.', and there are accessibility violations."
   severity: major
   test: 2
-  artifacts: []
-  missing: []
+  root_cause: |
+    Two separate issues:
+    1. Tailwind config warning: eslint-plugin-tailwindcss cannot find tailwind.config.js (project uses Tailwind v4 CSS-based config in globals.css, not JS config file)
+    2. Accessibility violations: 24 errors are PRE-EXISTING issues in pages outside Phase 19 scope (customers/page.tsx, orders/page.tsx, components/Pagination.tsx, etc.) - these were exposed by the new jsx-a11y rules. The 19-01-SUMMARY.md noted "14 pre-existing accessibility issues" expected to be addressed later.
+  artifacts:
+    - path: "eslint.config.mjs"
+      issue: "eslint-plugin-tailwindcss needs config path for Tailwind v4"
+    - path: "src/app/customers/page.tsx"
+      issue: "click-events-have-key-events, no-static-element-interactions"
+    - path: "src/app/orders/page.tsx"
+      issue: "label-has-associated-control"
+    - path: "src/components/Pagination.tsx"
+      issue: "click-events-have-key-events, no-static-element-interactions"
+  missing:
+    - "Configure tailwindcss eslint plugin with explicit CSS config path for Tailwind v4"
+    - "Fix jsx-a11y violations in existing pages (out of Phase 19 scope, but blocking lint)"
