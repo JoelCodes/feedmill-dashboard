@@ -539,3 +539,517 @@ import Input from '@/components/ui/Input';
 - Error icon is decorative (`aria-hidden="true"`)
 
 **WCAG Compliance:** Passes axe-core automated checks. Full ARIA implementation for form accessibility.
+
+---
+
+### Select
+
+Dropdown select field with label, helper text, error states, and options array.
+
+#### API
+
+```tsx
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  helperText?: string;
+  error?: string;
+  options: Array<{ value: string; label: string }>;
+}
+```
+
+#### Usage
+
+```tsx
+import Select from '@/components/ui/Select';
+
+// Basic select
+<Select
+  label="Country"
+  options={[
+    { value: '', label: 'Select a country...' },
+    { value: 'us', label: 'United States' },
+    { value: 'ca', label: 'Canada' },
+  ]}
+/>
+
+// With error
+<Select
+  label="Status"
+  error="Please select a status"
+  options={[
+    { value: '', label: 'Select...' },
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
+  ]}
+/>
+
+// Disabled
+<Select
+  label="Region"
+  disabled
+  options={[{ value: 'na', label: 'North America' }]}
+/>
+```
+
+#### Do
+
+- Always include an empty/placeholder option for optional selects
+- Use `label` prop for accessibility
+- Provide meaningful option labels
+
+#### Don't
+
+- Use Select for more than 10-15 options (consider autocomplete instead)
+- Manually style options - browser controls these
+- Omit the `options` prop (required)
+
+#### Accessibility
+
+- Label linked to select via `htmlFor`/`id`
+- Error state sets `aria-invalid="true"`
+- Error message linked via `aria-describedby`
+- Required fields get `aria-required="true"`
+- Custom chevron icon is decorative (`aria-hidden="true"`)
+
+**WCAG Compliance:** Passes axe-core automated checks.
+
+---
+
+### Textarea
+
+Multi-line text input with label, helper text, and error states.
+
+#### API
+
+```tsx
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label?: string;
+  helperText?: string;
+  error?: string;
+}
+```
+
+#### Usage
+
+```tsx
+import Textarea from '@/components/ui/Textarea';
+
+// Basic textarea
+<Textarea placeholder="Enter description..." />
+
+// With label and rows
+<Textarea
+  label="Description"
+  placeholder="Enter description..."
+  rows={4}
+/>
+
+// With helper text
+<Textarea
+  label="Notes"
+  helperText="Maximum 500 characters"
+/>
+
+// With error
+<Textarea
+  label="Comments"
+  error="Comments are required"
+/>
+
+// Disabled
+<Textarea label="System Notes" disabled value="Read-only content" />
+```
+
+#### Do
+
+- Set appropriate `rows` for expected content length
+- Use `helperText` for character limits or formatting hints
+- Use `label` prop for accessibility
+
+#### Don't
+
+- Use Textarea for single-line input - use Input instead
+- Manually resize via CSS - component supports `resize-y` by default
+
+#### Accessibility
+
+- Same ARIA pattern as Input component
+- Label linked via auto-generated `id`
+- Error states announced via `role="alert"` and `aria-live="polite"`
+- Minimum height ensures comfortable text entry (100px)
+
+**WCAG Compliance:** Passes axe-core automated checks.
+
+---
+
+### StatusBadge
+
+Visual indicator for order status with color-coded variants.
+
+#### API
+
+```tsx
+import { OrderStatus } from '@/types/order';
+
+interface StatusBadgeProps {
+  status: OrderStatus;
+  // OrderStatus = 'Pending' | 'Producing' | 'Ready' | 'In Transit' | 'Complete'
+}
+```
+
+#### Usage
+
+```tsx
+import StatusBadge from '@/components/ui/StatusBadge';
+
+<StatusBadge status="Pending" />
+<StatusBadge status="Producing" />
+<StatusBadge status="Ready" />
+<StatusBadge status="In Transit" />
+<StatusBadge status="Complete" />
+```
+
+#### Status Colors
+
+| Status | Background | Text | Label |
+|--------|------------|------|-------|
+| Pending | `--pending-light` | `--text-secondary` | "Pending" |
+| Producing | `--warning-light` | `--warning` | "Producing" |
+| Ready | `--info-light` | `--info` | "Ready" |
+| In Transit | `--purple-light` | `--purple` | "Transit" |
+| Complete | `--success-light` | `--success-dark` | "Complete" |
+
+#### Do
+
+- Use status values that match the OrderStatus type
+- Place badges consistently (e.g., always in same table column)
+- Let the component handle color mapping
+
+#### Don't
+
+- Create custom status values - use the OrderStatus type
+- Override badge colors via className (breaks semantic meaning)
+
+#### Accessibility
+
+- Status text is visible and readable
+- Color is not the only indicator (text label accompanies color)
+- Uses semantic color combinations for sufficient contrast
+
+**WCAG Compliance:** Passes axe-core automated checks. Uses text + color combination for status indication.
+
+---
+
+### FilterPill
+
+Toggleable filter button for filtering lists with count indicator.
+
+#### API
+
+```tsx
+interface FilterPillColorConfig {
+  bg: string;
+  text: string;
+  dot?: string;
+  countBg?: string;
+}
+
+interface FilterPillProps {
+  label: string;
+  count: number;
+  color?: FilterPillColorConfig;
+  isActive: boolean;
+  onClick: () => void;
+  showDot?: boolean;
+  dotColor?: string;
+}
+```
+
+#### Usage
+
+```tsx
+import FilterPill from '@/components/ui/FilterPill';
+
+// Basic usage with state
+const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+<FilterPill
+  label="Pending"
+  count={12}
+  isActive={activeFilters.includes('pending')}
+  onClick={() => toggleFilter('pending')}
+/>
+
+// With custom color config
+<FilterPill
+  label="Warning"
+  count={3}
+  isActive={false}
+  color={{
+    bg: 'bg-[var(--warning-light)]',
+    text: 'text-[var(--warning)]',
+    dot: 'bg-[var(--warning)]',
+    countBg: 'bg-[var(--warning-light)]',
+  }}
+  onClick={() => {}}
+/>
+
+// With status dot
+<FilterPill
+  label="Active"
+  count={5}
+  isActive={true}
+  showDot={true}
+  onClick={() => {}}
+/>
+```
+
+#### Do
+
+- Show count when relevant (helps users understand filter impact)
+- Allow multiple filters to be active simultaneously
+- Use consistent color schemes across related filter groups
+
+#### Don't
+
+- Use FilterPill for navigation - use links or tabs instead
+- Omit the count (provides useful context)
+- Use without isActive state management
+
+#### Accessibility
+
+- Renders as `<button>` with `aria-pressed` state
+- Keyboard accessible (Enter/Space to toggle)
+- Includes `aria-label` with count: "Filter by {label}, {count} orders"
+- Active state visually distinct with primary color background
+
+**WCAG Compliance:** Passes axe-core automated checks.
+
+---
+
+### Gauge
+
+Vertical gauge component showing fill level with threshold-based colors.
+
+#### API
+
+```tsx
+interface GaugeProps {
+  /** Fill percentage (0-100) */
+  fillPercentage: number;
+  /** Primary label below gauge */
+  label: string;
+  /** Secondary label below primary label */
+  sublabel?: string;
+}
+```
+
+#### Threshold Colors
+
+| Percentage | Color | Meaning |
+|------------|-------|---------|
+| > 25% | `--success` (green) | Normal level |
+| 10-25% | `--warning` (yellow) | Low level |
+| < 10% | `--error` (red) | Critical level |
+
+#### Usage
+
+```tsx
+import { Gauge } from '@/components/ui/Gauge';
+
+// Normal level
+<Gauge
+  fillPercentage={75}
+  label="Bin A-1"
+  sublabel="Layer Feed"
+/>
+
+// Warning level
+<Gauge
+  fillPercentage={20}
+  label="Bin B-2"
+  sublabel="Starter"
+/>
+
+// Critical level
+<Gauge
+  fillPercentage={8}
+  label="Bin C-3"
+/>
+
+// Values are clamped to 0-100
+<Gauge fillPercentage={150} label="Overflow" />  // Renders as 100%
+<Gauge fillPercentage={-10} label="Underflow" /> // Renders as 0%
+```
+
+#### Do
+
+- Use appropriate labels that identify the bin/container
+- Include sublabel for additional context (feed type, product)
+- Let the component determine threshold colors automatically
+
+#### Don't
+
+- Override threshold colors - they're semantically meaningful
+- Use for non-percentage values (convert to 0-100 first)
+- Display multiple gauges without consistent spacing
+
+#### Accessibility
+
+- Visual representation uses color AND fill level for redundancy
+- Text labels provide accessible identification
+- Percentage displayed inside gauge for immediate readability
+- Color is not sole indicator of status (fill height provides redundant information)
+
+**WCAG Compliance:** Passes axe-core automated checks. Color is not sole indicator of status.
+
+---
+
+### Timeline
+
+Chronological event display with expand/collapse functionality.
+
+#### API
+
+```tsx
+import { ActivityEventType } from '@/types/activity';
+
+interface ActivityEvent {
+  id: string;
+  type: ActivityEventType;
+  // ActivityEventType = 'order_placed' | 'production_started' | 'ready' |
+  //                     'out_for_delivery' | 'delivered' | 'delivery_completed' |
+  //                     'bin_alert_low' | 'bin_alert_critical'
+  title: string;
+  description: string;
+  timestamp: Date;
+  // Optional order-specific fields
+  orderId?: string;
+  orderQuantity?: number;
+  orderProduct?: string;
+  orderStatus?: string;
+}
+
+interface TimelineProps {
+  events: ActivityEvent[];
+}
+```
+
+#### Event Colors
+
+| Event Type | Color | Icon |
+|------------|-------|------|
+| order_placed | `--primary` | FileText |
+| production_started | `--primary` | Factory |
+| ready | `--primary` | CheckCircle |
+| out_for_delivery | `--primary` | Truck |
+| delivered | `--success` | CheckCircle |
+| delivery_completed | `--success` | Truck |
+| bin_alert_low | `--warning` | AlertTriangle |
+| bin_alert_critical | `--error` | AlertTriangle |
+
+#### Usage
+
+```tsx
+import { Timeline } from '@/components/ui/Timeline';
+
+const events = [
+  {
+    id: '1',
+    type: 'order_placed',
+    title: 'Order #1234 placed',
+    description: '50 tons Layer Feed',
+    timestamp: new Date('2024-01-15T10:30:00'),
+    orderId: '1234',
+    orderQuantity: 50,
+    orderProduct: 'Layer Feed',
+    orderStatus: 'Pending',
+  },
+  {
+    id: '2',
+    type: 'delivery_completed',
+    title: 'Delivery completed',
+    description: 'Order #1233 delivered to Farm A',
+    timestamp: new Date('2024-01-16T08:00:00'),
+  },
+];
+
+<Timeline events={events} />
+
+// Empty state handled automatically
+<Timeline events={[]} />
+```
+
+#### Do
+
+- Sort events chronologically before passing (newest first or oldest first consistently)
+- Include orderId for order events to enable expand/collapse detail view
+- Use descriptive titles and descriptions
+
+#### Don't
+
+- Display more than ~50 events without pagination (performance)
+- Mix event types inappropriately
+- Pass unsorted event arrays
+
+#### Accessibility
+
+- Events are focusable buttons for keyboard navigation
+- Expand/collapse state announced via `aria-expanded`
+- Keyboard support: Enter/Space to toggle expansion
+- Focus ring visible on keyboard navigation
+- Event icons are decorative (content conveyed via text)
+
+**WCAG Compliance:** Passes axe-core automated checks.
+
+---
+
+### ThemeToggle
+
+Three-way toggle for switching between light, dark, and system themes.
+
+#### API
+
+```tsx
+// No props - uses next-themes internally
+function ThemeToggle(): JSX.Element
+```
+
+#### Usage
+
+```tsx
+import ThemeToggle from '@/components/ui/ThemeToggle';
+
+// In header or settings area
+<ThemeToggle />
+```
+
+#### Options
+
+| Option | Icon | Description |
+|--------|------|-------------|
+| Light | Sun | Forces light mode |
+| Dark | Moon | Forces dark mode |
+| System | Monitor | Follows OS preference |
+
+#### Do
+
+- Place consistently in header or settings area
+- Ensure it's reachable via keyboard navigation
+- Use as the single source of theme control
+
+#### Don't
+
+- Create custom theme switching logic - use this component
+- Hide or disable based on theme (always show all options)
+- Use multiple ThemeToggle instances on the same page
+
+#### Accessibility
+
+- Uses `role="radiogroup"` with `aria-label="Theme selection"`
+- Each option is a button with `role="radio"` and `aria-checked`
+- Keyboard accessible (Tab to focus, Enter/Space to select)
+- Active option visually distinct with primary background
+- Icons paired with text labels for clarity
+
+**WCAG Compliance:** Passes axe-core automated checks. Keyboard accessible toggle with proper radio group semantics.
