@@ -109,7 +109,20 @@ Plans:
   1. Token usage documentation clearly explains when to use each semantic token
   2. Component guidelines provide usage examples with do/don't patterns for all components
   3. All components pass WCAG 2.1 AA automated testing and manual screen reader verification
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+- [ ] 19-01-PLAN.md — Install jest-axe and eslint-plugin-jsx-a11y, configure accessibility tooling (DOC-03)
+
+**Wave 2** (depends on Wave 1)
+- [ ] 19-02-PLAN.md — Add accessibility tests to all 10 component test files (DOC-03)
+
+**Wave 3** (depends on Wave 2)
+- [ ] 19-03-PLAN.md — Create README.md with token and component documentation (DOC-01, DOC-02)
+
+**Wave 4** (depends on Wave 2, Wave 3)
+- [ ] 19-04-PLAN.md — VoiceOver manual testing and verification documentation (DOC-03)
 
 ## Progress
 
@@ -118,7 +131,7 @@ Plans:
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
 | v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 17 | In progress | - |
+| v1.3 Design Hardening | 16-19 | 21 | In progress | - |
 
 ---
 
