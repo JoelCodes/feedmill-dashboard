@@ -70,7 +70,7 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="flex h-screen bg-bg-page">
+    <div className="bg-bg-page flex h-screen">
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header />
@@ -93,7 +93,7 @@ export default function CustomersPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search customers by name..."
-              className="border-[var(--divider)] focus:border-[var(--primary)] focus:ring-[var(--primary)] w-full rounded-lg border py-2 pr-3 pl-10 text-sm placeholder:text-[var(--text-secondary)] focus:ring-1 focus:outline-none"
+              className="w-full rounded-lg border border-[var(--divider)] py-2 pr-3 pl-10 text-sm placeholder:text-[var(--text-secondary)] focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] focus:outline-none"
             />
           </div>
 
@@ -145,7 +145,7 @@ export default function CustomersPage() {
                     )}
                     {customer.stats.hasChanges && (
                       <div
-                        className="h-2 w-2 rounded-full bg-error"
+                        className="bg-error h-2 w-2 rounded-full"
                         data-testid="status-changes"
                       />
                     )}

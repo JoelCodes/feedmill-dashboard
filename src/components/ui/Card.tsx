@@ -46,7 +46,7 @@ function Card({ variant, className, children, onClick, ...props }: CardProps) {
     <div
       className={cn(
         baseClassName,
-        "cursor-pointer hover:opacity-95 transition-opacity active:scale-[0.98]"
+        "cursor-pointer transition-opacity hover:opacity-95 active:scale-[0.98]"
       )}
       role="button"
       tabIndex={0}
@@ -67,7 +67,7 @@ function CardHeader({ children, className, ...props }: CardHeaderProps) {
   return (
     <div
       className={cn(
-        "px-4 py-4 border-b border-[var(--divider)]",
+        "border-b border-[var(--divider)] px-4 py-4",
         className
       )}
       {...props}
@@ -85,7 +85,7 @@ interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function CardContent({ children, className, ...props }: CardContentProps) {
   return (
-    <div className={cn("px-4 py-4 flex-1", className)} {...props}>
+    <div className={cn("flex-1 px-4 py-4", className)} {...props}>
       {children}
     </div>
   );
@@ -99,7 +99,7 @@ function CardFooter({ children, className, ...props }: CardFooterProps) {
   return (
     <div
       className={cn(
-        "px-4 py-4 border-t border-[var(--divider)] flex justify-end gap-2",
+        "flex justify-end gap-2 border-t border-[var(--divider)] px-4 py-4",
         className
       )}
       {...props}

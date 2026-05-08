@@ -30,7 +30,7 @@ function OrdersContent() {
 
 export default function OrdersPage() {
   return (
-    <div className="flex h-screen bg-bg-page">
+    <div className="bg-bg-page flex h-screen">
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header />

@@ -33,12 +33,12 @@ export default function Input({
         <input
           id={inputId}
           className={cn(
-            "w-full h-11 px-3 rounded-[var(--radius-md)] border text-sm bg-[var(--bg-card)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]",
+            "h-11 w-full rounded-[var(--radius-md)] border bg-[var(--bg-card)] px-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]",
             "focus:outline-none",
             error
-              ? "border-[var(--error)] border-2 pr-10"
-              : "border-[var(--divider)] focus:border-[var(--primary)] focus:border-2",
-            "disabled:bg-[var(--bg-page)] disabled:text-[var(--text-secondary)] disabled:cursor-not-allowed",
+              ? "border-2 border-[var(--error)] pr-10"
+              : "border-[var(--divider)] focus:border-2 focus:border-[var(--primary)]",
+            "disabled:cursor-not-allowed disabled:bg-[var(--bg-page)] disabled:text-[var(--text-secondary)]",
             className
           )}
           aria-invalid={!!error}
@@ -48,7 +48,7 @@ export default function Input({
         />
         {error && (
           <AlertCircle
-            className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--error)]"
+            className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-[var(--error)]"
             aria-hidden="true"
           />
         )}

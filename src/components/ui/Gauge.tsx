@@ -46,17 +46,17 @@ export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
   return (
     <div
       data-testid="gauge"
-      className="flex flex-col items-center gap-2 w-[var(--gauge-width)]"
+      className="flex w-[var(--gauge-width)] flex-col items-center gap-2"
     >
       {/* Gauge container */}
       <div
         data-testid="gauge-container"
-        className="relative w-[var(--gauge-width)] h-[var(--gauge-height)] rounded-[var(--radius-md)] bg-[var(--pending-light)] overflow-hidden"
+        className="relative h-[var(--gauge-height)] w-[var(--gauge-width)] overflow-hidden rounded-[var(--radius-md)] bg-[var(--pending-light)]"
       >
         {/* Fill bar - anchored to bottom, grows upward */}
         <div
           data-testid="fill-bar"
-          className={`absolute bottom-0 left-0 right-0 rounded-[var(--radius-md)] ${thresholdColor}`}
+          className={`absolute right-0 bottom-0 left-0 rounded-[var(--radius-md)] ${thresholdColor}`}
           style={{ height: `${fillHeight}px` }}
         />
         {/* Percentage text - positioned at fill level */}
@@ -68,9 +68,9 @@ export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
       </div>
 
       {/* Labels below gauge - centered */}
-      <span className="text-[var(--fs-10)] font-bold text-[var(--text-primary)] text-center">{label}</span>
+      <span className="text-center font-bold text-[var(--fs-10)] text-[var(--text-primary)]">{label}</span>
       {sublabel && (
-        <span className="text-[var(--fs-10)] text-[var(--text-secondary)] text-center">{sublabel}</span>
+        <span className="text-center text-[var(--fs-10)] text-[var(--text-secondary)]">{sublabel}</span>
       )}
     </div>
   );

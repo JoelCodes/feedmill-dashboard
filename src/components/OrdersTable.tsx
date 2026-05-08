@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { CheckCircle, Package, Search } from "lucide-react";
-import StatusBadge, { STATUS_CONFIG } from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge";
 import FilterPill, { FilterPillColorConfig } from "@/components/ui/FilterPill";
 import { OrderStatus, Order } from "@/types/order";
 import { getOrders } from "@/services/orders";
@@ -94,7 +94,7 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
 
     return parts.map((part, i) =>
       regex.test(part)
-        ? <mark key={i} className="bg-[color-mix(in_srgb,var(--primary)_20%,transparent)] rounded px-0.5 font-semibold">{part}</mark>
+        ? <mark key={i} className="rounded bg-[color-mix(in_srgb,var(--primary)_20%,transparent)] px-0.5 font-semibold">{part}</mark>
         : part
     );
   };
@@ -333,25 +333,25 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
       >
         {/* Table Header */}
         <div className="flex py-2.5">
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             DOCUMENT #
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             CUSTOMER
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             PRODUCT
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             QTY (TONS)
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             LOCATION
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             DELIVERY
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             STATUS
           </div>
         </div>

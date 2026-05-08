@@ -17,7 +17,7 @@ export default function ThemeToggle() {
     <div
       role="radiogroup"
       aria-label="Theme selection"
-      className="inline-flex border border-[var(--divider)] rounded-[var(--radius-md)] overflow-hidden"
+      className="inline-flex overflow-hidden rounded-[var(--radius-md)] border border-[var(--divider)]"
     >
       {options.map((option, idx) => {
         const Icon = option.icon;
@@ -30,10 +30,10 @@ export default function ThemeToggle() {
             aria-checked={isActive}
             onClick={() => setTheme(option.value)}
             className={cn(
-              "px-4 py-2 text-sm inline-flex items-center gap-1 transition-colors",
+              "inline-flex items-center gap-1 px-4 py-2 text-sm transition-colors",
               idx < options.length - 1 && "border-r border-[var(--divider)]",
               isActive
-                ? "bg-[var(--primary)] text-[var(--text-white)] font-semibold"
+                ? "bg-[var(--primary)] font-semibold text-[var(--text-white)]"
                 : "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-page)]"
             )}
           >

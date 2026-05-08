@@ -48,7 +48,7 @@ export default function Sidebar() {
       <div className="h-px w-full bg-[var(--divider)]" />
 
       {/* Production Section */}
-      <span className="mt-2 text-[var(--fs-10)] font-bold tracking-wide text-[var(--text-secondary)]">
+      <span className="mt-2 font-bold tracking-wide text-[var(--fs-10)] text-[var(--text-secondary)]">
         PRODUCTION
       </span>
 
@@ -66,7 +66,7 @@ export default function Sidebar() {
       <div className="mt-2 h-px w-full bg-[var(--divider)]" />
 
       {/* Settings Section */}
-      <span className="mt-2 text-[var(--fs-10)] font-bold tracking-wide text-[var(--text-secondary)]">
+      <span className="mt-2 font-bold tracking-wide text-[var(--fs-10)] text-[var(--text-secondary)]">
         SETTINGS
       </span>
 

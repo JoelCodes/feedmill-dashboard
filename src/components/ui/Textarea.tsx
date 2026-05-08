@@ -34,13 +34,13 @@ export default function Textarea({
         <textarea
           id={textareaId}
           className={cn(
-            "w-full min-h-[100px] px-3 py-3 rounded-[var(--radius-md)] border text-sm bg-[var(--bg-card)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]",
+            "min-h-[100px] w-full rounded-[var(--radius-md)] border bg-[var(--bg-card)] px-3 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]",
             "resize-y leading-6",
             "focus:outline-none",
             error
-              ? "border-[var(--error)] border-2 pr-10"
-              : "border-[var(--divider)] focus:border-[var(--primary)] focus:border-2",
-            "disabled:bg-[var(--bg-page)] disabled:text-[var(--text-secondary)] disabled:cursor-not-allowed",
+              ? "border-2 border-[var(--error)] pr-10"
+              : "border-[var(--divider)] focus:border-2 focus:border-[var(--primary)]",
+            "disabled:cursor-not-allowed disabled:bg-[var(--bg-page)] disabled:text-[var(--text-secondary)]",
             className
           )}
           aria-invalid={!!error}
@@ -50,7 +50,7 @@ export default function Textarea({
         />
         {error && (
           <AlertCircle
-            className="absolute right-3 top-3 h-4 w-4 text-[var(--error)]"
+            className="absolute top-3 right-3 h-4 w-4 text-[var(--error)]"
             aria-hidden="true"
           />
         )}

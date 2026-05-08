@@ -39,7 +39,7 @@ describe("StatusBadge", () => {
 
   describe("STATUS_CONFIG token verification", () => {
     it("uses var(--) syntax for all color values", () => {
-      Object.entries(STATUS_CONFIG).forEach(([status, config]) => {
+      Object.values(STATUS_CONFIG).forEach((config) => {
         expect(config.bg).toMatch(/var\(--/);
         expect(config.text).toMatch(/var\(--/);
         expect(config.dot).toMatch(/var\(--/);
@@ -48,7 +48,7 @@ describe("StatusBadge", () => {
     });
 
     it("contains no hardcoded hex values", () => {
-      Object.entries(STATUS_CONFIG).forEach(([status, config]) => {
+      Object.values(STATUS_CONFIG).forEach((config) => {
         expect(config.bg).not.toMatch(/#[0-9a-fA-F]/);
         expect(config.text).not.toMatch(/#[0-9a-fA-F]/);
         expect(config.dot).not.toMatch(/#[0-9a-fA-F]/);
@@ -57,7 +57,7 @@ describe("StatusBadge", () => {
     });
 
     it("contains no hardcoded Tailwind gray classes", () => {
-      Object.entries(STATUS_CONFIG).forEach(([status, config]) => {
+      Object.values(STATUS_CONFIG).forEach((config) => {
         expect(config.bg).not.toMatch(/bg-gray-/);
         expect(config.text).not.toMatch(/text-gray-/);
         expect(config.dot).not.toMatch(/bg-gray-/);

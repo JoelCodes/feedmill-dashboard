@@ -55,9 +55,9 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1 ${config.bg} rounded-[var(--radius-sm)] px-2 py-1 h-6`}
+      className={`inline-flex items-center gap-1 ${config.bg} h-6 rounded-[var(--radius-sm)] px-2 py-1`}
     >
-      <span className={`text-[var(--fs-11)] font-medium ${config.text}`}>
+      <span className={`font-medium text-[var(--fs-11)] ${config.text}`}>
         {config.label}
       </span>
     </div>

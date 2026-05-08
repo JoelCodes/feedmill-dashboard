@@ -116,13 +116,13 @@ export default function Header({ onSearch }: HeaderProps) {
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className="rounded-lg p-2 transition-colors hover:bg-white/50 relative"
+            className="relative rounded-lg p-2 transition-colors hover:bg-white/50"
             aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
             aria-expanded={isDropdownOpen}
           >
             <Bell className="text-text-secondary h-4 w-4" />
             {unreadCount > 0 && (
-              <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-error text-white text-[var(--fs-10)] font-bold flex items-center justify-center">
+              <span className="bg-error absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full font-bold text-[var(--fs-10)] text-white">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}

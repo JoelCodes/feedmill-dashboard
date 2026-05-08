@@ -89,7 +89,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
             className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
               activeStatuses.has(status)
                 ? "bg-primary/10 text-primary"
-                : "bg-gray-100 text-text-secondary hover:bg-gray-200"
+                : "text-text-secondary bg-gray-100 hover:bg-gray-200"
             }`}
           >
             <span
@@ -109,22 +109,22 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
       <div className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto">
         {/* Table Header */}
         <div className="flex py-2.5">
-          <div className="text-text-secondary w-[var(--table-col-lg)] text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-lg)] font-bold text-[var(--fs-10)]">
             DOCUMENT #
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             PRODUCT
           </div>
-          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-sm)] font-bold text-[var(--fs-10)]">
             QTY (TONS)
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary flex-1 font-bold text-[var(--fs-10)]">
             LOCATION
           </div>
-          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-sm)] font-bold text-[var(--fs-10)]">
             DELIVERY
           </div>
-          <div className="text-text-secondary w-[var(--table-col-md)] text-[var(--fs-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-md)] font-bold text-[var(--fs-10)]">
             STATUS
           </div>
         </div>

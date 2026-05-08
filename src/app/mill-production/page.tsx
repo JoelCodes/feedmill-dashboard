@@ -78,22 +78,22 @@ function ProductionCard({ order }: { order: ProductionOrder }) {
   const borderColor = STATE_COLORS[order.state].border;
 
   return (
-    <div className="relative overflow-hidden rounded-r-xl bg-[var(--bg-card)] shadow-card">
+    <div className="shadow-card relative overflow-hidden rounded-r-xl bg-[var(--bg-card)]">
       <div
-        className="absolute left-0 top-0 h-full w-1 rounded-l-xl"
+        className="absolute top-0 left-0 h-full w-1 rounded-l-xl"
         style={{ backgroundColor: borderColor }}
       />
-      <div className="py-2.5 pl-5 pr-4">
-        <p className="text-card-label font-semibold text-muted">
+      <div className="py-2.5 pr-4 pl-5">
+        <p className="text-card-label text-muted font-semibold">
           {order.orderNumber}
         </p>
-        <p className="mt-0.5 text-card-title font-bold text-text-primary">
+        <p className="text-card-title text-text-primary mt-0.5 font-bold">
           {order.customer}
         </p>
-        <p className="mt-1 text-sm font-medium text-medium">
+        <p className="text-medium mt-1 text-sm font-medium">
           {order.weightLbs.toLocaleString()} lbs &bull; {order.product}
         </p>
-        <p className="mt-1.5 text-xs font-medium text-muted">
+        <p className="text-muted mt-1.5 text-xs font-medium">
           Delivery: {order.deliveryTime}
         </p>
       </div>
@@ -119,7 +119,7 @@ function StateSection({
         <span className="text-xl font-bold" style={{ color: headerColor }}>
           {state}
         </span>
-        <span className="text-base font-medium text-muted">
+        <span className="text-muted text-base font-medium">
           {formatWeight(totalWeight)}
         </span>
       </div>
@@ -155,8 +155,8 @@ function MillColumn({
   return (
     <div className="flex flex-1 flex-col gap-5">
       <div>
-        <h2 className="text-2xl font-bold text-primary">{millLine}</h2>
-        <p className="mt-1 text-base font-semibold text-muted">
+        <h2 className="text-primary text-2xl font-bold">{millLine}</h2>
+        <p className="text-muted mt-1 text-base font-semibold">
           {formatWeight(completedWeight)} / {formatWeight(totalWeight)} lbs
         </p>
       </div>
@@ -246,7 +246,7 @@ export default function MillProductionPage() {
   };
 
   return (
-    <div className="flex h-screen bg-bg-page">
+    <div className="bg-bg-page flex h-screen">
       <Sidebar />
       <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
         <Header />

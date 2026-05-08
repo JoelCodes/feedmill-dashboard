@@ -1,6 +1,5 @@
 import { sortCustomersByRecentActivity } from "./customerSort";
 import { CustomerWithStats } from "@/types/customer";
-import { mockOrders } from "@/services/mockData";
 
 describe("sortCustomersByRecentActivity", () => {
   // Helper to create test customers

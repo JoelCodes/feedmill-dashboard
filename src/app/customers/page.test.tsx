@@ -21,7 +21,6 @@ jest.mock('@/utils/customerSort', () => ({
 // Import mocks after jest.mock
 import { useRouter } from 'next/navigation';
 import { getCustomers } from '@/services/customers';
-import { sortCustomersByRecentActivity } from '@/utils/customerSort';
 import { CustomerWithStats } from '@/types/customer';
 
 const mockRouter = { push: jest.fn() };

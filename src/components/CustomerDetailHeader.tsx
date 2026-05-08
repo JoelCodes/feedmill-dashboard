@@ -44,7 +44,7 @@ export default function CustomerDetailHeader({
 
           {customer.deliveryPreferences && (
             <div className="mt-1">
-              <span className="text-[var(--fs-10)] font-bold" style={{ color: '#4fd1c5' }}>
+              <span className="font-bold text-[var(--fs-10)]" style={{ color: '#4fd1c5' }}>
                 Delivery: {customer.deliveryPreferences}
               </span>
             </div>

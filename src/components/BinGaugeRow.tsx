@@ -20,7 +20,7 @@ export function BinGaugeRow({ bins }: BinGaugeRowProps) {
   return (
     <div
       data-testid="bin-gauge-row"
-      className="flex flex-row gap-6 items-end"
+      className="flex flex-row items-end gap-6"
     >
       {bins.map((bin) => (
         <Gauge

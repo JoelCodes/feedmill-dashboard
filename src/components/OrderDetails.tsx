@@ -186,9 +186,9 @@ function formatTimelineDate(date: Date, isPending?: boolean): string {
 
 function PendingBadge() {
   return (
-    <div className="flex items-center gap-1.5 bg-[var(--pending-light)] rounded-md px-2 py-1 my-3">
+    <div className="my-3 flex items-center gap-1.5 rounded-md bg-[var(--pending-light)] px-2 py-1">
       <Timer className="h-3 w-3 text-[var(--text-secondary)]" />
-      <span className="text-[var(--fs-10)] font-bold text-[var(--text-secondary)] uppercase">Pending</span>
+      <span className="font-bold text-[var(--fs-10)] text-[var(--text-secondary)] uppercase">Pending</span>
     </div>
   );
 }
@@ -230,7 +230,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
       <Card className="flex w-120 flex-col gap-4">
         <Card.Content className="p-5.25">
           <div className="flex flex-col items-center justify-center py-12">
-            <p className="text-[var(--text-secondary)] text-sm">Select an order to view details</p>
+            <p className="text-sm text-[var(--text-secondary)]">Select an order to view details</p>
           </div>
         </Card.Content>
       </Card>
@@ -261,30 +261,30 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
         {/* Header */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <h2 className="text-[var(--text-primary)] text-lg font-bold">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">
               {displayOrder.documentNumber} - {displayOrder.customer}
             </h2>
             <StatusBadge status={displayOrder.status} />
           </div>
-          <p className="text-[var(--text-secondary)] text-sm">
+          <p className="text-sm text-[var(--text-secondary)]">
             {displayOrder.quantity} tons {displayOrder.textureType} · {displayOrder.location}
           </p>
         </div>
 
         {/* Stats */}
-        <div className="flex gap-3 mt-4">
+        <div className="mt-4 flex gap-3">
           <StatCard label="Quantity" value={displayOrder.quantity.toString()} unit="tons" />
           <StatCard label="Delivery" value={formatDeliveryDate(displayOrder.deliveryDate)} />
           <StatCard label="Texture" value={displayOrder.textureType} subtext={displayOrder.formulaType} />
         </div>
 
         {/* Timeline */}
-        <div className="flex flex-col gap-4 mt-4">
+        <div className="mt-4 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-[var(--text-primary)] text-sm font-bold">Timeline</h3>
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">Timeline</h3>
             <button
               onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-              className="text-[var(--primary)] text-[var(--fs-10)] font-medium hover:underline"
+              className="font-medium text-[var(--fs-10)] text-[var(--primary)] hover:underline"
             >
               {sortOrder === 'desc' ? 'Newest first' : 'Oldest first'}
             </button>
@@ -341,23 +341,23 @@ function StatCard({
   subtext?: string;
 }) {
   return (
-    <div className="bg-[var(--bg-page)] flex flex-1 flex-col items-center gap-1 rounded-xl p-3.5">
-      <span className="text-[var(--text-secondary)] text-[var(--fs-10)] font-bold">
+    <div className="flex flex-1 flex-col items-center gap-1 rounded-xl bg-[var(--bg-page)] p-3.5">
+      <span className="font-bold text-[var(--fs-10)] text-[var(--text-secondary)]">
         {label}
       </span>
-      <span className="text-[var(--text-primary)] text-[var(--fs-22)] font-bold">
+      <span className="font-bold text-[var(--fs-22)] text-[var(--text-primary)]">
         {value}
       </span>
       {unit && (
-        <span className="text-[var(--text-secondary)] text-[var(--fs-10)]">{unit}</span>
+        <span className="text-[var(--fs-10)] text-[var(--text-secondary)]">{unit}</span>
       )}
       {percentage && (
-        <span className="text-[var(--success)] text-[var(--fs-10)] font-bold">
+        <span className="font-bold text-[var(--fs-10)] text-[var(--success)]">
           {percentage}
         </span>
       )}
       {subtext && (
-        <span className="text-[var(--text-secondary)] text-[var(--fs-10)]">{subtext}</span>
+        <span className="text-[var(--fs-10)] text-[var(--text-secondary)]">{subtext}</span>
       )}
     </div>
   );
@@ -398,15 +398,15 @@ function TimelineItem({
 
       {/* Right - Content */}
       <div className="flex flex-1 flex-col gap-0.5 pb-8">
-        <span className="text-[var(--text-primary)] text-[var(--fs-13)] font-bold">
+        <span className="font-bold text-[var(--fs-13)] text-[var(--text-primary)]">
           {title}
         </span>
-        <p className="text-[var(--text-secondary)] text-[var(--fs-11)] leading-relaxed">
+        <p className="leading-relaxed text-[var(--fs-11)] text-[var(--text-secondary)]">
           {description}
         </p>
         <div className="flex items-center gap-1">
           {isPending && <Timer className="h-2.5 w-2.5 text-[var(--text-secondary)]" />}
-          <span className={`text-[var(--fs-10)] font-bold ${colors.text}`}>{date}</span>
+          <span className={`font-bold text-[var(--fs-10)] ${colors.text}`}>{date}</span>
         </div>
       </div>
     </div>

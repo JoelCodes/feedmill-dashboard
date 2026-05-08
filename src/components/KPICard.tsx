@@ -62,13 +62,13 @@ function KPICard({ label, value, change, changeType, icon: Icon }: KPICardProps)
     <Card className="flex-1">
       <Card.Content className="flex items-center justify-between p-[18px_21px]">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[var(--text-secondary)] text-xs font-bold">{label}</span>
+          <span className="text-xs font-bold text-[var(--text-secondary)]">{label}</span>
           <div className="flex items-end gap-1.5">
-            <span className="text-[var(--text-primary)] text-lg font-bold">{value}</span>
+            <span className="text-lg font-bold text-[var(--text-primary)]">{value}</span>
             <span className={`text-sm font-bold ${changeColor}`}>{change}</span>
           </div>
         </div>
-        <div className="bg-[var(--primary)] flex h-11.25 w-11.25 items-center justify-center rounded-xl shadow-[var(--shadow-card)]">
+        <div className="flex h-11.25 w-11.25 items-center justify-center rounded-xl bg-[var(--primary)] shadow-[var(--shadow-card)]">
           <Icon className="h-5.5 w-5.5 text-white" />
         </div>
       </Card.Content>

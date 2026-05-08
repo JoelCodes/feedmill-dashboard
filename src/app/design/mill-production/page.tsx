@@ -57,8 +57,8 @@ function ProductionCardComponent({ card }: { card: ProductionCard }) {
         <span className={`text-xs font-bold ${config.text}`}>{card.state}</span>
       </div>
       <div className="flex flex-col gap-1 p-4">
-        <span className="text-sm font-bold text-text-primary">{card.label}</span>
-        <span className="text-xs text-text-secondary">
+        <span className="text-text-primary text-sm font-bold">{card.label}</span>
+        <span className="text-text-secondary text-xs">
           {card.completedTons} T / {card.expectedTons} T
         </span>
       </div>
@@ -75,7 +75,7 @@ function ProductionColumn({
 }) {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <h2 className="text-lg font-bold text-text-primary">{title}</h2>
+      <h2 className="text-text-primary text-lg font-bold">{title}</h2>
       <div className="flex flex-col gap-4">
         {cards.map((card) => (
           <ProductionCardComponent key={card.id} card={card} />
@@ -94,10 +94,10 @@ export default function MillProductionPage() {
   });
 
   return (
-    <div className="min-h-screen bg-bg-page p-6">
+    <div className="bg-bg-page min-h-screen p-6">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-text-primary">Mill Production</h1>
-        <p className="text-sm text-text-secondary">{today}</p>
+        <h1 className="text-text-primary text-2xl font-bold">Mill Production</h1>
+        <p className="text-text-secondary text-sm">{today}</p>
       </header>
 
       <div className="flex gap-6">

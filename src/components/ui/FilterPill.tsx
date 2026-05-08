@@ -42,7 +42,7 @@ export default function FilterPill({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} rounded-2xl px-4 py-2 h-8 transition-colors hover:opacity-90`}
+      className={`flex items-center gap-1.5 ${bgClass} h-8 rounded-2xl px-4 py-2 transition-colors hover:opacity-90`}
       aria-pressed={isActive}
       aria-label={`Filter by ${label}, ${count} orders`}
     >
@@ -54,7 +54,7 @@ export default function FilterPill({
       )}
       <span className={`text-xs font-medium ${textClass}`}>{label}</span>
       <div className={`${countBgClass} flex items-center rounded-lg px-1.5`}>
-        <span className={`text-[var(--fs-10)] font-bold ${textClass}`}>{count}</span>
+        <span className={`font-bold text-[var(--fs-10)] ${textClass}`}>{count}</span>
       </div>
     </button>
   );

@@ -81,9 +81,9 @@ function TimelineItem({ event, isExpanded, showConnector, onToggle }: TimelineIt
   return (
     <div className="flex gap-[var(--timeline-gap)]">
       {/* Left column: Icon dot and connector line */}
-      <div className="flex flex-col items-center w-[var(--icon-container)] flex-shrink-0">
-        <div className={`w-[var(--icon-dot)] h-[var(--icon-dot)] rounded-full ${colors.dot} flex items-center justify-center`}>
-          <Icon className="w-[var(--icon-sm)] h-[var(--icon-sm)] text-white" />
+      <div className="flex w-[var(--icon-container)] flex-shrink-0 flex-col items-center">
+        <div className={`h-[var(--icon-dot)] w-[var(--icon-dot)] rounded-full ${colors.dot} flex items-center justify-center`}>
+          <Icon className="h-[var(--icon-sm)] w-[var(--icon-sm)] text-white" />
         </div>
         {showConnector && <div className={`w-[var(--timeline-connector)] flex-1 ${colors.connector} min-h-[var(--timeline-min-height)]`}></div>}
       </div>
@@ -92,16 +92,16 @@ function TimelineItem({ event, isExpanded, showConnector, onToggle }: TimelineIt
       <div className="flex-1 pb-4">
         <button
           onClick={onToggle}
-          className="w-full text-left focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 rounded"
+          className="w-full rounded text-left focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:outline-none"
           aria-expanded={isExpanded}
           aria-label={event.title}
         >
           <div className="space-y-1">
-            <h4 className="text-[var(--fs-13)] font-bold leading-[1.5] text-[var(--text-primary)]">{event.title}</h4>
-            <p className="text-[var(--fs-11)] font-normal leading-[1.5] text-[var(--text-secondary)]">
+            <h4 className="leading-[1.5] font-bold text-[var(--fs-13)] text-[var(--text-primary)]">{event.title}</h4>
+            <p className="leading-[1.5] font-normal text-[var(--fs-11)] text-[var(--text-secondary)]">
               {event.description}
             </p>
-            <p className={`text-[var(--fs-10)] font-bold leading-[1.2] ${colors.text}`}>
+            <p className={`leading-[1.2] font-bold text-[var(--fs-10)] ${colors.text}`}>
               {formatTimelineDate(event.timestamp)}
             </p>
           </div>
@@ -109,19 +109,19 @@ function TimelineItem({ event, isExpanded, showConnector, onToggle }: TimelineIt
 
         {/* Expanded detail box (only for order events) */}
         {showExpanded && (
-          <div className="mt-2 bg-[var(--bg-page)] rounded-[var(--radius-md)] p-3 space-y-1">
-            <p className="text-[var(--fs-11)] font-normal leading-[1.5] text-[var(--text-primary)]">
+          <div className="mt-2 space-y-1 rounded-[var(--radius-md)] bg-[var(--bg-page)] p-3">
+            <p className="leading-[1.5] font-normal text-[var(--fs-11)] text-[var(--text-primary)]">
               Quantity: {event.orderQuantity} tons
             </p>
-            <p className="text-[var(--fs-11)] font-normal leading-[1.5] text-[var(--text-primary)]">
+            <p className="leading-[1.5] font-normal text-[var(--fs-11)] text-[var(--text-primary)]">
               Product: {event.orderProduct}
             </p>
-            <p className="text-[var(--fs-11)] font-normal leading-[1.5] text-[var(--text-primary)]">
+            <p className="leading-[1.5] font-normal text-[var(--fs-11)] text-[var(--text-primary)]">
               Status: {event.orderStatus}
             </p>
             <Link
               href={`/orders?selected=${event.orderId}`}
-              className="text-[var(--fs-10)] font-normal leading-[1.5] text-[var(--primary)] underline inline-block mt-1"
+              className="mt-1 inline-block leading-[1.5] font-normal text-[var(--fs-10)] text-[var(--primary)] underline"
             >
               View Order Details
             </Link>
@@ -152,8 +152,8 @@ export function Timeline({ events }: TimelineProps) {
     return (
       <Card>
         <Card.Content className="p-6">
-          <div className="text-center py-12">
-            <h3 className="text-[var(--fs-13)] font-bold text-[var(--text-primary)] mb-2">No recent activity</h3>
+          <div className="py-12 text-center">
+            <h3 className="mb-2 font-bold text-[var(--fs-13)] text-[var(--text-primary)]">No recent activity</h3>
             <p className="text-[var(--fs-11)] text-[var(--text-secondary)]">
               Activity will appear here as orders, deliveries, and bin alerts occur.
             </p>
