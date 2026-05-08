@@ -44,7 +44,7 @@ export default function CustomerDetailHeader({
 
           {customer.deliveryPreferences && (
             <div className="mt-1">
-              <span className="text-[var(--text-10)] font-bold" style={{ color: '#4fd1c5' }}>
+              <span className="text-[var(--fs-10)] font-bold" style={{ color: '#4fd1c5' }}>
                 Delivery: {customer.deliveryPreferences}
               </span>
             </div>
@@ -57,7 +57,7 @@ export default function CustomerDetailHeader({
             <span className="text-xl font-bold" style={{ color: '#2d3748' }}>
               {stats.totalOrders}
             </span>
-            <span className="text-[var(--text-10)]" style={{ color: '#a0aec0' }}>
+            <span className="text-[var(--fs-10)]" style={{ color: '#a0aec0' }}>
               Total Orders
             </span>
           </div>
@@ -66,7 +66,7 @@ export default function CustomerDetailHeader({
             <span className="text-xl font-bold" style={{ color: '#2d3748' }}>
               {stats.activeBins}
             </span>
-            <span className="text-[var(--text-10)]" style={{ color: '#a0aec0' }}>
+            <span className="text-[var(--fs-10)]" style={{ color: '#a0aec0' }}>
               Active Bins
             </span>
           </div>
@@ -75,7 +75,7 @@ export default function CustomerDetailHeader({
             <span className="text-xl font-bold" style={{ color: '#2d3748' }}>
               —
             </span>
-            <span className="text-[var(--text-10)]" style={{ color: '#a0aec0' }}>
+            <span className="text-[var(--fs-10)]" style={{ color: '#a0aec0' }}>
               Recent Activity
             </span>
           </div>

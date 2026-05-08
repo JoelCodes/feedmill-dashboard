@@ -81,9 +81,9 @@ export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
       </div>
 
       {/* Labels below gauge - centered */}
-      <span className="text-[var(--text-10)] font-bold text-[var(--text-primary)] text-center">{label}</span>
+      <span className="text-[var(--fs-10)] font-bold text-[var(--text-primary)] text-center">{label}</span>
       {sublabel && (
-        <span className="text-[var(--text-10)] text-[var(--text-secondary)] text-center">{sublabel}</span>
+        <span className="text-[var(--fs-10)] text-[var(--text-secondary)] text-center">{sublabel}</span>
       )}
     </div>
   );

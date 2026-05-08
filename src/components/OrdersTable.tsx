@@ -331,25 +331,25 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
       >
         {/* Table Header */}
         <div className="flex py-2.5">
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             DOCUMENT #
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             CUSTOMER
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             PRODUCT
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             QTY (TONS)
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             LOCATION
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             DELIVERY
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             STATUS
           </div>
         </div>

@@ -98,7 +98,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
               }`}
             />
             {status === "Producing" ? "In Production" : status}
-            <span className="ml-0.5 text-[var(--text-10)] opacity-70">
+            <span className="ml-0.5 text-[var(--fs-10)] opacity-70">
               {statusCounts[status]}
             </span>
           </button>
@@ -109,22 +109,22 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
       <div className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto">
         {/* Table Header */}
         <div className="flex py-2.5">
-          <div className="text-text-secondary w-[var(--table-col-lg)] text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-lg)] text-[var(--fs-10)] font-bold">
             DOCUMENT #
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             PRODUCT
           </div>
-          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--fs-10)] font-bold">
             QTY (TONS)
           </div>
-          <div className="text-text-secondary flex-1 text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary flex-1 text-[var(--fs-10)] font-bold">
             LOCATION
           </div>
-          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-sm)] text-[var(--fs-10)] font-bold">
             DELIVERY
           </div>
-          <div className="text-text-secondary w-[var(--table-col-md)] text-[var(--text-10)] font-bold">
+          <div className="text-text-secondary w-[var(--table-col-md)] text-[var(--fs-10)] font-bold">
             STATUS
           </div>
         </div>

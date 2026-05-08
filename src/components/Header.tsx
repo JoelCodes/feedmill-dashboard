@@ -122,7 +122,7 @@ export default function Header({ onSearch }: HeaderProps) {
           >
             <Bell className="text-text-secondary h-4 w-4" />
             {unreadCount > 0 && (
-              <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-error text-white text-[var(--text-10)] font-bold flex items-center justify-center">
+              <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-error text-white text-[var(--fs-10)] font-bold flex items-center justify-center">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}

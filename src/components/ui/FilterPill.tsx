@@ -52,9 +52,9 @@ export default function FilterPill({
           className={`h-2 w-2 rounded-full ${dotBgClass}`}
         />
       )}
-      <span className={`text-[var(--text-11)] font-bold ${textClass}`}>{label}</span>
+      <span className={`text-[var(--fs-11)] font-bold ${textClass}`}>{label}</span>
       <div className={`${countBgClass} flex items-center rounded-lg px-1.5`}>
-        <span className={`text-[var(--text-10)] font-bold ${textClass}`}>{count}</span>
+        <span className={`text-[var(--fs-10)] font-bold ${textClass}`}>{count}</span>
       </div>
     </button>
   );
