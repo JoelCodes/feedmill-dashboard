@@ -109,7 +109,7 @@ Plans:
   1. Token usage documentation clearly explains when to use each semantic token
   2. Component guidelines provide usage examples with do/don't patterns for all components
   3. All components pass WCAG 2.1 AA automated testing and manual screen reader verification
-**Plans**: 4 plans
+**Plans**: 10 plans
 
 Plans:
 **Wave 1**
@@ -122,7 +122,17 @@ Plans:
 - [x] 19-03-PLAN.md — Create README.md with token and component documentation (DOC-01, DOC-02)
 
 **Wave 4** (depends on Wave 2, Wave 3)
-- [ ] 19-04-PLAN.md — VoiceOver manual testing and verification documentation (DOC-03)
+- [x] 19-04-PLAN.md — VoiceOver manual testing and verification documentation (DOC-03)
+
+**Wave 5 - Gap Closure** (parallel)
+- [ ] 19-05-PLAN.md — Fix ESLint tailwindcss config warning and test file imports (DOC-03)
+- [ ] 19-06-PLAN.md — Fix jsx-a11y violations in UI components (Card, Timeline) (DOC-03)
+- [ ] 19-07-PLAN.md — Fix jsx-a11y violations in pages (customers, settings) (DOC-03)
+- [ ] 19-08-PLAN.md — Fix jsx-a11y violations in OrdersTable and orders page (DOC-03)
+- [ ] 19-09-PLAN.md — Fix no-hardcoded-values in UI components (DOC-03)
+
+**Wave 6** (depends on Wave 5)
+- [ ] 19-10-PLAN.md — Final lint and test verification (DOC-03)
 
 ## Progress
 
@@ -131,7 +141,7 @@ Plans:
 | v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
 | v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
 | v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 21 | In progress | - |
+| v1.3 Design Hardening | 16-19 | 27 | In progress | - |
 
 ---
 
