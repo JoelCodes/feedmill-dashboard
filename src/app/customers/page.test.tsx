@@ -82,6 +82,11 @@ describe('CustomersPage', () => {
 
     const searchInput = screen.getByPlaceholderText('Search customers by name...');
     expect(searchInput).toBeInTheDocument();
+
+    // Wait for async data fetch to complete to avoid act() warning
+    await waitFor(() => {
+      expect(screen.getByText('Greenfield Farms')).toBeInTheDocument();
+    });
   });
 
   it('renders customer names from getCustomers() service', async () => {
