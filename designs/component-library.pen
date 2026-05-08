@@ -1,148 +1,2111 @@
 {
   "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "sq0Ms",
+      "x": -400,
+      "y": 0,
+      "name": "Button/Primary",
+      "reusable": true,
+      "width": 93,
+      "height": 41,
+      "fill": "$primary",
+      "cornerRadius": "$radius-md",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "xLrFT",
+          "x": 24,
+          "y": 12,
+          "name": "label",
+          "fill": "$text-white",
+          "content": "Button",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "w8BVo",
+      "x": -400,
+      "y": 60,
+      "name": "Button/Secondary",
+      "reusable": true,
+      "width": 93,
+      "height": 41,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "stroke": {
+        "thickness": 2,
+        "fill": "$primary"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "u2IBk",
+          "x": 24,
+          "y": 12,
+          "name": "label",
+          "fill": "$primary",
+          "content": "Button",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "GCQDW",
+      "x": -400,
+      "y": 120,
+      "name": "Button/Ghost",
+      "reusable": true,
+      "width": 93,
+      "height": 41,
+      "cornerRadius": "$radius-md",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "JA8bl",
+          "x": 24,
+          "y": 12,
+          "name": "label",
+          "fill": "$primary",
+          "content": "Button",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "K9dYyE",
+      "x": -400,
+      "y": 180,
+      "name": "Button/Destructive",
+      "reusable": true,
+      "width": 93,
+      "height": 41,
+      "fill": "$error",
+      "cornerRadius": "$radius-md",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "yNBXP",
+          "x": 24,
+          "y": 12,
+          "name": "label",
+          "fill": "$text-white",
+          "content": "Button",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "CuL6c",
+      "x": -400,
+      "y": 260,
+      "name": "Card/Default",
+      "reusable": true,
+      "width": 280,
+      "height": 120,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-lg",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$divider"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "jfwm3",
+          "x": 16,
+          "y": 16,
+          "name": "title",
+          "fill": "$text-primary",
+          "content": "Card Title",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "XSVdJ",
+          "x": 16,
+          "y": 44,
+          "name": "description",
+          "fill": "$text-secondary",
+          "content": "Card description text goes here",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tvYyp",
+      "x": -400,
+      "y": 400,
+      "name": "Card/Elevated",
+      "reusable": true,
+      "width": 280,
+      "height": 120,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-lg",
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#00000015",
+        "offset": {
+          "x": 0,
+          "y": 4
+        },
+        "blur": 12
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "pDtDF",
+          "x": 16,
+          "y": 16,
+          "name": "title",
+          "fill": "$text-primary",
+          "content": "Card Title",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "hxQgg",
+          "x": 16,
+          "y": 44,
+          "name": "description",
+          "fill": "$text-secondary",
+          "content": "Card description text goes here",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "dJA5j",
+      "x": -400,
+      "y": 540,
+      "name": "FilterPill/Inactive",
+      "reusable": true,
+      "width": 70,
+      "height": 32,
+      "fill": "$pending-light",
+      "cornerRadius": 16,
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "tqKdb",
+          "x": 18,
+          "y": 8,
+          "name": "label",
+          "fill": "$text-secondary",
+          "content": "Filter",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "t5Rnv",
+      "x": -400,
+      "y": 590,
+      "name": "FilterPill/Active",
+      "reusable": true,
+      "width": 70,
+      "height": 32,
+      "fill": "$primary",
+      "cornerRadius": 16,
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "UFWLZ",
+          "x": 18,
+          "y": 8,
+          "name": "label",
+          "fill": "$text-white",
+          "content": "Filter",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Xejar",
+      "x": -400,
+      "y": 640,
+      "name": "FilterPill/Success",
+      "reusable": true,
+      "width": 70,
+      "height": 32,
+      "fill": "$success-light",
+      "cornerRadius": 16,
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "jUfKz",
+          "x": 18,
+          "y": 8,
+          "name": "label",
+          "fill": "$success-dark",
+          "content": "Filter",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "W1MD7K",
+      "x": -400,
+      "y": 690,
+      "name": "FilterPill/Warning",
+      "reusable": true,
+      "width": 70,
+      "height": 32,
+      "fill": "$warning-light",
+      "cornerRadius": 16,
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "G3qszG",
+          "x": 18,
+          "y": 8,
+          "name": "label",
+          "fill": "$warning",
+          "content": "Filter",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ZT7Tr",
+      "x": -400,
+      "y": 750,
+      "name": "StatusBadge/Pending",
+      "reusable": true,
+      "width": 65,
+      "height": 24,
+      "fill": "$pending-light",
+      "cornerRadius": "$radius-sm",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "xiwth",
+          "x": 8,
+          "y": 5,
+          "name": "label",
+          "fill": "$text-secondary",
+          "content": "Pending",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "hpzVE",
+      "x": -400,
+      "y": 790,
+      "name": "StatusBadge/Producing",
+      "reusable": true,
+      "width": 75,
+      "height": 24,
+      "fill": "$info-light",
+      "cornerRadius": "$radius-sm",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "Jiybq",
+          "x": 8,
+          "y": 5,
+          "name": "label",
+          "fill": "$info",
+          "content": "Producing",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "AggYw",
+      "x": -400,
+      "y": 830,
+      "name": "StatusBadge/Ready",
+      "reusable": true,
+      "width": 55,
+      "height": 24,
+      "fill": "$success-light",
+      "cornerRadius": "$radius-sm",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "RHW1i",
+          "x": 8,
+          "y": 5,
+          "name": "label",
+          "fill": "$success-dark",
+          "content": "Ready",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "HrBDh",
+      "x": -400,
+      "y": 870,
+      "name": "StatusBadge/InTransit",
+      "reusable": true,
+      "width": 70,
+      "height": 24,
+      "fill": "$purple-light",
+      "cornerRadius": "$radius-sm",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "Q3S0rB",
+          "x": 8,
+          "y": 5,
+          "name": "label",
+          "fill": "$purple",
+          "content": "In Transit",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tqkXU",
+      "x": -400,
+      "y": 910,
+      "name": "StatusBadge/Complete",
+      "reusable": true,
+      "width": 70,
+      "height": 24,
+      "fill": "$success-light",
+      "cornerRadius": "$radius-sm",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "b3ujTB",
+          "x": 8,
+          "y": 5,
+          "name": "label",
+          "fill": "$success-dark",
+          "content": "Complete",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "e17RC",
+      "x": -400,
+      "y": 960,
+      "name": "Gauge/High",
+      "reusable": true,
+      "width": 60,
+      "height": 100,
+      "fill": "$pending-light",
+      "cornerRadius": "$radius-md",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "LK5Tt",
+          "x": 0,
+          "y": 15,
+          "name": "fill",
+          "fill": "$success",
+          "width": 60,
+          "height": 85
+        },
+        {
+          "type": "text",
+          "id": "ltCbb",
+          "x": 14,
+          "y": 50,
+          "name": "value",
+          "fill": "$text-white",
+          "content": "85%",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "bold"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "X7YW9",
+      "x": -400,
+      "y": 1080,
+      "name": "Gauge/Medium",
+      "reusable": true,
+      "width": 60,
+      "height": 100,
+      "fill": "$pending-light",
+      "cornerRadius": "$radius-md",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "VL5tO",
+          "x": 0,
+          "y": 50,
+          "name": "fill",
+          "fill": "$warning",
+          "width": 60,
+          "height": 50
+        },
+        {
+          "type": "text",
+          "id": "Srxmu",
+          "x": 14,
+          "y": 68,
+          "name": "value",
+          "fill": "$text-white",
+          "content": "50%",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "bold"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LHnjX",
+      "x": -400,
+      "y": 1200,
+      "name": "Gauge/Low",
+      "reusable": true,
+      "width": 60,
+      "height": 100,
+      "fill": "$pending-light",
+      "cornerRadius": "$radius-md",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "ipRdG",
+          "x": 0,
+          "y": 75,
+          "name": "fill",
+          "fill": "$error",
+          "width": 60,
+          "height": 25
+        },
+        {
+          "type": "text",
+          "id": "BnE7y",
+          "x": 14,
+          "y": 78,
+          "name": "value",
+          "fill": "$text-white",
+          "content": "25%",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "bold"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PcGi8",
+      "x": 0,
+      "y": 0,
+      "name": "Component Library",
+      "width": 1400,
+      "height": 2100,
+      "fill": "$bg-page",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "GC9tv",
+          "x": 48,
+          "y": 48,
+          "name": "title",
+          "fill": "$text-primary",
+          "content": "CGM Dashboard Design System",
+          "fontFamily": "Inter",
+          "fontSize": 32,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "text",
+          "id": "YIzxR",
+          "x": 48,
+          "y": 92,
+          "name": "subtitle",
+          "fill": "$text-secondary",
+          "content": "Color tokens, typography, and component library",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "id": "n7Lso",
+          "x": 48,
+          "y": 130,
+          "name": "divider1",
+          "fill": "$divider",
+          "width": 1304,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "O615vR",
+          "x": 48,
+          "y": 160,
+          "name": "colorsTitle",
+          "fill": "$text-primary",
+          "content": "Color Tokens",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "text",
+          "id": "kXw6X",
+          "x": 48,
+          "y": 200,
+          "name": "primaryLabel",
+          "fill": "$text-secondary",
+          "content": "Primary",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "nVCzx",
+          "x": 130,
+          "y": 196,
+          "name": "swatch1",
+          "fill": "$primary",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "ElkcT",
+          "x": 130,
+          "y": 262,
+          "name": "swatch1Label",
+          "fill": "$text-secondary",
+          "content": "primary",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "Q6N1p",
+          "x": 200,
+          "y": 196,
+          "name": "swatch2",
+          "fill": "$primary-dark",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "E6xQQg",
+          "x": 200,
+          "y": 262,
+          "name": "swatch2Label",
+          "fill": "$text-secondary",
+          "content": "primary-dark",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "zrXG6",
+          "x": 270,
+          "y": 196,
+          "name": "swatch3",
+          "fill": "$primary-hover",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "gYIT2",
+          "x": 270,
+          "y": 262,
+          "name": "swatch3Label",
+          "fill": "$text-secondary",
+          "content": "primary-hover",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "B7w9Ob",
+          "x": 48,
+          "y": 300,
+          "name": "statusLabel",
+          "fill": "$text-secondary",
+          "content": "Status",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "vdrpP",
+          "x": 130,
+          "y": 296,
+          "name": "successSwatch",
+          "fill": "$success",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "UE5TT",
+          "x": 130,
+          "y": 362,
+          "name": "successLabel",
+          "fill": "$text-secondary",
+          "content": "success",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "Djm9p",
+          "x": 200,
+          "y": 296,
+          "name": "warningSwatch",
+          "fill": "$warning",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "q8sAy",
+          "x": 200,
+          "y": 362,
+          "name": "warningLabel",
+          "fill": "$text-secondary",
+          "content": "warning",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "AKjUy",
+          "x": 270,
+          "y": 296,
+          "name": "errorSwatch",
+          "fill": "$error",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "HdMkL",
+          "x": 270,
+          "y": 362,
+          "name": "errorLabel",
+          "fill": "$text-secondary",
+          "content": "error",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "SwdAC",
+          "x": 340,
+          "y": 296,
+          "name": "infoSwatch",
+          "fill": "$info",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "XoUq2",
+          "x": 340,
+          "y": 362,
+          "name": "infoLabel",
+          "fill": "$text-secondary",
+          "content": "info",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "id": "t8z2E",
+          "x": 48,
+          "y": 400,
+          "name": "divider2",
+          "fill": "$divider",
+          "width": 1304,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "mKMPL",
+          "x": 48,
+          "y": 430,
+          "name": "componentsTitle",
+          "fill": "$text-primary",
+          "content": "Components",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "text",
+          "id": "G0eMr",
+          "x": 48,
+          "y": 480,
+          "name": "buttonTitle",
+          "fill": "$text-primary",
+          "content": "Button",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "mBAr2",
+          "type": "ref",
+          "ref": "sq0Ms",
+          "x": 48,
+          "y": 520
+        },
+        {
+          "id": "GSMGL",
+          "type": "ref",
+          "ref": "w8BVo",
+          "x": 160,
+          "y": 520
+        },
+        {
+          "id": "m9wTKi",
+          "type": "ref",
+          "ref": "GCQDW",
+          "x": 272,
+          "y": 520
+        },
+        {
+          "id": "T25WbU",
+          "type": "ref",
+          "ref": "K9dYyE",
+          "x": 384,
+          "y": 520
+        },
+        {
+          "type": "text",
+          "id": "PfzMc",
+          "x": 48,
+          "y": 590,
+          "name": "cardTitle",
+          "fill": "$text-primary",
+          "content": "Card",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "ou3VK",
+          "type": "ref",
+          "ref": "CuL6c",
+          "x": 48,
+          "y": 630
+        },
+        {
+          "id": "o9E3P5",
+          "type": "ref",
+          "ref": "tvYyp",
+          "x": 350,
+          "y": 630
+        },
+        {
+          "type": "text",
+          "id": "A3ubQ0",
+          "x": 48,
+          "y": 780,
+          "name": "filterPillTitle",
+          "fill": "$text-primary",
+          "content": "FilterPill",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "vQwNW",
+          "type": "ref",
+          "ref": "dJA5j",
+          "x": 48,
+          "y": 820
+        },
+        {
+          "id": "SQy1M",
+          "type": "ref",
+          "ref": "t5Rnv",
+          "x": 130,
+          "y": 820
+        },
+        {
+          "id": "zrgj2",
+          "type": "ref",
+          "ref": "Xejar",
+          "x": 212,
+          "y": 820
+        },
+        {
+          "id": "cur3d",
+          "type": "ref",
+          "ref": "W1MD7K",
+          "x": 294,
+          "y": 820
+        },
+        {
+          "type": "text",
+          "id": "O0FePH",
+          "x": 48,
+          "y": 880,
+          "name": "statusBadgeTitle",
+          "fill": "$text-primary",
+          "content": "StatusBadge",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "lEY0H",
+          "type": "ref",
+          "ref": "ZT7Tr",
+          "x": 48,
+          "y": 920
+        },
+        {
+          "id": "E0fFbN",
+          "type": "ref",
+          "ref": "hpzVE",
+          "x": 125,
+          "y": 920
+        },
+        {
+          "id": "UhoNK",
+          "type": "ref",
+          "ref": "AggYw",
+          "x": 212,
+          "y": 920
+        },
+        {
+          "id": "FjwOZ",
+          "type": "ref",
+          "ref": "HrBDh",
+          "x": 279,
+          "y": 920
+        },
+        {
+          "id": "vGDHE",
+          "type": "ref",
+          "ref": "tqkXU",
+          "x": 361,
+          "y": 920
+        },
+        {
+          "type": "text",
+          "id": "UHTHp",
+          "x": 48,
+          "y": 980,
+          "name": "gaugeTitle",
+          "fill": "$text-primary",
+          "content": "Gauge",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "RYDwY",
+          "type": "ref",
+          "ref": "e17RC",
+          "x": 48,
+          "y": 1020
+        },
+        {
+          "id": "HhZeh",
+          "type": "ref",
+          "ref": "X7YW9",
+          "x": 128,
+          "y": 1020
+        },
+        {
+          "id": "E9rw9y",
+          "type": "ref",
+          "ref": "LHnjX",
+          "x": 208,
+          "y": 1020
+        },
+        {
+          "type": "text",
+          "id": "qVicw",
+          "x": 48,
+          "y": 1200,
+          "name": "formInputsTitle",
+          "fill": "$text-primary",
+          "content": "Form Inputs",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "y0DIHQ",
+          "x": 48,
+          "y": 1240,
+          "name": "textInputLabel",
+          "fill": "$text-secondary",
+          "content": "Text Input",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "NCV6n",
+          "type": "ref",
+          "ref": "BcR3q",
+          "x": 48,
+          "y": 1270,
+          "name": "textInputDefault"
+        },
+        {
+          "id": "o3wDB",
+          "type": "ref",
+          "ref": "ND5x2",
+          "x": 348,
+          "y": 1270,
+          "name": "textInputFocused"
+        },
+        {
+          "id": "G7Ybb",
+          "type": "ref",
+          "ref": "U4UvQ",
+          "x": 648,
+          "y": 1270,
+          "name": "textInputError"
+        },
+        {
+          "type": "text",
+          "id": "TzMSD",
+          "x": 48,
+          "y": 1340,
+          "name": "textAreaLabel",
+          "fill": "$text-secondary",
+          "content": "Text Area",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "dmX1E",
+          "type": "ref",
+          "ref": "Qej2m",
+          "x": 48,
+          "y": 1370,
+          "name": "textAreaInstance"
+        },
+        {
+          "type": "text",
+          "id": "YK3ZA",
+          "x": 348,
+          "y": 1340,
+          "name": "selectLabel",
+          "fill": "$text-secondary",
+          "content": "Select / Dropdown",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "W8H0O",
+          "type": "ref",
+          "ref": "PvIKt",
+          "x": 348,
+          "y": 1370,
+          "name": "selectInstance"
+        },
+        {
+          "type": "text",
+          "id": "C1Cyh",
+          "x": 48,
+          "y": 1500,
+          "name": "labeledInputLabel",
+          "fill": "$text-secondary",
+          "content": "Labeled Input",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "eiNqq",
+          "type": "ref",
+          "ref": "cU7jk",
+          "x": 48,
+          "y": 1530,
+          "name": "labeledInputInstance"
+        },
+        {
+          "type": "text",
+          "id": "ZylBJ",
+          "x": 48,
+          "y": 1620,
+          "name": "togglesLabel",
+          "fill": "$text-secondary",
+          "content": "Toggle / Switch",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "NULSc",
+          "type": "ref",
+          "ref": "yh5iR",
+          "x": 48,
+          "y": 1660,
+          "name": "toggleOffInstance"
+        },
+        {
+          "id": "mpTGP",
+          "type": "ref",
+          "ref": "Lc3GT",
+          "x": 110,
+          "y": 1660,
+          "name": "toggleOnInstance"
+        },
+        {
+          "id": "YRe7N",
+          "type": "ref",
+          "ref": "npT4a",
+          "x": 172,
+          "y": 1660,
+          "name": "toggleLabeledInstance"
+        },
+        {
+          "type": "text",
+          "id": "bhSIr",
+          "x": 48,
+          "y": 1720,
+          "name": "checkboxLabel",
+          "fill": "$text-secondary",
+          "content": "Checkbox",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "VAxfM",
+          "type": "ref",
+          "ref": "k5Dptf",
+          "x": 48,
+          "y": 1760,
+          "name": "checkboxUncheckedInstance"
+        },
+        {
+          "id": "b7NXr",
+          "type": "ref",
+          "ref": "vo98X",
+          "x": 80,
+          "y": 1760,
+          "name": "checkboxCheckedInstance"
+        },
+        {
+          "id": "SLOxd",
+          "type": "ref",
+          "ref": "JjHN7",
+          "x": 112,
+          "y": 1757,
+          "name": "checkboxLabeledInstance"
+        },
+        {
+          "type": "text",
+          "id": "Q9IILS",
+          "x": 48,
+          "y": 1810,
+          "name": "radioLabel",
+          "fill": "$text-secondary",
+          "content": "Radio Button",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "uF3jq",
+          "type": "ref",
+          "ref": "txZni",
+          "x": 48,
+          "y": 1850,
+          "name": "radioUncheckedInstance"
+        },
+        {
+          "id": "zLrXc",
+          "type": "ref",
+          "ref": "vC3ZT",
+          "x": 80,
+          "y": 1850,
+          "name": "radioCheckedInstance"
+        },
+        {
+          "id": "Bjbka",
+          "type": "ref",
+          "ref": "I0AhF",
+          "x": 112,
+          "y": 1847,
+          "name": "radioLabeledInstance"
+        },
+        {
+          "type": "rectangle",
+          "id": "orRZw",
+          "x": 48,
+          "y": 1180,
+          "name": "formDivider",
+          "fill": "$divider",
+          "width": 1304,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "Zfr3j",
+          "x": 348,
+          "y": 1500,
+          "name": "labelComponentLabel",
+          "fill": "$text-secondary",
+          "content": "Label",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "qyrxx",
+          "type": "ref",
+          "ref": "tbXyv",
+          "x": 348,
+          "y": 1530,
+          "name": "labelInstance"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "BcR3q",
+      "x": -400,
+      "y": 0,
+      "name": "Input/Text",
+      "reusable": true,
+      "width": 280,
+      "height": 44,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$divider"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "Jgl3F",
+          "x": 12,
+          "y": 13,
+          "name": "placeholder",
+          "fill": "$text-secondary",
+          "content": "Enter text...",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ND5x2",
+      "x": -400,
+      "y": 60,
+      "name": "Input/TextFocused",
+      "reusable": true,
+      "width": 280,
+      "height": 44,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "stroke": {
+        "thickness": 2,
+        "fill": "$primary"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "V156b",
+          "x": 12,
+          "y": 13,
+          "name": "value",
+          "fill": "$text-primary",
+          "content": "Typed value",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "U4UvQ",
+      "x": -400,
+      "y": 120,
+      "name": "Input/TextError",
+      "reusable": true,
+      "width": 280,
+      "height": 44,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "stroke": {
+        "thickness": 2,
+        "fill": "$error"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "UmULx",
+          "x": 12,
+          "y": 13,
+          "name": "value",
+          "fill": "$text-primary",
+          "content": "Invalid input",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Qej2m",
+      "x": -400,
+      "y": 180,
+      "name": "Input/TextArea",
+      "reusable": true,
+      "width": 280,
+      "height": 100,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$divider"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "gLvzN",
+          "x": 12,
+          "y": 12,
+          "name": "placeholder",
+          "fill": "$text-secondary",
+          "content": "Enter description...",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tbXyv",
+      "x": -400,
+      "y": 300,
+      "name": "Form/Label",
+      "reusable": true,
+      "width": 100,
+      "height": 20,
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "FKXG8",
+          "x": 0,
+          "y": 0,
+          "name": "text",
+          "fill": "$text-primary",
+          "content": "Label",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "yh5iR",
+      "x": -400,
+      "y": 340,
+      "name": "Toggle/Off",
+      "reusable": true,
+      "width": 48,
+      "height": 26,
+      "fill": "$pending-light",
+      "cornerRadius": 13,
+      "layout": "none",
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "F97w7W",
+          "x": 2,
+          "y": 2,
+          "name": "knob",
+          "fill": "$bg-card",
+          "width": 22,
+          "height": 22,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000020",
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "blur": 4
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Lc3GT",
+      "x": -400,
+      "y": 380,
+      "name": "Toggle/On",
+      "reusable": true,
+      "width": 48,
+      "height": 26,
+      "fill": "$primary",
+      "cornerRadius": 13,
+      "layout": "none",
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "y2XOz",
+          "x": 24,
+          "y": 2,
+          "name": "knob",
+          "fill": "$bg-card",
+          "width": 22,
+          "height": 22,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000020",
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "blur": 4
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "k5Dptf",
+      "x": -400,
+      "y": 420,
+      "name": "Checkbox/Unchecked",
+      "reusable": true,
+      "width": 20,
+      "height": 20,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-sm",
+      "stroke": {
+        "thickness": 2,
+        "fill": "$divider"
+      },
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "vo98X",
+      "x": -400,
+      "y": 450,
+      "name": "Checkbox/Checked",
+      "reusable": true,
+      "width": 20,
+      "height": 20,
+      "fill": "$primary",
+      "cornerRadius": "$radius-sm",
+      "layout": "none",
+      "children": [
+        {
+          "type": "icon_font",
+          "id": "jaLXG",
+          "x": 3,
+          "y": 3,
+          "name": "checkIcon",
+          "width": 14,
+          "height": 14,
+          "iconFontName": "check",
+          "iconFontFamily": "lucide",
+          "fill": "$text-white"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "txZni",
+      "x": -400,
+      "y": 490,
+      "name": "Radio/Unchecked",
+      "reusable": true,
+      "width": 20,
+      "height": 20,
+      "fill": "$bg-card",
+      "cornerRadius": 10,
+      "stroke": {
+        "thickness": 2,
+        "fill": "$divider"
+      },
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "vC3ZT",
+      "x": -400,
+      "y": 520,
+      "name": "Radio/Checked",
+      "reusable": true,
+      "width": 20,
+      "height": 20,
+      "fill": "$bg-card",
+      "cornerRadius": 10,
+      "stroke": {
+        "thickness": 2,
+        "fill": "$primary"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "Zy2re",
+          "x": 5,
+          "y": 5,
+          "name": "dot",
+          "fill": "$primary",
+          "width": 10,
+          "height": 10
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PvIKt",
+      "x": -400,
+      "y": 560,
+      "name": "Input/Select",
+      "reusable": true,
+      "width": 280,
+      "height": 44,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$divider"
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "A62Fuf",
+          "x": 12,
+          "y": 13,
+          "name": "value",
+          "fill": "$text-secondary",
+          "content": "Select option...",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "icon_font",
+          "id": "hJlLS",
+          "x": 252,
+          "y": 14,
+          "name": "chevron",
+          "width": 16,
+          "height": 16,
+          "iconFontName": "chevron-down",
+          "iconFontFamily": "lucide",
+          "fill": "$text-secondary"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "cU7jk",
+      "x": -400,
+      "y": 620,
+      "name": "Form/LabeledInput",
+      "reusable": true,
+      "width": 280,
+      "layout": "vertical",
+      "gap": 6,
+      "children": [
+        {
+          "type": "text",
+          "id": "q6Pnm",
+          "name": "label",
+          "fill": "$text-primary",
+          "content": "Field Label",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "a5j6x",
+          "type": "ref",
+          "ref": "BcR3q",
+          "name": "input"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "JjHN7",
+      "x": -400,
+      "y": 700,
+      "name": "Form/CheckboxLabeled",
+      "reusable": true,
+      "gap": 8,
+      "alignItems": "center",
+      "children": [
+        {
+          "id": "kXCIn",
+          "type": "ref",
+          "ref": "k5Dptf",
+          "name": "checkbox"
+        },
+        {
+          "type": "text",
+          "id": "d8aWn",
+          "name": "label",
+          "fill": "$text-primary",
+          "content": "Checkbox label",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "I0AhF",
+      "x": -400,
+      "y": 740,
+      "name": "Form/RadioLabeled",
+      "reusable": true,
+      "gap": 8,
+      "alignItems": "center",
+      "children": [
+        {
+          "id": "hiXVS",
+          "type": "ref",
+          "ref": "txZni",
+          "name": "radio"
+        },
+        {
+          "type": "text",
+          "id": "ZmrnC",
+          "name": "label",
+          "fill": "$text-primary",
+          "content": "Radio option",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "npT4a",
+      "x": -400,
+      "y": 780,
+      "name": "Form/ToggleLabeled",
+      "reusable": true,
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "id": "Usoyq",
+          "type": "ref",
+          "ref": "yh5iR",
+          "name": "toggle"
+        },
+        {
+          "type": "text",
+          "id": "FNwVH",
+          "name": "label",
+          "fill": "$text-primary",
+          "content": "Toggle setting",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    }
+  ],
   "themes": {
-    "mode": ["light", "dark"]
+    "mode": [
+      "light",
+      "dark"
+    ]
   },
   "variables": {
-    "primary": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#4fd1c5"}, {"theme": {"mode": "dark"}, "value": "#63b3ed"}]},
-    "primary-dark": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#38b2ac"}, {"theme": {"mode": "dark"}, "value": "#4299e1"}]},
-    "primary-hover": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#45b8ad"}, {"theme": {"mode": "dark"}, "value": "#7ab8ef"}]},
-    "success": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#48bb78"}, {"theme": {"mode": "dark"}, "value": "#68d391"}]},
-    "success-dark": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#2f855a"}, {"theme": {"mode": "dark"}, "value": "#48bb78"}]},
-    "success-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#c6f6d5"}, {"theme": {"mode": "dark"}, "value": "#276749"}]},
-    "warning": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#f59e0b"}, {"theme": {"mode": "dark"}, "value": "#fbd38d"}]},
-    "warning-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#fefcbf"}, {"theme": {"mode": "dark"}, "value": "#744210"}]},
-    "error": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#e53e3e"}, {"theme": {"mode": "dark"}, "value": "#fc8181"}]},
-    "error-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#fed7d7"}, {"theme": {"mode": "dark"}, "value": "#742a2a"}]},
-    "info": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#2b6cb0"}, {"theme": {"mode": "dark"}, "value": "#90cdf4"}]},
-    "info-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#bee3f8"}, {"theme": {"mode": "dark"}, "value": "#2a4365"}]},
-    "pending": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#cbd5e0"}, {"theme": {"mode": "dark"}, "value": "#718096"}]},
-    "pending-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#edf2f7"}, {"theme": {"mode": "dark"}, "value": "#4a5568"}]},
-    "purple": {"type": "color", "value": "#9333ea"},
-    "purple-light": {"type": "color", "value": "#f3e8ff"},
-    "text-primary": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#2d3748"}, {"theme": {"mode": "dark"}, "value": "#e2e8f0"}]},
-    "text-secondary": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#a0aec0"}, {"theme": {"mode": "dark"}, "value": "#a0aec0"}]},
-    "text-white": {"type": "color", "value": "#ffffff"},
-    "bg-page": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#f8f9fa"}, {"theme": {"mode": "dark"}, "value": "#1a202c"}]},
-    "bg-card": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#ffffff"}, {"theme": {"mode": "dark"}, "value": "#2d3748"}]},
-    "divider": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#e2e8f0"}, {"theme": {"mode": "dark"}, "value": "#4a5568"}]},
-    "radius-sm": {"type": "number", "value": 6},
-    "radius-md": {"type": "number", "value": 8},
-    "radius-lg": {"type": "number", "value": 12},
-    "radius-xl": {"type": "number", "value": 16},
-    "space-1": {"type": "number", "value": 4},
-    "space-2": {"type": "number", "value": 8},
-    "space-3": {"type": "number", "value": 12},
-    "space-4": {"type": "number", "value": 16},
-    "space-5": {"type": "number", "value": 24},
-    "space-6": {"type": "number", "value": 32}
-  },
-  "children": [
-    {"type": "frame", "id": "sq0Ms", "name": "Button/Primary", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "fill": "$primary", "x": -400, "y": 0, "children": [
-      {"type": "text", "id": "xLrFT", "name": "label", "content": "Button", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
-    ]},
-    {"type": "frame", "id": "w8BVo", "name": "Button/Secondary", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "fill": "$bg-card", "stroke": {"fill": "$primary", "thickness": 2}, "x": -400, "y": 60, "children": [
-      {"type": "text", "id": "u2IBk", "name": "label", "content": "Button", "fill": "$primary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
-    ]},
-    {"type": "frame", "id": "GCQDW", "name": "Button/Ghost", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "x": -400, "y": 120, "children": [
-      {"type": "text", "id": "JA8bl", "name": "label", "content": "Button", "fill": "$primary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
-    ]},
-    {"type": "frame", "id": "K9dYyE", "name": "Button/Destructive", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "fill": "$error", "x": -400, "y": 180, "children": [
-      {"type": "text", "id": "yNBXP", "name": "label", "content": "Button", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
-    ]},
-    {"type": "frame", "id": "CuL6c", "name": "Card/Default", "reusable": true, "layout": "none", "width": 280, "height": 120, "cornerRadius": "$radius-lg", "fill": "$bg-card", "stroke": {"fill": "$divider", "thickness": 1}, "x": -400, "y": 260, "children": [
-      {"type": "text", "id": "jfwm3", "name": "title", "content": "Card Title", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600", "x": 16, "y": 16},
-      {"type": "text", "id": "XSVdJ", "name": "description", "content": "Card description text goes here", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "normal", "x": 16, "y": 44}
-    ]},
-    {"type": "frame", "id": "tvYyp", "name": "Card/Elevated", "reusable": true, "layout": "none", "width": 280, "height": 120, "cornerRadius": "$radius-lg", "fill": "$bg-card", "effect": {"type": "shadow", "shadowType": "outer", "offset": {"x": 0, "y": 4}, "blur": 12, "color": "#00000015"}, "x": -400, "y": 400, "children": [
-      {"type": "text", "id": "pDtDF", "name": "title", "content": "Card Title", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600", "x": 16, "y": 16},
-      {"type": "text", "id": "hxQgg", "name": "description", "content": "Card description text goes here", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "normal", "x": 16, "y": 44}
-    ]},
-    {"type": "frame", "id": "dJA5j", "name": "FilterPill/Inactive", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$pending-light", "x": -400, "y": 540, "children": [
-      {"type": "text", "id": "tqKdb", "name": "label", "content": "Filter", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
-    ]},
-    {"type": "frame", "id": "t5Rnv", "name": "FilterPill/Active", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$primary", "x": -400, "y": 590, "children": [
-      {"type": "text", "id": "UFWLZ", "name": "label", "content": "Filter", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
-    ]},
-    {"type": "frame", "id": "Xejar", "name": "FilterPill/Success", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$success-light", "x": -400, "y": 640, "children": [
-      {"type": "text", "id": "jUfKz", "name": "label", "content": "Filter", "fill": "$success-dark", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
-    ]},
-    {"type": "frame", "id": "W1MD7K", "name": "FilterPill/Warning", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$warning-light", "x": -400, "y": 690, "children": [
-      {"type": "text", "id": "G3qszG", "name": "label", "content": "Filter", "fill": "$warning", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
-    ]},
-    {"type": "frame", "id": "ZT7Tr", "name": "StatusBadge/Pending", "reusable": true, "layout": "none", "width": 65, "height": 24, "cornerRadius": "$radius-sm", "fill": "$pending-light", "x": -400, "y": 750, "children": [
-      {"type": "text", "id": "xiwth", "name": "label", "content": "Pending", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
-    ]},
-    {"type": "frame", "id": "hpzVE", "name": "StatusBadge/Producing", "reusable": true, "layout": "none", "width": 75, "height": 24, "cornerRadius": "$radius-sm", "fill": "$info-light", "x": -400, "y": 790, "children": [
-      {"type": "text", "id": "Jiybq", "name": "label", "content": "Producing", "fill": "$info", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
-    ]},
-    {"type": "frame", "id": "AggYw", "name": "StatusBadge/Ready", "reusable": true, "layout": "none", "width": 55, "height": 24, "cornerRadius": "$radius-sm", "fill": "$success-light", "x": -400, "y": 830, "children": [
-      {"type": "text", "id": "RHW1i", "name": "label", "content": "Ready", "fill": "$success-dark", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
-    ]},
-    {"type": "frame", "id": "HrBDh", "name": "StatusBadge/InTransit", "reusable": true, "layout": "none", "width": 70, "height": 24, "cornerRadius": "$radius-sm", "fill": "$purple-light", "x": -400, "y": 870, "children": [
-      {"type": "text", "id": "Q3S0rB", "name": "label", "content": "In Transit", "fill": "$purple", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
-    ]},
-    {"type": "frame", "id": "tqkXU", "name": "StatusBadge/Complete", "reusable": true, "layout": "none", "width": 70, "height": 24, "cornerRadius": "$radius-sm", "fill": "$success-light", "x": -400, "y": 910, "children": [
-      {"type": "text", "id": "b3ujTB", "name": "label", "content": "Complete", "fill": "$success-dark", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
-    ]},
-    {"type": "frame", "id": "e17RC", "name": "Gauge/High", "reusable": true, "layout": "none", "width": 60, "height": 100, "cornerRadius": "$radius-md", "fill": "$pending-light", "x": -400, "y": 960, "children": [
-      {"type": "rectangle", "id": "LK5Tt", "name": "fill", "width": 60, "height": 85, "cornerRadius": "$radius-md", "fill": "$success", "x": 0, "y": 15},
-      {"type": "text", "id": "ltCbb", "name": "value", "content": "85%", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "bold", "x": 14, "y": 50}
-    ]},
-    {"type": "frame", "id": "X7YW9", "name": "Gauge/Medium", "reusable": true, "layout": "none", "width": 60, "height": 100, "cornerRadius": "$radius-md", "fill": "$pending-light", "x": -400, "y": 1080, "children": [
-      {"type": "rectangle", "id": "VL5tO", "name": "fill", "width": 60, "height": 50, "cornerRadius": "$radius-md", "fill": "$warning", "x": 0, "y": 50},
-      {"type": "text", "id": "Srxmu", "name": "value", "content": "50%", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "bold", "x": 14, "y": 68}
-    ]},
-    {"type": "frame", "id": "LHnjX", "name": "Gauge/Low", "reusable": true, "layout": "none", "width": 60, "height": 100, "cornerRadius": "$radius-md", "fill": "$pending-light", "x": -400, "y": 1200, "children": [
-      {"type": "rectangle", "id": "ipRdG", "name": "fill", "width": 60, "height": 25, "cornerRadius": "$radius-md", "fill": "$error", "x": 0, "y": 75},
-      {"type": "text", "id": "BnE7y", "name": "value", "content": "25%", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "bold", "x": 14, "y": 78}
-    ]},
-    {"type": "frame", "id": "PcGi8", "name": "Component Library", "layout": "none", "width": 1400, "height": 1300, "fill": "$bg-page", "x": 0, "y": 0, "children": [
-      {"type": "text", "id": "GC9tv", "name": "title", "content": "CGM Dashboard Design System", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 32, "fontWeight": "bold", "x": 48, "y": 48},
-      {"type": "text", "id": "YIzxR", "name": "subtitle", "content": "Color tokens, typography, and component library", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "normal", "x": 48, "y": 92},
-      {"type": "rectangle", "id": "n7Lso", "name": "divider1", "width": 1304, "height": 1, "fill": "$divider", "x": 48, "y": 130},
-      {"type": "text", "id": "O615vR", "name": "colorsTitle", "content": "Color Tokens", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 24, "fontWeight": "bold", "x": 48, "y": 160},
-      {"type": "text", "id": "kXw6X", "name": "primaryLabel", "content": "Primary", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 48, "y": 200},
-      {"type": "rectangle", "id": "nVCzx", "name": "swatch1", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$primary", "x": 130, "y": 196},
-      {"type": "text", "id": "ElkcT", "name": "swatch1Label", "content": "primary", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 130, "y": 262},
-      {"type": "rectangle", "id": "Q6N1p", "name": "swatch2", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$primary-dark", "x": 200, "y": 196},
-      {"type": "text", "id": "E6xQQg", "name": "swatch2Label", "content": "primary-dark", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 200, "y": 262},
-      {"type": "rectangle", "id": "zrXG6", "name": "swatch3", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$primary-hover", "x": 270, "y": 196},
-      {"type": "text", "id": "gYIT2", "name": "swatch3Label", "content": "primary-hover", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 270, "y": 262},
-      {"type": "text", "id": "B7w9Ob", "name": "statusLabel", "content": "Status", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 48, "y": 300},
-      {"type": "rectangle", "id": "vdrpP", "name": "successSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$success", "x": 130, "y": 296},
-      {"type": "text", "id": "UE5TT", "name": "successLabel", "content": "success", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 130, "y": 362},
-      {"type": "rectangle", "id": "Djm9p", "name": "warningSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$warning", "x": 200, "y": 296},
-      {"type": "text", "id": "q8sAy", "name": "warningLabel", "content": "warning", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 200, "y": 362},
-      {"type": "rectangle", "id": "AKjUy", "name": "errorSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$error", "x": 270, "y": 296},
-      {"type": "text", "id": "HdMkL", "name": "errorLabel", "content": "error", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 270, "y": 362},
-      {"type": "rectangle", "id": "SwdAC", "name": "infoSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$info", "x": 340, "y": 296},
-      {"type": "text", "id": "XoUq2", "name": "infoLabel", "content": "info", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 340, "y": 362},
-      {"type": "rectangle", "id": "t8z2E", "name": "divider2", "width": 1304, "height": 1, "fill": "$divider", "x": 48, "y": 400},
-      {"type": "text", "id": "mKMPL", "name": "componentsTitle", "content": "Components", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 24, "fontWeight": "bold", "x": 48, "y": 430},
-      {"type": "text", "id": "G0eMr", "name": "buttonTitle", "content": "Button", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 480},
-      {"type": "ref", "id": "mBAr2", "ref": "sq0Ms", "x": 48, "y": 520},
-      {"type": "ref", "id": "GSMGL", "ref": "w8BVo", "x": 160, "y": 520},
-      {"type": "ref", "id": "m9wTKi", "ref": "GCQDW", "x": 272, "y": 520},
-      {"type": "ref", "id": "T25WbU", "ref": "K9dYyE", "x": 384, "y": 520},
-      {"type": "text", "id": "PfzMc", "name": "cardTitle", "content": "Card", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 590},
-      {"type": "ref", "id": "ou3VK", "ref": "CuL6c", "x": 48, "y": 630},
-      {"type": "ref", "id": "o9E3P5", "ref": "tvYyp", "x": 350, "y": 630},
-      {"type": "text", "id": "A3ubQ0", "name": "filterPillTitle", "content": "FilterPill", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 780},
-      {"type": "ref", "id": "vQwNW", "ref": "dJA5j", "x": 48, "y": 820},
-      {"type": "ref", "id": "SQy1M", "ref": "t5Rnv", "x": 130, "y": 820},
-      {"type": "ref", "id": "zrgj2", "ref": "Xejar", "x": 212, "y": 820},
-      {"type": "ref", "id": "cur3d", "ref": "W1MD7K", "x": 294, "y": 820},
-      {"type": "text", "id": "O0FePH", "name": "statusBadgeTitle", "content": "StatusBadge", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 880},
-      {"type": "ref", "id": "lEY0H", "ref": "ZT7Tr", "x": 48, "y": 920},
-      {"type": "ref", "id": "E0fFbN", "ref": "hpzVE", "x": 125, "y": 920},
-      {"type": "ref", "id": "UhoNK", "ref": "AggYw", "x": 212, "y": 920},
-      {"type": "ref", "id": "FjwOZ", "ref": "HrBDh", "x": 279, "y": 920},
-      {"type": "ref", "id": "vGDHE", "ref": "tqkXU", "x": 361, "y": 920},
-      {"type": "text", "id": "UHTHp", "name": "gaugeTitle", "content": "Gauge", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 980},
-      {"type": "ref", "id": "RYDwY", "ref": "e17RC", "x": 48, "y": 1020},
-      {"type": "ref", "id": "HhZeh", "ref": "X7YW9", "x": 128, "y": 1020},
-      {"type": "ref", "id": "E9rw9y", "ref": "LHnjX", "x": 208, "y": 1020}
-    ]}
-  ]
+    "bg-card": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#ffffff",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2d3748",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "bg-page": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#f8f9fa",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#1a202c",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "divider": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#e2e8f0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#4a5568",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "error": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#e53e3e",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#fc8181",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "error-light": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#fed7d7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#742a2a",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "info": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#2b6cb0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#90cdf4",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "info-light": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#bee3f8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2a4365",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "pending": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#cbd5e0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#718096",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "pending-light": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#edf2f7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#4a5568",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4fd1c5",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#63b3ed",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#38b2ac",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#4299e1",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-hover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#45b8ad",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7ab8ef",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "purple": {
+      "type": "color",
+      "value": "#9333ea"
+    },
+    "purple-light": {
+      "type": "color",
+      "value": "#f3e8ff"
+    },
+    "radius-lg": {
+      "type": "number",
+      "value": 12
+    },
+    "radius-md": {
+      "type": "number",
+      "value": 8
+    },
+    "radius-sm": {
+      "type": "number",
+      "value": 6
+    },
+    "radius-xl": {
+      "type": "number",
+      "value": 16
+    },
+    "space-1": {
+      "type": "number",
+      "value": 4
+    },
+    "space-2": {
+      "type": "number",
+      "value": 8
+    },
+    "space-3": {
+      "type": "number",
+      "value": 12
+    },
+    "space-4": {
+      "type": "number",
+      "value": 16
+    },
+    "space-5": {
+      "type": "number",
+      "value": 24
+    },
+    "space-6": {
+      "type": "number",
+      "value": 32
+    },
+    "success": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#48bb78",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#68d391",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "success-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#2f855a",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#48bb78",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "success-light": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#c6f6d5",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#276749",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "text-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#2d3748",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#e2e8f0",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "text-secondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#a0aec0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#a0aec0",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "text-white": {
+      "type": "color",
+      "value": "#ffffff"
+    },
+    "warning": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#f59e0b",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#fbd38d",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "warning-light": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#fefcbf",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#744210",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  }
 }
