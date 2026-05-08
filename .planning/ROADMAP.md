@@ -113,7 +113,7 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 19-01-PLAN.md — Install jest-axe and eslint-plugin-jsx-a11y, configure accessibility tooling (DOC-03)
+- [x] 19-01-PLAN.md — Install jest-axe and eslint-plugin-jsx-a11y, configure accessibility tooling (DOC-03)
 
 **Wave 2** (depends on Wave 1)
 - [ ] 19-02-PLAN.md — Add accessibility tests to all 10 component test files (DOC-03)
