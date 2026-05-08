@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { axe } from "jest-axe";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "next-themes";
 
@@ -143,5 +144,24 @@ describe("ThemeToggle", () => {
 
     const radioButtons = screen.getAllByRole("radio");
     expect(radioButtons).toHaveLength(3);
+  });
+});
+
+describe("ThemeToggle - Accessibility", () => {
+  it("has no accessibility violations", async () => {
+    (useTheme as jest.MockedFunction<typeof useTheme>).mockReturnValue({
+      theme: "light",
+      setTheme: jest.fn(),
+      themes: ["light", "dark", "system"],
+      systemTheme: undefined,
+      resolvedTheme: "light",
+      forcedTheme: undefined,
+    });
+
+    const { container } = render(<ThemeToggle />);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import { Gauge, BinGauge } from './Gauge';
 
 describe('Gauge', () => {
@@ -108,5 +109,37 @@ describe('Gauge', () => {
     it('exports BinGauge as alias for Gauge', () => {
       expect(BinGauge).toBe(Gauge);
     });
+  });
+});
+
+describe('Gauge - Accessibility', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <Gauge fillPercentage={75} label="Bin A" />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it('has no violations for warning status', async () => {
+    const { container } = render(
+      <Gauge fillPercentage={15} label="Bin B" sublabel="Corn" />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it('has no violations for critical status', async () => {
+    const { container } = render(
+      <Gauge fillPercentage={5} label="Bin C" sublabel="Soy" />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

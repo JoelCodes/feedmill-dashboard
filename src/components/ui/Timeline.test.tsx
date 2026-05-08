@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import userEvent from '@testing-library/user-event';
 import { Timeline, ActivityTimeline } from './Timeline';
 import { ActivityEvent } from '@/types/activity';
@@ -162,5 +163,46 @@ describe('Timeline', () => {
     it('exports ActivityTimeline as alias for Timeline', () => {
       expect(ActivityTimeline).toBe(Timeline);
     });
+  });
+});
+
+describe('Timeline - Accessibility', () => {
+  const mockAccessibilityEvents: ActivityEvent[] = [
+    {
+      id: '1',
+      customerId: 'CUST-001',
+      type: 'order_placed',
+      title: 'Order Placed',
+      description: 'Order #12345 placed',
+      timestamp: new Date('2024-01-15T10:00:00'),
+      orderId: 'order-1',
+      orderQuantity: 100,
+      orderProduct: 'Premium Feed',
+      orderStatus: 'Pending'
+    },
+    {
+      id: '2',
+      customerId: 'CUST-001',
+      type: 'delivered',
+      title: 'Delivery Completed',
+      description: 'Order #12344 delivered',
+      timestamp: new Date('2024-01-14T14:00:00'),
+    },
+  ];
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<Timeline events={mockAccessibilityEvents} />);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it('has no violations with empty events', async () => {
+    const { container } = render(<Timeline events={[]} />);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

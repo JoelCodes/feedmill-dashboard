@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import FilterPill from './FilterPill';
 
 describe('FilterPill', () => {
@@ -149,5 +150,27 @@ describe('FilterPill', () => {
       const dot = container.querySelector('[data-testid="filter-pill-dot"]');
       expect(dot).toBeInTheDocument();
     });
+  });
+});
+
+describe('FilterPill - Accessibility', () => {
+  it('has no accessibility violations when inactive', async () => {
+    const { container } = render(
+      <FilterPill label="Pending" count={5} isActive={false} onClick={jest.fn()} />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it('has no violations when active', async () => {
+    const { container } = render(
+      <FilterPill label="Pending" count={5} isActive={true} onClick={jest.fn()} />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });
