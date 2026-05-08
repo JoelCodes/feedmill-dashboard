@@ -57,10 +57,11 @@ const eslintConfig = defineConfig([
     },
     settings: {
       tailwindcss: {
-        // Skip config validation for Tailwind v4
+        // Tailwind v4 uses CSS-based config, not JS config file
+        // Set config to empty object to prevent resolution warnings
+        config: {},
         skipClassAttribute: false,
         callees: ["classnames", "clsx", "ctl", "cn"],
-        config: null, // Disable config loading
       },
     },
   },

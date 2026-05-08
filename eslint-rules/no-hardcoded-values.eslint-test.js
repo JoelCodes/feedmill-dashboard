@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { RuleTester } = require("eslint");
 const rule = require("./no-hardcoded-values");
 
