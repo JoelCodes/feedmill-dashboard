@@ -32,8 +32,8 @@ Requirements for Design Hardening milestone. Each maps to roadmap phases.
 
 ### Documentation
 
-- [ ] **DOC-01**: Token usage documentation provides guidelines for using design tokens correctly
-- [ ] **DOC-02**: Component guidelines document usage examples, variant options, and do/don't patterns
+- [x] **DOC-01**: Token usage documentation provides guidelines for using design tokens correctly
+- [x] **DOC-02**: Component guidelines document usage examples, variant options, and do/don't patterns
 - [ ] **DOC-03**: Accessibility audit verifies WCAG 2.1 AA compliance for all components
 
 ### Design Files
@@ -93,8 +93,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MIG-03 | Phase 18 | Pending |
 | MIG-04 | Phase 18 | Complete |
 | MIG-05 | Phase 18 | Pending |
-| DOC-01 | Phase 19 | Pending |
-| DOC-02 | Phase 19 | Pending |
+| DOC-01 | Phase 19 | Complete |
+| DOC-02 | Phase 19 | Complete |
 | DOC-03 | Phase 19 | Pending |
 
 **Coverage:**
@@ -104,4 +104,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-07*
-*Last updated: 2026-05-07 after roadmap creation*
+*Last updated: 2026-05-08 after 19-03 completion (DOC-01, DOC-02)*
