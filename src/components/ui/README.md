@@ -1053,3 +1053,55 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 - Icons paired with text labels for clarity
 
 **WCAG Compliance:** Passes axe-core automated checks. Keyboard accessible toggle with proper radio group semantics.
+
+---
+
+## Accessibility Verification
+
+### Automated Testing
+
+All components pass [jest-axe](https://github.com/nickcolley/jest-axe) automated accessibility checks. Tests are located in each component's `.test.tsx` file under the "Accessibility" describe block.
+
+**Run accessibility tests:**
+```bash
+npm test -- --testPathPattern="ui/.*\.test\.tsx"
+```
+
+### ESLint Rules
+
+[eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) is configured with recommended rules. Run linting:
+```bash
+npm run lint
+```
+
+### VoiceOver Manual Verification
+
+Manual screen reader testing completed on 2026-05-08 using macOS VoiceOver.
+
+**Verified behaviors:**
+
+| Component | Keyboard Navigation | Screen Reader Announcement | Focus Visible |
+|-----------|--------------------|-----------------------------|---------------|
+| Button | Enter/Space activates | Role and text announced | Yes |
+| Card (clickable) | Tab-accessible, Enter activates | Announced as button | Yes |
+| Input | Tab focuses, typing works | Label announced on focus | Yes |
+| Select | Tab focuses, arrows change value | Label and value announced | Yes |
+| Textarea | Tab focuses, typing works | Label announced on focus | Yes |
+| FilterPill | Tab focuses, Enter/Space toggles | Label and pressed state | Yes |
+| ThemeToggle | Tab focuses, Enter/Space toggles | Current theme announced | Yes |
+| StatusBadge | N/A (non-interactive) | Status text readable | N/A |
+| Gauge | N/A (non-interactive) | Label and value readable | N/A |
+| Timeline | Events tab-navigable | Event content announced | Yes |
+
+**Known limitations:**
+- Color contrast verification requires browser-based tools (JSDOM limitation in jest-axe)
+- Verify contrast in Chrome DevTools > Accessibility panel
+
+### WCAG 2.1 AA Compliance
+
+This design system targets WCAG 2.1 Level AA compliance:
+
+- **1.4.3 Contrast (Minimum):** Color tokens designed for 4.5:1 contrast ratio
+- **2.1.1 Keyboard:** All interactive components keyboard accessible
+- **2.4.7 Focus Visible:** Focus rings visible on all interactive elements
+- **4.1.2 Name, Role, Value:** ARIA attributes properly set on all components
