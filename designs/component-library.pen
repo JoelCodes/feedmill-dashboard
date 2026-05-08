@@ -566,7 +566,7 @@
       "id": "PcGi8",
       "x": 0,
       "y": 0,
-      "name": "Component Library",
+      "name": "Component Library - Light Mode",
       "width": 1400,
       "height": 2100,
       "fill": "$bg-page",
@@ -579,7 +579,7 @@
           "y": 48,
           "name": "title",
           "fill": "$text-primary",
-          "content": "CGM Dashboard Design System",
+          "content": "CGM Dashboard Design System – Light Mode",
           "fontFamily": "Inter",
           "fontSize": 32,
           "fontWeight": "bold"
@@ -1721,6 +1721,707 @@
           "fontFamily": "Inter",
           "fontSize": 14,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "CBhBG",
+      "x": 1500,
+      "y": 0,
+      "name": "Component Library - Dark Mode",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 1400,
+      "height": 2100,
+      "fill": "$bg-page",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "I0Eh3",
+          "x": 48,
+          "y": 48,
+          "name": "title",
+          "fill": "$text-primary",
+          "content": "CGM Dashboard Design System – Dark Mode",
+          "fontFamily": "Inter",
+          "fontSize": 32,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "text",
+          "id": "iU3eT",
+          "x": 48,
+          "y": 92,
+          "name": "subtitle",
+          "fill": "$text-secondary",
+          "content": "Color tokens, typography, and component library",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "id": "J10Tt1",
+          "x": 48,
+          "y": 130,
+          "name": "divider1",
+          "fill": "$divider",
+          "width": 1304,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "CU38T",
+          "x": 48,
+          "y": 160,
+          "name": "colorsTitle",
+          "fill": "$text-primary",
+          "content": "Color Tokens",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "text",
+          "id": "fzM9I",
+          "x": 48,
+          "y": 200,
+          "name": "primaryLabel",
+          "fill": "$text-secondary",
+          "content": "Primary",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "EPlbc",
+          "x": 130,
+          "y": 196,
+          "name": "swatch1",
+          "fill": "$primary",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "SrVqo",
+          "x": 130,
+          "y": 262,
+          "name": "swatch1Label",
+          "fill": "$text-secondary",
+          "content": "primary",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "S6Lqz",
+          "x": 200,
+          "y": 196,
+          "name": "swatch2",
+          "fill": "$primary-dark",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "Zf3MJ",
+          "x": 200,
+          "y": 262,
+          "name": "swatch2Label",
+          "fill": "$text-secondary",
+          "content": "primary-dark",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "CBjfm",
+          "x": 270,
+          "y": 196,
+          "name": "swatch3",
+          "fill": "$primary-hover",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "wBWNC",
+          "x": 270,
+          "y": 262,
+          "name": "swatch3Label",
+          "fill": "$text-secondary",
+          "content": "primary-hover",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "EFhUi",
+          "x": 48,
+          "y": 300,
+          "name": "statusLabel",
+          "fill": "$text-secondary",
+          "content": "Status",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "H5CmU",
+          "x": 130,
+          "y": 296,
+          "name": "successSwatch",
+          "fill": "$success",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "jdXZ7",
+          "x": 130,
+          "y": 362,
+          "name": "successLabel",
+          "fill": "$text-secondary",
+          "content": "success",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "h8WUW6",
+          "x": 200,
+          "y": 296,
+          "name": "warningSwatch",
+          "fill": "$warning",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "YQM9l",
+          "x": 200,
+          "y": 362,
+          "name": "warningLabel",
+          "fill": "$text-secondary",
+          "content": "warning",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "w8bs0",
+          "x": 270,
+          "y": 296,
+          "name": "errorSwatch",
+          "fill": "$error",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "sUXK9",
+          "x": 270,
+          "y": 362,
+          "name": "errorLabel",
+          "fill": "$text-secondary",
+          "content": "error",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": "$radius-md",
+          "id": "SWQev",
+          "x": 340,
+          "y": 296,
+          "name": "infoSwatch",
+          "fill": "$info",
+          "width": 60,
+          "height": 60
+        },
+        {
+          "type": "text",
+          "id": "vH72W",
+          "x": 340,
+          "y": 362,
+          "name": "infoLabel",
+          "fill": "$text-secondary",
+          "content": "info",
+          "fontFamily": "Inter",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "rectangle",
+          "id": "wo91d",
+          "x": 48,
+          "y": 400,
+          "name": "divider2",
+          "fill": "$divider",
+          "width": 1304,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "gLsL3",
+          "x": 48,
+          "y": 430,
+          "name": "componentsTitle",
+          "fill": "$text-primary",
+          "content": "Components",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "text",
+          "id": "owzjy",
+          "x": 48,
+          "y": 480,
+          "name": "buttonTitle",
+          "fill": "$text-primary",
+          "content": "Button",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "xTGjS",
+          "type": "ref",
+          "ref": "sq0Ms",
+          "x": 48,
+          "y": 520
+        },
+        {
+          "id": "VKVnA",
+          "type": "ref",
+          "ref": "w8BVo",
+          "x": 160,
+          "y": 520
+        },
+        {
+          "id": "M2tkx7",
+          "type": "ref",
+          "ref": "GCQDW",
+          "x": 272,
+          "y": 520
+        },
+        {
+          "id": "okiA1",
+          "type": "ref",
+          "ref": "K9dYyE",
+          "x": 384,
+          "y": 520
+        },
+        {
+          "type": "text",
+          "id": "D9gqF",
+          "x": 48,
+          "y": 590,
+          "name": "cardTitle",
+          "fill": "$text-primary",
+          "content": "Card",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "lbRnM",
+          "type": "ref",
+          "ref": "CuL6c",
+          "x": 48,
+          "y": 630
+        },
+        {
+          "id": "vfBZR",
+          "type": "ref",
+          "ref": "tvYyp",
+          "x": 350,
+          "y": 630
+        },
+        {
+          "type": "text",
+          "id": "OFEy2",
+          "x": 48,
+          "y": 780,
+          "name": "filterPillTitle",
+          "fill": "$text-primary",
+          "content": "FilterPill",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "PuWYN",
+          "type": "ref",
+          "ref": "dJA5j",
+          "x": 48,
+          "y": 820
+        },
+        {
+          "id": "KhZ8P",
+          "type": "ref",
+          "ref": "t5Rnv",
+          "x": 130,
+          "y": 820
+        },
+        {
+          "id": "Rt2Yv",
+          "type": "ref",
+          "ref": "Xejar",
+          "x": 212,
+          "y": 820
+        },
+        {
+          "id": "wX2al",
+          "type": "ref",
+          "ref": "W1MD7K",
+          "x": 294,
+          "y": 820
+        },
+        {
+          "type": "text",
+          "id": "uOO2x",
+          "x": 48,
+          "y": 880,
+          "name": "statusBadgeTitle",
+          "fill": "$text-primary",
+          "content": "StatusBadge",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "t4bVjt",
+          "type": "ref",
+          "ref": "ZT7Tr",
+          "x": 48,
+          "y": 920
+        },
+        {
+          "id": "cL8uo",
+          "type": "ref",
+          "ref": "hpzVE",
+          "x": 125,
+          "y": 920
+        },
+        {
+          "id": "Xs9UO",
+          "type": "ref",
+          "ref": "AggYw",
+          "x": 212,
+          "y": 920
+        },
+        {
+          "id": "LpiMS",
+          "type": "ref",
+          "ref": "HrBDh",
+          "x": 279,
+          "y": 920
+        },
+        {
+          "id": "S2393B",
+          "type": "ref",
+          "ref": "tqkXU",
+          "x": 361,
+          "y": 920
+        },
+        {
+          "type": "text",
+          "id": "Xflqm",
+          "x": 48,
+          "y": 980,
+          "name": "gaugeTitle",
+          "fill": "$text-primary",
+          "content": "Gauge",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "id": "bi4j6",
+          "type": "ref",
+          "ref": "e17RC",
+          "x": 48,
+          "y": 1020
+        },
+        {
+          "id": "jefml",
+          "type": "ref",
+          "ref": "X7YW9",
+          "x": 128,
+          "y": 1020
+        },
+        {
+          "id": "uTmcA",
+          "type": "ref",
+          "ref": "LHnjX",
+          "x": 208,
+          "y": 1020
+        },
+        {
+          "type": "text",
+          "id": "Eq1Ui",
+          "x": 48,
+          "y": 1200,
+          "name": "formInputsTitle",
+          "fill": "$text-primary",
+          "content": "Form Inputs",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "VyA6j",
+          "x": 48,
+          "y": 1240,
+          "name": "textInputLabel",
+          "fill": "$text-secondary",
+          "content": "Text Input",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "vRUCX",
+          "type": "ref",
+          "ref": "BcR3q",
+          "x": 48,
+          "y": 1270,
+          "name": "textInputDefault"
+        },
+        {
+          "id": "ouDl6",
+          "type": "ref",
+          "ref": "ND5x2",
+          "x": 348,
+          "y": 1270,
+          "name": "textInputFocused"
+        },
+        {
+          "id": "V4PWkt",
+          "type": "ref",
+          "ref": "U4UvQ",
+          "x": 648,
+          "y": 1270,
+          "name": "textInputError"
+        },
+        {
+          "type": "text",
+          "id": "Ed5zK",
+          "x": 48,
+          "y": 1340,
+          "name": "textAreaLabel",
+          "fill": "$text-secondary",
+          "content": "Text Area",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "oxON8",
+          "type": "ref",
+          "ref": "Qej2m",
+          "x": 48,
+          "y": 1370,
+          "name": "textAreaInstance"
+        },
+        {
+          "type": "text",
+          "id": "jfchR",
+          "x": 348,
+          "y": 1340,
+          "name": "selectLabel",
+          "fill": "$text-secondary",
+          "content": "Select / Dropdown",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "jxa7u",
+          "type": "ref",
+          "ref": "PvIKt",
+          "x": 348,
+          "y": 1370,
+          "name": "selectInstance"
+        },
+        {
+          "type": "text",
+          "id": "UvKNN",
+          "x": 48,
+          "y": 1500,
+          "name": "labeledInputLabel",
+          "fill": "$text-secondary",
+          "content": "Labeled Input",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "R9mnM",
+          "type": "ref",
+          "ref": "cU7jk",
+          "x": 48,
+          "y": 1530,
+          "name": "labeledInputInstance"
+        },
+        {
+          "type": "text",
+          "id": "gwcna",
+          "x": 48,
+          "y": 1620,
+          "name": "togglesLabel",
+          "fill": "$text-secondary",
+          "content": "Toggle / Switch",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "M3ggy",
+          "type": "ref",
+          "ref": "yh5iR",
+          "x": 48,
+          "y": 1660,
+          "name": "toggleOffInstance"
+        },
+        {
+          "id": "X4v9in",
+          "type": "ref",
+          "ref": "Lc3GT",
+          "x": 110,
+          "y": 1660,
+          "name": "toggleOnInstance"
+        },
+        {
+          "id": "noQSS",
+          "type": "ref",
+          "ref": "npT4a",
+          "x": 172,
+          "y": 1660,
+          "name": "toggleLabeledInstance"
+        },
+        {
+          "type": "text",
+          "id": "TcQWY",
+          "x": 48,
+          "y": 1720,
+          "name": "checkboxLabel",
+          "fill": "$text-secondary",
+          "content": "Checkbox",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "Tg0TS",
+          "type": "ref",
+          "ref": "k5Dptf",
+          "x": 48,
+          "y": 1760,
+          "name": "checkboxUncheckedInstance"
+        },
+        {
+          "id": "Hez7t",
+          "type": "ref",
+          "ref": "vo98X",
+          "x": 80,
+          "y": 1760,
+          "name": "checkboxCheckedInstance"
+        },
+        {
+          "id": "QLBTT",
+          "type": "ref",
+          "ref": "JjHN7",
+          "x": 112,
+          "y": 1757,
+          "name": "checkboxLabeledInstance"
+        },
+        {
+          "type": "text",
+          "id": "y6Cfa",
+          "x": 48,
+          "y": 1810,
+          "name": "radioLabel",
+          "fill": "$text-secondary",
+          "content": "Radio Button",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "q1BpZ",
+          "type": "ref",
+          "ref": "txZni",
+          "x": 48,
+          "y": 1850,
+          "name": "radioUncheckedInstance"
+        },
+        {
+          "id": "X9BFW",
+          "type": "ref",
+          "ref": "vC3ZT",
+          "x": 80,
+          "y": 1850,
+          "name": "radioCheckedInstance"
+        },
+        {
+          "id": "qW5Xl",
+          "type": "ref",
+          "ref": "I0AhF",
+          "x": 112,
+          "y": 1847,
+          "name": "radioLabeledInstance"
+        },
+        {
+          "type": "rectangle",
+          "id": "l0oJ1D",
+          "x": 48,
+          "y": 1180,
+          "name": "formDivider",
+          "fill": "$divider",
+          "width": 1304,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "mW7SI",
+          "x": 348,
+          "y": 1500,
+          "name": "labelComponentLabel",
+          "fill": "$text-secondary",
+          "content": "Label",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "id": "W1j9o7",
+          "type": "ref",
+          "ref": "tbXyv",
+          "x": 348,
+          "y": 1530,
+          "name": "labelInstance"
         }
       ]
     }
