@@ -123,6 +123,7 @@
 
   /* Gauge tokens */
   --gauge-width: 3.75rem;    /* 60px */
+  --gauge-height: 6.25rem;   /* 100px */
   --gauge-container-w: 2.5rem; /* 40px */
   --gauge-container-h: 4.375rem; /* 70px */
   --gauge-fill-width: 2.25rem; /* 36px */

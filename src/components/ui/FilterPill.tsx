@@ -42,7 +42,7 @@ export default function FilterPill({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 ${bgClass} rounded-2xl px-[18px] py-2 h-8 transition-colors hover:opacity-90`}
+      className={`flex items-center gap-1.5 ${bgClass} rounded-2xl px-4 py-2 h-8 transition-colors hover:opacity-90`}
       aria-pressed={isActive}
       aria-label={`Filter by ${label}, ${count} orders`}
     >

@@ -24,18 +24,6 @@ function getThresholdColor(percentage: number): string {
 }
 
 /**
- * Get text color based on fill percentage.
- * - White for high fill (>= 25%) for contrast against colored background
- * - Dark (token) for low fill (< 25%) for readability
- */
-function getTextColor(percentage: number): string {
-  if (percentage >= 25) {
-    return 'text-white';
-  }
-  return 'text-[var(--text-primary)]';
-}
-
-/**
  * Clamp value to 0-100 range to prevent CSS overflow (T-15-02 mitigation).
  */
 function clampPercentage(value: number): number {
@@ -58,12 +46,12 @@ export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
   return (
     <div
       data-testid="gauge"
-      className="flex flex-col items-center gap-2 w-[60px]"
+      className="flex flex-col items-center gap-2 w-[var(--gauge-width)]"
     >
       {/* Gauge container */}
       <div
         data-testid="gauge-container"
-        className="relative w-[60px] h-[100px] rounded-[var(--radius-md)] bg-[var(--pending-light)] overflow-hidden"
+        className="relative w-[var(--gauge-width)] h-[var(--gauge-height)] rounded-[var(--radius-md)] bg-[var(--pending-light)] overflow-hidden"
       >
         {/* Fill bar - anchored to bottom, grows upward */}
         <div
