@@ -93,16 +93,8 @@ function TimelineItem({ event, isExpanded, showConnector, onToggle }: TimelineIt
         <button
           onClick={onToggle}
           className="w-full text-left focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 rounded"
-          role="button"
           aria-expanded={isExpanded}
-          tabIndex={0}
           aria-label={event.title}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              onToggle();
-            }
-          }}
         >
           <div className="space-y-1">
             <h4 className="text-[var(--fs-13)] font-bold leading-[1.5] text-[var(--text-primary)]">{event.title}</h4>

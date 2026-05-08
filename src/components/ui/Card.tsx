@@ -23,19 +23,35 @@ interface CardProps
 }
 
 function Card({ variant, className, children, onClick, ...props }: CardProps) {
-  const isClickable = !!onClick;
+  const baseClassName = cn(cardVariants({ variant }), className);
+
+  // Non-interactive card (no onClick)
+  if (!onClick) {
+    return (
+      <div className={baseClassName} {...props}>
+        {children}
+      </div>
+    );
+  }
+
+  // Interactive card with full keyboard support
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onClick(e as unknown as React.MouseEvent<HTMLDivElement>);
+    }
+  };
 
   return (
     <div
       className={cn(
-        cardVariants({ variant }),
-        isClickable &&
-          "cursor-pointer hover:opacity-95 transition-opacity active:scale-[0.98]",
-        className
+        baseClassName,
+        "cursor-pointer hover:opacity-95 transition-opacity active:scale-[0.98]"
       )}
-      role={isClickable ? "button" : undefined}
-      tabIndex={isClickable ? 0 : undefined}
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
       {...props}
     >
       {children}
