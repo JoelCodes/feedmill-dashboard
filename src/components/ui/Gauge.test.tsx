@@ -54,13 +54,13 @@ describe('Gauge', () => {
     render(<Gauge fillPercentage={50} label="A1" />);
 
     const container = screen.getByTestId('gauge');
-    // Uses 60px width matching design library
-    expect(container).toHaveClass('w-[60px]');
+    // Uses gauge-width token matching design library
+    expect(container).toHaveClass('w-[var(--gauge-width)]');
 
     const gaugeContainer = screen.getByTestId('gauge-container');
-    // Uses 60x100px dimensions matching design library
-    expect(gaugeContainer).toHaveClass('w-[60px]');
-    expect(gaugeContainer).toHaveClass('h-[100px]');
+    // Uses gauge dimension tokens matching design library
+    expect(gaugeContainer).toHaveClass('w-[var(--gauge-width)]');
+    expect(gaugeContainer).toHaveClass('h-[var(--gauge-height)]');
   });
 
   // TOKEN USAGE TESTS
