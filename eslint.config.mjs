@@ -2,11 +2,13 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import tailwindcss from "eslint-plugin-tailwindcss";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import noHardcodedValues from "./eslint-rules/no-hardcoded-values.js";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  jsxA11y.flatConfigs.recommended,
   {
     plugins: {
       tailwindcss,
