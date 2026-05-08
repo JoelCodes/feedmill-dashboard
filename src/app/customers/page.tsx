@@ -109,6 +109,14 @@ export default function CustomersPage() {
                   key={customer.id}
                   data-customer-id={customer.id}
                   onClick={() => handleRowClick(customer.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleRowClick(customer.id);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                   className="flex cursor-pointer items-center py-3 hover:bg-[var(--bg-page)]"
                 >
                   {/* Customer Name */}

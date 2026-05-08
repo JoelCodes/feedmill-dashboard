@@ -101,7 +101,7 @@ export default function SettingsPage() {
             <h2 className="mb-4 text-lg font-bold">Display Settings</h2>
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-bold">Theme</label>
+                <span className="mb-2 block text-sm font-bold">Theme</span>
                 <ThemeToggle />
               </div>
 
