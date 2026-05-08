@@ -1,9 +1,9 @@
 ---
 phase: 18
 slug: page-migration
-status: draft
+status: approved
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-05-07
 ---
 
@@ -21,7 +21,7 @@ created: 2026-05-07
 | **Config file** | jest.config.ts |
 | **Quick run command** | `npm test -- --testPathPattern={ComponentName}` |
 | **Full suite command** | `npm test` |
-| **Estimated runtime** | ~5 seconds (179 tests) |
+| **Estimated runtime** | ~5 seconds (212 tests) |
 
 ---
 
@@ -38,11 +38,11 @@ created: 2026-05-07
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists | Status |
 |--------|----------|-----------|-------------------|-------------|--------|
-| MIG-01 | Orders page uses only tokens/components | integration + unit | `npm test -- OrdersTable.test` | ✅ exists | ⬜ pending |
-| MIG-02 | Customers page uses only tokens/components | integration + unit | `npm test -- customers/page.test` | ✅ exists | ⬜ pending |
-| MIG-03 | Mill Production page uses only tokens/components | unit | `npm test -- mill-production` | ❌ Wave 0 | ⬜ pending |
-| MIG-04 | Settings page uses theme toggle + tokens | integration | `npm test -- settings` | ❌ Wave 0 | ⬜ pending |
-| MIG-05 | ESLint reports zero hardcoded value violations | static analysis | `npm run lint 2>&1 \| grep "custom/no-hardcoded-values" \| wc -l` | N/A (ESLint) | ⬜ pending |
+| MIG-01 | Orders page uses only tokens/components | integration + unit | `npm test -- --testPathPatterns="customers/page"` | ✅ exists | ✅ green |
+| MIG-02 | Customers page uses only tokens/components | integration + unit | `npm test -- --testPathPatterns="customers/\[id\]/page"` | ✅ exists | ✅ green |
+| MIG-03 | Mill Production page uses only tokens/components | unit | `npm test -- mill-production` | ✅ exists | ✅ green |
+| MIG-04 | Settings page uses theme toggle + tokens | integration | `npm test -- settings/__tests__` | ✅ exists | ✅ green |
+| MIG-05 | ESLint reports zero hardcoded value violations | static analysis | `npm run lint 2>&1 \| grep "custom/no-hardcoded-values" \| wc -l` | N/A (ESLint) | ✅ green |
 
 ---
 
@@ -59,8 +59,8 @@ All migrated components follow the StatusBadge.test.tsx pattern:
 
 ## Wave 0 Requirements
 
-- [ ] `src/app/mill-production/__tests__/page.test.tsx` — covers MIG-03 (mill production token usage)
-- [ ] `src/app/settings/__tests__/page.test.tsx` — covers MIG-04 (settings + theme toggle integration)
+- [x] `src/app/mill-production/__tests__/page.test.tsx` — covers MIG-03 (mill production token usage)
+- [x] `src/app/settings/__tests__/page.test.tsx` — covers MIG-04 (settings + theme toggle integration)
 
 ---
 
@@ -77,9 +77,25 @@ All migrated components follow the StatusBadge.test.tsx pattern:
 
 - [x] All tasks have automated verify or Wave 0 dependencies
 - [x] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references (mill-production, settings tests)
+- [x] Wave 0 covers all MISSING references (mill-production, settings tests)
 - [x] No watch-mode flags
 - [x] Feedback latency < 30s
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved
+
+---
+
+## Validation Audit 2026-05-07
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 2 |
+| Resolved | 2 |
+| Escalated | 0 |
+
+**Tests Added:**
+- `src/app/mill-production/__tests__/page.test.tsx` (6 tests)
+- `src/app/settings/__tests__/page.test.tsx` (14 tests)
+
+**Final Test Count:** 212 tests (up from 192)
