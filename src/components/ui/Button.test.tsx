@@ -14,7 +14,8 @@ describe("Button", () => {
     render(<Button variant="secondary">Click me</Button>);
     const button = screen.getByRole("button", { name: /click me/i });
     expect(button).toHaveClass("bg-[var(--bg-card)]");
-    expect(button).toHaveClass("border-[var(--divider)]");
+    expect(button).toHaveClass("border-[var(--primary)]");
+    expect(button).toHaveClass("text-[var(--primary)]");
   });
 
   // Test 3: Button renders with ghost variant classes

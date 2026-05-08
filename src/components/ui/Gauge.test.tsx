@@ -45,25 +45,21 @@ describe('Gauge', () => {
   it('applies correct fill bar height', () => {
     render(<Gauge fillPercentage={50} label="A1" />);
     const fillBar = screen.getByTestId('fill-bar');
-    // 50% of 66px = 33px
-    expect(fillBar).toHaveStyle({ height: '33px' });
+    // 50% of 85px = 42.5px
+    expect(fillBar).toHaveStyle({ height: '42.5px' });
   });
 
-  it('applies correct dimensions from UI-SPEC using design tokens', () => {
+  it('applies correct dimensions matching design library', () => {
     render(<Gauge fillPercentage={50} label="A1" />);
 
     const container = screen.getByTestId('gauge');
-    // Uses token-based class for 60px width
-    expect(container).toHaveClass('w-[var(--gauge-width)]');
+    // Uses 60px width matching design library
+    expect(container).toHaveClass('w-[60px]');
 
     const gaugeContainer = screen.getByTestId('gauge-container');
-    // Uses token-based classes for 40px width and 70px height
-    expect(gaugeContainer).toHaveClass('w-[var(--gauge-container-w)]');
-    expect(gaugeContainer).toHaveClass('h-[var(--gauge-container-h)]');
-
-    const fillBar = screen.getByTestId('fill-bar');
-    // Uses token-based class for 36px fill width
-    expect(fillBar).toHaveClass('w-[var(--gauge-fill-width)]');
+    // Uses 60x100px dimensions matching design library
+    expect(gaugeContainer).toHaveClass('w-[60px]');
+    expect(gaugeContainer).toHaveClass('h-[100px]');
   });
 
   // TOKEN USAGE TESTS
@@ -76,10 +72,10 @@ describe('Gauge', () => {
       expect(html).toContain('var(--');
     });
 
-    it('uses token for border color', () => {
+    it('uses token for background color', () => {
       render(<Gauge fillPercentage={50} label="A1" />);
       const gaugeContainer = screen.getByTestId('gauge-container');
-      expect(gaugeContainer?.className).toContain('border-[var(--divider)]');
+      expect(gaugeContainer?.className).toContain('bg-[var(--pending-light)]');
     });
 
     it('uses token for label text colors', () => {

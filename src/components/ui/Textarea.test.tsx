@@ -9,10 +9,10 @@ describe("Textarea", () => {
     expect(textarea).toHaveClass("resize-y");
   });
 
-  it("has min-height of 96px", () => {
+  it("has min-height of 100px", () => {
     render(<Textarea placeholder="Enter text" />);
     const textarea = screen.getByPlaceholderText("Enter text");
-    expect(textarea).toHaveClass("min-h-[96px]");
+    expect(textarea).toHaveClass("min-h-[100px]");
   });
 
   it("shows error border when error prop provided", () => {

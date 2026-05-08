@@ -153,7 +153,7 @@ describe('Timeline', () => {
 
       // Card component provides these tokens
       expect(html).toContain('var(--bg-card)');
-      expect(html).toContain('var(--shadow-card)');
+      expect(html).toContain('var(--divider)');
     });
   });
 

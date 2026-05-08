@@ -40,16 +40,17 @@ describe("Card", () => {
     expect(footer).toHaveClass("justify-end");
   });
 
-  it("has default variant with shadow-[var(--shadow-card)]", () => {
+  it("has default variant with border", () => {
     const { container } = render(<Card>Content</Card>);
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("shadow-[var(--shadow-card)]");
+    expect(card).toHaveClass("border");
+    expect(card).toHaveClass("border-[var(--divider)]");
   });
 
-  it("has elevated variant with shadow-[var(--shadow-sm)]", () => {
+  it("has elevated variant with shadow", () => {
     const { container } = render(<Card variant="elevated">Content</Card>);
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("shadow-[var(--shadow-sm)]");
+    expect(card).toHaveClass("shadow-[0_4px_12px_rgba(0,0,0,0.08)]");
   });
 
   it("is clickable when onClick provided", () => {

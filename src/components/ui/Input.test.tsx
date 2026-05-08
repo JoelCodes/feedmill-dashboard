@@ -63,12 +63,12 @@ describe("Input", () => {
     expect(screen.queryByText("Enter a valid email address")).not.toBeInTheDocument();
   });
 
-  it("shows focus ring on focus", async () => {
+  it("shows focus border on focus", async () => {
     const user = userEvent.setup();
     render(<Input placeholder="Enter text" />);
     const input = screen.getByPlaceholderText("Enter text");
     await user.click(input);
-    expect(input).toHaveClass("focus:ring-2");
+    expect(input).toHaveClass("focus:border-2");
   });
 
   it("is disabled when disabled prop is true", () => {
