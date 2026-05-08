@@ -52,29 +52,28 @@ function clampPercentage(value: number): number {
  */
 export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
   const clampedPercentage = clampPercentage(fillPercentage);
-  const fillHeight = (clampedPercentage / 100) * 66; // 66px max fill height within gauge
+  const fillHeight = (clampedPercentage / 100) * 85; // 85px max fill height within 100px gauge
   const thresholdColor = getThresholdColor(clampedPercentage);
-  const textColor = getTextColor(clampedPercentage);
 
   return (
     <div
       data-testid="gauge"
-      className="flex flex-col items-center gap-2 w-[var(--gauge-width)]"
+      className="flex flex-col items-center gap-2 w-[60px]"
     >
       {/* Gauge container */}
       <div
         data-testid="gauge-container"
-        className="relative w-[var(--gauge-container-w)] h-[var(--gauge-container-h)] rounded-lg border-2 border-[var(--divider)]"
+        className="relative w-[60px] h-[100px] rounded-[var(--radius-md)] bg-[var(--pending-light)] overflow-hidden"
       >
         {/* Fill bar - anchored to bottom, grows upward */}
         <div
           data-testid="fill-bar"
-          className={`absolute bottom-[var(--gauge-fill-inset)] left-[var(--gauge-fill-inset)] w-[var(--gauge-fill-width)] rounded-b-[var(--gauge-fill-radius)] ${thresholdColor}`}
+          className={`absolute bottom-0 left-0 right-0 rounded-[var(--radius-md)] ${thresholdColor}`}
           style={{ height: `${fillHeight}px` }}
         />
-        {/* Percentage text - centered in gauge */}
+        {/* Percentage text - positioned at fill level */}
         <span
-          className={`absolute inset-0 flex items-center justify-center text-xs font-bold ${textColor}`}
+          className="absolute inset-0 flex items-center justify-center text-sm font-bold text-white"
         >
           {clampedPercentage}%
         </span>

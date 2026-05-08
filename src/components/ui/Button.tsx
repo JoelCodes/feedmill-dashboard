@@ -11,9 +11,9 @@ const buttonVariants = cva(
         primary:
           "bg-[var(--primary)] text-[var(--text-white)] hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)] disabled:bg-[var(--primary-disabled)] focus-visible:ring-[var(--primary)]",
         secondary:
-          "bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--divider)] hover:opacity-90 active:opacity-80",
+          "bg-[var(--bg-card)] text-[var(--primary)] border-2 border-[var(--primary)] hover:opacity-90 active:opacity-80",
         ghost:
-          "bg-transparent text-[var(--text-primary)] hover:bg-[var(--bg-card)] active:opacity-80",
+          "bg-transparent text-[var(--primary)] hover:bg-[var(--bg-card)] active:opacity-80",
         destructive:
           "bg-[var(--error)] text-[var(--text-white)] hover:bg-[var(--error-hover)] active:bg-[var(--error-active)] disabled:bg-[var(--error-disabled)] focus-visible:ring-[var(--error)]",
       },

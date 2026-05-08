@@ -26,7 +26,7 @@ export default function Select({
       {label && (
         <label
           htmlFor={selectId}
-          className="text-sm font-semibold text-[var(--text-primary)]"
+          className="text-sm font-medium text-[var(--text-primary)]"
         >
           {label}
         </label>
@@ -35,11 +35,11 @@ export default function Select({
         <select
           id={selectId}
           className={cn(
-            "w-full h-10 px-4 pr-10 rounded-[var(--radius-md)] border text-base bg-[var(--bg-card)] text-[var(--text-primary)] cursor-pointer",
-            "focus:outline-none focus:ring-2 focus:ring-offset-0",
+            "w-full h-11 px-3 pr-10 rounded-[var(--radius-md)] border text-sm bg-[var(--bg-card)] text-[var(--text-primary)] cursor-pointer appearance-none",
+            "focus:outline-none",
             error
-              ? "border-[var(--error)] border-2 focus:ring-[var(--error)] focus:ring-opacity-20"
-              : "border-[var(--divider)] focus:border-[var(--primary)] focus:ring-[var(--primary)] focus:ring-opacity-20",
+              ? "border-[var(--error)] border-2"
+              : "border-[var(--divider)] focus:border-[var(--primary)] focus:border-2",
             "disabled:bg-[var(--bg-page)] disabled:text-[var(--text-secondary)] disabled:cursor-not-allowed",
             className
           )}

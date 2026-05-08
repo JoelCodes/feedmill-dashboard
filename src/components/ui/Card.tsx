@@ -2,12 +2,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "bg-[var(--bg-card)] border border-[var(--divider)] rounded-[var(--radius-xl)] overflow-hidden",
+  "bg-[var(--bg-card)] rounded-[var(--radius-lg)] overflow-hidden",
   {
     variants: {
       variant: {
-        default: "shadow-[var(--shadow-card)]",
-        elevated: "shadow-[var(--shadow-sm)]",
+        default: "border border-[var(--divider)]",
+        elevated: "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
       },
     },
     defaultVariants: {

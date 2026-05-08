@@ -25,7 +25,7 @@ export default function Textarea({
       {label && (
         <label
           htmlFor={textareaId}
-          className="text-sm font-semibold text-[var(--text-primary)]"
+          className="text-sm font-medium text-[var(--text-primary)]"
         >
           {label}
         </label>
@@ -34,12 +34,12 @@ export default function Textarea({
         <textarea
           id={textareaId}
           className={cn(
-            "w-full min-h-[96px] px-4 py-3 rounded-[var(--radius-md)] border text-base bg-[var(--bg-card)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]",
+            "w-full min-h-[100px] px-3 py-3 rounded-[var(--radius-md)] border text-sm bg-[var(--bg-card)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]",
             "resize-y leading-6",
-            "focus:outline-none focus:ring-2 focus:ring-offset-0",
+            "focus:outline-none",
             error
-              ? "border-[var(--error)] border-2 focus:ring-[var(--error)] focus:ring-opacity-20 pr-10"
-              : "border-[var(--divider)] focus:border-[var(--primary)] focus:ring-[var(--primary)] focus:ring-opacity-20",
+              ? "border-[var(--error)] border-2 pr-10"
+              : "border-[var(--divider)] focus:border-[var(--primary)] focus:border-2",
             "disabled:bg-[var(--bg-page)] disabled:text-[var(--text-secondary)] disabled:cursor-not-allowed",
             className
           )}
