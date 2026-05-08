@@ -1,149 +1,148 @@
-# Component Library - CGM Dashboard Design System
-# Version: 1.0.0
-# Created: 2026-05-07
-# Source of truth for design tokens and component primitives
-
-## Design System Tokens
-
-### Color Palette
-
-#### Primary
-- primary: #4fd1c5
-- primary-dark: #38b2ac
-- primary-hover: #45b8ad
-- primary-active: #3a9d94
-- primary-disabled: #a8d5d0
-
-#### Success
-- success: #48bb78
-- success-dark: #2f855a
-- success-light: #c6f6d5
-- success-hover: #38a169
-- success-active: #2f855a
-- success-disabled: #9ae6b4
-
-#### Warning
-- warning: #f59e0b
-- warning-light: #fefcbf
-- warning-hover: #d97706
-- warning-active: #b45309
-- warning-disabled: #fcd34d
-
-#### Error
-- error: #e53e3e
-- error-dark: #c53030
-- error-light: #fed7d7
-- error-hover: #d53f3f
-- error-active: #c53030
-- error-disabled: #fc8181
-
-#### Info
-- info: #2b6cb0
-- info-light: #bee3f8
-- info-hover: #2563eb
-- info-active: #1d4ed8
-- info-disabled: #93c5fd
-
-### Background Colors
-
-#### Light Mode
-- bg-page: #f8f9fa
-- bg-card: #ffffff
-- bg-sidebar: #ffffff
-
-#### Dark Mode
-- bg-page: #1a202c
-- bg-card: #2d3748
-- bg-sidebar: #2d3748
-
-### Text Colors
-
-#### Light Mode
-- text-primary: #2d3748
-- text-secondary: #a0aec0
-- text-muted: #718096
-- text-medium: #4a5568
-
-#### Dark Mode
-- text-primary: #e2e8f0
-- text-secondary: #a0aec0
-- text-muted: #a0aec0
-- text-medium: #cbd5e0
-
-### Spacing Scale
-
-- space-1: 0.25rem (4px)
-- space-2: 0.5rem (8px)
-- space-3: 0.75rem (12px)
-- space-4: 1rem (16px)
-- space-5: 1.5rem (24px)
-- space-6: 2rem (32px)
-- space-8: 3rem (48px)
-- space-10: 4rem (64px)
-- space-12: 6rem (96px)
-
-### Semantic Spacing
-
-- spacing-xs: space-1 (4px)
-- spacing-sm: space-2 (8px)
-- spacing-md: space-4 (16px)
-- spacing-lg: space-6 (32px)
-- spacing-xl: space-8 (48px)
-
-### Border Radius
-
-- radius-sm: 6px
-- radius-md: 8px
-- radius-lg: 12px
-- radius-xl: 15px
-
-### Shadows
-
-- shadow-sm: 0 3.5px 5px rgba(0, 0, 0, 0.02)
-- shadow-card: 0 3.5px 5px rgba(0, 0, 0, 0.03)
-
-## Component Primitives
-
-### Button (Phase 17)
-Variants: primary, secondary, ghost, destructive
-Sizes: sm, md, lg
-States: default, hover, active, disabled, loading
-
-### Input (Phase 17)
-Types: text, number, select, textarea
-States: default, focus, error, disabled
-Includes: label, helper text, error message
-
-### Card (Phase 17)
-Compound: Card.Header, Card.Content, Card.Footer
-Variants: default, elevated
-
-### Badge (Phase 17)
-Refactored from: StatusBadge
-Variants: status colors
-Sizes: sm, md
-
-### Theme Toggle (Phase 17)
-Options: light, dark, system
-Persists: localStorage
-
-## Page References
-
-This library is the source of truth. Page .pen files reference these tokens:
-- order-dashboard.pen
-- page-layout.pen
-- mill-production.pen
-- customers.pen
-- customer-detail.pen
-
-## Sync Process
-
-1. Design changes start in this file
-2. Update src/app/globals.css to match
-3. Update .planning/docs/design-tokens.md
-4. Run ESLint to verify token usage
-
----
-# File: component-library.pen
-# CSS Implementation: src/app/globals.css
-# Documentation: .planning/docs/design-tokens.md
+{
+  "version": "2.11",
+  "themes": {
+    "mode": ["light", "dark"]
+  },
+  "variables": {
+    "primary": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#4fd1c5"}, {"theme": {"mode": "dark"}, "value": "#63b3ed"}]},
+    "primary-dark": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#38b2ac"}, {"theme": {"mode": "dark"}, "value": "#4299e1"}]},
+    "primary-hover": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#45b8ad"}, {"theme": {"mode": "dark"}, "value": "#7ab8ef"}]},
+    "success": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#48bb78"}, {"theme": {"mode": "dark"}, "value": "#68d391"}]},
+    "success-dark": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#2f855a"}, {"theme": {"mode": "dark"}, "value": "#48bb78"}]},
+    "success-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#c6f6d5"}, {"theme": {"mode": "dark"}, "value": "#276749"}]},
+    "warning": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#f59e0b"}, {"theme": {"mode": "dark"}, "value": "#fbd38d"}]},
+    "warning-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#fefcbf"}, {"theme": {"mode": "dark"}, "value": "#744210"}]},
+    "error": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#e53e3e"}, {"theme": {"mode": "dark"}, "value": "#fc8181"}]},
+    "error-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#fed7d7"}, {"theme": {"mode": "dark"}, "value": "#742a2a"}]},
+    "info": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#2b6cb0"}, {"theme": {"mode": "dark"}, "value": "#90cdf4"}]},
+    "info-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#bee3f8"}, {"theme": {"mode": "dark"}, "value": "#2a4365"}]},
+    "pending": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#cbd5e0"}, {"theme": {"mode": "dark"}, "value": "#718096"}]},
+    "pending-light": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#edf2f7"}, {"theme": {"mode": "dark"}, "value": "#4a5568"}]},
+    "purple": {"type": "color", "value": "#9333ea"},
+    "purple-light": {"type": "color", "value": "#f3e8ff"},
+    "text-primary": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#2d3748"}, {"theme": {"mode": "dark"}, "value": "#e2e8f0"}]},
+    "text-secondary": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#a0aec0"}, {"theme": {"mode": "dark"}, "value": "#a0aec0"}]},
+    "text-white": {"type": "color", "value": "#ffffff"},
+    "bg-page": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#f8f9fa"}, {"theme": {"mode": "dark"}, "value": "#1a202c"}]},
+    "bg-card": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#ffffff"}, {"theme": {"mode": "dark"}, "value": "#2d3748"}]},
+    "divider": {"type": "color", "value": [{"theme": {"mode": "light"}, "value": "#e2e8f0"}, {"theme": {"mode": "dark"}, "value": "#4a5568"}]},
+    "radius-sm": {"type": "number", "value": 6},
+    "radius-md": {"type": "number", "value": 8},
+    "radius-lg": {"type": "number", "value": 12},
+    "radius-xl": {"type": "number", "value": 16},
+    "space-1": {"type": "number", "value": 4},
+    "space-2": {"type": "number", "value": 8},
+    "space-3": {"type": "number", "value": 12},
+    "space-4": {"type": "number", "value": 16},
+    "space-5": {"type": "number", "value": 24},
+    "space-6": {"type": "number", "value": 32}
+  },
+  "children": [
+    {"type": "frame", "id": "sq0Ms", "name": "Button/Primary", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "fill": "$primary", "x": -400, "y": 0, "children": [
+      {"type": "text", "id": "xLrFT", "name": "label", "content": "Button", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
+    ]},
+    {"type": "frame", "id": "w8BVo", "name": "Button/Secondary", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "fill": "$bg-card", "stroke": {"fill": "$primary", "thickness": 2}, "x": -400, "y": 60, "children": [
+      {"type": "text", "id": "u2IBk", "name": "label", "content": "Button", "fill": "$primary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
+    ]},
+    {"type": "frame", "id": "GCQDW", "name": "Button/Ghost", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "x": -400, "y": 120, "children": [
+      {"type": "text", "id": "JA8bl", "name": "label", "content": "Button", "fill": "$primary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
+    ]},
+    {"type": "frame", "id": "K9dYyE", "name": "Button/Destructive", "reusable": true, "layout": "none", "width": 93, "height": 41, "cornerRadius": "$radius-md", "fill": "$error", "x": -400, "y": 180, "children": [
+      {"type": "text", "id": "yNBXP", "name": "label", "content": "Button", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 24, "y": 12}
+    ]},
+    {"type": "frame", "id": "CuL6c", "name": "Card/Default", "reusable": true, "layout": "none", "width": 280, "height": 120, "cornerRadius": "$radius-lg", "fill": "$bg-card", "stroke": {"fill": "$divider", "thickness": 1}, "x": -400, "y": 260, "children": [
+      {"type": "text", "id": "jfwm3", "name": "title", "content": "Card Title", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600", "x": 16, "y": 16},
+      {"type": "text", "id": "XSVdJ", "name": "description", "content": "Card description text goes here", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "normal", "x": 16, "y": 44}
+    ]},
+    {"type": "frame", "id": "tvYyp", "name": "Card/Elevated", "reusable": true, "layout": "none", "width": 280, "height": 120, "cornerRadius": "$radius-lg", "fill": "$bg-card", "effect": {"type": "shadow", "shadowType": "outer", "offset": {"x": 0, "y": 4}, "blur": 12, "color": "#00000015"}, "x": -400, "y": 400, "children": [
+      {"type": "text", "id": "pDtDF", "name": "title", "content": "Card Title", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600", "x": 16, "y": 16},
+      {"type": "text", "id": "hxQgg", "name": "description", "content": "Card description text goes here", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "normal", "x": 16, "y": 44}
+    ]},
+    {"type": "frame", "id": "dJA5j", "name": "FilterPill/Inactive", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$pending-light", "x": -400, "y": 540, "children": [
+      {"type": "text", "id": "tqKdb", "name": "label", "content": "Filter", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
+    ]},
+    {"type": "frame", "id": "t5Rnv", "name": "FilterPill/Active", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$primary", "x": -400, "y": 590, "children": [
+      {"type": "text", "id": "UFWLZ", "name": "label", "content": "Filter", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
+    ]},
+    {"type": "frame", "id": "Xejar", "name": "FilterPill/Success", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$success-light", "x": -400, "y": 640, "children": [
+      {"type": "text", "id": "jUfKz", "name": "label", "content": "Filter", "fill": "$success-dark", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
+    ]},
+    {"type": "frame", "id": "W1MD7K", "name": "FilterPill/Warning", "reusable": true, "layout": "none", "width": 70, "height": 32, "cornerRadius": 16, "fill": "$warning-light", "x": -400, "y": 690, "children": [
+      {"type": "text", "id": "G3qszG", "name": "label", "content": "Filter", "fill": "$warning", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500", "x": 18, "y": 8}
+    ]},
+    {"type": "frame", "id": "ZT7Tr", "name": "StatusBadge/Pending", "reusable": true, "layout": "none", "width": 65, "height": 24, "cornerRadius": "$radius-sm", "fill": "$pending-light", "x": -400, "y": 750, "children": [
+      {"type": "text", "id": "xiwth", "name": "label", "content": "Pending", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
+    ]},
+    {"type": "frame", "id": "hpzVE", "name": "StatusBadge/Producing", "reusable": true, "layout": "none", "width": 75, "height": 24, "cornerRadius": "$radius-sm", "fill": "$info-light", "x": -400, "y": 790, "children": [
+      {"type": "text", "id": "Jiybq", "name": "label", "content": "Producing", "fill": "$info", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
+    ]},
+    {"type": "frame", "id": "AggYw", "name": "StatusBadge/Ready", "reusable": true, "layout": "none", "width": 55, "height": 24, "cornerRadius": "$radius-sm", "fill": "$success-light", "x": -400, "y": 830, "children": [
+      {"type": "text", "id": "RHW1i", "name": "label", "content": "Ready", "fill": "$success-dark", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
+    ]},
+    {"type": "frame", "id": "HrBDh", "name": "StatusBadge/InTransit", "reusable": true, "layout": "none", "width": 70, "height": 24, "cornerRadius": "$radius-sm", "fill": "$purple-light", "x": -400, "y": 870, "children": [
+      {"type": "text", "id": "Q3S0rB", "name": "label", "content": "In Transit", "fill": "$purple", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
+    ]},
+    {"type": "frame", "id": "tqkXU", "name": "StatusBadge/Complete", "reusable": true, "layout": "none", "width": 70, "height": 24, "cornerRadius": "$radius-sm", "fill": "$success-light", "x": -400, "y": 910, "children": [
+      {"type": "text", "id": "b3ujTB", "name": "label", "content": "Complete", "fill": "$success-dark", "fontFamily": "Inter", "fontSize": 11, "fontWeight": "500", "x": 8, "y": 5}
+    ]},
+    {"type": "frame", "id": "e17RC", "name": "Gauge/High", "reusable": true, "layout": "none", "width": 60, "height": 100, "cornerRadius": "$radius-md", "fill": "$pending-light", "x": -400, "y": 960, "children": [
+      {"type": "rectangle", "id": "LK5Tt", "name": "fill", "width": 60, "height": 85, "cornerRadius": "$radius-md", "fill": "$success", "x": 0, "y": 15},
+      {"type": "text", "id": "ltCbb", "name": "value", "content": "85%", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "bold", "x": 14, "y": 50}
+    ]},
+    {"type": "frame", "id": "X7YW9", "name": "Gauge/Medium", "reusable": true, "layout": "none", "width": 60, "height": 100, "cornerRadius": "$radius-md", "fill": "$pending-light", "x": -400, "y": 1080, "children": [
+      {"type": "rectangle", "id": "VL5tO", "name": "fill", "width": 60, "height": 50, "cornerRadius": "$radius-md", "fill": "$warning", "x": 0, "y": 50},
+      {"type": "text", "id": "Srxmu", "name": "value", "content": "50%", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "bold", "x": 14, "y": 68}
+    ]},
+    {"type": "frame", "id": "LHnjX", "name": "Gauge/Low", "reusable": true, "layout": "none", "width": 60, "height": 100, "cornerRadius": "$radius-md", "fill": "$pending-light", "x": -400, "y": 1200, "children": [
+      {"type": "rectangle", "id": "ipRdG", "name": "fill", "width": 60, "height": 25, "cornerRadius": "$radius-md", "fill": "$error", "x": 0, "y": 75},
+      {"type": "text", "id": "BnE7y", "name": "value", "content": "25%", "fill": "$text-white", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "bold", "x": 14, "y": 78}
+    ]},
+    {"type": "frame", "id": "PcGi8", "name": "Component Library", "layout": "none", "width": 1400, "height": 1300, "fill": "$bg-page", "x": 0, "y": 0, "children": [
+      {"type": "text", "id": "GC9tv", "name": "title", "content": "CGM Dashboard Design System", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 32, "fontWeight": "bold", "x": 48, "y": 48},
+      {"type": "text", "id": "YIzxR", "name": "subtitle", "content": "Color tokens, typography, and component library", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "normal", "x": 48, "y": 92},
+      {"type": "rectangle", "id": "n7Lso", "name": "divider1", "width": 1304, "height": 1, "fill": "$divider", "x": 48, "y": 130},
+      {"type": "text", "id": "O615vR", "name": "colorsTitle", "content": "Color Tokens", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 24, "fontWeight": "bold", "x": 48, "y": 160},
+      {"type": "text", "id": "kXw6X", "name": "primaryLabel", "content": "Primary", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 48, "y": 200},
+      {"type": "rectangle", "id": "nVCzx", "name": "swatch1", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$primary", "x": 130, "y": 196},
+      {"type": "text", "id": "ElkcT", "name": "swatch1Label", "content": "primary", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 130, "y": 262},
+      {"type": "rectangle", "id": "Q6N1p", "name": "swatch2", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$primary-dark", "x": 200, "y": 196},
+      {"type": "text", "id": "E6xQQg", "name": "swatch2Label", "content": "primary-dark", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 200, "y": 262},
+      {"type": "rectangle", "id": "zrXG6", "name": "swatch3", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$primary-hover", "x": 270, "y": 196},
+      {"type": "text", "id": "gYIT2", "name": "swatch3Label", "content": "primary-hover", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 270, "y": 262},
+      {"type": "text", "id": "B7w9Ob", "name": "statusLabel", "content": "Status", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 14, "fontWeight": "600", "x": 48, "y": 300},
+      {"type": "rectangle", "id": "vdrpP", "name": "successSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$success", "x": 130, "y": 296},
+      {"type": "text", "id": "UE5TT", "name": "successLabel", "content": "success", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 130, "y": 362},
+      {"type": "rectangle", "id": "Djm9p", "name": "warningSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$warning", "x": 200, "y": 296},
+      {"type": "text", "id": "q8sAy", "name": "warningLabel", "content": "warning", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 200, "y": 362},
+      {"type": "rectangle", "id": "AKjUy", "name": "errorSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$error", "x": 270, "y": 296},
+      {"type": "text", "id": "HdMkL", "name": "errorLabel", "content": "error", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 270, "y": 362},
+      {"type": "rectangle", "id": "SwdAC", "name": "infoSwatch", "width": 60, "height": 60, "cornerRadius": "$radius-md", "fill": "$info", "x": 340, "y": 296},
+      {"type": "text", "id": "XoUq2", "name": "infoLabel", "content": "info", "fill": "$text-secondary", "fontFamily": "Inter", "fontSize": 10, "x": 340, "y": 362},
+      {"type": "rectangle", "id": "t8z2E", "name": "divider2", "width": 1304, "height": 1, "fill": "$divider", "x": 48, "y": 400},
+      {"type": "text", "id": "mKMPL", "name": "componentsTitle", "content": "Components", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 24, "fontWeight": "bold", "x": 48, "y": 430},
+      {"type": "text", "id": "G0eMr", "name": "buttonTitle", "content": "Button", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 480},
+      {"type": "ref", "id": "mBAr2", "ref": "sq0Ms", "x": 48, "y": 520},
+      {"type": "ref", "id": "GSMGL", "ref": "w8BVo", "x": 160, "y": 520},
+      {"type": "ref", "id": "m9wTKi", "ref": "GCQDW", "x": 272, "y": 520},
+      {"type": "ref", "id": "T25WbU", "ref": "K9dYyE", "x": 384, "y": 520},
+      {"type": "text", "id": "PfzMc", "name": "cardTitle", "content": "Card", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 590},
+      {"type": "ref", "id": "ou3VK", "ref": "CuL6c", "x": 48, "y": 630},
+      {"type": "ref", "id": "o9E3P5", "ref": "tvYyp", "x": 350, "y": 630},
+      {"type": "text", "id": "A3ubQ0", "name": "filterPillTitle", "content": "FilterPill", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 780},
+      {"type": "ref", "id": "vQwNW", "ref": "dJA5j", "x": 48, "y": 820},
+      {"type": "ref", "id": "SQy1M", "ref": "t5Rnv", "x": 130, "y": 820},
+      {"type": "ref", "id": "zrgj2", "ref": "Xejar", "x": 212, "y": 820},
+      {"type": "ref", "id": "cur3d", "ref": "W1MD7K", "x": 294, "y": 820},
+      {"type": "text", "id": "O0FePH", "name": "statusBadgeTitle", "content": "StatusBadge", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 880},
+      {"type": "ref", "id": "lEY0H", "ref": "ZT7Tr", "x": 48, "y": 920},
+      {"type": "ref", "id": "E0fFbN", "ref": "hpzVE", "x": 125, "y": 920},
+      {"type": "ref", "id": "UhoNK", "ref": "AggYw", "x": 212, "y": 920},
+      {"type": "ref", "id": "FjwOZ", "ref": "HrBDh", "x": 279, "y": 920},
+      {"type": "ref", "id": "vGDHE", "ref": "tqkXU", "x": 361, "y": 920},
+      {"type": "text", "id": "UHTHp", "name": "gaugeTitle", "content": "Gauge", "fill": "$text-primary", "fontFamily": "Inter", "fontSize": 18, "fontWeight": "600", "x": 48, "y": 980},
+      {"type": "ref", "id": "RYDwY", "ref": "e17RC", "x": 48, "y": 1020},
+      {"type": "ref", "id": "HhZeh", "ref": "X7YW9", "x": 128, "y": 1020},
+      {"type": "ref", "id": "E9rw9y", "ref": "LHnjX", "x": 208, "y": 1020}
+    ]}
+  ]
+}
