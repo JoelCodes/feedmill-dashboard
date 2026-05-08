@@ -311,3 +311,231 @@ Dark mode overrides include adjusted colors for better contrast:
 - Text colors lighten for readability
 - Status colors are slightly desaturated
 - Shadows increase in opacity for visibility
+
+---
+
+## Components
+
+### Button
+
+Clickable button with variants for different actions and visual hierarchy.
+
+#### API
+
+```tsx
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive';
+  size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  icon?: React.ReactNode;
+}
+```
+
+#### Variants
+
+- **`primary`** (default): Primary actions, highest emphasis. Uses `--primary` background with white text.
+- **`secondary`**: Secondary actions, outlined style with primary border and text.
+- **`ghost`**: Tertiary actions, transparent background with minimal visual weight.
+- **`destructive`**: Dangerous actions like delete. Uses `--error` background with white text.
+
+#### Sizes
+
+- **`sm`**: Height 32px (h-8), smaller text, reduced padding
+- **`md`** (default): Height 40px (h-10), standard text
+- **`lg`**: Height 48px (h-12), larger text, increased padding
+
+#### Usage
+
+```tsx
+import Button from '@/components/ui/Button';
+
+// Primary button (default)
+<Button>Save Changes</Button>
+
+// With variant and size
+<Button variant="secondary" size="lg">Cancel</Button>
+
+// With icon
+<Button variant="destructive" icon={<Trash />}>Delete</Button>
+
+// Loading state
+<Button loading>Processing...</Button>
+
+// Disabled
+<Button disabled>Unavailable</Button>
+```
+
+#### Do
+
+- Use `primary` for the main action in a section
+- Use `destructive` for irreversible actions with confirmation
+- Provide meaningful text - avoid generic "Click here"
+- Use the `icon` prop for icon placement (ensures proper spacing)
+
+#### Don't
+
+- Use multiple `primary` buttons in the same context (reduces hierarchy)
+- Use `ghost` for critical actions (low visual prominence)
+- Manually add loading spinners - use the `loading` prop
+
+#### Accessibility
+
+- Keyboard accessible with Enter/Space
+- Loading state sets `aria-busy="true"` and disables interaction
+- Disabled state sets `aria-disabled` for screen readers
+- Icon-only buttons need `aria-label`: `<Button icon={<X />} aria-label="Close dialog" />`
+- Focus ring visible on keyboard navigation using `focus-visible:ring-2`
+
+**WCAG Compliance:** Passes axe-core automated checks. Verified for keyboard accessibility and screen reader announcements.
+
+---
+
+### Card
+
+Container component with optional header, content, and footer using compound pattern.
+
+#### API
+
+```tsx
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'elevated';
+  children: React.ReactNode;
+}
+
+// Compound components
+Card.Header: ({ children, className }) => JSX.Element
+Card.Content: ({ children, className }) => JSX.Element
+Card.Footer: ({ children, className }) => JSX.Element
+```
+
+#### Variants
+
+- **`default`**: Border style using `--divider` color
+- **`elevated`**: Shadow style (`shadow-[0_4px_12px_rgba(0,0,0,0.08)]`) without border
+
+#### Usage
+
+```tsx
+import Card from '@/components/ui/Card';
+
+// Basic card
+<Card>
+  <p>Card content goes here</p>
+</Card>
+
+// With compound pattern
+<Card>
+  <Card.Header>Settings</Card.Header>
+  <Card.Content>
+    <p>Configure your preferences</p>
+  </Card.Content>
+  <Card.Footer>
+    <Button variant="ghost">Cancel</Button>
+    <Button>Save</Button>
+  </Card.Footer>
+</Card>
+
+// Elevated variant
+<Card variant="elevated">
+  <Card.Content>Elevated card with shadow</Card.Content>
+</Card>
+
+// Clickable card
+<Card onClick={() => navigate('/details')}>
+  <Card.Content>Click to view details</Card.Content>
+</Card>
+```
+
+#### Do
+
+- Use compound pattern (Header/Content/Footer) for structured layouts
+- Use `elevated` variant for cards that need visual separation from page
+- Add `onClick` for navigational cards
+- Pass additional className to compound components for custom spacing
+
+#### Don't
+
+- Nest Card inside Card (creates visual confusion)
+- Use Card for simple inline content (use plain div with tokens)
+- Mix Header/Content/Footer from different Card instances
+
+#### Accessibility
+
+- Clickable cards automatically get `role="button"` and `tabIndex={0}`
+- Focus ring visible on keyboard navigation for clickable cards
+- Non-clickable cards are static containers (no interactive role)
+- Header renders as `<h3>` for proper heading hierarchy
+
+**WCAG Compliance:** Passes axe-core automated checks.
+
+---
+
+### Input
+
+Text input field with label, helper text, and error states.
+
+#### API
+
+```tsx
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  helperText?: string;
+  error?: string;
+}
+```
+
+#### Usage
+
+```tsx
+import Input from '@/components/ui/Input';
+
+// Basic input
+<Input placeholder="Enter text" />
+
+// With label
+<Input label="Email Address" placeholder="you@example.com" />
+
+// With helper text
+<Input
+  label="Password"
+  type="password"
+  helperText="Must be at least 8 characters"
+/>
+
+// With error
+<Input
+  label="Email"
+  value={email}
+  error="Invalid email format"
+/>
+
+// Disabled
+<Input label="Username" value="readonly" disabled />
+
+// Required
+<Input label="Full Name" required />
+```
+
+#### Do
+
+- Always provide a `label` for accessibility (associates label with input via `htmlFor`/`id`)
+- Use `error` prop for validation messages (not inline text)
+- Use `helperText` for supplementary information before user interaction
+- Set appropriate `type` attribute (email, password, tel, etc.)
+
+#### Don't
+
+- Use placeholder as a substitute for label (disappears on input)
+- Manually add error styling - use the `error` prop
+- Display both `error` and `helperText` simultaneously (error takes precedence)
+
+#### Accessibility
+
+- Label automatically linked to input via auto-generated `id`
+- Error state sets `aria-invalid="true"`
+- Error message linked via `aria-describedby`
+- Required fields get `aria-required="true"` when `required` prop is set
+- Error messages use `role="alert"` with `aria-live="polite"` for screen reader announcements
+- Error icon is decorative (`aria-hidden="true"`)
+
+**WCAG Compliance:** Passes axe-core automated checks. Full ARIA implementation for form accessibility.
