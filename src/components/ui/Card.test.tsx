@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { axe } from "jest-axe";
 import Card from "./Card";
 
 describe("Card", () => {
@@ -98,5 +99,40 @@ describe("Card", () => {
     expect(screen.getByText("Header")).toBeInTheDocument();
     expect(screen.getByText("Content")).toBeInTheDocument();
     expect(screen.getByText("Footer")).toBeInTheDocument();
+  });
+});
+
+describe("Card - Accessibility", () => {
+  it("has no accessibility violations", async () => {
+    const { container } = render(<Card>Test content</Card>);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations when clickable", async () => {
+    const handleClick = jest.fn();
+    const { container } = render(
+      <Card onClick={handleClick}>Clickable card</Card>
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations with compound pattern", async () => {
+    const { container } = render(
+      <Card>
+        <Card.Header>Header</Card.Header>
+        <Card.Content>Content</Card.Content>
+        <Card.Footer>Footer</Card.Footer>
+      </Card>
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

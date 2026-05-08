@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import Button from "./Button";
 
 describe("Button", () => {
@@ -88,5 +89,31 @@ describe("Button", () => {
     expect(button).toHaveClass("custom-class");
     // Should still have base classes
     expect(button).toHaveClass("bg-[var(--primary)]");
+  });
+});
+
+describe("Button - Accessibility", () => {
+  it("has no accessibility violations", async () => {
+    const { container } = render(<Button>Click me</Button>);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations in loading state", async () => {
+    const { container } = render(<Button loading>Loading</Button>);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations when disabled", async () => {
+    const { container } = render(<Button disabled>Disabled</Button>);
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });

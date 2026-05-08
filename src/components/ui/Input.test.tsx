@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import userEvent from "@testing-library/user-event";
 import Input from "./Input";
 
@@ -76,5 +77,41 @@ describe("Input", () => {
     const input = screen.getByPlaceholderText("Enter text");
     expect(input).toBeDisabled();
     expect(input).toHaveClass("disabled:bg-[var(--bg-page)]");
+  });
+});
+
+describe("Input - Accessibility", () => {
+  it("has no accessibility violations with label", async () => {
+    const { container } = render(
+      <Input label="Email Address" placeholder="Enter email" />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations in error state", async () => {
+    const { container } = render(
+      <Input
+        label="Email Address"
+        placeholder="Enter email"
+        error="Invalid email format"
+      />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
+  });
+
+  it("has no violations when disabled", async () => {
+    const { container } = render(
+      <Input label="Email Address" placeholder="Enter email" disabled />
+    );
+    const results = await axe(container, {
+      rules: { region: { enabled: false } },
+    });
+    expect(results).toHaveNoViolations();
   });
 });
