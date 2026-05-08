@@ -326,8 +326,10 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
       <div
         ref={tableRef}
         className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto focus:outline-none"
+        role="grid"
         tabIndex={0}
         onKeyDown={handleKeyDown}
+        aria-label="Orders table"
       >
         {/* Table Header */}
         <div className="flex py-2.5">
@@ -380,6 +382,14 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
               <div
                 data-order-id={order.id}
                 onClick={() => handleSelectOrder(order.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSelectOrder(order.id);
+                  }
+                }}
+                role="row"
+                tabIndex={-1}
                 className={`flex cursor-pointer items-center py-3 transition-colors
                   ${validSelectedId === order.id
                     ? 'bg-[color-mix(in_srgb,var(--primary)_10%,transparent)]'

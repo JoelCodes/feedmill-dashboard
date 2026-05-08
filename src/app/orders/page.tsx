@@ -14,10 +14,11 @@ function OrdersContent() {
   // Sync URL param to state when it changes (e.g., navigating from timeline)
   useEffect(() => {
     const urlSelected = searchParams.get("selected");
-    if (urlSelected && urlSelected !== selectedOrderId) {
+    if (urlSelected) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: syncing external URL param to local state
       setSelectedOrderId(urlSelected);
     }
-  }, [searchParams, selectedOrderId]);
+  }, [searchParams]);
 
   return (
     <OrdersTable
