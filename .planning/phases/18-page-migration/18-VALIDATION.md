@@ -21,7 +21,7 @@ created: 2026-05-07
 | **Config file** | jest.config.ts |
 | **Quick run command** | `npm test -- --testPathPattern={ComponentName}` |
 | **Full suite command** | `npm test` |
-| **Estimated runtime** | ~5 seconds (212 tests) |
+| **Estimated runtime** | ~5 seconds (304 tests) |
 
 ---
 
@@ -38,8 +38,8 @@ created: 2026-05-07
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists | Status |
 |--------|----------|-----------|-------------------|-------------|--------|
-| MIG-01 | Orders page uses only tokens/components | integration + unit | `npm test -- --testPathPatterns="customers/page"` | ✅ exists | ✅ green |
-| MIG-02 | Customers page uses only tokens/components | integration + unit | `npm test -- --testPathPatterns="customers/\[id\]/page"` | ✅ exists | ✅ green |
+| MIG-01 | Orders page uses only tokens/components | integration + unit | `npm test -- --testPathPatterns="orders/__tests__\|components/__tests__/Orders"` | ✅ exists | ✅ green |
+| MIG-02 | Customers page uses only tokens/components | integration + unit | `npm test -- --testPathPatterns="customers/__tests__/page\|customers/\[id\]/page"` | ✅ exists | ✅ green |
 | MIG-03 | Mill Production page uses only tokens/components | unit | `npm test -- mill-production` | ✅ exists | ✅ green |
 | MIG-04 | Settings page uses theme toggle + tokens | integration | `npm test -- settings/__tests__` | ✅ exists | ✅ green |
 | MIG-05 | ESLint reports zero hardcoded value violations | static analysis | `npm run lint 2>&1 \| grep "custom/no-hardcoded-values" \| wc -l` | N/A (ESLint) | ✅ green |
@@ -99,3 +99,32 @@ All migrated components follow the StatusBadge.test.tsx pattern:
 - `src/app/settings/__tests__/page.test.tsx` (14 tests)
 
 **Final Test Count:** 212 tests (up from 192)
+
+---
+
+## Validation Audit 2026-05-09
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 2 |
+| Resolved | 2 |
+| Escalated | 0 |
+
+**Gap 1 (MIG-01 - Orders page):**
+- STATUS_PILL_CONFIG tokens verified (no hardcoded #f59e0b22, #2b6cb022, #9333ea22, #2f855a22)
+- FilterPill import from @/components/ui/FilterPill verified
+- OrderDetails Card component usage verified
+- Orders page skeleton tokens verified (rounded-[var(--radius-xl)], bg-[var(--divider)])
+
+**Gap 2 (MIG-02 - Customers page):**
+- Card component wrapper verified
+- No hardcoded gray-* classes (bg-gray-200, text-gray-300, text-gray-400, hover:bg-gray-50)
+- Design tokens verified (bg-[var(--divider)], text-[var(--text-secondary)], hover:bg-[var(--bg-page)])
+
+**Tests Added:**
+- `src/app/orders/__tests__/page.test.tsx` (5 tests)
+- `src/components/__tests__/OrdersTable.test.tsx` (12 tests)
+- `src/components/__tests__/OrderDetails.test.tsx` (8 tests)
+- `src/app/customers/__tests__/page.test.tsx` (15 tests)
+
+**Final Test Count:** 304 tests (up from 264)
