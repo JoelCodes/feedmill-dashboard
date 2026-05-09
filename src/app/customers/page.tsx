@@ -102,6 +102,13 @@ export default function CustomersPage() {
             />
           </div>
 
+          {/* Screen reader announcement for search results */}
+          <div aria-live="polite" className="sr-only">
+            {loading ? 'Loading customers...' :
+              filteredCustomers.length === 0 ? 'No customers found' :
+              `${filteredCustomers.length} customer${filteredCustomers.length !== 1 ? 's' : ''} found`}
+          </div>
+
           {/* Customer List */}
           <div className="flex-1 overflow-auto">
             {loading ? (
