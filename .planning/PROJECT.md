@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators.
+A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators. The v1.3 release establishes a unified design system with 200+ semantic tokens, a CVA-based component library, and WCAG 2.1 AA accessibility compliance.
 
 ## Core Value
 
@@ -10,38 +10,40 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ## Current State
 
-**Shipped:** v1.2 Customers Page (2026-05-06)
-**Codebase:** 6,426 LOC TypeScript
+**Shipped:** v1.3 Design Hardening (2026-05-09)
+**Codebase:** ~7,000 LOC TypeScript
 **Tech stack:** Next.js 15, React 19, Tailwind CSS 4
+**Tests:** 304 passing | **ESLint:** 0 errors
 
 **What's working:**
 - Orders table with multi-status filtering, search, keyboard navigation
 - Order details panel with timeline and change history
 - Functional sidebar navigation with auto-detecting active state
 - Header with global search and notification system
-- Settings page with theme/density preferences
+- Settings page with theme toggle (light/dark/system) and density preferences
 - Mill production view with 3 columns, state cards, and multi-select filter pills
-- Design token system for status colors, typography, and spacing
-- 33 mock production orders with realistic Book1.xlsx data
-- **Customer list page** with search, sort by recent activity, status indicators
-- **Customer detail page** with header, contact info, summary stats
-- **Activity timeline** merging orders, deliveries, bin alerts with expand/collapse
-- **Bin visualization** with vertical tank gauges and threshold coloring (green/yellow/red)
+- Customer list page with search, sort by recent activity, status indicators
+- Customer detail page with header, contact info, summary stats
+- Activity timeline merging orders, deliveries, bin alerts with expand/collapse
+- Bin visualization with vertical tank gauges and threshold coloring (green/yellow/red)
 - 18 mock customers with stats aggregation, 38 mock bins with fill percentages
+- **Design system with 200+ semantic tokens** (colors, spacing, typography, shadows)
+- **CVA-based component library** (Button, Card, Input, Select, Textarea, StatusBadge, FilterPill, Gauge, Timeline, ThemeToggle)
+- **Light/dark theme support** via next-themes with flash prevention
+- **WCAG 2.1 AA accessibility compliance** with jest-axe testing and VoiceOver verification
+- **Comprehensive documentation** (148 token definitions, 10 component API guides)
 
 **Known gaps (deferred):**
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 
-## Current Milestone: v1.3 Design Hardening
+## Next Milestone Goals
 
-**Goal:** Establish a unified design system with tokens, components, and theming — then migrate existing pages to use it.
-
-**Target features:**
-- Token system — Audit hardcoded values, consolidate into design tokens, add light/dark theming
-- Component library — Unified components: buttons, form inputs, cards/panels, tables/lists, status indicators, timeline, typography
-- Design file structure — Single component library .pen file + separate page layout files
-- Codebase migration — Refactor existing pages to consume the new design system
+Awaiting user input for v1.4 scope. Potential directions:
+- Real data integration (API/database)
+- KPI cards with computed values
+- Mobile responsiveness
+- User authentication
 
 ## Requirements
 
@@ -93,11 +95,26 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - ✓ Mock customer service with stats aggregation (18 customers) — v1.2
 - ✓ Mock bin service with fill percentages and alert levels (38 bins) — v1.2
 
+**v1.3:**
+- ✓ Semantic token system with two-tier naming (primitives → semantic) — v1.3
+- ✓ Light/dark theme infrastructure with next-themes and CSS variable overrides — v1.3
+- ✓ CVA and utility setup (class-variance-authority, tailwind-merge, cn() helper) — v1.3
+- ✓ ESLint rules blocking hardcoded color and spacing values — v1.3
+- ✓ Button component with CVA variants and sizes — v1.3
+- ✓ Input components (text, number, select, textarea) with validation states — v1.3
+- ✓ Card/Panel compound component (Header, Content, Footer) — v1.3
+- ✓ Theme toggle allowing light/dark/system switching — v1.3
+- ✓ StatusBadge refactored to use design tokens — v1.3
+- ✓ All pages migrated to design system tokens — v1.3
+- ✓ Token usage documentation and component guidelines — v1.3
+- ✓ WCAG 2.1 AA accessibility compliance verified — v1.3
+- ✓ Component library .pen file as single source of truth — v1.3
+
 ### Active
 
-<!-- Current scope for v1.3 Design Hardening -->
+<!-- Awaiting v1.4 requirements definition -->
 
-(Defining requirements — see REQUIREMENTS.md after roadmap creation)
+(Run `/gsd-new-milestone` to define v1.4 requirements)
 
 ### Deferred
 
@@ -169,6 +186,11 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 | TDD for services and components | 104 tests total ensure correctness and document behavior | ✓ Good |
 | Multiple timeline events can expand | No accordion behavior - users often compare multiple events | ✓ Good |
 | Promise.all for parallel data fetching | Customer detail fetches customer, events, bins concurrently | ✓ Good |
+| CVA for type-safe component variants | Class-variance-authority enables exhaustive variant typing with IntelliSense | ✓ Good |
+| Two-tier token naming (primitive → semantic) | Primitives in :root, semantics reference via var(), enables theme swapping | ✓ Good |
+| next-themes for dark mode | Handles SSR flash prevention, system preference sync, localStorage persistence | ✓ Good |
+| jsx-a11y rules approach over plugin | Avoids conflict with eslint-config-next, enables granular rule control | ✓ Good |
+| jest-axe for automated a11y testing | Catches WCAG violations during development, enforces compliance | ✓ Good |
 
 ## Evolution
 
@@ -188,4 +210,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-07 after v1.3 milestone started*
+*Last updated: 2026-05-09 after v1.3 milestone shipped*

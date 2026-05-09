@@ -1,5 +1,26 @@
 # Milestones
 
+## v1.3 Design Hardening (Shipped: 2026-05-09)
+
+**Phases completed:** 4 phases (16-19), 27 plans
+**Tests:** 304 passing | **ESLint:** 0 errors
+**Timeline:** 3 days (2026-05-07 → 2026-05-09)
+
+**Key accomplishments:**
+
+- Semantic token system with 200+ CSS variables (colors, spacing, typography, shadows) supporting light/dark themes
+- CVA-based component library: Button (4 variants, 3 sizes), Card (compound pattern), Input/Select/Textarea, ThemeToggle
+- All pages migrated to design tokens (Orders, Customers, Mill Production, Settings) with zero hardcoded values
+- Accessibility infrastructure with jest-axe, eslint-plugin-jsx-a11y, and WCAG 2.1 AA compliance
+- Comprehensive design system documentation: 148 token definitions, 10 component API guides
+- VoiceOver manual verification and keyboard navigation across all interactive elements
+
+**Deferred items at close:** 0
+
+**Archive:** [v1.3-ROADMAP.md](./milestones/v1.3-ROADMAP.md), [v1.3-REQUIREMENTS.md](./milestones/v1.3-REQUIREMENTS.md)
+
+---
+
 ## v1.2 Customers Page (Shipped: 2026-05-06)
 
 **Phases completed:** 6 phases (10-15), 15 plans
