@@ -80,5 +80,3 @@ ruleTester.run("no-hardcoded-values", rule, {
     },
   ],
 });
-
-console.log("All tests passed!");
