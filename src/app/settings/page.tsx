@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -13,6 +14,7 @@ import Select from "@/components/ui/Select";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function SettingsPage() {
+  const { theme } = useTheme();
   const [savedPreferences, setSavedPreferences] = useLocalStorage<UserPreferences>(
     "user-preferences",
     defaultPreferences
@@ -44,7 +46,9 @@ export default function SettingsPage() {
   };
 
   const handleSave = () => {
-    setSavedPreferences(formState);
+    // Sync theme from next-themes context to avoid saving stale value
+    const currentTheme = (theme === 'light' || theme === 'dark') ? theme : 'light';
+    setSavedPreferences({ ...formState, theme: currentTheme });
   };
 
   return (
