@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Design Hardening
-status: shipped
-last_updated: "2026-05-09"
-last_activity: 2026-05-09 -- Milestone v1.3 shipped
+milestone: v1.4
+milestone_name: Auth with Clerk
+status: planning
+last_updated: "2026-05-09T23:35:49.194Z"
+last_activity: 2026-05-09
 progress:
-  total_phases: 20
-  completed_phases: 20
-  total_plans: 59
-  completed_plans: 59
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,13 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-09)
 
 ## Current Position
 
-**Milestone:** v1.3 Design Hardening — SHIPPED 2026-05-09
-**Status:** Complete
-**Progress:** [██████████] 100%
-
-Last activity: 2026-05-09 -- Milestone v1.3 archived
-
-**Next step:** Run `/gsd-new-milestone` to define v1.4 requirements and roadmap.
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-09 — Milestone v1.4 started
 
 ## Performance Metrics
 
@@ -81,14 +78,17 @@ Decisions are logged in PROJECT.md Key Decisions table.
 *Items deferred from v1.0-v1.2 (not in v1.3 scope):*
 
 **Phase 3 (KPI Cards):**
+
 - KPI cards display computed values from order data (deferred from v1.0)
 - Click KPI card to filter table to relevant orders (deferred from v1.0)
 
 **Performance:**
+
 - Consider memoizing filtered/sorted data in OrdersTable
 - Evaluate transform-based animations for card hover
 
 **UX Refinements:**
+
 - Add subtle animation when filter count changes
 - Consider "Clear all filters" action when multiple selected
 - Add tooltip on hover showing full filter label for truncated text

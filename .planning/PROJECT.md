@@ -37,13 +37,15 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 
-## Next Milestone Goals
+## Current Milestone: v1.4 Auth with Clerk
 
-Awaiting user input for v1.4 scope. Potential directions:
-- Real data integration (API/database)
-- KPI cards with computed values
-- Mobile responsiveness
-- User authentication
+**Goal:** Add user authentication so only logged-in users can access the dashboard.
+
+**Target features:**
+- Clerk integration for authentication
+- Email + password sign-in/sign-up
+- All pages protected (redirect to sign-in if unauthenticated)
+- User display in header (name/avatar + sign-out)
 
 ## Requirements
 
@@ -112,9 +114,9 @@ Awaiting user input for v1.4 scope. Potential directions:
 
 ### Active
 
-<!-- Awaiting v1.4 requirements definition -->
+<!-- v1.4 Auth with Clerk requirements -->
 
-(Run `/gsd-new-milestone` to define v1.4 requirements)
+(See REQUIREMENTS.md for full v1.4 requirement definitions)
 
 ### Deferred
 
@@ -130,7 +132,7 @@ Awaiting user input for v1.4 scope. Potential directions:
 - Mobile app — web-first, responsive later
 - Real-time push updates — polling or manual refresh sufficient for v1
 - Multi-tenant / multi-mill — single mill focus initially
-- User authentication — deferred until needed
+- User authentication — **v1.4 scope** (moved from out of scope)
 - Database integration — mock data until explicitly requested
 - Inline editing of orders — dedicated forms provide better UX
 - Advanced query builder — simple filters cover 90% of use cases
@@ -210,4 +212,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-09 after v1.3 milestone shipped*
+*Last updated: 2026-05-09 after v1.4 milestone started*
