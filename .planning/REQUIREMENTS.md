@@ -24,11 +24,11 @@ Requirements for Design Hardening milestone. Each maps to roadmap phases.
 
 ### Migration
 
-- [ ] **MIG-01**: Orders page fully migrated to design system (OrdersTable, StatusBadge, FilterPill, cards)
-- [ ] **MIG-02**: Customers page fully migrated to design system (list, detail header, timeline, bin gauges)
-- [ ] **MIG-03**: Mill Production page fully migrated to design system (production cards, filter pills, columns)
+- [x] **MIG-01**: Orders page fully migrated to design system (OrdersTable, StatusBadge, FilterPill, cards)
+- [x] **MIG-02**: Customers page fully migrated to design system (list, detail header, timeline, bin gauges)
+- [x] **MIG-03**: Mill Production page fully migrated to design system (production cards, filter pills, columns)
 - [x] **MIG-04**: Settings page fully migrated to design system with theme toggle integration
-- [ ] **MIG-05**: All hardcoded color and spacing values eliminated from migrated pages
+- [x] **MIG-05**: All hardcoded color and spacing values eliminated from migrated pages
 
 ### Documentation
 
@@ -88,11 +88,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | COMP-03 | Phase 17 | Complete |
 | COMP-04 | Phase 17 | Complete |
 | COMP-05 | Phase 17 | Complete |
-| MIG-01 | Phase 18 | Pending |
-| MIG-02 | Phase 18 | Pending |
-| MIG-03 | Phase 18 | Pending |
+| MIG-01 | Phase 18 | Complete |
+| MIG-02 | Phase 18 | Complete |
+| MIG-03 | Phase 18 | Complete |
 | MIG-04 | Phase 18 | Complete |
-| MIG-05 | Phase 18 | Pending |
+| MIG-05 | Phase 18 | Complete |
 | DOC-01 | Phase 19 | Complete |
 | DOC-02 | Phase 19 | Complete |
 | DOC-03 | Phase 19 | Complete |

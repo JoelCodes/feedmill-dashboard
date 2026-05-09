@@ -18,8 +18,8 @@
 
 - [x] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization
 - [x] **Phase 17: Component Library** - Build reusable primitives (Button, Input, Card, Badge, Theme Toggle)
-- [ ] **Phase 18: Page Migration** - Migrate all pages to design system and eliminate hardcoded values
-- [ ] **Phase 19: Documentation & Accessibility** - Document usage patterns and verify WCAG compliance
+- [x] **Phase 18: Page Migration** - Migrate all pages to design system and eliminate hardcoded values
+- [x] **Phase 19: Documentation & Accessibility** - Document usage patterns and verify WCAG compliance
 
 ## Phase Details
 
@@ -99,7 +99,7 @@ Plans:
 - [x] 18-06-PLAN.md — Migrate Customers page (list, detail, bin gauges, timeline) (MIG-02)
 
 **Wave 5** (depends on all)
-- [ ] 18-07-PLAN.md — Final ESLint validation and dark mode verification (MIG-05)
+- [x] 18-07-PLAN.md — Final ESLint validation and dark mode verification (MIG-05)
 
 ### Phase 19: Documentation & Accessibility
 **Goal**: Design system documented and accessible to all users
@@ -125,14 +125,14 @@ Plans:
 - [x] 19-04-PLAN.md — VoiceOver manual testing and verification documentation (DOC-03)
 
 **Wave 5 - Gap Closure** (parallel)
-- [ ] 19-05-PLAN.md — Fix ESLint tailwindcss config warning and test file imports (DOC-03)
-- [ ] 19-06-PLAN.md — Fix jsx-a11y violations in UI components (Card, Timeline) (DOC-03)
-- [ ] 19-07-PLAN.md — Fix jsx-a11y violations in pages (customers, settings) (DOC-03)
-- [ ] 19-08-PLAN.md — Fix jsx-a11y violations in OrdersTable and orders page (DOC-03)
-- [ ] 19-09-PLAN.md — Fix no-hardcoded-values in UI components (DOC-03)
+- [x] 19-05-PLAN.md — Fix ESLint tailwindcss config warning and test file imports (DOC-03)
+- [x] 19-06-PLAN.md — Fix jsx-a11y violations in UI components (Card, Timeline) (DOC-03)
+- [x] 19-07-PLAN.md — Fix jsx-a11y violations in pages (customers, settings) (DOC-03)
+- [x] 19-08-PLAN.md — Fix jsx-a11y violations in OrdersTable and orders page (DOC-03)
+- [x] 19-09-PLAN.md — Fix no-hardcoded-values in UI components (DOC-03)
 
 **Wave 6** (depends on Wave 5)
-- [ ] 19-10-PLAN.md — Final lint and test verification (DOC-03)
+- [x] 19-10-PLAN.md — Final lint and test verification (DOC-03)
 
 ## Progress
 
