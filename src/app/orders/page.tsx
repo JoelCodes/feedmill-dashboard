@@ -15,7 +15,7 @@ function OrdersContent() {
   useEffect(() => {
     const urlSelected = searchParams.get("selected");
     if (urlSelected) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: syncing external URL param to local state
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing URL param to state on navigation
       setSelectedOrderId(urlSelected);
     }
   }, [searchParams]);
