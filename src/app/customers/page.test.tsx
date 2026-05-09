@@ -204,7 +204,9 @@ describe('CustomersPage', () => {
 
     // Wait for debounce
     await waitFor(() => {
-      expect(screen.getByText('No customers found')).toBeInTheDocument();
+      // Two "No customers found" elements: aria-live region and visible EmptyState
+      const noCustomersElements = screen.getAllByText('No customers found');
+      expect(noCustomersElements.length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText(/Try adjusting your search/)).toBeInTheDocument();
     }, { timeout: 500 });
   });
