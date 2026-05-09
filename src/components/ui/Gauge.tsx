@@ -30,6 +30,9 @@ function clampPercentage(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
 
+/** Maximum fill height in pixels - 85% of the 100px gauge container height */
+const GAUGE_FILL_MAX_HEIGHT = 85;
+
 /**
  * Gauge - Vertical gauge component showing fill level with threshold colors.
  *
@@ -40,7 +43,7 @@ function clampPercentage(value: number): number {
  */
 export function Gauge({ fillPercentage, label, sublabel }: GaugeProps) {
   const clampedPercentage = clampPercentage(fillPercentage);
-  const fillHeight = (clampedPercentage / 100) * 85; // 85px max fill height within 100px gauge
+  const fillHeight = (clampedPercentage / 100) * GAUGE_FILL_MAX_HEIGHT;
   const thresholdColor = getThresholdColor(clampedPercentage);
 
   return (
