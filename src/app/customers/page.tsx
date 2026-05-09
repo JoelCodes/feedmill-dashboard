@@ -46,6 +46,7 @@ export default function CustomersPage() {
   const router = useRouter();
   const [customers, setCustomers] = useState<CustomerWithStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -54,6 +55,10 @@ export default function CustomersPage() {
     getCustomers()
       .then(data => {
         setCustomers(sortCustomersByRecentActivity(data));
+      })
+      .catch(err => {
+        console.error('Failed to load customers:', err);
+        setError('Failed to load customers. Please try again.');
       })
       .finally(() => setLoading(false));
   }, []);
@@ -101,6 +106,12 @@ export default function CustomersPage() {
           <div className="flex-1 overflow-auto">
             {loading ? (
               <CustomerTableSkeleton />
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <AlertTriangle className="mb-4 h-12 w-12 text-[var(--error)]" />
+                <p className="text-text-primary text-sm font-bold">Error loading customers</p>
+                <p className="text-text-secondary text-sm">{error}</p>
+              </div>
             ) : filteredCustomers.length === 0 ? (
               <EmptyState />
             ) : (
