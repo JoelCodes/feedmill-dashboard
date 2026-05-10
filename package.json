@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "test": "NODE_OPTIONS='--disable-warning=ExperimentalWarning' jest",
-    "test:watch": "NODE_OPTIONS='--disable-warning=ExperimentalWarning' jest --watch"
+    "test:watch": "NODE_OPTIONS='--disable-warning=ExperimentalWarning' jest --watch",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.3.3",
@@ -22,7 +25,9 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@clerk/testing": "^2.0.27",
     "@clerk/types": "^4.101.23",
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -39,6 +44,7 @@
     "jest": "^30.3.0",
     "jest-axe": "^10.0.0",
     "jest-environment-jsdom": "^30.3.0",
+    "playwright": "^1.59.1",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5"
