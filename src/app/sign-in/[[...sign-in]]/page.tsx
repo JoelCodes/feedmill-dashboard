@@ -13,11 +13,14 @@ import { clerkAppearance } from "@/lib/clerk-theme";
  */
 export default function SignInPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--bg-page)]">
+    <main
+      className="flex min-h-screen flex-col items-center justify-center bg-[var(--bg-page)]"
+      aria-labelledby="sign-in-heading"
+    >
       {/* Branding - matches Sidebar pattern */}
       <div className="mb-8 flex items-center gap-2.5">
-        <div className="h-8 w-8 rounded-lg bg-[var(--primary)]" />
-        <span className="text-sm font-bold text-[var(--text-primary)]">
+        <div className="h-8 w-8 rounded-lg bg-[var(--primary)]" aria-hidden="true" />
+        <span id="sign-in-heading" className="text-sm font-bold text-[var(--text-primary)]">
           CGM DASHBOARD
         </span>
       </div>
@@ -30,6 +33,6 @@ export default function SignInPage() {
         signUpUrl="/sign-up"
         fallbackRedirectUrl="/"
       />
-    </div>
+    </main>
   );
 }
