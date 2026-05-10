@@ -1,9 +1,9 @@
 ---
-status: complete
+status: resolved
 phase: 20-clerk-foundation-setup
-source: [20-01-SUMMARY.md, 20-02-SUMMARY.md]
+source: [20-01-SUMMARY.md, 20-02-SUMMARY.md, 20-03-SUMMARY.md]
 started: 2026-05-09T14:30:00Z
-updated: 2026-05-09T14:45:00Z
+updated: 2026-05-10T12:00:00Z
 ---
 
 ## Current Test
@@ -50,9 +50,11 @@ blocked: 0
 ## Gaps
 
 - truth: "Clerk sign-in form should automatically switch colors with theme toggle - background, text, and button colors should match current theme"
-  status: failed
+  status: resolved
   reason: "User reported: I was redirected to Clerk's sign in page, which has no light and dark theme."
   severity: major
   test: 4
-  artifacts: []
-  missing: []
+  root_cause: "Missing environment variables NEXT_PUBLIC_CLERK_SIGN_IN_URL and NEXT_PUBLIC_CLERK_SIGN_UP_URL in .env.local. Without these, auth.protect() redirects to Clerk's hosted pages instead of custom /sign-in page."
+  resolution: "Plan 20-03 added NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in and NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up to .env.local and .env.example"
+  resolved_by: "20-03-SUMMARY.md"
+  debug_session: ".planning/debug/clerk-redirect-hosted-signin.md"
