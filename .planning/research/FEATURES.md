@@ -1,211 +1,386 @@
-# Feature Landscape: Design System & Theming
+# Feature Research
 
-**Domain:** React/Tailwind Design System for Enterprise Dashboard
-**Researched:** 2026-05-07
-**Overall confidence:** HIGH
+**Domain:** Clerk Authentication for Next.js Dashboard
+**Researched:** 2026-05-09
+**Confidence:** HIGH
 
-## Table Stakes
+## Feature Landscape
 
-Features users expect in a modern React/Tailwind design system. Missing = product feels incomplete.
+### Table Stakes (Users Expect These)
+
+Features users assume exist. Missing these = product feels incomplete.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Design Tokens (Colors)** | Single source of truth for colors eliminates hardcoded hex values, enables theming | Low | Already partially implemented in globals.css; needs light/dark variants |
-| **Design Tokens (Typography)** | Consistent font sizes, weights, line heights across app; type scale prevents arbitrary sizing | Low | Base size + scale multiplier pattern; ensure line-height multiples of 4px for baseline grid |
-| **Design Tokens (Spacing)** | 8pt grid system is industry standard; ensures consistent margins/padding, clean visual rhythm | Low | Use multiples of 8 (8px, 16px, 24, 32); 4px sub-grid for fine adjustments |
-| **Design Tokens (Borders/Shadows)** | Consistent elevation system; prevents arbitrary shadow values | Low | Already have --shadow-sm, --shadow-card; expand elevation scale (0-5) |
-| **Button Component** | Most fundamental interactive element; needs variants (primary/secondary/ghost/destructive) and states (hover/active/focus/disabled/loading) | Low-Med | Define 6 states per variant; use CVA for variant management |
-| **Input Components** | Text, number, select, textarea; validation states (error/success); consistent focus styles | Medium | WCAG 2.1 AA requires visible focus indicators; error state must meet 4.5:1 contrast |
-| **Status Badge** | Already exists; needs variant system integration and consistent token usage | Low | Refactor existing StatusBadge to use design tokens |
-| **Card/Panel Components** | Container components for content grouping; existing cards need unification | Low | Already have card patterns; standardize padding, borders, shadows |
-| **Table Component** | Data display foundation; sortable headers, row states (hover/selected), loading skeleton | Medium | OrdersTable exists; extract reusable table primitives |
-| **Light/Dark Theme** | User expectation for dashboard apps; CSS variables + data-theme attribute pattern | Medium | `:root` for light, `[data-theme="dark"]` for dark; semantic tokens (bg-surface vs bg-white) |
-| **Accessible Focus Management** | WCAG 2.1 AA requirement; keyboard navigation, visible focus indicators, logical tab order | Medium | Test with Axe-core; automated testing catches 57% of issues; manual screen reader testing required |
-| **Component Documentation** | Each component needs usage guidelines, variants, do's/don'ts, code examples | Low | Essential for team adoption; prevents misuse; documents behavior |
-| **Semantic Color System** | Colors named by function (bg-surface, text-primary) not appearance (bg-white, text-gray) | Low | Critical for theming; consumers use semantic tokens, not raw values |
+| Email + Password Sign-Up | Standard authentication method, baseline expectation | LOW | Clerk provides `useSignUp()` hook with built-in email verification flow |
+| Email + Password Sign-In | Standard authentication method, baseline expectation | LOW | Clerk provides `useSignIn()` hook with password strategy |
+| Email Verification | Security best practice, prevents fake accounts | LOW | Automatically handled by Clerk via `sendEmailCode()` and `verifyEmailCode()` |
+| Password Reset / Forgot Password | Users forget passwords regularly | LOW | Built-in flow: `sendResetPasswordEmailCode()` → `verifyCode()` → `resetPassword()` |
+| Sign Out | Users need to end their session | LOW | Simple `signOut()` method with optional redirect URL |
+| Route Protection (Middleware) | Protect dashboard pages from unauthenticated access | LOW | `clerkMiddleware()` with `auth.protect()` auto-redirects to sign-in |
+| User Display in Header | Users need to see who's logged in | LOW | `<UserButton />` component shows avatar, name, sign-out option |
+| Session Management | Maintain authentication state across pages | LOW | Automatic with Next.js Server Components via `auth()` helper |
+| Prebuilt UI Components | Don't rebuild sign-in/sign-up forms from scratch | LOW | `<SignIn />`, `<SignUp />`, `<UserButton />` components included |
+| Dark/Light Theme Support | Modern expectation for dashboard apps | LOW | Clerk components support `appearance.theme` prop with built-in themes |
 
-## Differentiators
+### Differentiators (Competitive Advantage)
 
-Features that set design system apart. Not expected, but valued.
+Features that set the product apart. Not required, but valuable.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Tailwind v4 @theme Integration** | CSS-first design tokens; no tailwind.config.js; tokens become utilities automatically | Low | Current globals.css already uses @theme inline; expand for full token system |
-| **CVA (Class Variance Authority)** | Type-safe variant management; compound variants; cleaner than conditional className strings | Low-Med | Enables consistent variants across all components; shadcn/ui pattern |
-| **Component Composition (Compound Pattern)** | Flexible primitives (e.g., Table, Table.Header, Table.Row) instead of monolithic props | Medium | Radix UI pattern; better DX for complex components |
-| **Timeline Component Library** | Already have ActivityTimeline; extract as reusable primitive for other use cases | Low | Existing implementation tested (10+ tests); document as reusable pattern |
-| **Bin Gauge Visualization** | Domain-specific data visualization primitive; reusable for other vertical tank displays | Low | Existing BinGauge tested (6 tests); useful for inventory/level indicators |
-| **Storybook Integration** | Interactive component documentation; visual regression testing; isolated development | High | Not required for v1.3 but high value; automated a11y testing via Storybook addon |
-| **Design File Parity** | Pencil.dev designs match code implementation exactly; single source of truth | Medium | Already established pattern; maintain in design hardening milestone |
-| **Incremental Migration Strategy** | Strangler Fig pattern: new features use system, migrate legacy on touch | Low | Avoids big-bang rewrite; operational continuity; reduces risk |
-| **TypeScript Variant Types** | Auto-generated TypeScript types for all component variants from CVA definitions | Low | Improves DX; catches variant errors at compile time |
-| **Design Token Documentation** | Token usage examples; when to use each semantic token; migration guide from hardcoded values | Low | Reduces adoption friction; prevents incorrect token usage |
+| Multi-Factor Authentication (MFA) | Enhanced security, compliance requirement for some industries | MEDIUM | SMS codes, TOTP (authenticator apps), email codes, backup codes all supported |
+| Social OAuth (Google, Microsoft, GitHub) | Faster sign-up, reduces password fatigue | MEDIUM | 20+ providers supported including Google, Microsoft, GitHub, Facebook, LinkedIn |
+| Passwordless (Magic Links) | Better UX, no password to remember/reset | LOW | Email magic links supported via `signInWithEmailLink()` |
+| Session Token for API Auth | Enables authenticated requests to backend APIs | LOW | `getToken()` returns JWT for Authorization header |
+| User Profile Management | Self-service account management reduces support burden | LOW | `<UserProfile />` component handles password change, email update, delete account |
+| Custom JWT Templates | Add custom claims for RBAC/permissions | MEDIUM | Define custom fields in Clerk Dashboard, access via token claims |
+| Webhooks for Data Sync | Keep user data in sync with your database | MEDIUM | Events: `user.created`, `user.updated`, `user.deleted`, `session.created` |
+| Organizations/Teams | Multi-tenant B2B apps where users belong to teams | HIGH | Full RBAC with roles, permissions, invitations, member management |
+| Appearance Customization | Match auth UI to existing dashboard design | LOW | `appearance` prop accepts theme variables, custom CSS, element overrides |
+| Compromised Password Detection | Prevent use of leaked passwords (security) | LOW | Automatic check during sign-in, falls back to email code if detected |
 
-## Anti-Features
+### Anti-Features (Commonly Requested, Often Problematic)
 
-Features to explicitly NOT build.
+Features that seem good but create problems.
 
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| **Over-abstracted Components** | God components with 50+ props become maintenance nightmares; violates single responsibility | Use composition patterns; multiple small components over one giant component |
-| **@apply Directive Overuse** | Defeats utility-first purpose; creates CSS bloat; loses Tailwind benefits | Use CVA or component abstractions; @apply only for truly reusable patterns |
-| **Non-semantic Token Names** | --color-blue-500 breaks when theme changes; tightly couples design to implementation | Use --color-primary, --bg-surface, --text-muted; function over appearance |
-| **Big-Bang Design System Rewrite** | Risks collapse; introduces bugs; disrupts operations; often fails | Incremental migration: new features use system, refactor legacy on touch |
-| **Pixel-Perfect Spacing** | Arbitrary values (13px, 27px) break visual rhythm; hard to maintain | Stick to 8pt grid system (8, 16, 24, 32); 4px for fine adjustments only |
-| **Copy-Paste Component Library** | Duplicated code across components; no single source of truth; inconsistent updates | Centralized component library; import from shared location |
-| **Magic Pushbutton UI** | Business logic in interface code; no abstraction; hard to test | Separate concerns; components consume services/hooks, don't contain business logic |
-| **Framework-Specific Design Tokens** | Tokens defined in JS (tailwind.config.js) lock you into build tools | CSS-first tokens (@theme in Tailwind v4); portable across tools |
-| **Theme-Unaware Hardcoded Values** | Hardcoded colors break dark mode; forces manual updates everywhere | Use CSS variables that change with theme; semantic token system |
-| **Variants for Every Edge Case** | 100+ variants create unmanageable complexity; decision paralysis | Core variants only (3-5 per component); use composition for edge cases |
-| **Undocumented Component Behavior** | Teams misuse components; creates support burden; inconsistent implementation | Documentation is table stakes; do's/don'ts prevent common mistakes |
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| Custom Auth UI from Scratch | Full design control, unique branding | Reinventing the wheel, security vulnerabilities, maintenance burden, email delivery issues | Use Clerk's prebuilt components with `appearance` customization — supports theme variables, custom CSS, and element-level styling |
+| SMS-Only 2FA | "Everyone knows SMS" | NIST deprecated due to SIM swap attacks, SMS delivery unreliable internationally, carrier costs | Offer TOTP (authenticator apps) as primary MFA, SMS as optional fallback |
+| Storing Passwords Yourself | "We want full control" | Massive security liability, compliance nightmare (GDPR, SOC 2), credential leak risk | Let Clerk handle password storage — they're SOC 2 Type II certified |
+| Username-Only Login (No Email) | "Simpler sign-up" | No password reset mechanism, no way to contact user, account recovery impossible | Require email as identifier — username can be optional display name |
+| Infinite Session Duration | "Don't make users re-login" | Security risk (stolen device = permanent access), compliance violation, stale permissions | Use Clerk's auto-refresh tokens (60s default) with reasonable session expiry |
+| Account Enumeration in Login Errors | "Tell users if email exists" | Security vulnerability — attackers can discover valid accounts | Show generic error "Invalid email or password" for both cases |
+| Rolling Your Own OAuth | "We only need Google login, how hard can it be?" | OAuth spec complexity, token refresh logic, security edge cases, ongoing maintenance | Use Clerk's OAuth — handles token refresh, security, 20+ providers out-of-box |
 
 ## Feature Dependencies
 
 ```
-Design Tokens → All Components (tokens must exist first)
-Semantic Color System → Light/Dark Theme (semantic names enable theme switching)
-Button Variants (CVA) → Other Component Variants (establishes pattern)
-Accessible Focus → All Interactive Components (foundation for keyboard nav)
-Card Component → Table, Timeline, Forms (container primitive)
-Component Documentation → Team Adoption (can't adopt what you don't understand)
+Route Protection
+    └──requires──> ClerkProvider Setup
+                       └──requires──> API Keys Configured
 
-Light/Dark Theme requires:
-  ├─ Semantic Color System (bg-surface not bg-white)
-  ├─ CSS Variables in :root and [data-theme="dark"]
-  └─ Token migration (eliminate hardcoded hex values)
+Email + Password Sign-In
+    └──requires──> Sign-Up Flow (users must register first)
+                       └──requires──> Email Verification
 
-Component Library requires:
-  ├─ Design Tokens (foundation)
-  ├─ CVA Setup (variant management)
-  └─ TypeScript Types (DX)
+Password Reset
+    └──requires──> Email Verification System
+
+MFA (TOTP/SMS)
+    └──requires──> Email + Password Auth (can't enable MFA without primary auth)
+
+Organizations/Teams
+    └──requires──> User Authentication
+                       └──enhances──> Route Protection (can protect by role/permission)
+
+Webhooks
+    └──enhances──> Database Sync (optional, but needed to store user data locally)
+
+Social OAuth
+    └──conflicts──> Password Requirements (users signing in via Google don't have passwords)
+
+Custom JWT Templates
+    └──requires──> API Token Strategy (used when calling backend APIs)
 ```
 
-## MVP Recommendation
+### Dependency Notes
 
-**Phase 1: Foundation (Must Have First)**
-1. **Design Token System** — Audit globals.css, expand tokens, add semantic naming
-2. **Light/Dark Theme Infrastructure** — :root + [data-theme="dark"], semantic color system
-3. **CVA Setup** — Install class-variance-authority, establish variant pattern
-4. **Button Component** — First component with full variant system (reference implementation)
+- **Route Protection requires ClerkProvider:** Middleware and `auth()` helpers won't work without ClerkProvider wrapping the app
+- **Sign-In requires Sign-Up first:** New users can't sign in until they've completed registration
+- **Email Verification required for Password Reset:** Can't send reset code without verified email
+- **MFA enhances Email + Password Auth:** MFA is a second factor, requires primary authentication method
+- **Organizations enhance Route Protection:** Can protect routes by role (`org:admin`) or permission
+- **Social OAuth conflicts with Password Requirements:** Google/Microsoft users don't have passwords — handle this edge case in password change UI
+- **Webhooks enhance Database Sync:** If you need user data in your DB (e.g., for foreign keys in orders table), use webhooks to sync `user.created` events
 
-**Phase 2: Core Components (High Usage)**
-5. **Input Components** — Form inputs with validation states, accessibility
-6. **Card/Panel Unification** — Standardize existing card patterns
-7. **Status Badge Refactor** — Migrate to design tokens
-8. **Table Component** — Extract reusable primitives from OrdersTable
+## MVP Definition
 
-**Phase 3: Migration (Incremental)**
-9. **Page-by-Page Refactor** — Orders page → Mill Production → Customers → Settings
-10. **Component Documentation** — Usage guidelines, variants, examples
+### Launch With (v1.4)
 
-**Defer:**
-- **Storybook Integration** — High value but not blocking; add in future milestone
-- **Advanced Timeline Primitives** — ActivityTimeline works; generalize when second use case emerges
-- **Visual Regression Testing** — Important for scale but overkill for v1.3
+Minimum viable authentication — what's needed to protect the dashboard.
 
-**Don't Build:**
-- Custom form validation library (use existing like react-hook-form + zod)
-- Animation system (Tailwind's built-in transitions sufficient)
-- Icon library (use existing like heroicons or lucide-react)
+- [x] **ClerkProvider Setup** — Wrap app in `<ClerkProvider>`, configure API keys
+- [x] **Route Protection (Middleware)** — Protect all dashboard pages, redirect to sign-in if unauthenticated
+- [x] **Email + Password Sign-Up** — Users can create accounts with email verification
+- [x] **Email + Password Sign-In** — Returning users can sign in with credentials
+- [x] **Sign Out** — Users can end their session
+- [x] **User Display in Header** — Show logged-in user's name/avatar with `<UserButton />`
+- [x] **Prebuilt UI Components** — Use Clerk's `<SignIn />` and `<SignUp />` for forms
+- [x] **Password Reset Flow** — Forgot password with email verification code
 
-## Complexity Analysis
+**Rationale:** These features establish basic authentication security. Without them, the dashboard is completely open. This set is the minimum to answer "Is this user allowed to see this data?"
 
-| Feature | Time Estimate | Risk Level | Blockers |
-|---------|---------------|------------|----------|
-| Design Token Audit | 2-4 hours | Low | None |
-| Light/Dark Theme | 4-8 hours | Medium | Requires semantic token migration |
-| CVA Setup + Button | 4-6 hours | Low | None |
-| Input Components | 6-10 hours | Medium | Accessibility testing required |
-| Card Unification | 2-4 hours | Low | May reveal inconsistencies |
-| Table Extraction | 6-8 hours | Medium | Existing OrdersTable tightly coupled |
-| Page Migration | 4-6 hours/page | Medium | Must not break existing functionality |
+### Add After Validation (v1.5+)
 
-**Total MVP Estimate:** 28-46 hours (3.5-6 days)
+Features to add once core authentication is working.
 
-## Dependencies on Existing Tailwind Setup
+- [ ] **MFA (TOTP/Email Codes)** — After launch, if customers request enhanced security or compliance requires it
+- [ ] **Social OAuth (Google/Microsoft)** — If user feedback shows friction with email sign-up, add 1-click social login
+- [ ] **User Profile Management** — Allow users to change password, update email without admin help (reduces support burden)
+- [ ] **Appearance Customization** — Match auth UI to dashboard design tokens (colors, fonts, spacing)
+- [ ] **Session Token for API Auth** — If adding backend API routes that need authentication
+- [ ] **Webhooks for User Sync** — If storing user data in database (e.g., `users` table for foreign keys)
 
-| Dependency | Current State | Required Changes |
-|------------|---------------|------------------|
-| **Tailwind v4** | Installed (Next.js 15 uses v4) | Already using @theme inline; expand token definitions |
-| **globals.css** | Basic tokens exist (colors, shadows, radii) | Add typography scale, spacing system, semantic tokens |
-| **@theme inline** | Present but limited | Expand to full token system with proper naming |
-| **CSS Variables** | Used in :root | Add [data-theme="dark"] variants |
-| **Existing Components** | StatusBadge, FilterPill use tokens partially | Refactor to use semantic tokens consistently |
+**Trigger conditions:**
+- MFA: Customer request or compliance requirement (SOC 2, HIPAA)
+- Social OAuth: User feedback citing sign-up friction
+- User Profile: Support tickets about password/email changes
+- Appearance: Visual design review shows auth UI doesn't match dashboard
+- Session Token: Backend API routes requiring authenticated requests
+- Webhooks: Need to associate users with orders/customers in database
 
-## Migration Strategy
+### Future Consideration (v2+)
 
-**Incremental Adoption (Strangler Fig Pattern):**
+Features to defer until product-market fit is established.
 
-1. **New Features Use System** — All new components built with design system from day one
-2. **Touch Legacy = Migrate** — When editing existing component, refactor to use design tokens
-3. **Page-Level Migration** — Migrate complete pages rather than scattered components
-4. **Shared Components First** — Button, Input, Card have widest impact; migrate early
+- [ ] **Organizations/Teams** — If building multi-tenant B2B (multiple mills, each with their own users)
+- [ ] **Custom JWT Templates** — If implementing granular RBAC (roles: admin, operator, viewer)
+- [ ] **Advanced MFA (WebAuthn/Passkeys)** — Emerging standard, not yet widely adopted
+- [ ] **Passwordless Magic Links** — Replaces passwords entirely, requires user education
+- [ ] **Custom Email Templates** — Rebrand verification emails, requires design and copy work
+- [ ] **Rate Limiting Customization** — Default limits sufficient for most apps, only tune under load
 
-**Risk Mitigation:**
-- Existing tests prevent regressions (104 tests currently passing)
-- TDD for new components (establish tests before refactoring)
-- Design file parity ensures visual consistency maintained
-- Theme switcher can default to light (dark mode = progressive enhancement)
+**Why defer:**
+- Organizations: Major feature, only needed if going multi-tenant
+- Custom JWT: Complexity overkill until RBAC requirements are validated
+- WebAuthn: Cutting edge, browser support still maturing
+- Passwordless: Paradigm shift, requires user behavior change
+- Email Templates: Nice-to-have, default Clerk emails functional
+- Rate Limiting: Premature optimization, defaults handle normal traffic
+
+## Feature Prioritization Matrix
+
+| Feature | User Value | Implementation Cost | Priority |
+|---------|------------|---------------------|----------|
+| Route Protection | HIGH (security baseline) | LOW (middleware config) | P1 |
+| Email + Password Sign-In/Up | HIGH (table stakes) | LOW (prebuilt components) | P1 |
+| Sign Out | HIGH (users need to logout) | LOW (single function call) | P1 |
+| User Display in Header | HIGH (show who's logged in) | LOW (drop-in component) | P1 |
+| Password Reset | HIGH (users forget passwords) | LOW (built-in flow) | P1 |
+| Email Verification | HIGH (security, prevents spam) | LOW (automatic with sign-up) | P1 |
+| Session Management | HIGH (maintain auth state) | LOW (automatic with Next.js) | P1 |
+| User Profile Management | MEDIUM (self-service UX) | LOW (prebuilt component) | P2 |
+| Appearance Customization | MEDIUM (visual consistency) | LOW (CSS props) | P2 |
+| MFA (TOTP/SMS) | MEDIUM (enhanced security) | MEDIUM (setup + UX flows) | P2 |
+| Social OAuth (Google/Microsoft) | MEDIUM (UX convenience) | MEDIUM (provider config) | P2 |
+| Session Token for API Auth | MEDIUM (enables API calls) | LOW (getToken() helper) | P2 |
+| Webhooks for User Sync | MEDIUM (database integration) | MEDIUM (endpoint + verification) | P2 |
+| Organizations/Teams | LOW (future multi-tenant) | HIGH (major feature) | P3 |
+| Custom JWT Templates | LOW (advanced RBAC) | MEDIUM (config + testing) | P3 |
+| Passwordless Magic Links | LOW (niche preference) | LOW (alternative sign-in strategy) | P3 |
+| Advanced MFA (WebAuthn) | LOW (emerging standard) | HIGH (browser compat + UX) | P3 |
+| Custom Email Templates | LOW (branding polish) | MEDIUM (design + copywriting) | P3 |
+
+**Priority key:**
+- P1: Must have for launch (v1.4) — security baseline, table stakes
+- P2: Should have, add when possible (v1.5+) — UX improvements, common requests
+- P3: Nice to have, future consideration (v2+) — advanced features, edge cases
+
+## Integration Patterns
+
+### Next.js 15 App Router Integration
+
+Clerk is purpose-built for Next.js with first-class App Router support:
+
+| Integration Point | How It Works | Complexity |
+|------------------|--------------|------------|
+| Server Components | `auth()` helper returns `{ userId, sessionId }` for server-side auth checks | LOW |
+| Client Components | `useAuth()`, `useUser()` hooks provide reactive auth state | LOW |
+| Middleware | `clerkMiddleware()` protects routes at the edge before page render | LOW |
+| API Routes | `auth()` in route handlers authenticates API requests | LOW |
+| Layouts | `<ClerkProvider>` wraps app in root layout, provides context | LOW |
+
+**Code Example (Minimal Setup):**
+
+```tsx
+// app/layout.tsx
+import { ClerkProvider } from '@clerk/nextjs'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <ClerkProvider>{children}</ClerkProvider>
+      </body>
+    </html>
+  )
+}
+
+// middleware.ts
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+
+export default clerkMiddleware(async (auth, req) => {
+  if (!isPublicRoute(req)) await auth.protect()
+})
+
+export const config = {
+  matcher: ['/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)']
+}
+
+// app/page.tsx (Server Component)
+import { auth } from '@clerk/nextjs/server'
+
+export default async function Home() {
+  const { userId } = await auth()
+  return <div>Welcome, user {userId}</div>
+}
+
+// components/Header.tsx (Client Component)
+'use client'
+import { UserButton, SignInButton, Show } from '@clerk/nextjs'
+
+export function Header() {
+  return (
+    <header>
+      <Show when="signed-out">
+        <SignInButton />
+      </Show>
+      <Show when="signed-in">
+        <UserButton />
+      </Show>
+    </header>
+  )
+}
+```
+
+### Existing Dashboard Integration Points
+
+Based on PROJECT.md, the CGM Dashboard has these existing features:
+
+| Existing Feature | Auth Integration | Notes |
+|-----------------|------------------|-------|
+| Orders Table | Filter by user's mill/permissions | Could add `userId` to order data via webhooks, filter by org membership |
+| Customer List | Filter by user's assigned customers | Could add `userId` to customer records, implement RBAC |
+| Settings Page | Per-user preferences | Could store theme/density in Clerk user metadata instead of localStorage |
+| Header | User display + sign-out | Replace mock user with `<UserButton showName />` component |
+| Navigation | Public vs authenticated routes | Use middleware to protect `/orders`, `/customers`, `/settings`, allow `/sign-in` |
+
+**Migration strategy:**
+1. Add ClerkProvider to root layout
+2. Add middleware to protect all routes except `/sign-in`, `/sign-up`
+3. Replace header mock user with `<UserButton />`
+4. Create `/sign-in` and `/sign-up` routes with Clerk components
+5. Test: unauthenticated users redirected to sign-in
+6. Test: signed-in users can access dashboard
+
+## Competitive Comparison
+
+| Feature | Clerk | Auth0 | NextAuth.js |
+|---------|-------|-------|-------------|
+| Prebuilt React Components | ✅ `<SignIn />`, `<UserButton />` | ⚠️ SDK, not components | ❌ DIY forms |
+| Next.js 15 App Router Support | ✅ Native, first-class | ⚠️ Works, not optimized | ✅ Native |
+| Email + Password Auth | ✅ Built-in | ✅ Built-in | ✅ Built-in |
+| Social OAuth Providers | ✅ 20+ providers | ✅ 30+ providers | ✅ 40+ providers |
+| MFA (TOTP/SMS/Email) | ✅ All methods | ✅ All methods + biometrics | ❌ Custom implementation |
+| Organizations/Teams | ✅ Native RBAC | ✅ Advanced RBAC | ❌ Custom implementation |
+| Webhooks | ✅ User events | ✅ Extensive events | ❌ Not applicable |
+| Pricing (10K MAU) | $25/mo | $240/mo (15x more) | Free (self-hosted costs) |
+| Setup Time | 5-10 minutes | 30-60 minutes | 60-120 minutes |
+| Customization | Theme + CSS | Full control | Full control |
+| Session Management | Auto-refresh (60s) | Custom config | Custom config |
+| Compliance | SOC 2 Type II | SOC 2, HIPAA, ISO 27001 | Self-managed |
+
+**Verdict for CGM Dashboard (v1.4):**
+- **Choose Clerk** — Best fit for Next.js 15, prebuilt components match "Design → Infrastructure → Build" approach, fast setup aligns with milestone velocity
+- **Not Auth0** — Overkill for single-tenant dashboard, 15x more expensive, enterprise features not needed
+- **Not NextAuth.js** — Requires building UI from scratch, defeats purpose of using prebuilt components, more maintenance burden
+
+*Sources:*
+- [Clerk vs Auth0 for Next.js](https://clerk.com/articles/clerk-vs-auth0-for-nextjs)
+- [Full-Stack Authentication Comparison](https://www.c-sharpcorner.com/article/full-stack-authentication-clerk-vs-auth0-vs-nextauth-compared/)
+- [Next.js Authentication Showdown 2025](https://medium.com/@sagarsangwan/next-js-authentication-showdown-nextauth-free-databases-vs-clerk-vs-auth0-in-2025-e40b3e8b0c45)
+
+## Production Considerations
+
+### Rate Limits
+
+Clerk enforces rate limits to prevent abuse:
+
+| Endpoint | Limit (Development) | Limit (Production) | Scope |
+|----------|-------------------|-------------------|-------|
+| Backend API (general) | 100 req/10s | 1000 req/10s | Per Secret Key |
+| Frontend Sign-In Create | 5 req/10s | 5 req/10s | Per IP address |
+| Frontend Sign-In Attempt | 3 req/10s | 3 req/10s | Per IP address |
+| Frontend Sign-Up Create | 5 req/10s | 5 req/10s | Per IP address |
+| Invitations (single) | 100 req/hour | 100 req/hour | Per instance |
+| Organization Invitations | 250 req/hour | 250 req/hour | Per org |
+
+**Implications for CGM Dashboard:**
+- Normal login traffic won't hit limits (5 sign-ins per 10s = 1800/hour)
+- Backend API calls for user lookup in routes covered by 1000/10s limit
+- If adding organization invitations (future), batch endpoint limited to 50/hour
+
+*Source: [Clerk System Limits](https://github.com/clerk/clerk-docs/blob/main/docs/guides/how-clerk-works/system-limits.mdx)*
+
+### Environment Management
+
+Clerk uses separate Development and Production instances:
+
+| Instance Type | Purpose | Rate Limits | Security |
+|--------------|---------|-------------|----------|
+| Development | Local/staging testing | 100 req/10s | Relaxed (localhost allowed) |
+| Production | Live app | 1000 req/10s | Strict (must associate production domain) |
+
+**Common deployment mistake:** Forgetting to change API keys from development to production keys. Use environment variables:
+
+```bash
+# .env.local (development)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxx
+CLERK_SECRET_KEY=sk_test_xxx
+
+# .env.production
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_xxx
+CLERK_SECRET_KEY=sk_live_xxx
+```
+
+*Source: [Deploying to Production](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/deployment/production.mdx)*
+
+### Security Best Practices
+
+Based on industry research and Clerk documentation:
+
+| Practice | Why | How (Clerk) |
+|----------|-----|-------------|
+| Email Verification Required | Prevents fake accounts, spam | Automatic in Clerk sign-up flow |
+| Password Minimum 12 Characters | Balances security and usability (NIST guidance) | Configure in Clerk Dashboard → User & Authentication → Email, Phone, Username → Password settings |
+| No Password Reuse Across Sites | One breach compromises all accounts | Educate users, consider password manager integration |
+| Compromised Password Detection | Prevent leaked passwords from breaches | Automatic in Clerk, falls back to email code |
+| MFA for Admin/Sensitive Actions | Defense against credential theft | Enable MFA strategies in Dashboard |
+| Generic Login Error Messages | Prevent account enumeration | Clerk returns generic "Invalid credentials" |
+| Session Auto-Refresh | Balance security and UX | Clerk refreshes JWT every 60s automatically |
+| No Credentials in Logs | Prevent leak via log aggregation | Clerk handles auth, never log passwords/tokens in app code |
+| HTTPS Only in Production | Prevent MITM attacks on credentials | Clerk enforces HTTPS for production domains |
+
+*Sources:*
+- [Google Cloud Account Authentication Best Practices](https://cloud.google.com/blog/products/identity-security/account-authentication-and-password-management-best-practices)
+- [Password Reset Best Practices (Authgear)](https://www.authgear.com/post/authentication-security-password-reset-best-practices-and-more/)
+- [Password Management Best Practices (LoginRadius)](https://www.loginradius.com/blog/identity/password-management-best-practices)
 
 ## Sources
 
-**Design System Patterns:**
-- [Managing Global Styles in React with Design Tokens](https://www.uxpin.com/studio/blog/managing-global-styles-in-react-with-design-tokens/)
-- [How we Use Design Tokens in React](https://blog.bitsrc.io/how-we-use-design-tokens-in-react-5396dd897ace)
-- [Implementing Your Design System in React: Best Practices and Patterns](https://www.mindfulchase.com/deep-dives/design-system-framework/implementing-your-design-system-in-react-best-practices-and-patterns.html)
+### High Confidence (Context7 + Official Docs)
+- [Clerk Documentation (Context7)](https://context7.com/clerk/clerk-docs/llms.txt) — Primary source for all Clerk features
+- [Clerk Email/Password Authentication Flow](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/custom-flows/authentication/email-password.mdx)
+- [Clerk Next.js Middleware Reference](https://github.com/clerk/clerk-docs/blob/main/docs/reference/nextjs/clerk-middleware.mdx)
+- [Clerk useAuth() Hook Documentation](https://github.com/clerk/clerk-docs/blob/main/docs/_partials/hooks/use-auth.mdx)
+- [Clerk Multi-Factor Authentication Guide](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/custom-flows/authentication/multi-factor-authentication.mdx)
+- [Clerk Organizations Overview](https://github.com/clerk/clerk-docs/blob/main/docs/guides/organizations/overview.mdx)
+- [Clerk Webhooks Sync Guide](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/webhooks/syncing.mdx)
+- [Clerk System Limits](https://github.com/clerk/clerk-docs/blob/main/docs/guides/how-clerk-works/system-limits.mdx)
+- [Clerk Production Deployment](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/deployment/production.mdx)
 
-**Tailwind CSS Architecture:**
-- [Tailwind CSS Best Practices & Design System Patterns](https://dev.to/frontendtoolstech/tailwind-css-best-practices-design-system-patterns-54pi)
-- [Scaling a design system with Tailwind CSS](https://nearform.com/digital-community/scaling-a-design-system-with-tailwind-css/)
-- [Tailwind CSS Patterns That Scale: CVA, Design Tokens, Dark Mode](https://dev.to/whoffagents/tailwind-css-patterns-that-scale-cva-design-tokens-dark-mode-and-component-architecture-25d4)
+### Medium Confidence (Web Search with Multiple Sources)
+- [Clerk vs Auth0 for Next.js](https://clerk.com/articles/clerk-vs-auth0-for-nextjs)
+- [Full-Stack Authentication: Clerk vs Auth0 vs NextAuth Compared](https://www.c-sharpcorner.com/article/full-stack-authentication-clerk-vs-auth0-vs-nextauth-compared/)
+- [Next.js Authentication Showdown 2025](https://medium.com/@sagarsangwan/next-js-authentication-showdown-nextauth-free-databases-vs-clerk-vs-auth0-in-2025-e40b3e8b0c45)
+- [Account Authentication Best Practices (Google Cloud)](https://cloud.google.com/blog/products/identity-security/account-authentication-and-password-management-best-practices)
+- [Password Reset Best Practices (Authgear)](https://www.authgear.com/post/authentication-security-password-reset-best-practices-and-more/)
+- [Password Management Best Practices (LoginRadius)](https://www.loginradius.com/blog/identity/password-management-best-practices)
 
-**Essential Components:**
-- [UI Component Library Checklist: Essential Elements](https://www.uxpin.com/studio/blog/ui-component-library-checklist-essential-elements/)
-- [Component checklist – Carbon Design System](https://carbondesignsystem.com/contributing/component-checklist/)
-- [10 Essential Design System Components Every Team Needs](https://www.uxpin.com/studio/blog/design-system-components/)
-
-**Tailwind v4 Design Tokens:**
-- [Tailwind CSS v4.0 - Official Documentation](https://tailwindcss.com/blog/tailwindcss-v4)
-- [Tailwind CSS 4 @theme: The Future of Design Tokens](https://medium.com/@sureshdotariya/tailwind-css-4-theme-the-future-of-design-tokens-at-2025-guide-48305a26af06)
-- [Design Tokens That Scale in 2026 (Tailwind v4 + CSS Variables)](https://www.maviklabs.com/blog/design-tokens-tailwind-v4-2026/)
-- [Theme variables - Core concepts - Tailwind CSS](https://tailwindcss.com/docs/theme)
-
-**Component Architecture:**
-- [shadcn/ui - The Foundation for your Design System](https://ui.shadcn.com/)
-- [Radix UI vs. ShadCN: Key Differences Explained](https://www.swhabitation.com/blogs/what-is-the-difference-between-radix-ui-and-shadcn)
-- [Class Variance Authority](https://cva.style/docs)
-- [React Component Reusability: Class Variance Authority (CVA)](https://medium.com/@tushar_chavan/react-component-reusability-class-variance-authority-cva-5e7e98d61194)
-
-**Variants & States:**
-- [How to use component variants to scale your design system](https://penpot.app/blog/how-to-use-component-variants-to-scale-your-design-system/)
-- [Component Variants in Design Systems: Naming, Organization, and Scale](https://www.thesigma.co/journal/component-variants-design-system)
-- [Design system best practices: Components and documentation](https://www.designsystemscollective.com/design-system-best-practices-components-and-documentation-bdb020e02172)
-
-**Theming & Dark Mode:**
-- [Adding Dark Mode via CSS Variables](https://www.magicpatterns.com/blog/implementing-dark-mode)
-- [Dark Mode and CSS Variables](https://betterprogramming.pub/dark-mode-and-css-variables-ed6dc250232c)
-- [Dark Mode Design Systems: A Complete Guide to Patterns, Tokens, and Hierarchy](https://muz.li/blog/dark-mode-design-systems-a-complete-guide-to-patterns-tokens-and-hierarchy/)
-- [Dark mode - Core concepts - Tailwind CSS](https://tailwindcss.com/docs/dark-mode)
-
-**Typography & Spacing:**
-- [Spacing, grids, and layouts](https://www.designsystems.com/space-grids-and-layouts/)
-- [Design Systems Typography Guide](https://www.designsystems.com/typography-guides/)
-- [Spacing best practices (8pt grid system)](https://cieden.com/book/sub-atomic/spacing/spacing-best-practices)
-- [Carbon Design System - Spacing](https://carbondesignsystem.com/elements/spacing/overview/)
-
-**Accessibility:**
-- [Accessibility tests | Storybook docs](https://storybook.js.org/docs/writing-tests/accessibility-testing)
-- [Open Source Accessible React Component Library: A11Y Pros Design System](https://a11ypros.com/blog/a11y-design-system-open-source)
-- [Checklist - The A11Y Project](https://www.a11yproject.com/checklist/)
-- [Accessible UI Component Libraries Roundup](https://www.digitala11y.com/accessible-ui-component-libraries-roundup/)
-
-**Migration Strategy:**
-- [Incremental migration approaches for legacy applications](https://circleci.com/blog/incremental-migration-approaches-for-legacy-applications/)
-- [How Teams Incrementally Modernize Large Frontend Codebases](https://altersquare.io/how-teams-incrementally-modernize-large-frontend-codebases/)
-- [How to Implement a Design System: Reasons, Approach, and Migration Path](https://www.designsystemscollective.com/how-to-implement-a-design-system-reasons-approach-and-migration-path-051c41734caf)
-- [The "Invisible Rewrite": How Leading Companies Modernize Systems Without Rebuilding Everything](https://www.appstudio.ca/blog/legacy-system-modernization-without-rebuilding/)
-
-**Anti-Patterns:**
-- [Anti-patterns You Should Avoid in Your Code](https://www.freecodecamp.org/news/antipatterns-to-avoid-in-code/)
-- [10 Most Common Anti-Patterns Every Software Engineer Must Avoid](https://bariscimen.medium.com/10-most-common-anti-patterns-every-software-engineer-must-avoid-182091438c2b)
-- [Anti-Patterns In Software Architecture: 5 Common Mistakes And How To Avoid Them](https://www.itar.pro/anti-patterns-in-software-architecture/)
+---
+*Feature research for: Clerk Authentication for Next.js Dashboard*
+*Researched: 2026-05-09*

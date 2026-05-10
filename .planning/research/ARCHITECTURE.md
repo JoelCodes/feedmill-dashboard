@@ -1,845 +1,794 @@
-# Architecture Research: Design System Integration
+# Architecture Research: Clerk Authentication Integration
 
-**Domain:** Design system and theming for Next.js/Tailwind dashboard
-**Researched:** 2026-05-07
+**Domain:** Authentication for Next.js 15 App Router dashboard
+**Researched:** 2026-05-09
 **Confidence:** HIGH
 
-## Standard Architecture
+## Standard Clerk Architecture for Next.js App Router
 
 ### System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       Design System Layer                        │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
-│  │  Tokens  │  │  Theme   │  │  Utils   │  │   Docs   │        │
-│  │   CSS    │  │  Config  │  │   (CVA)  │  │ (.pen)   │        │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──────────┘        │
-│       │             │             │                              │
-│       └─────────────┴─────────────┘                              │
-│                     │                                            │
-├─────────────────────┴────────────────────────────────────────────┤
-│                    Component Library Layer                       │
-├─────────────────────────────────────────────────────────────────┤
-│  Primitives (Atoms)          Composites (Molecules)             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
-│  │  Button  │  │  Input   │  │   Card   │  │  Table   │        │
-│  │  Badge   │  │  Select  │  │  Panel   │  │Timeline  │        │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘        │
-│       │             │             │             │                │
-├───────┴─────────────┴─────────────┴─────────────┴────────────────┤
-│                     Page-Level Components                        │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   Sidebar    │  │    Header    │  │  KPICards    │          │
-│  │ FilterPills  │  │CustomerDetail│  │OrdersTable   │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-├─────────────────────────────────────────────────────────────────┤
-│                          App Router Pages                        │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
-│  │  orders  │  │customers │  │mill-prod │  │ settings │        │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘        │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Application Layer                         │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
+│  │ Pages   │  │ Layouts │  │ API     │  │ Server  │        │
+│  │ (RSC)   │  │ (RSC)   │  │ Routes  │  │ Actions │        │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │
+│       │            │            │            │              │
+├───────┴────────────┴────────────┴────────────┴──────────────┤
+│                    Auth Abstraction Layer                    │
+├─────────────────────────────────────────────────────────────┤
+│  Server-side:  auth()  currentUser()  auth.protect()        │
+│  Client-side:  useAuth()  useUser()  <UserButton/>          │
+│  Components:   <SignedIn/>  <SignedOut/>  <Show/>           │
+├─────────────────────────────────────────────────────────────┤
+│                    Middleware Layer                          │
+├─────────────────────────────────────────────────────────────┤
+│  clerkMiddleware() → Route Protection → Cookie Check        │
+│  createRouteMatcher() → Pattern-based auth rules            │
+├─────────────────────────────────────────────────────────────┤
+│                    Provider Layer                            │
+├─────────────────────────────────────────────────────────────┤
+│  <ClerkProvider> in RootLayout (app/layout.tsx)             │
+│  - Wraps entire app                                          │
+│  - Makes auth context available globally                     │
+│  - Handles sign-in/sign-up/sign-out redirects               │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
 
 | Component | Responsibility | Typical Implementation |
 |-----------|----------------|------------------------|
-| **Design Tokens** | Single source of truth for colors, spacing, typography, shadows | CSS custom properties in `@theme` block (Tailwind v4) |
-| **Theme Config** | Light/dark mode variants, semantic token aliases | CSS variables with `[data-theme]` selectors |
-| **Variant Utils** | Type-safe component variants with Tailwind classes | Class Variance Authority (CVA) |
-| **Primitives** | Atomic UI elements: buttons, inputs, badges, typography | Reusable components with CVA variants |
-| **Composites** | Molecules combining primitives: cards, panels, tables, forms | Components consuming primitives + custom logic |
-| **Page Components** | Feature-specific complex components | Domain-specific implementations |
+| `middleware.ts` | Route protection, auth checks before page load | `clerkMiddleware()` with `createRouteMatcher()` for pattern-based protection |
+| `app/layout.tsx` | Global auth context provider | `<ClerkProvider>` wrapping children, provides auth to entire app |
+| `app/sign-in/[[...sign-in]]/page.tsx` | Sign-in UI | `<SignIn />` component with catch-all route for nested paths |
+| `app/sign-up/[[...sign-up]]/page.tsx` | Sign-up UI | `<SignUp />` component with catch-all route for nested paths |
+| Server Components | Auth state access, user data fetching | `auth()` for auth state, `currentUser()` for user object |
+| Client Components | Interactive auth UI, conditional rendering | `useAuth()`, `useUser()`, `<SignedIn>`, `<SignedOut>`, `<UserButton>` |
+| API Routes | Protected endpoints, auth verification | `auth()` helper to check authentication, return 401 if unauthorized |
+| Server Actions | Server-side mutations with auth | `auth()` and `currentUser()` to validate user before executing |
 
-## Recommended Project Structure
+## Recommended Project Structure for CGM Dashboard
 
-### Current State (Existing)
 ```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── layout.tsx          # Root layout
-│   ├── globals.css         # CSS tokens (existing but will expand)
-│   ├── orders/page.tsx
-│   ├── customers/[id]/page.tsx
-│   └── mill-production/page.tsx
-├── components/             # Mixed component levels (will reorganize)
-│   ├── FilterPill.tsx      # Has color config (to migrate)
-│   ├── KPICard.tsx         # Hardcoded styles (to migrate)
-│   ├── OrdersTable.tsx     # Page-level component
-│   ├── CustomerDetailHeader.tsx
-│   └── ui/                 # Partial UI separation exists
-│       └── StatusBadge.tsx # Has STATUS_CONFIG (to migrate)
-├── types/                  # TypeScript types
-├── services/               # Mock data services
-└── hooks/                  # React hooks
-```
-
-### Target Structure (After Design System)
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── layout.tsx          # Root layout with theme provider
-│   ├── globals.css         # Expanded design tokens (@theme)
-│   └── [pages]/            # Unchanged
-│
-├── design-system/          # NEW: Design system foundation
-│   ├── tokens/             # Design token definitions
-│   │   ├── colors.css      # Color tokens (including light/dark)
-│   │   ├── typography.css  # Font sizes, weights, line-heights
-│   │   ├── spacing.css     # Margin, padding scales
-│   │   ├── shadows.css     # Box shadows
-│   │   └── index.css       # Aggregates all tokens
-│   │
-│   ├── theme/              # Theming system
-│   │   ├── ThemeProvider.tsx  # Client component for theme switching
-│   │   ├── useTheme.ts     # Hook for theme state
-│   │   └── themes.css      # Light/dark theme overrides
-│   │
-│   └── utils/              # Design system utilities
-│       ├── cn.ts           # Tailwind class merge utility
-│       └── variants.ts     # CVA helper functions
-│
-├── components/             # Reorganized component library
-│   ├── primitives/         # Atomic components (NEW)
-│   │   ├── Button/
-│   │   │   ├── Button.tsx
-│   │   │   ├── Button.test.tsx
-│   │   │   └── index.ts
-│   │   ├── Input/
-│   │   ├── Badge/
-│   │   ├── StatusBadge/    # MIGRATED from ui/
-│   │   └── Typography/     # NEW: Text, Heading components
-│   │
-│   ├── composites/         # Molecule components (NEW)
-│   │   ├── Card/
-│   │   ├── Panel/
-│   │   ├── FormField/      # Label + Input + Error
-│   │   ├── FilterPill/     # MIGRATED from root
-│   │   └── Table/          # Table primitives
-│   │
-│   ├── patterns/           # Page-level components (RENAMED)
-│   │   ├── KPICard.tsx     # MIGRATED from root
-│   │   ├── OrdersTable.tsx
-│   │   ├── CustomerDetailHeader.tsx
-│   │   ├── ActivityTimeline.tsx
-│   │   ├── Sidebar.tsx
-│   │   └── Header.tsx
-│   │
-│   └── ui/                 # DEPRECATED - components migrated
-│       └── skeletons/      # Keep loading states here temporarily
-│
-├── types/                  # TypeScript types (unchanged)
-├── services/               # Mock data services (unchanged)
-└── hooks/                  # React hooks (unchanged)
+/Users/joel/Desktop/Projects/cgm-dashboard/
+├── src/
+│   ├── middleware.ts                    # NEW - Clerk middleware for route protection
+│   ├── app/
+│   │   ├── layout.tsx                   # MODIFIED - Add ClerkProvider wrapper
+│   │   ├── sign-in/
+│   │   │   └── [[...sign-in]]/
+│   │   │       └── page.tsx             # NEW - Clerk SignIn component
+│   │   ├── sign-up/
+│   │   │   └── [[...sign-up]]/
+│   │   │       └── page.tsx             # NEW - Clerk SignUp component
+│   │   ├── page.tsx                     # EXISTING - Protected dashboard home
+│   │   ├── orders/
+│   │   │   └── page.tsx                 # EXISTING - Protected orders page
+│   │   ├── mill-production/
+│   │   │   └── page.tsx                 # EXISTING - Protected production page
+│   │   ├── customers/
+│   │   │   ├── page.tsx                 # EXISTING - Protected customers list
+│   │   │   └── [id]/
+│   │   │       └── page.tsx             # EXISTING - Protected customer detail
+│   │   ├── inventory/
+│   │   │   └── page.tsx                 # EXISTING - Protected inventory page
+│   │   ├── shipments/
+│   │   │   └── page.tsx                 # EXISTING - Protected shipments page
+│   │   └── settings/
+│   │       └── page.tsx                 # EXISTING - Protected settings page
+│   ├── components/
+│   │   ├── Header.tsx                   # MODIFIED - Add UserButton, remove static user
+│   │   ├── Sidebar.tsx                  # EXISTING - No changes needed
+│   │   └── ui/                          # EXISTING - Design system components
+│   ├── services/                        # EXISTING - Mock data services (no changes)
+│   ├── hooks/                           # EXISTING - Custom hooks
+│   └── types/                           # EXISTING - TypeScript types
+├── .env.local                           # NEW - Clerk API keys (gitignored)
+├── .env.example                         # NEW - Template for required env vars
+└── package.json                         # MODIFIED - Add @clerk/nextjs dependency
 ```
 
 ### Structure Rationale
 
-- **design-system/:** Centralizes all design system concerns (tokens, theme, utilities) in one place. Makes it easy to extract into a separate package later if needed. Follows industry standard of separating design system from application code.
-
-- **components/primitives/:** Atomic design principle - smallest reusable units. Each primitive has its own folder with component, tests, and barrel export. These components are purely presentational with no business logic. Uses CVA for type-safe variants.
-
-- **components/composites/:** Molecules combining primitives. More complex than primitives but still generic enough to reuse across pages. Examples: Card (primitive elements + layout), FilterPill (badge + counter), FormField (label + input + error message).
-
-- **components/patterns/:** Page-level components with business logic or domain-specific implementations. These consume primitives and composites but are less likely to be reused across different pages. Can access services, hooks, and contain complex state.
-
-- **Folder-per-component pattern:** Each significant component gets its own folder with index.ts barrel export. Keeps tests, stories (if using Storybook), and related files colocated. Makes components easy to move or extract.
+- **`middleware.ts` in `src/`:** Follows existing project convention of using `src/` directory. Must be at root of `src/` for Next.js to detect it.
+- **Sign-in/Sign-up catch-all routes:** `[[...sign-in]]` syntax allows Clerk to handle nested auth flows (e.g., password reset, verification) at the same route.
+- **ClerkProvider in root layout:** Provides auth context to entire app tree, enabling all server/client components to access auth state.
+- **Protected pages remain unchanged:** Pages don't need auth logic - middleware handles protection. Pages can optionally use `auth()` or `currentUser()` for user-specific data.
+- **Header modification only:** Only component needing changes is Header to display user info and sign-out. Sidebar and other UI components work as-is.
+- **Services layer untouched:** Mock data services don't need auth - real API calls in future can use `getToken()` for authenticated requests.
 
 ## Architectural Patterns
 
-### Pattern 1: Tailwind v4 @theme with CSS Variables
+### Pattern 1: Middleware-Based Route Protection
 
-**What:** Define design tokens as CSS custom properties using the `@theme` directive. Tailwind automatically generates utility classes AND exposes tokens as runtime CSS variables.
+**What:** Protect all dashboard routes using middleware with pattern matching, redirecting unauthenticated users to sign-in.
 
-**When to use:** Always for design systems. This is the recommended Tailwind v4 approach for design tokens.
-
-**Trade-offs:**
-- ✅ Single source of truth for design values
-- ✅ Type-safe utilities auto-generated
-- ✅ Runtime access via CSS variables
-- ✅ Theming support via CSS variable overrides
-- ⚠️ Requires Tailwind v4 (project already uses it)
-
-**Example:**
-```css
-/* app/globals.css */
-@import "tailwindcss";
-
-@theme {
-  /* Colors - generates bg-primary, text-primary, etc. */
-  --color-primary: #4fd1c5;
-  --color-primary-dark: #38b2ac;
-
-  /* Status colors - semantic naming */
-  --color-status-success: #48bb78;
-  --color-status-warning: #f59e0b;
-  --color-status-error: #e53e3e;
-
-  /* Spacing - generates gap-*, p-*, m-* utilities */
-  --spacing-card: 18px;
-  --spacing-section: 24px;
-
-  /* Typography - generates text-* utilities */
-  --text-label: 0.6875rem; /* 11px */
-  --text-body: 0.9375rem;  /* 15px */
-
-  /* Shadows - generates shadow-* utilities */
-  --shadow-card: 0 3.5px 5px rgba(0, 0, 0, 0.03);
-
-  /* Border radius - generates rounded-* utilities */
-  --radius-sm: 6px;
-  --radius-card: 12px;
-}
-
-/* These are now available as utilities AND CSS variables */
-/* Utility: class="bg-primary text-body shadow-card" */
-/* Variable: style={{ background: 'var(--color-primary)' }} */
-```
-
-### Pattern 2: Semantic Theming with CSS Variable Overrides
-
-**What:** Separate primitive tokens (raw values) from semantic tokens (meaningful names). Use data attributes to override semantic tokens for theming.
-
-**When to use:** When implementing light/dark mode or multiple theme variants.
+**When to use:** When you want to protect entire sections of your app (all routes except sign-in/sign-up).
 
 **Trade-offs:**
-- ✅ Enables theming without changing component code
-- ✅ Clear semantic meaning (bg-surface vs bg-white)
-- ✅ User preference detection with prefers-color-scheme
-- ⚠️ Requires more CSS setup than single theme
-- ⚠️ Need consistent semantic naming convention
+- ✓ Centralized auth logic - single source of truth for protected routes
+- ✓ Runs before page render - no flash of protected content
+- ✓ Edge runtime - fast cookie-based checks
+- ✗ Cannot access database in middleware (Edge runtime limitation)
+- ✗ Broad matchers required to avoid "auth() called but no middleware" errors
 
 **Example:**
-```css
-/* design-system/theme/themes.css */
-@import "tailwindcss";
+```typescript
+// src/middleware.ts
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-/* Light theme (default in :root) */
-@theme {
-  --color-bg-page: #f8f9fa;
-  --color-bg-card: #ffffff;
-  --color-bg-elevated: #ffffff;
-  --color-text-primary: #2d3748;
-  --color-text-secondary: #a0aec0;
-  --color-border: #e2e8f0;
-}
+// Define public routes (everything else is protected)
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
 
-/* Dark theme overrides */
-[data-theme="dark"] {
-  --color-bg-page: #1a202c;
-  --color-bg-card: #2d3748;
-  --color-bg-elevated: #4a5568;
-  --color-text-primary: #f7fafc;
-  --color-text-secondary: #a0aec0;
-  --color-border: #4a5568;
-
-  /* Status colors might stay the same or adjust for contrast */
-  --color-status-success: #68d391; /* Lighter for dark bg */
-  --color-status-warning: #fbd38d;
-  --color-status-error: #fc8181;
-}
-
-/* Respect user system preference */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-bg-page: #1a202c;
-    --color-bg-card: #2d3748;
-    /* ...other dark mode tokens */
+export default clerkMiddleware(async (auth, req) => {
+  // Protect all routes except public ones
+  if (!isPublicRoute(req)) {
+    await auth.protect()
   }
+})
+
+export const config = {
+  matcher: [
+    // Skip Next.js internals and static files
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+    // Always run for Clerk frontend API routes
+    '/__clerk/(.*)',
+  ],
 }
 ```
 
-```tsx
-// design-system/theme/ThemeProvider.tsx
-'use client';
+### Pattern 2: Server Component Auth Access
 
-import { createContext, useContext, useEffect, useState } from 'react';
+**What:** Access auth state and user data in React Server Components using `auth()` and `currentUser()`.
 
-type Theme = 'light' | 'dark' | 'system';
-
-const ThemeContext = createContext<{
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-}>({ theme: 'system', setTheme: () => {} });
-
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system');
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-
-    const effectiveTheme = theme === 'system' ? systemTheme : theme;
-    root.setAttribute('data-theme', effectiveTheme);
-  }, [theme]);
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-}
-
-export const useTheme = () => useContext(ThemeContext);
-```
-
-### Pattern 3: Class Variance Authority (CVA) for Component Variants
-
-**What:** Type-safe component variant system using CVA to compose Tailwind classes with proper defaults, compound variants, and TypeScript inference.
-
-**When to use:** For all primitive and composite components with multiple visual variants (size, color, state).
+**When to use:** When server components need user-specific data or want to show personalized content.
 
 **Trade-offs:**
-- ✅ Type-safe variant props with autocomplete
-- ✅ Compound variants for complex combinations
-- ✅ Default variants documented in code
-- ✅ Works perfectly with Tailwind utilities
-- ⚠️ Small runtime overhead (negligible)
-- ⚠️ Adds dependency (~3kb gzipped)
+- ✓ No client-side JavaScript required
+- ✓ User data available at render time
+- ✓ Can be used with database queries
+- ✗ Async functions only (must await)
+- ✗ Server Components only (not in client components)
 
 **Example:**
-```tsx
-// components/primitives/Button/Button.tsx
-import { cva, type VariantProps } from 'class-variance-authority';
+```typescript
+// src/app/page.tsx (Server Component)
+import { auth, currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 
-const buttonVariants = cva(
-  // Base classes (always applied)
-  'inline-flex items-center justify-center rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-  {
-    variants: {
-      variant: {
-        primary: 'bg-primary text-white hover:bg-primary-dark',
-        secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
-        outline: 'border-2 border-primary text-primary hover:bg-primary/10',
-        ghost: 'text-gray-800 hover:bg-gray-100',
-        danger: 'bg-error text-white hover:bg-error-dark',
-      },
-      size: {
-        sm: 'px-2.5 py-1.5 text-sm',
-        md: 'px-4 py-2 text-base',
-        lg: 'px-6 py-3 text-lg',
-      },
-      fullWidth: {
-        true: 'w-full',
-      },
-    },
-    compoundVariants: [
-      // When primary + large, make text uppercase
-      {
-        variant: 'primary',
-        size: 'lg',
-        className: 'uppercase',
-      },
-    ],
-    defaultVariants: {
-      variant: 'primary',
-      size: 'md',
-    },
+export default async function DashboardPage() {
+  const { userId } = await auth()
+
+  // Optional: redundant check if middleware already protects route
+  if (!userId) {
+    redirect('/sign-in')
   }
-);
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  isLoading?: boolean;
-}
-
-export function Button({
-  className,
-  variant,
-  size,
-  fullWidth,
-  isLoading,
-  disabled,
-  children,
-  ...props
-}: ButtonProps) {
-  return (
-    <button
-      className={buttonVariants({ variant, size, fullWidth, className })}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      {isLoading ? 'Loading...' : children}
-    </button>
-  );
-}
-
-// Usage with full TypeScript support
-<Button variant="primary" size="lg">Click me</Button>
-<Button variant="outline" size="sm" fullWidth>Submit</Button>
-```
-
-### Pattern 4: Migration Strategy - Strangler Fig Pattern
-
-**What:** Incrementally refactor existing components to use the design system without breaking existing pages. Build new primitives alongside old code, then gradually replace usage.
-
-**When to use:** When migrating an existing codebase to a design system (current situation).
-
-**Trade-offs:**
-- ✅ Low risk - no big bang rewrites
-- ✅ Delivers value incrementally
-- ✅ Can validate design system with real usage
-- ⚠️ Temporary duplication of components
-- ⚠️ Requires discipline to complete migration
-
-**Example:**
-```tsx
-// PHASE 1: Build primitive alongside existing code
-// components/primitives/Badge/Badge.tsx (NEW)
-const badgeVariants = cva('inline-flex items-center gap-1 rounded-lg px-2.5 py-1', {
-  variants: {
-    status: {
-      success: 'bg-success-light text-success-dark',
-      warning: 'bg-warning-light text-warning',
-      error: 'bg-error-light text-error',
-      info: 'bg-info-light text-info',
-      neutral: 'bg-gray-100 text-gray-600',
-    },
-    size: {
-      sm: 'text-[10px]',
-      md: 'text-xs',
-    },
-    showDot: {
-      true: 'gap-1.5',
-      false: 'gap-1',
-    },
-  },
-  defaultVariants: { status: 'neutral', size: 'sm', showDot: false },
-});
-
-export function Badge({ status, size, showDot, children }: BadgeProps) {
-  return (
-    <div className={badgeVariants({ status, size, showDot })}>
-      {showDot && <div className="h-1.5 w-1.5 rounded-full bg-current" />}
-      {children}
-    </div>
-  );
-}
-
-// PHASE 2: Create adapter for existing StatusBadge
-// components/ui/StatusBadge.tsx (MODIFIED)
-import { Badge } from '@/components/primitives/Badge';
-import { OrderStatus } from '@/types/order';
-
-const STATUS_TO_BADGE_MAP: Record<OrderStatus, ComponentProps<typeof Badge>['status']> = {
-  'Pending': 'neutral',
-  'Producing': 'warning',
-  'Ready': 'info',
-  'In Transit': 'info',
-  'Complete': 'success',
-};
-
-export default function StatusBadge({ status }: { status: OrderStatus }) {
-  return (
-    <Badge status={STATUS_TO_BADGE_MAP[status]} size="sm" showDot>
-      {status}
-    </Badge>
-  );
-}
-// Existing code continues to work, now uses design system under the hood
-
-// PHASE 3: New code uses Badge primitive directly
-// components/patterns/CustomerDetailHeader.tsx (NEW CODE)
-<Badge status="warning" size="md" showDot>Low Inventory</Badge>
-```
-
-### Pattern 5: Composite Components with Compound Pattern
-
-**What:** Build composite components that encapsulate multiple primitives with a compound component API for flexibility.
-
-**When to use:** For composites that have distinct sections but need flexible content (cards, panels, forms).
-
-**Trade-offs:**
-- ✅ Flexible API with type safety
-- ✅ Clear component structure
-- ✅ Easy to understand and maintain
-- ⚠️ Slightly more verbose than single component
-- ⚠️ Requires understanding of compound pattern
-
-**Example:**
-```tsx
-// components/composites/Card/Card.tsx
-import { cva, type VariantProps } from 'class-variance-authority';
-
-const cardVariants = cva('bg-bg-card rounded-card overflow-hidden', {
-  variants: {
-    shadow: {
-      none: '',
-      sm: 'shadow-sm',
-      md: 'shadow-card',
-    },
-    padding: {
-      none: '',
-      sm: 'p-3',
-      md: 'p-4',
-      lg: 'p-6',
-    },
-  },
-  defaultVariants: {
-    shadow: 'md',
-    padding: 'md',
-  },
-});
-
-interface CardProps extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof cardVariants> {}
-
-function CardRoot({ className, shadow, padding, ...props }: CardProps) {
-  return <div className={cardVariants({ shadow, padding, className })} {...props} />;
-}
-
-function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={`border-b border-border pb-3 ${className}`} {...props} />;
-}
-
-function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={`text-body font-bold text-text-primary ${className}`} {...props} />;
-}
-
-function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={`pt-3 ${className}`} {...props} />;
-}
-
-function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={`border-t border-border pt-3 mt-3 ${className}`} {...props} />;
-}
-
-// Compound export
-export const Card = Object.assign(CardRoot, {
-  Header: CardHeader,
-  Title: CardTitle,
-  Content: CardContent,
-  Footer: CardFooter,
-});
-
-// Usage
-<Card shadow="md" padding="lg">
-  <Card.Header>
-    <Card.Title>Customer Details</Card.Title>
-  </Card.Header>
-  <Card.Content>
-    {/* Content here */}
-  </Card.Content>
-  <Card.Footer>
-    <Button>Save</Button>
-  </Card.Footer>
-</Card>
-```
-
-### Pattern 6: Server/Client Component Split for Design System
-
-**What:** Keep design system primitives as client components (need interactivity), but allow them to accept server component children via React.ReactNode.
-
-**When to use:** In Next.js App Router when building interactive components that wrap server-rendered content.
-
-**Trade-offs:**
-- ✅ Maximizes server component usage
-- ✅ Reduces client-side JavaScript
-- ✅ Primitives can still be interactive
-- ⚠️ Need to mark components 'use client' appropriately
-- ⚠️ Understanding of RSC boundary important
-
-**Example:**
-```tsx
-// components/primitives/Button/Button.tsx
-'use client'; // This is a client component (needs onClick, hover states)
-
-export function Button({ children, onClick, ...props }: ButtonProps) {
-  return (
-    <button onClick={onClick} {...props}>
-      {children} {/* children can be server components */}
-    </button>
-  );
-}
-
-// app/customers/page.tsx (Server Component)
-import { Button } from '@/components/primitives/Button';
-
-export default async function CustomersPage() {
-  const customers = await fetchCustomers(); // Server-side data fetch
+  // Fetch user details if needed
+  const user = await currentUser()
 
   return (
     <div>
-      <h1>Customers</h1>
-      {customers.map(customer => (
-        <div key={customer.id}>
-          <p>{customer.name}</p>
-          {/* Button is client component but content is server-rendered */}
-          <Button variant="primary">
-            View {customer.name}
-          </Button>
-        </div>
-      ))}
+      <h1>Welcome, {user?.firstName}!</h1>
+      {/* Dashboard content */}
     </div>
-  );
+  )
 }
+```
 
-// components/composites/Card/Card.tsx
-// Note: NOT marked 'use client' - this can be a server component
-export function Card({ children, ...props }: CardProps) {
-  return <div {...props}>{children}</div>;
+### Pattern 3: Client Component Auth Hooks
+
+**What:** Use `useAuth()` and `useUser()` hooks in client components for reactive auth state.
+
+**When to use:** Interactive components that need auth state (user buttons, conditional UI, client-side navigation).
+
+**Trade-offs:**
+- ✓ Reactive - updates automatically on auth state change
+- ✓ Access to methods like `signOut()`, `getToken()`
+- ✓ Can be used with UI interactions
+- ✗ Client-side only - requires 'use client' directive
+- ✗ Adds JavaScript bundle size
+- ✗ Hydration consideration - check `isLoaded` before rendering
+
+**Example:**
+```typescript
+// src/components/Header.tsx (Client Component)
+'use client'
+
+import { useUser, UserButton } from '@clerk/nextjs'
+
+export function Header() {
+  const { isSignedIn, user, isLoaded } = useUser()
+
+  if (!isLoaded) {
+    return <div>Loading...</div>
+  }
+
+  return (
+    <header>
+      {isSignedIn && (
+        <div className="flex items-center gap-4">
+          <span>Welcome, {user.firstName}</span>
+          <UserButton />
+        </div>
+      )}
+    </header>
+  )
+}
+```
+
+### Pattern 4: Conditional Rendering with Clerk Components
+
+**What:** Use `<SignedIn>`, `<SignedOut>`, and `<Show>` components for declarative auth-based rendering.
+
+**When to use:** Simple show/hide logic based on auth state without manual conditionals.
+
+**Trade-offs:**
+- ✓ Declarative - clear intent in JSX
+- ✓ Automatic rerenders on auth change
+- ✓ Works in both server and client components
+- ✗ Less flexible than manual conditionals
+- ✗ Adds nesting to component tree
+
+**Example:**
+```typescript
+import { Show, SignInButton, UserButton } from '@clerk/nextjs'
+
+export function NavBar() {
+  return (
+    <nav>
+      <Show when="signed-out">
+        <SignInButton mode="modal" />
+      </Show>
+      <Show when="signed-in">
+        <UserButton />
+      </Show>
+    </nav>
+  )
+}
+```
+
+### Pattern 5: API Route Protection
+
+**What:** Protect API routes by checking auth state with `auth()` and returning 401 for unauthorized requests.
+
+**When to use:** Any API endpoint that should only be accessible to authenticated users.
+
+**Trade-offs:**
+- ✓ Explicit - clear that endpoint requires auth
+- ✓ Can check permissions/roles beyond just authentication
+- ✓ Node.js runtime - can access database
+- ✗ Manual check required (not automatic like middleware)
+- ✗ Boilerplate in every protected route
+
+**Example:**
+```typescript
+// src/app/api/orders/route.ts
+import { auth } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
+
+export async function GET() {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // Fetch and return orders for authenticated user
+  const orders = await fetchOrders(userId)
+  return NextResponse.json({ orders })
+}
+```
+
+### Pattern 6: Server Action Auth
+
+**What:** Protect Server Actions by validating auth at the start of the action.
+
+**When to use:** Form submissions and mutations that require authentication.
+
+**Trade-offs:**
+- ✓ Server-side validation - cannot be bypassed
+- ✓ Access to full user object for audit logs
+- ✓ Can throw errors that client catches
+- ✗ Must be explicitly checked in each action
+- ✗ Requires error handling on client
+
+**Example:**
+```typescript
+// src/app/actions.ts
+'use server'
+
+import { auth, currentUser } from '@clerk/nextjs/server'
+
+export async function updateOrderStatus(orderId: string, status: string) {
+  const { userId } = await auth()
+  const user = await currentUser()
+
+  if (!userId) {
+    throw new Error('You must be signed in to update orders')
+  }
+
+  // Perform mutation with user context
+  await updateOrder(orderId, status, {
+    updatedBy: user.id,
+    updatedByEmail: user.emailAddresses[0].emailAddress,
+  })
 }
 ```
 
 ## Data Flow
 
-### Design Token Flow
+### Authentication Flow
 
 ```
-.pen Design Files (Source of Truth)
+User visits /orders
     ↓
-CSS Token Definitions (@theme)
+middleware.ts runs → clerkMiddleware() checks cookies
     ↓
-Tailwind v4 Compiler
+Not authenticated? → Redirect to /sign-in
     ↓
-    ├─→ Generated Utility Classes (bg-primary, text-body, etc.)
-    └─→ CSS Variables (--color-primary, --text-body, etc.)
-            ↓
-    ┌───────┴───────┐
-    ↓               ↓
-Components      Inline Styles
-(className)     (CSS variables)
+Authenticated? → Continue to page
+    ↓
+Page renders (Server Component)
+    ↓
+Optional: auth() or currentUser() for user data
+    ↓
+Render with user context
 ```
 
-### Component Consumption Flow
+### Sign-In Flow
 
 ```
-Design System Primitives (Button, Input, Badge)
-    ↓ (imported by)
-Design System Composites (Card, FilterPill, FormField)
-    ↓ (imported by)
-Page-Level Patterns (KPICard, OrdersTable, Sidebar)
-    ↓ (imported by)
-Next.js Pages (orders/page.tsx, customers/[id]/page.tsx)
+User visits /sign-in
+    ↓
+Clerk <SignIn /> component renders
+    ↓
+User enters email + password
+    ↓
+Clerk validates credentials (external API)
+    ↓
+Success → Set session cookie
+    ↓
+Redirect to NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL (/)
+    ↓
+Middleware allows access
+    ↓
+Dashboard loads
 ```
 
-### Theme Switching Flow
+### Client-Side Auth State
 
 ```
-User Action (Settings page toggle)
+ClerkProvider loads session from cookie
     ↓
-useTheme hook (setTheme('dark'))
+Populates useAuth() and useUser() hooks
     ↓
-document.documentElement.setAttribute('data-theme', 'dark')
+Components using hooks rerender with auth data
     ↓
-CSS Variable Overrides Applied ([data-theme="dark"] { ... })
+User clicks "Sign Out" in <UserButton />
     ↓
-All Components Re-render with New Token Values
+Clerk clears session cookie
+    ↓
+Hooks update to isSignedIn: false
+    ↓
+Middleware redirects to /sign-in on next navigation
 ```
 
 ### Key Data Flows
 
-1. **Token cascading:** Primitive tokens → Semantic tokens → Theme overrides → Component usage. This hierarchy makes theming possible without changing component code.
+1. **Session Management:** Clerk manages session via HTTP-only cookies set by middleware. Client never directly handles tokens.
+2. **User Data Propagation:** Server Components get user data via `currentUser()` on each request. Client Components subscribe to user state via `useUser()` hook.
+3. **Token for External APIs:** Use `await getToken()` from `useAuth()` (client) or `auth()` (server) to get JWT for authenticating external API requests.
+4. **Sign-Out:** `<UserButton />` handles sign-out automatically. Clears cookie, updates hooks, middleware redirects unauthenticated routes.
 
-2. **Component composition:** Primitives are imported by composites, composites by patterns, patterns by pages. This ensures changes to primitives cascade properly and prevents circular dependencies.
+## Integration Points for CGM Dashboard
 
-3. **Server-to-client boundary:** Pages (server) → Patterns (mixed) → Composites (server-compatible) → Primitives (client when interactive). Minimize client components to reduce JavaScript bundle size.
+### New Files Required
 
-## Integration Points
+| File | Purpose | Priority |
+|------|---------|----------|
+| `src/middleware.ts` | Route protection with clerkMiddleware | **Critical** - Required first |
+| `src/app/sign-in/[[...sign-in]]/page.tsx` | Sign-in page | **Critical** - Required first |
+| `src/app/sign-up/[[...sign-up]]/page.tsx` | Sign-up page | **Critical** - Required first |
+| `.env.local` | Clerk API keys (gitignored) | **Critical** - Required first |
+| `.env.example` | Template for required env vars | **High** - Documentation |
 
-### New Components → Existing Codebase
+### Files to Modify
 
-| Integration | Pattern | Notes |
-|-------------|---------|-------|
-| **globals.css expansion** | Append new @theme tokens to existing file | Keep existing tokens, add new semantic tokens, migrate hardcoded values gradually |
-| **Primitive imports** | Import from @/components/primitives/ | New components use primitives directly |
-| **Existing component migration** | Adapter pattern (see Pattern 4) | Wrap old components with new primitives, keep old API working |
-| **Page-level patterns** | Move to components/patterns/ | Rename only, keep functionality identical initially |
+| File | Changes Required | Priority | Complexity |
+|------|------------------|----------|------------|
+| `src/app/layout.tsx` | Add `<ClerkProvider>` wrapper around existing `<ThemeProvider>` | **Critical** | Low |
+| `src/components/Header.tsx` | Replace static user info with `<UserButton />`, add signed-in/signed-out conditional | **High** | Medium |
+| `package.json` | Add `@clerk/nextjs` dependency | **Critical** | Low |
 
-### Design System → Application Boundary
+### Files Unchanged
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| **Tokens → Components** | Via Tailwind utilities + CSS variables | Components should ONLY use design tokens, never hardcoded values |
-| **Primitives → Patterns** | Direct imports + TypeScript props | Patterns consume primitive components and compose them |
-| **Design System → Pages** | Through patterns primarily | Pages should rarely import primitives directly, use patterns instead |
-| **Theme → All Layers** | CSS variable overrides cascade automatically | No prop drilling needed, theme changes apply globally |
+These existing files work as-is with Clerk:
+
+- **All page components** (`page.tsx` files) - Middleware handles protection, no page-level changes needed
+- **Sidebar.tsx** - Navigation works without auth changes
+- **All UI components** (`src/components/ui/*`) - Design system components unaffected
+- **All services** (`src/services/*`) - Mock data services don't need auth
+- **All hooks** (`src/hooks/*`) - Custom hooks continue to work
+- **ThemeProvider.tsx** - Theme toggle unaffected by auth
+
+### Environment Variables
+
+```env
+# .env.local (gitignored)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
+CLERK_SECRET_KEY=sk_test_xxxxx
+
+# Optional: Customize redirect URLs
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
+```
+
+### Dependency Installation
+
+```bash
+npm install @clerk/nextjs
+```
+
+**Version compatibility:**
+- `@clerk/nextjs` latest version requires `next@>=15.2.3`
+- Current project uses Next.js 15, verify version is 15.2.3+
+- Node.js 20.9.0+ required for Clerk Core 3
 
 ## Scaling Considerations
 
 | Scale | Architecture Adjustments |
 |-------|--------------------------|
-| **Current (6.4k LOC)** | Implement design system foundation, migrate components incrementally over 2-3 milestones |
-| **10k-20k LOC** | Extract design system to separate package (@company/design-system), version independently from app |
-| **20k+ LOC or multi-app** | Publish design system to private npm, add Storybook for documentation, implement visual regression testing |
+| 0-1k users | Default Clerk setup handles this easily. Free tier supports 10k MAU. |
+| 1k-10k users | No changes needed. Consider upgrading to Pro plan at 10k+ MAU for support and advanced features. |
+| 10k-100k users | Still no architecture changes. Clerk is hosted SaaS - scales automatically. May want custom JWT claims for role-based access. |
+| 100k+ users | Consider Clerk's Enterprise plan for SLA and dedicated support. May want to cache user data in database for frequently accessed user attributes. |
 
 ### Scaling Priorities
 
-1. **First bottleneck: Token inconsistency** - Happens around 10k LOC when multiple pages have hardcoded values. Fix: Complete token migration ASAP, add ESLint rule to prevent hardcoded colors/spacing.
-
-2. **Second bottleneck: Component duplication** - Happens when second app/project needs same components. Fix: Extract design system to separate package, use npm workspaces for monorepo if multiple apps exist.
-
-3. **Third bottleneck: Design-dev handoff** - Happens when design team can't verify implementations. Fix: Add Storybook, integrate with Figma, implement visual regression tests with Chromatic.
+1. **First bottleneck:** Won't hit auth bottleneck - Clerk infrastructure scales. More likely to hit Next.js server limits or database query performance first.
+2. **Second bottleneck:** If showing user-specific data on every page, `currentUser()` calls add ~50-100ms. Cache user attributes in database and fetch with user ID from `auth()` instead.
 
 ## Anti-Patterns
 
-### Anti-Pattern 1: Mixing Hardcoded Values with Design Tokens
+### Anti-Pattern 1: Mixing Client and Server Auth Helpers
 
-**What people do:** Start using design tokens but leave some hardcoded values in components.
+**What people do:** Import `auth()` in a client component or use `useAuth()` in a server component.
 
-**Why it's wrong:** Destroys single source of truth. Theming breaks. Some elements don't update with theme changes. Creates maintenance burden tracking down all hardcoded values.
-
-**Do this instead:**
-- Audit codebase for hardcoded hex colors, px values, font sizes
-- Add ESLint rule: `no-hardcoded-colors` plugin
-- During code review, reject any new hardcoded design values
-- Use `eslint-plugin-tailwindcss` to enforce utility usage
-
-### Anti-Pattern 2: Creating Too Many Component Variants
-
-**What people do:** Add variant for every possible visual combination (primary-small-rounded, primary-large-square, secondary-small-rounded, etc.)
-
-**Why it's wrong:** Combinatorial explosion makes components unmaintainable. Should use composition instead. CVA compound variants exist for rare combinations.
+**Why it's wrong:**
+- `auth()` and `currentUser()` are server-only and will throw errors in client components
+- `useAuth()` and `useUser()` are client-only hooks and won't work in server components
+- Causes "Cannot read property of undefined" or "Cannot use hooks in server components" errors
 
 **Do this instead:**
-```tsx
-// BAD: Too many variants
-<Button variant="primary-large-rounded-shadow" />
+- Use `auth()` / `currentUser()` in Server Components, API routes, Server Actions
+- Use `useAuth()` / `useUser()` in Client Components with 'use client' directive
+- If you need user data in a client component, either:
+  - Convert to client component and use hooks, OR
+  - Fetch in parent server component and pass as props
 
-// GOOD: Compose orthogonal properties
-<Button variant="primary" size="large" rounded shadow />
+### Anti-Pattern 2: Manual Redirects in Protected Pages
 
-// GOOD: Use CVA compound variants for special cases
-const buttonVariants = cva('...', {
-  variants: {
-    variant: { primary: '...', secondary: '...' },
-    size: { sm: '...', lg: '...' },
-  },
-  compoundVariants: [
-    { variant: 'primary', size: 'lg', className: 'uppercase' }
+**What people do:** Add redirect logic in every protected page:
+```typescript
+// ❌ DON'T DO THIS
+export default async function OrdersPage() {
+  const { userId } = await auth()
+  if (!userId) redirect('/sign-in')
+  // ...
+}
+```
+
+**Why it's wrong:**
+- Duplicated logic across all protected pages
+- Page still loads briefly before redirect (wasted work)
+- Can cause flash of protected content
+- Harder to maintain - many places to update if auth logic changes
+
+**Do this instead:**
+Use middleware for route protection. All routes are protected by default, only sign-in/sign-up are public:
+```typescript
+// ✓ DO THIS - in middleware.ts
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+
+export default clerkMiddleware(async (auth, req) => {
+  if (!isPublicRoute(req)) {
+    await auth.protect()
+  }
+})
+```
+
+### Anti-Pattern 3: Narrow Middleware Matchers
+
+**What people do:** Only match specific routes in middleware config:
+```typescript
+// ❌ DON'T DO THIS
+export const config = {
+  matcher: ['/orders', '/customers', '/settings'],
+}
+```
+
+**Why it's wrong:**
+- Easy to forget routes as app grows
+- 404 pages and error pages throw "auth() was called but no middleware" error
+- API routes may not be protected
+- Static assets unnecessarily matched
+
+**Do this instead:**
+Use broad matcher that excludes static files and Next.js internals:
+```typescript
+// ✓ DO THIS
+export const config = {
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+    '/__clerk/(.*)',
   ],
-});
-```
-
-### Anti-Pattern 3: Creating Primitives with Business Logic
-
-**What people do:** Put API calls, business rules, or domain logic inside primitive components.
-
-**Why it's wrong:** Primitives become coupled to specific use cases, can't be reused across different domains, harder to test and document.
-
-**Do this instead:**
-- Primitives = pure presentation (Button, Input, Badge)
-- Composites = composition + light logic (FormField, FilterPill)
-- Patterns = business logic + domain data (OrdersTable, CustomerHeader)
-
-```tsx
-// BAD: Primitive with business logic
-function Button({ orderId, onClick }) {
-  const { data: order } = useOrder(orderId); // API call in primitive
-  const canSubmit = order.status === 'pending'; // Business rule
-  return <button disabled={!canSubmit} onClick={onClick}>Submit Order</button>;
-}
-
-// GOOD: Primitive is pure presentation
-function Button({ disabled, onClick, children }) {
-  return <button disabled={disabled} onClick={onClick}>{children}</button>;
-}
-
-// GOOD: Pattern component contains business logic
-function OrderSubmitButton({ orderId }) {
-  const { data: order } = useOrder(orderId);
-  const canSubmit = order.status === 'pending';
-
-  return (
-    <Button disabled={!canSubmit} onClick={() => submitOrder(orderId)}>
-      Submit Order
-    </Button>
-  );
 }
 ```
 
-### Anti-Pattern 4: Premature Design System Extraction
+### Anti-Pattern 4: Checking Auth Before Loading State
 
-**What people do:** Extract design system to separate package before validating it with real usage.
+**What people do:** Render auth-dependent UI before checking if auth is loaded:
+```typescript
+// ❌ DON'T DO THIS
+'use client'
+export function Header() {
+  const { user } = useUser()
+  return <div>Welcome, {user.firstName}</div> // Error: user is null during load
+}
+```
 
-**Why it's wrong:** Leads to frequent breaking changes, version mismatch issues, slows down iteration. Design systems need real-world usage to stabilize API.
-
-**Do this instead:**
-- Keep design system in same repo initially (monolith)
-- Use strict folder boundaries (design-system/, components/)
-- Extract to package ONLY when:
-  - Used successfully across 3+ pages
-  - API stable for 2+ months
-  - Second application needs it
-  - Team has bandwidth for versioning/publishing
-
-### Anti-Pattern 5: Skipping the Migration Phase
-
-**What people do:** Build complete design system, then try to migrate all pages at once in one PR.
-
-**Why it's wrong:** Massive risk, breaks existing functionality, blocks other work, hard to review, all-or-nothing deployment.
+**Why it's wrong:**
+- `user` is `null` while Clerk loads session
+- Causes "Cannot read property 'firstName' of null" error
+- Creates hydration mismatch if server/client render different content
 
 **Do this instead:**
-- Use Strangler Fig pattern (Pattern 4)
-- Migrate one page/feature at a time
-- Keep old components working during migration
-- Delete old code only after all usage replaced
-- Each migration = separate PR, can be deployed independently
+Check `isLoaded` before accessing user data:
+```typescript
+// ✓ DO THIS
+'use client'
+export function Header() {
+  const { user, isLoaded } = useUser()
 
-### Anti-Pattern 6: Inconsistent Naming Between Design and Code
+  if (!isLoaded) {
+    return <div>Loading...</div>
+  }
 
-**What people do:** Design files use different names than code (Button/Primary in Figma, PrimaryButton in code).
+  return <div>Welcome, {user?.firstName ?? 'Guest'}</div>
+}
+```
 
-**Why it's wrong:** Slows down handoff, causes confusion, makes it harder to find components, breaks design-dev sync.
+### Anti-Pattern 5: Using Middleware for Database Queries
+
+**What people do:** Try to check database permissions in middleware:
+```typescript
+// ❌ DON'T DO THIS
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth()
+  const userRole = await db.users.findUnique({ where: { id: userId } }) // Error!
+  if (userRole !== 'admin') return NextResponse.redirect('/unauthorized')
+})
+```
+
+**Why it's wrong:**
+- Middleware runs on Edge Runtime (before Next.js 15.2)
+- Edge Runtime cannot access Node.js APIs like database connections
+- Causes "Cannot use Node.js runtime" errors
 
 **Do this instead:**
-- Establish naming convention before building
-- Use same names in .pen files, component files, and documentation
-- Format: `<Component>` with variants, not `<Variant><Component>`
-- Example: `Button variant="primary"` not `PrimaryButton`
-- Document naming convention in CONVENTIONS.md
+Use cookie-based checks in middleware for fast redirects, then validate in page with Node.js runtime:
+```typescript
+// ✓ DO THIS - middleware.ts (fast cookie check)
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    await auth.protect() // Just checks if signed in
+  }
+})
+
+// ✓ DO THIS - page.tsx (full validation with database)
+export default async function AdminPage() {
+  const { userId } = await auth()
+  const user = await db.users.findUnique({ where: { id: userId } })
+
+  if (user.role !== 'admin') {
+    notFound() // Returns 404 for unauthorized
+  }
+
+  // Render admin content
+}
+```
+
+### Anti-Pattern 6: Storing Clerk Keys in Code
+
+**What people do:** Hardcode API keys in components or config files:
+```typescript
+// ❌ DON'T DO THIS
+const clerk = new Clerk('pk_test_xxxxx') // Hardcoded key
+```
+
+**Why it's wrong:**
+- Keys in code get committed to version control
+- Anyone with repo access has your keys
+- Can't rotate keys without code changes
+- Different keys for dev/staging/prod require code changes
+
+**Do this instead:**
+Use environment variables (Clerk does this automatically):
+```env
+# ✓ DO THIS - .env.local
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
+CLERK_SECRET_KEY=sk_test_xxxxx
+```
+
+Clerk SDK reads these automatically. Add `.env.local` to `.gitignore` and provide `.env.example` template for team.
+
+## Testing Considerations
+
+### Mocking Clerk in Tests
+
+Clerk authentication requires mocking in unit/integration tests. The recommended pattern:
+
+```typescript
+// jest.setup.js or test file
+jest.mock('@clerk/nextjs', () => {
+  return {
+    auth: jest.fn(() => Promise.resolve({ userId: 'test-user-id' })),
+    currentUser: jest.fn(() => Promise.resolve({
+      id: 'test-user-id',
+      firstName: 'Test',
+      lastName: 'User',
+      emailAddresses: [{ emailAddress: 'test@example.com' }],
+    })),
+    useAuth: jest.fn(() => ({
+      userId: 'test-user-id',
+      isSignedIn: true,
+      isLoaded: true,
+    })),
+    useUser: jest.fn(() => ({
+      user: {
+        id: 'test-user-id',
+        firstName: 'Test',
+        lastName: 'User',
+      },
+      isSignedIn: true,
+      isLoaded: true,
+    })),
+    UserButton: () => <div data-testid="clerk-user-button">User Button</div>,
+    SignIn: () => <div data-testid="clerk-sign-in">Sign In</div>,
+    SignUp: () => <div data-testid="clerk-sign-up">Sign Up</div>,
+    ClerkProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  }
+})
+```
+
+**Testing strategies:**
+- **Unit tests:** Mock Clerk hooks to return test user data
+- **Integration tests:** Mock entire `@clerk/nextjs` module
+- **E2E tests:** Use Clerk's test mode or create test accounts
+
+### Test User Creation
+
+For E2E tests, create dedicated test users in Clerk Dashboard or use Clerk's Backend API to programmatically create test accounts.
+
+## Build Order Recommendations
+
+### Phase 1: Core Auth Infrastructure (Critical Path)
+
+**Dependencies:** None
+**Goal:** Get authentication working end-to-end
+
+1. **Install Clerk SDK**
+   - Run `npm install @clerk/nextjs`
+   - Verify version compatibility with Next.js 15.2.3+
+
+2. **Set up environment variables**
+   - Create Clerk account and application
+   - Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` to `.env.local`
+   - Create `.env.example` template for team
+
+3. **Add ClerkProvider to root layout**
+   - Modify `src/app/layout.tsx`
+   - Wrap existing `<ThemeProvider>` with `<ClerkProvider>`
+   - Test that app still runs
+
+4. **Create middleware**
+   - Create `src/middleware.ts`
+   - Implement `clerkMiddleware()` with public route matching
+   - Configure broad matcher to avoid middleware detection errors
+
+5. **Create sign-in and sign-up pages**
+   - Create `src/app/sign-in/[[...sign-in]]/page.tsx` with `<SignIn />`
+   - Create `src/app/sign-up/[[...sign-up]]/page.tsx` with `<SignUp />`
+   - Test redirect to sign-in when accessing protected routes
+
+**Validation:** Unauthenticated users should be redirected to `/sign-in`. After signing in, users should access dashboard.
+
+### Phase 2: User Display in Header
+
+**Dependencies:** Phase 1 complete
+**Goal:** Show authenticated user in header with sign-out capability
+
+1. **Modify Header component**
+   - Add `'use client'` directive to `src/components/Header.tsx`
+   - Import `useUser` and `UserButton` from `@clerk/nextjs`
+   - Replace static user info with `<UserButton />`
+   - Add conditional rendering with `isLoaded` check
+
+2. **Test user display**
+   - Verify user name/avatar shows in header
+   - Test sign-out from UserButton dropdown
+   - Confirm redirect to sign-in after sign-out
+
+**Validation:** Header displays authenticated user info. Clicking UserButton shows dropdown with "Sign Out" option.
+
+### Phase 3: Optional Enhancements
+
+**Dependencies:** Phase 1-2 complete
+**Goal:** Polish and developer experience improvements
+
+1. **Add loading states**
+   - Create loading skeleton for Header while `isLoaded: false`
+   - Consider loading.tsx files for page-level suspense
+
+2. **Customize sign-in/sign-up appearance**
+   - Match Clerk components to existing design system
+   - Use `appearance` prop on `<SignIn />` and `<SignUp />` components
+
+3. **Set up testing mocks**
+   - Create `jest.setup.js` with Clerk mocks
+   - Update existing tests to mock auth state
+   - Add tests for authenticated/unauthenticated states
+
+4. **Add user-specific data (future)**
+   - When connecting to real database, use `userId` from `auth()` to filter orders
+   - Consider caching user data in database for performance
+
+**Validation:** App looks polished, tests pass, ready for production.
 
 ## Sources
 
-**Tailwind CSS v4 (HIGH confidence):**
-- [Tailwind CSS v4.0 - Theme Variables](https://tailwindcss.com/docs/theme)
-- [Tailwind CSS v4.0 Blog Post](https://tailwindcss.com/blog/tailwindcss-v4)
-- Context7: /tailwindlabs/tailwindcss.com
+### Official Clerk Documentation (HIGH Confidence)
 
-**Class Variance Authority (HIGH confidence):**
-- [CVA Documentation](https://cva.style)
-- Context7: /joe-bell/cva
-- [CVA GitHub Repository](https://github.com/joe-bell/cva)
+- [Clerk Next.js Quickstart](https://clerk.com/docs/nextjs/getting-started/quickstart) - Official setup guide
+- [clerkMiddleware() Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware) - Middleware configuration
+- [auth() Server Helper](https://clerk.com/docs/reference/nextjs/app-router/auth) - Server-side auth access
+- [currentUser() Helper](https://github.com/clerk/clerk-docs/blob/main/clerk-typedoc/nextjs/current-user.mdx) - Fetch user object server-side
+- [UserButton Component](https://github.com/clerk/clerk-docs/blob/main/docs/reference/components/user/user-button.mdx) - User dropdown component
+- [Clerk Environment Variables](https://github.com/clerk/clerk-docs/blob/main/docs/getting-started/quickstart/pages-router.mdx) - Required API keys
 
-**Next.js App Router Architecture (HIGH confidence):**
-- [Next.js Architecture Documentation](https://nextjs.org/docs/architecture)
-- [Next.js Project Structure](https://nextjs.org/docs/app/getting-started/project-structure)
-- Context7: /vercel/next.js
+### Integration Guides (HIGH Confidence)
 
-**Design System Best Practices (MEDIUM confidence):**
-- [Design Systems 101 - Nielsen Norman Group](https://www.nngroup.com/articles/design-systems-101/)
-- [Best Practices for Scalable Component Libraries - UXPin](https://www.uxpin.com/studio/blog/best-practices-for-scalable-component-libraries/)
-- [Building and maintaining component libraries - Vaadin](https://vaadin.com/blog/building-and-maintaining-the-component-library-of-a-design-system)
+- [Complete Authentication Guide for Next.js App Router](https://clerk.com/articles/complete-authentication-guide-for-nextjs-app-router) - Comprehensive integration patterns
+- [Build with Matija: Clerk Authentication in Next.js 15](https://www.buildwithmatija.com/blog/clerk-authentication-nextjs15-app-router) - Full integration guide
+- [Prismic: Next.js Authentication with Clerk](https://prismic.io/blog/nextjs-authentication) - Step-by-step tutorial
 
-**Atomic Design (MEDIUM confidence):**
-- [Atomic Design Methodology - Brad Frost](https://atomicdesign.bradfrost.com/chapter-2/)
-- [Atomic Design in Practice](https://blog.logrocket.com/ux-design/atomic-design-components-ui-design/)
+### File Structure Best Practices (MEDIUM Confidence)
 
-**Design Tokens Architecture (MEDIUM confidence):**
-- [The Developer's Guide to Design Tokens and CSS Variables - Penpot](https://penpot.app/blog/the-developers-guide-to-design-tokens-and-css-variables/)
-- [Design Tokens Explained - Contentful](https://www.contentful.com/blog/design-token-system/)
-- [CSS Variables as Design Tokens - Plain English](https://javascript.plainenglish.io/css-variables-as-design-tokens-your-frontends-best-friend-and-why-you-ll-wonder-how-you-lived-5cbc68dd6de8)
+- [Best Practices for Organizing Your Next.js 15 2025](https://dev.to/bajrayejoon/best-practices-for-organizing-your-nextjs-15-2025-53ji) - File organization patterns
+- [The Ultimate Guide to Organizing Your Next.js 15 Project Structure](https://www.wisp.blog/blog/the-ultimate-guide-to-organizing-your-nextjs-15-project-structure) - Project structure recommendations
+- [Next.js Official: Project Structure](https://nextjs.org/docs/app/getting-started/project-structure) - Next.js conventions
 
-**Theming Implementation (MEDIUM confidence):**
-- [Creating Dark and Light Themes with CSS Variables - Medium](https://medium.com/@antonio.hg/creating-dark-and-light-themes-with-css-variables-respecting-user-preferences-and-adding-a-toggle-0ce1f96e592b)
-- [Dark Mode and CSS Variables - Better Programming](https://betterprogramming.pub/dark-mode-and-css-variables-ed6dc250232c)
+### Common Pitfalls (HIGH Confidence)
 
-**Migration Strategy (MEDIUM confidence):**
-- [Refactoring Your Way to a Design System - 24 Ways](https://24ways.org/2017/refactoring-your-way-to-a-design-system/)
-- [How Teams Incrementally Modernize Large Frontend Codebases - AlterSquare](https://altersquare.io/how-teams-incrementally-modernize-large-frontend-codebases/)
-- [Lessons from Migrating to a Design System - DEV](https://dev.to/victorandcode/lessons-from-migrating-a-web-application-to-a-design-system-2701)
+- [Clerk: auth() was called but middleware not detected](https://clerk.com/docs/reference/nextjs/errors/auth-was-called) - Middleware detection error
+- [GitHub Issues: Middleware not working](https://github.com/clerk/javascript/issues/299) - Common middleware issues
+- [Next.js Discussion: Multiple middlewares (Clerk + next-intl)](https://github.com/vercel/next.js/discussions/63736) - Middleware conflict patterns
 
-**React Component Structure (MEDIUM confidence):**
-- [Component Folder Pattern - Styled Components](https://medium.com/styled-components/component-folder-pattern-ee42df37ec68)
-- [React File Structure - Josh W. Comeau](https://www.joshwcomeau.com/react/file-structure/)
-- [React Folder Structure - Robin Wieruch](https://www.robinwieruch.de/react-folder-structure/)
+### Testing (HIGH Confidence)
+
+- [A Practical Guide to Testing Clerk Next.js Applications](https://clerk.com/blog/testing-clerk-nextjs) - Official testing guide with Jest and Playwright examples
 
 ---
-*Architecture research for: CGM Dashboard Design System Integration*
-*Researched: 2026-05-07*
+*Architecture research for: Clerk authentication integration with Next.js 15 App Router*
+*Researched: 2026-05-09*
+*All findings verified against official Clerk documentation and Next.js 15 App Router patterns*

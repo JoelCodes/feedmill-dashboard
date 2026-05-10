@@ -1,321 +1,308 @@
 # Project Research Summary
 
-**Project:** CGM Dashboard v1.3 - Design System & Theming
-**Domain:** React/Tailwind Design System for Enterprise Dashboard
-**Researched:** 2026-05-07
+**Project:** CGM Dashboard v1.4 - Authentication Layer
+**Domain:** Next.js 15 App Router authentication with Clerk
+**Researched:** 2026-05-09
 **Confidence:** HIGH
 
 ## Executive Summary
 
-This research covers adding a design system foundation to an existing Next.js 15/React 19/Tailwind CSS 4 dashboard application (6,426 LOC) that already has partial design tokens and UI components. The goal is to establish systematic theming (light/dark mode), unify component patterns, and create a maintainable foundation for future development.
+This project adds enterprise-grade authentication to an existing CGM Dashboard using Clerk. Research shows Clerk is the optimal choice for Next.js 15 App Router apps requiring rapid deployment with minimal boilerplate. The recommended approach uses middleware-based route protection, prebuilt UI components, and server-side auth verification. This pattern delivers production-ready authentication in 5-10 minutes of setup time while avoiding common pitfalls like middleware detection errors and hydration mismatches.
 
-The recommended approach is incremental migration using the Strangler Fig pattern: establish a CSS-first token system with Tailwind v4's `@theme` directive, implement type-safe component variants using Class Variance Authority (CVA), and add theme switching via `next-themes`. The key insight from research is that design systems fail most often during the "last 20%" of migration when enforcement weakens—success requires strict ESLint rules, page-level migration tracking, and ruthless deprecation of old patterns.
+The critical path is straightforward: install Clerk SDK, configure middleware with proper matchers, add ClerkProvider to root layout, create sign-in/sign-up pages with prebuilt components, and integrate UserButton into the header. The primary risk is CVE-2025-29927 (middleware bypass vulnerability) which requires Next.js ≥15.2.3. Secondary risks include async auth() migration issues and dynamic rendering opt-out breaking client components. All risks are mitigated by using current versions and following documented patterns.
 
-The primary risks are token naming inconsistency (preventing dark mode), premature component abstraction (creating inflexible APIs), and incomplete migration (maintaining two parallel systems indefinitely). Mitigation strategies include: establishing semantic token naming from day one, building only essential components (Button, Input, Card, Badge) in v1.3, and enforcing migration page-by-page with ESLint rules that block hardcoded values.
+Research identifies three distinct implementation phases: Foundation Setup (critical infrastructure), Route Protection (security hardening), and User Experience Integration (loading states, appearance customization). The minimal viable authentication requires only the first two phases, with polish deferred to post-launch based on user feedback.
 
 ## Key Findings
 
 ### Recommended Stack
 
-The research identified a minimal but complete stack for design system foundation. Current project already has Tailwind CSS 4, which provides CSS-first design tokens via the `@theme` directive—no additional build tools needed. The key additions are focused on theming infrastructure and type-safe variant management.
+Clerk is purpose-built for Next.js with first-class App Router support. The only required dependency is `@clerk/nextjs` (v7.3.3+), which includes TypeScript types, middleware helpers, server/client components, and prebuilt UI. NextAuth.js was rejected due to requiring custom form implementation. Auth0 was rejected due to 15x higher cost and enterprise complexity unsuited for a single-tenant dashboard. Custom auth solutions were rejected as security liabilities with maintenance burden.
 
 **Core technologies:**
-- **next-themes (^0.4.6)**: Theme management and persistence — Industry standard for Next.js dark mode with zero-flash SSR-safe switching, 2,900+ GitHub stars, actively maintained
-- **class-variance-authority (^0.7.1)**: Type-safe component variants — TypeScript-first utility for variant-based components, framework-agnostic, battle-tested pattern used by shadcn/ui
-- **tailwind-merge (^3.5.0)**: Class conflict resolution — Intelligently merges Tailwind classes with automatic conflict handling, essential for components accepting className props
-- **clsx (^2.1.1)**: Conditional class names — Lightweight (228 bytes) utility for conditional className logic, perfect companion to tailwind-merge
-- **tw-animate-css (^1.4.0)**: Tailwind v4 animations — Modern replacement for tailwindcss-animate, pure CSS solution compatible with Tailwind v4's architecture
+- **@clerk/nextjs v7.3.3+**: Official Next.js 15+ authentication SDK — provides middleware, server helpers (auth(), currentUser()), client hooks (useAuth(), useUser()), and prebuilt components (SignIn, SignUp, UserButton) with zero configuration
+- **Next.js 16.1.6 (existing)**: Web framework — already in use, compatible with Clerk requirements (≥15.2.3 needed for CVE-2025-29927 fix)
+- **React 19.2.3 (existing)**: UI library — already in use, compatible with Clerk peer dependencies
 
-**Radix UI primitives (as-needed only):**
-- Install selectively when building specific components (Dialog, DropdownMenu, Select, Tooltip)
-- Each primitive is 10-20KB, so selective installation keeps bundle size down
-- Current recommendation: Start without any Radix primitives, add for specific use cases as they arise
-
-**Notable alternatives rejected:**
-- shadcn/ui: Excellent but overkill for this stage, requires CLI workflow and components.json config
-- tailwind-variants: Adds 10KB for responsive variants/slots that aren't needed (CVA at 2KB is sufficient)
-- Style Dictionary: Adds build complexity; existing CSS variables already serve as design tokens
-- CSS-in-JS libraries: Conflicts with Tailwind's utility-first approach
+**Integration approach:**
+- Clerk middleware (`clerkMiddleware()`) protects routes at the edge before page render
+- Environment variables (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`) configured per environment (dev uses `pk_test_`, production uses `pk_live_`)
+- Dark mode integration via `appearance` prop or CSS `color-scheme` (compatible with existing `next-themes`)
+- No conflicts with existing Tailwind CSS 4, TypeScript, or component library (CVA)
 
 ### Expected Features
 
-Research identified three tiers of features for a modern React/Tailwind design system. The CGM Dashboard already has partial implementations (globals.css with design tokens, StatusBadge component, card patterns) that need systematization rather than full rewrites.
+Email + password authentication is table stakes. Users expect sign-up with email verification, sign-in with password, password reset via email, and sign-out functionality. The dashboard requires route protection (middleware-based), user display in header (UserButton component), and dark/light theme support for auth UI. All of these features are built into Clerk with zero custom code.
 
 **Must have (table stakes):**
-- Design Tokens (Colors/Typography/Spacing/Shadows) — Single source of truth eliminates hardcoded values, enables theming
-- Light/Dark Theme — User expectation for dashboard apps; CSS variables + data-theme attribute pattern
-- Button Component — Fundamental interactive element with variants (primary/secondary/ghost/destructive) and states
-- Input Components — Text, number, select, textarea with validation states meeting WCAG 2.1 AA
-- Status Badge — Already exists, needs variant system integration
-- Card/Panel Components — Already have card patterns, need unification
-- Table Component — OrdersTable exists, extract reusable primitives
-- Accessible Focus Management — WCAG 2.1 AA requirement, keyboard navigation, visible focus indicators
-- Semantic Color System — Colors named by function (bg-surface, text-primary) not appearance (bg-white)
+- Email + Password Sign-Up — standard registration with automatic email verification flow
+- Email + Password Sign-In — returning user authentication with password strategy
+- Password Reset / Forgot Password — built-in flow: sendResetPasswordEmailCode() → verifyCode() → resetPassword()
+- Sign Out — simple signOut() method with optional redirect URL
+- Route Protection via Middleware — clerkMiddleware() with auth.protect() auto-redirects unauthenticated users to sign-in
+- User Display in Header — UserButton component shows avatar, name, sign-out dropdown
+- Session Management — automatic maintenance of auth state across pages via Next.js Server Components
+- Prebuilt UI Components — SignIn, SignUp, UserButton components eliminate need for custom forms
+- Dark/Light Theme Support — appearance.theme prop or CSS color-scheme integration with next-themes
 
-**Should have (differentiators):**
-- Tailwind v4 @theme Integration — CSS-first tokens become utilities automatically, no tailwind.config.js
-- CVA (Class Variance Authority) — Type-safe variant management with compound variants
-- Component Composition (Compound Pattern) — Flexible primitives (Table.Header, Table.Row) vs monolithic props
-- Timeline Component Library — Already have ActivityTimeline; extract as reusable primitive
-- Bin Gauge Visualization — Domain-specific primitive already tested; useful for inventory displays
-- Incremental Migration Strategy — Strangler Fig pattern avoids big-bang rewrite
-- Design Token Documentation — Token usage examples prevent misuse
+**Should have (competitive, defer to v1.5+):**
+- Multi-Factor Authentication (MFA) — TOTP/SMS/email codes for enhanced security, add when customers request or compliance requires
+- Social OAuth (Google/Microsoft) — 1-click social login if user feedback shows email sign-up friction
+- User Profile Management — self-service password change, email update reduces support burden
+- Appearance Customization — match auth UI to dashboard design tokens after visual design review
+- Session Token for API Auth — getToken() returns JWT for backend API authorization headers (add when building API routes)
+- Webhooks for User Sync — sync user.created events to database when storing user data for foreign keys
 
 **Defer (v2+):**
-- Storybook Integration — High value but not blocking; add in future milestone
-- Advanced Timeline Primitives — ActivityTimeline works; generalize when second use case emerges
-- Visual Regression Testing — Important for scale but overkill for v1.3
-
-**Explicitly don't build (anti-features):**
-- Over-abstracted Components — God components with 50+ props create maintenance nightmares
-- @apply Directive Overuse — Defeats utility-first purpose, creates CSS bloat
-- Big-Bang Design System Rewrite — High risk of collapse; use incremental migration instead
-- Framework-Specific Tokens — CSS-first tokens are portable across tools
-- Variants for Every Edge Case — 100+ variants create unmanageable complexity; use composition
+- Organizations/Teams — multi-tenant B2B feature, only needed if building mill-specific user groups
+- Custom JWT Templates — advanced RBAC with custom claims, wait until permission requirements validated
+- Advanced MFA (WebAuthn/Passkeys) — emerging standard, browser support maturing
+- Passwordless Magic Links — paradigm shift requiring user education, replaces passwords entirely
+- Custom Email Templates — branding polish, default Clerk emails functional for MVP
+- Rate Limiting Customization — premature optimization, defaults handle normal traffic
 
 ### Architecture Approach
 
-The recommended architecture uses three layers: Design System Foundation (tokens, theme, utilities), Component Library (primitives, composites, patterns), and Application Pages. The design system foundation centralizes all design concerns (tokens, theme config, variant utilities) in a dedicated folder structure, making it easy to extract into a separate package later if needed.
+The standard Clerk pattern for Next.js App Router uses three layers: middleware for route protection, ClerkProvider in root layout for global auth context, and server/client components for auth state access. Middleware runs at the edge before page render, checking session cookies and redirecting unauthenticated users. Server Components use auth() helper for user ID access. Client Components use useAuth()/useUser() hooks for reactive state. This separation ensures zero auth logic in page components — middleware handles protection transparently.
 
 **Major components:**
-1. **Design System Layer** — CSS tokens (@theme), theme management (ThemeProvider), variant utilities (CVA/cn) — Foundation that all components consume
-2. **Primitives Layer** — Atomic components (Button, Input, Badge, Typography) with CVA variants — Pure presentation, no business logic, folder-per-component structure
-3. **Composites Layer** — Molecules combining primitives (Card, Panel, FilterPill, FormField, Table) — More complex but still generic, compound component pattern for flexibility
-4. **Patterns Layer** — Page-level components (KPICard, OrdersTable, CustomerDetailHeader, ActivityTimeline, Sidebar) — Domain-specific with business logic, consume primitives/composites
-5. **Theme Infrastructure** — Light/dark modes via CSS variable overrides on [data-theme] attribute — Uses next-themes for SSR-safe switching, semantic tokens enable theming without code changes
+1. **middleware.ts (NEW)** — Route protection using clerkMiddleware() with createRouteMatcher() for pattern-based public/protected route definitions; must use broad matcher to avoid "auth() called but no middleware detected" errors
+2. **app/layout.tsx (MODIFIED)** — Add ClerkProvider wrapper around existing ThemeProvider to provide auth context app-wide; no other layout changes needed
+3. **app/sign-in/[[...sign-in]]/page.tsx (NEW)** — Drop-in SignIn component with catch-all route for password reset, verification flows
+4. **app/sign-up/[[...sign-up]]/page.tsx (NEW)** — Drop-in SignUp component with catch-all route for email verification, multi-step flows
+5. **components/Header.tsx (MODIFIED)** — Replace static user info with UserButton component; add 'use client' directive and isLoaded check to prevent hydration errors
+6. **.env.local (NEW, gitignored)** — Store NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY; separate keys for dev (pk_test_) and production (pk_live_)
 
-**Key architectural patterns:**
-- **Tailwind v4 @theme with CSS Variables**: Define tokens as CSS custom properties that auto-generate utilities AND expose runtime variables
-- **Semantic Theming**: Two-tier system (primitives → semantic tokens), theme variants override semantic tokens only
-- **CVA for Component Variants**: Type-safe variant composition with defaults and compound variants
-- **Strangler Fig Migration**: Build new primitives alongside old code, migrate page-by-page, maintain adapter pattern during transition
-- **Compound Components**: Export subcomponents for flexibility (Card.Header, Card.Content, Card.Footer)
-- **Server/Client Split**: Keep primitives as client components but allow server-rendered children via React.ReactNode
-
-**File structure recommendation:**
-```
-src/
-├── design-system/          # NEW: Foundation
-│   ├── tokens/            # Design token CSS files
-│   ├── theme/             # ThemeProvider, themes.css
-│   └── utils/             # cn(), variant helpers
-├── components/
-│   ├── primitives/        # Atomic (Button, Input, Badge)
-│   ├── composites/        # Molecules (Card, FilterPill, Table)
-│   └── patterns/          # Page-level (KPICard, OrdersTable)
-└── app/                   # Next.js pages (unchanged)
-```
+**Key patterns:**
+- **Middleware-based protection**: All routes protected by default except sign-in/sign-up; centralized auth logic prevents duplication across pages
+- **Server Components for auth checks**: Use auth() in RSC for user ID access; avoid client-side hooks when server-side sufficient
+- **Dynamic rendering opt-in**: Wrap client components using useAuth() in `<ClerkProvider dynamic>` + Suspense to prevent static rendering issues
+- **No custom auth UI**: Use prebuilt components exclusively; custom forms introduce security risks and maintenance burden
 
 ### Critical Pitfalls
 
-Research identified 10 major pitfalls, with 5 directly applicable to the CGM Dashboard migration. The most dangerous is the "Last 20% Migration Trap" where teams successfully migrate 80% but abandon the final 20%, resulting in two parallel systems requiring indefinite maintenance.
+The top 5 pitfalls account for 80% of reported integration issues. All are preventable with proper initial setup.
 
-1. **Last 20% Migration Trap** — Final 20% of migration takes 80% of effort and gets abandoned. Create ESLint backstops, make migration blocking for new features, allocate 30% sprint capacity, remove deprecated components entirely once alternatives exist.
+1. **Missing clerkMiddleware() Configuration** — Error "auth() was called but Clerk can't detect usage of clerkMiddleware()" blocks all auth checks. Caused by missing middleware.ts file or narrow matcher excludes routes where auth() called. Fix: Create middleware.ts at src/ root with recommended broad matcher pattern that excludes only static files (_next, images, fonts). Enable debug mode during development to verify middleware execution. Must address in Phase 1 (Foundation) before any auth calls.
 
-2. **Token Naming Disaster** — Poor token names (--blue-500) make dark mode impossible. Use two-tier system: primitives (--color-blue-600) → semantic (--color-primary). Component code only references semantic tokens. Theme variants override semantic tokens, never primitives.
+2. **Default Public Routes (Not Protected)** — All routes remain publicly accessible after Clerk installation. clerkMiddleware() makes routes public by default; protection is opt-in via auth.protect(). Developers migrating from authMiddleware() (v4) expect automatic protection. Fix: Explicitly protect routes using createRouteMatcher for public routes (['/sign-in(.*)', '/sign-up(.*)']), then call auth.protect() for all non-public routes. Test unauthenticated access to /dashboard, /orders, /settings before deployment. Must address in Phase 2 (Route Protection).
 
-3. **Inconsistent Half-Migration** — Half the codebase uses tokens, half uses hardcoded values. Dark mode works on some pages only. Migrate page-by-page (not component-by-component), add ESLint rules blocking hardcoded colors/spacing, track migration by route in dashboard.
+3. **Async auth() Breaking Changes Not Applied** — TypeScript errors or runtime failures when calling auth() without await. Clerk v6 made auth() asynchronous to support Next.js 15's async dynamic APIs. Existing code using synchronous auth() from v5 breaks. Fix: Update all auth() calls to await auth(), mark functions as async, change auth().protect() to await auth.protect(). Run @clerk/upgrade codemod to scan codebase. Must address in Phase 1 (Foundation) before building features.
 
-4. **Tailwind @apply Overuse** — Using @apply recreates CSS maintenance problems Tailwind solves. Never use @apply in component code; extract React components instead. Long className strings are fine. Official Tailwind docs warn against this anti-pattern.
+4. **Environment Variables Missing or Misconfigured** — Auth works in development but fails in production. Missing NEXT_PUBLIC_ prefix makes publishable key unavailable client-side. Using development keys (pk_test_) in production. Fix: Use exact variable names (NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY), verify key format matches environment (pk_test_/sk_test_ for dev, pk_live_/sk_live_ for prod), configure Vercel environments separately. Must address in Phase 1 (Foundation) and verify in Phase 4 (Production Deployment).
 
-5. **Flash of Incorrect Theme (FOIT)** — Users see light theme flash before switching to dark on page load. Use next-themes which handles SSR correctly, store theme in cookie for SSR access, block render with script in <head> reading localStorage before hydration.
+5. **CVE-2025-29927 Middleware Bypass Vulnerability** — Attackers bypass all authentication by adding x-middleware-subrequest header to HTTP requests. Protected routes become publicly accessible. Affects Next.js <15.2.3 (and older 12.x, 13.x, 14.x versions). Fix: Upgrade Next.js to ≥15.2.3 before first commit. Current project uses 16.1.6 (safe). Verify with curl test: `curl -H "x-middleware-subrequest: test" https://app/protected` should return 401, not 200. Must address in Phase 1 (Foundation) — cannot ship vulnerable version to production.
 
-**Additional pitfalls to monitor:**
-- Premature Component Abstraction — Don't create shared components until pattern appears 3+ times; duplication is cheaper than wrong abstraction
-- No Deprecation Strategy — Old components accumulate (Button, ButtonV2, PrimaryButton); mark deprecated immediately with console warnings and ESLint errors
-- Design-Code Drift — Figma/Pencil designs diverge from code; establish tokens as sync point, require design approval for component PRs
-- Missing Component Composition — Components don't compose well; use compound component pattern (Select.Option, Card.Header)
-- Overbuilding Before Validation — Building 50 components when only 10 are used; start with 5-10 most-used components, ship incrementally based on demand
+**Secondary pitfalls:**
+- **Dynamic Rendering Opt-Out** — useAuth() returns null in client components due to static rendering; requires `<ClerkProvider dynamic>` wrapper with Suspense
+- **Hydration Errors** — Server/client render mismatch from conditional auth rendering; fix by using Server Components with auth() or deferring client UI to useEffect()
+- **Link Prefetching to Protected Routes** — Console filled with 401 errors when hovering links; fix by adding prefetch={false} to protected route links on public pages
 
 ## Implications for Roadmap
 
-Based on research, the migration requires careful sequencing to establish foundation before building components, and page-level migration to ensure completion. The research strongly recommends 4 phases with strict enforcement mechanisms.
+Based on research, this project requires 3 core phases plus 1 optional polish phase. The critical path is Foundation → Route Protection → User Experience Integration. Testing setup should occur in parallel with Phase 3.
 
-### Phase 1: Foundation & Token Audit
-**Rationale:** Design tokens must exist before components can consume them. Semantic token naming must be established before any migration to prevent costly refactoring later. Research shows token naming mistakes are the hardest pitfall to recover from (HIGH cost).
-
-**Delivers:**
-- Expanded globals.css with full semantic token system (colors, typography, spacing, shadows)
-- Light/dark theme CSS variables (:root and [data-theme="dark"])
-- CVA setup and cn() utility function
-- ThemeProvider integration in layout.tsx
-- ESLint rules preventing hardcoded values
-- Deprecation policy and enforcement mechanisms
-- Token naming convention documentation
-
-**Addresses (from FEATURES.md):**
-- Design Tokens (Colors/Typography/Spacing/Shadows)
-- Semantic Color System
-- Light/Dark Theme infrastructure
-
-**Avoids (from PITFALLS.md):**
-- Token Naming Disaster (Pitfall 2) — Establish semantic naming before migration
-- No Deprecation Strategy (Pitfall 9) — Define policy from day one
-- Design-Code Drift (Pitfall 8) — Establish tokens as sync point
-
-**Research flag:** Standard pattern, skip phase research. Tailwind v4 @theme and next-themes patterns are well-documented.
-
-### Phase 2: Component Library Foundation
-**Rationale:** Build only essential primitives (Button, Input, Card, Badge) to validate design system patterns before expanding. Research warns against overbuilding—start with 5-10 most-used components, ship incrementally. This phase establishes reuse patterns for Phase 3 migration.
+### Phase 1: Foundation Setup (Critical Path)
+**Rationale:** Middleware configuration and environment setup must be correct from the start. Async auth() migration is disruptive to retrofit later. CVE-2025-29927 vulnerability cannot exist in committed code.
 
 **Delivers:**
-- Button component with CVA variants (primary/secondary/ghost/destructive)
-- Input components (text, number, select, textarea) with validation states
-- Card/Panel component with compound pattern (Card.Header, Card.Content, Card.Footer)
-- Badge component (refactor existing StatusBadge to use primitives)
-- Theme toggle UI component
-- Component documentation (usage guidelines, variants)
+- Clerk SDK installed (@clerk/nextjs v7.3.3+)
+- Environment variables configured (.env.local with publishable key and secret key)
+- ClerkProvider added to root layout (app/layout.tsx)
+- Middleware created with proper matcher (src/middleware.ts)
+- Sign-in and sign-up pages created with prebuilt components
+- All auth() calls use await (async pattern established)
+- Next.js version verified ≥15.2.3 (CVE fix confirmed)
 
-**Addresses (from FEATURES.md):**
-- Button Component (table stakes)
-- Input Components (table stakes)
-- Card/Panel Components (table stakes)
-- Status Badge (table stakes)
-- CVA variant management (differentiator)
-- Component Composition (differentiator)
+**Addresses features:**
+- Session Management (automatic via ClerkProvider)
+- Prebuilt UI Components (SignIn, SignUp)
 
-**Uses (from STACK.md):**
-- class-variance-authority for variants
-- tailwind-merge and clsx for className composition
-- tw-animate-css for transitions
+**Avoids pitfalls:**
+- Pitfall 1: Missing clerkMiddleware() Configuration
+- Pitfall 3: Async auth() Breaking Changes Not Applied
+- Pitfall 4: Environment Variables Missing or Misconfigured
+- Pitfall 6: CVE-2025-29927 Middleware Bypass Vulnerability
 
-**Avoids (from PITFALLS.md):**
-- Premature Component Abstraction (Pitfall 2) — Build only 4-5 primitives, defer complex components
-- Tailwind @apply Overuse (Pitfall 5) — Establish React components as reuse mechanism
-- Missing Component Composition (Pitfall 6) — Design composable APIs from start
-- Flash of Incorrect Theme (Pitfall 7) — Implement next-themes correctly for SSR
-- Overbuilding Before Validation (Pitfall 10) — Ship 4-5 components in v1.3, expand in v1.4+ based on demand
+**Success criteria:**
+- Unauthenticated users redirected to /sign-in when accessing dashboard
+- Sign-up flow completes with email verification
+- Sign-in flow authenticates user and redirects to dashboard
+- No "auth() was called but middleware not detected" errors
+- TypeScript compiles without Promise-related errors
 
-**Research flag:** Standard pattern, skip phase research. CVA and compound component patterns are well-established.
+**Estimated complexity:** LOW (1-2 hours implementation + testing)
 
-### Phase 3: Page-Level Migration
-**Rationale:** Migrate complete pages rather than scattered components to avoid incomplete migration trap. Research shows wave-based migration (entire features/pages atomically) is critical to completion. Orders page is good starting point (has OrdersTable, StatusBadge, cards).
+### Phase 2: Route Protection (Security Hardening)
+**Rationale:** Phase 1 sets up foundation but doesn't protect routes by default. Explicit route protection must be verified across all pages and API routes before considering auth "complete."
 
 **Delivers:**
-- Orders page migrated to design system
-- Customers page migrated to design system
-- Settings page migrated (likely has theme toggle)
-- Table component extracted from OrdersTable
-- FilterPill migrated to design system tokens
-- KPICard migrated to Card primitive
-- All hardcoded values eliminated from migrated pages
+- Middleware configured with createRouteMatcher for public routes
+- auth.protect() called for all non-public routes
+- API routes protected (if they exist)
+- Unauthenticated access testing for all major routes
+- Redirect flow verification (sign-in → dashboard, sign-out → home)
 
-**Addresses (from FEATURES.md):**
-- Table Component extraction (table stakes)
-- Page-by-page migration (differentiator)
-- FilterPill migration (existing component)
+**Addresses features:**
+- Route Protection via Middleware
+- Sign Out (with proper redirect)
 
-**Avoids (from PITFALLS.md):**
-- Last 20% Migration Trap (Pitfall 1) — Page-level migration prevents scattered incomplete work
-- Inconsistent Half-Migration (Pitfall 4) — Enforce complete migration per page via ESLint and PR checklist
+**Avoids pitfalls:**
+- Pitfall 2: Default Public Routes (Not Protected)
+- Pitfall 10: Link Prefetching to Protected Routes (disable prefetch for protected links on public pages)
 
-**Research flag:** Standard pattern, skip phase research. Table extraction and page migration patterns are straightforward.
+**Success criteria:**
+- Unauthenticated curl requests to /dashboard return 401 or redirect
+- Unauthenticated curl requests to /orders return 401 or redirect
+- API routes (if present) return 401 without auth header
+- Sign-out redirects to home page, not dashboard
+- No console 401 errors from link prefetching
 
-### Phase 4: Refinement & Documentation
-**Rationale:** After core migration, address polish items and create adoption documentation. This phase ensures the design system is maintainable and usable by future developers.
+**Estimated complexity:** LOW (1 hour implementation + comprehensive testing)
+
+### Phase 3: User Experience Integration
+**Rationale:** Phase 1-2 establish functional auth but user-facing integration (header, loading states) improves UX. This phase can occur in parallel with testing setup.
 
 **Delivers:**
-- Component documentation in Storybook or similar
-- Migration guide for remaining components
-- Token usage guidelines
-- Accessibility audit of all components
-- Visual regression test setup (if budget allows)
-- Remove deprecated components entirely
-- Design-code parity verification
+- Header component updated with UserButton
+- Conditional rendering with isLoaded check (prevent hydration errors)
+- Loading skeleton while auth state loads
+- Dynamic rendering opt-in for Header component (<ClerkProvider dynamic>)
+- Dark mode integration (appearance prop or color-scheme CSS)
 
-**Addresses (from FEATURES.md):**
-- Component Documentation (table stakes)
-- Design Token Documentation (differentiator)
-- Accessible Focus Management (table stakes)
+**Addresses features:**
+- User Display in Header
+- Dark/Light Theme Support
 
-**Avoids (from PITFALLS.md):**
-- Design-Code Drift (Pitfall 8) — Verify Figma/Pencil designs match code
-- Last 20% Migration Trap (Pitfall 1) — Delete deprecated components to force completion
+**Avoids pitfalls:**
+- Pitfall 5: Dynamic Rendering Opt-Out Breaking Auth
+- Pitfall 9: Hydration Errors from Conditional Auth Rendering
 
-**Research flag:** Documentation patterns are standard, but accessibility audit may need specific WCAG guidance.
+**Success criteria:**
+- Header shows authenticated user's name/avatar
+- UserButton dropdown includes Sign Out option
+- No hydration mismatch warnings in console
+- No flash of unauthenticated content (FOUC) on page load
+- Auth UI respects dark/light theme toggle
+
+**Estimated complexity:** LOW (1 hour implementation)
+
+### Phase 4: Production Deployment Validation
+**Rationale:** Development environment uses test keys; production requires separate Clerk instance with live keys and domain verification. Environment-specific configuration often breaks despite working locally.
+
+**Delivers:**
+- Production environment variables set (pk_live_, sk_live_)
+- Vercel environment configuration verified
+- Production domain associated with Clerk production instance
+- Test user sign-in on production URL
+- Rate limiting verification (ensure not hitting limits)
+- Audit logs reviewed for authentication events
+
+**Addresses features:**
+- All production-ready configurations
+
+**Avoids pitfalls:**
+- Pitfall 4: Environment Variables Missing or Misconfigured (production keys)
+
+**Success criteria:**
+- Production sign-in works with live keys
+- Clerk dashboard shows authentication events from production domain
+- No "Invalid publishable key" errors in production logs
+- Preview deployments use test keys, production uses live keys
+- Security headers configured (x-middleware-subrequest blocked at reverse proxy if possible)
+
+**Estimated complexity:** LOW (1 hour configuration + verification)
+
+### Optional: Testing & Polish (Parallel to Phase 3)
+**Rationale:** Testing infrastructure should be set up early but can run in parallel with Phase 3. Polish features (appearance customization, advanced loading states) can be deferred to post-launch based on feedback.
+
+**Delivers:**
+- Jest/Vitest mocks for @clerk/nextjs
+- Test utilities for toggling auth state
+- Integration tests for sign-in/sign-up flows
+- Appearance customization (match dashboard design tokens)
+- Advanced loading states beyond basic skeleton
+
+**Addresses features:**
+- Appearance Customization
+
+**Avoids pitfalls:**
+- Pitfall 8: Testing Without Clerk Mocks
+
+**Success criteria:**
+- Test suite runs without network calls
+- Tests complete in <10 seconds
+- Auth state can be toggled in tests (signed-in vs signed-out)
+- Clerk components match dashboard visual design (colors, fonts, spacing)
+
+**Estimated complexity:** MEDIUM (2-3 hours for comprehensive test setup)
 
 ### Phase Ordering Rationale
 
-- **Foundation must come first**: Design tokens are dependency for all other work. Research shows token naming mistakes are hardest to recover from (HIGH cost in PITFALLS.md recovery table).
+- **Foundation first** because middleware configuration errors and async auth() issues block all subsequent work. Environment variables must be correct before any auth calls work.
+- **Route Protection second** because Phase 1 delivers functional auth but leaves routes publicly accessible (critical security gap). Must verify protection before considering MVP complete.
+- **User Experience third** because it's user-facing integration, not functional requirement. Header integration improves UX but auth works without it (middleware handles redirects).
+- **Production Deployment last** because it requires working dev environment first. Separate phase ensures production-specific concerns (live keys, domain verification) don't get forgotten.
+- **Testing parallel to Phase 3** because test infrastructure should be set up early but doesn't block user-facing features. Mocks can be added as components are built.
 
-- **Primitives before migration**: Can't migrate pages without replacement components. Building 4-5 core primitives validates design system patterns before committing to full migration.
-
-- **Page-level not component-level migration**: Research strongly recommends wave-based migration (entire pages atomically) to avoid incomplete migration trap. Prevents the "80% done, never finishes" scenario.
-
-- **Documentation after implementation**: Can't document patterns until they're validated with real usage. Research warns against premature documentation of unproven patterns.
-
-**Dependency chain:**
-```
-Phase 1 (Tokens) → Phase 2 (Primitives) → Phase 3 (Migration) → Phase 4 (Documentation)
-                                                ↓
-                                        Avoids Pitfall 1 (Last 20% Trap)
-                                        Avoids Pitfall 4 (Inconsistent Migration)
-```
+**Dependencies identified:**
+- Phase 2 requires Phase 1 (can't protect routes without middleware foundation)
+- Phase 3 requires Phase 1 (can't integrate UserButton without ClerkProvider)
+- Phase 4 requires Phase 1-2 (must have working dev auth before production deployment)
+- Testing can start during Phase 1 and run in parallel
 
 ### Research Flags
 
-**Phases with standard patterns (skip research-phase):**
-- **Phase 1 (Foundation)**: Tailwind v4 @theme, next-themes, and CVA patterns are well-documented with official docs and Context7 verification
-- **Phase 2 (Primitives)**: CVA variant patterns and compound component architecture have extensive examples in shadcn/ui and Radix UI docs
-- **Phase 3 (Migration)**: Page-level migration patterns are straightforward React refactoring; table extraction is standard component decomposition
+Phases with standard patterns (skip `/gsd-research-phase`):
+- **Phase 1: Foundation Setup** — Well-documented Clerk quickstart, official Next.js integration guide, high-confidence sources (Context7 /clerk/clerk-docs)
+- **Phase 2: Route Protection** — Standard middleware patterns, established best practices, examples in Clerk docs
+- **Phase 3: User Experience Integration** — Straightforward component integration, prebuilt components eliminate custom code
+- **Phase 4: Production Deployment** — Documented Vercel deployment guide, environment variable checklist in Clerk docs
 
-**Phases needing validation during execution:**
-- **Phase 4 (Refinement)**: Accessibility audit may need WCAG 2.1 AA specific guidance for interactive components. Storybook setup has many configuration options that may need research for Next.js 15 App Router compatibility.
+No phases require deeper research. All implementation patterns are established with high-confidence official documentation.
 
-**No phases require deep pre-planning research** — all patterns are well-established. However, each phase should begin with quick verification that chosen libraries (next-themes, CVA) are compatible with project's Next.js 15/React 19 versions.
+**Research completed:** All research files (STACK, FEATURES, ARCHITECTURE, PITFALLS) have HIGH confidence ratings based on official Clerk documentation (Context7 library /clerk/clerk-docs) and verified Next.js 15 App Router patterns.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Official documentation for all recommended libraries (next-themes, CVA, tailwind-merge). Context7 verification of Tailwind v4 patterns. Package versions verified via npm registry (May 2026). |
-| Features | HIGH | Multiple authoritative sources on design system components (UXPin, Carbon Design System, Nielsen Norman Group). Clear consensus on table stakes vs differentiators. |
-| Architecture | HIGH | Official Next.js docs, Tailwind CSS docs, CVA docs. Atomic Design patterns widely adopted. Strangler Fig migration pattern proven in legacy modernization literature. |
-| Pitfalls | HIGH | Multiple case studies of design system failures. Consistent patterns across sources. Pitfall-to-phase mapping derived from migration case studies and best practices. |
+| Stack | HIGH | Official Clerk documentation via Context7 (/clerk/clerk-docs), npm version verification, Next.js compatibility confirmed |
+| Features | HIGH | Comprehensive Clerk feature documentation, competitive analysis from official Clerk comparison articles, NIST security guidance |
+| Architecture | HIGH | Official Next.js App Router patterns, Clerk integration guides from multiple high-quality sources (Clerk docs, Build with Matija, Prismic tutorial) |
+| Pitfalls | HIGH | CVE security advisories with technical analysis, official Clerk error documentation, GitHub issues with maintainer responses, community patterns from Medium/Dev.to |
 
 **Overall confidence:** HIGH
 
-Research is based on official documentation (Tailwind, Next.js, CVA), Context7-verified libraries, and established design system patterns from authoritative sources (Nielsen Norman Group, Carbon Design System, shadcn/ui). All recommended technologies have 2,000+ GitHub stars and active maintenance. Package versions verified current as of May 2026.
+All recommendations based on official documentation and verified integration patterns. Clerk is a mature product with Next.js 15 as first-class target. No uncertainty in critical path implementation.
 
 ### Gaps to Address
 
-**Token value decisions:** Research provides token structure and naming conventions, but specific token values (color hex codes, spacing scale multipliers, typography scale) must be decided based on existing globals.css and design files. Recommendation: Audit current globals.css tokens, expand to full system, validate against Pencil.dev design files.
+No significant gaps identified. Minor considerations for future phases:
 
-**Radix UI primitive selection:** Research recommends installing Radix primitives selectively as needed, but doesn't specify which ones will be needed for CGM Dashboard. Recommendation: Start without any Radix primitives in Phase 2, add specific primitives (likely Dialog, Tooltip) when building features that require them.
+- **Webhook integration patterns** — Not researched because not required for v1.4. If v1.5+ needs user data sync to database, research webhook verification with @clerk/clerk-sdk-node and Svix signatures.
+- **Organization/RBAC implementation** — Not researched because not required for v1.4 single-tenant app. If future multi-tenant requirements emerge, research Clerk Organizations feature and permission-based route protection.
+- **Advanced MFA configuration** — Basic MFA patterns researched but not WebAuthn/passkey implementation details. Defer until customer request triggers need.
 
-**Migration enforcement tooling:** Research recommends ESLint rules to block hardcoded values, but specific ESLint plugin configuration needs definition. Recommendation: Phase 1 should include configuring `eslint-plugin-tailwindcss` and potentially custom rules for semantic token usage.
-
-**Accessibility testing specifics:** Research identifies WCAG 2.1 AA as requirement but doesn't detail specific testing tools or process. Recommendation: Phase 4 should use Axe DevTools for automated testing (catches 57% of issues per research) plus manual screen reader testing with VoiceOver/NVDA.
-
-**Design file sync process:** Research identifies design-code drift as pitfall but doesn't specify workflow for this project's Pencil.dev files. Recommendation: Establish token sync process between Pencil.dev and globals.css in Phase 1, verify parity in Phase 4.
+All gaps are for deferred features (v1.5+), not MVP (v1.4). Current research covers all Phase 1-4 requirements with high confidence.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Context7: /tailwindlabs/tailwindcss.com — Tailwind v4 @theme documentation, design token patterns
-- Context7: /joe-bell/cva — Class Variance Authority API and TypeScript integration
-- Context7: /vercel/next.js — Next.js App Router architecture, project structure
-- Context7: /reactjs/react.dev — Component composition patterns, anti-patterns
-- [next-themes README](https://github.com/pacocoursey/next-themes) — Installation and SSR setup
-- [CVA Documentation](https://cva.style/docs) — Variants and TypeScript integration
-- [Radix UI Primitives](https://www.radix-ui.com/primitives) — Component primitives overview
-- [shadcn/ui Tailwind v4 Guide](https://ui.shadcn.com/docs/tailwind-v4) — Migration patterns
+- **Context7: /clerk/clerk-docs** — Clerk official documentation including installation, middleware, App Router patterns, environment variables, webhooks, system limits, production deployment, testing
+- **npm: @clerk/nextjs@7.3.3** — Latest stable version verification, peer dependencies (Next.js ≥15.2.3, React 18.x/19.x, Node.js ≥20.9.0)
+- **Official Clerk Guides** — Next.js Quickstart, clerkMiddleware() reference, auth() helper, currentUser() helper, UserButton component, environment variables, upgrade to v6, rendering modes, redirect customization, Vercel deployment, testing guide, appearance customization
+- **Security Advisories** — CVE-2025-29927 technical analysis from Clerk blog, ProjectDiscovery, Datadog Security Labs
 
 ### Secondary (MEDIUM confidence)
-- [Design Systems 101 - Nielsen Norman Group](https://www.nngroup.com/articles/design-systems-101/) — Design system best practices
-- [Carbon Design System - Component Checklist](https://carbondesignsystem.com/contributing/component-checklist/) — Essential components
-- [UXPin - Essential Design System Components](https://www.uxpin.com/studio/blog/design-system-components/) — Component library requirements
-- [Atomic Design Methodology - Brad Frost](https://atomicdesign.bradfrost.com/chapter-2/) — Component hierarchy patterns
-- [How to Implement a Design System - Design Systems Collective](https://www.designsystemscollective.com/how-to-implement-a-design-system-reasons-approach-and-migration-path-051c41734caf) — Migration strategies
-- [Why Most Design Systems Fail - Multiple Sources](https://ui-patterns.com/blog/why-most-design-systems-fail-and-how-to-cultivate-success) — Adoption pitfalls
-- [Tailwind CSS Best Practices](https://dev.to/frontendtoolstech/tailwind-css-best-practices-design-system-patterns-54pi) — @apply anti-patterns, component extraction
-- [Design Tokens Explained - Contentful](https://www.contentful.com/blog/design-token-system/) — Token architecture
+- **Competitive Comparisons** — Clerk vs Auth0 for Next.js (clerk.com), Full-Stack Authentication Comparison (C-Sharp Corner), Next.js Authentication Showdown 2025 (Medium)
+- **Security Best Practices** — Google Cloud account authentication best practices, Authgear password reset guide, LoginRadius password management
+- **Integration Tutorials** — Build with Matija: Clerk Authentication in Next.js 15, Prismic: Next.js Authentication with Clerk, Complete Authentication Guide for Next.js App Router (Clerk articles)
+- **File Structure Patterns** — Next.js official project structure, Best Practices for Organizing Next.js 15 (Dev.to), Ultimate Guide to Next.js 15 Project Structure (Wisp blog)
 
-### Tertiary (LOW confidence, needs validation)
-- Various Medium articles on CVA vs tailwind-variants comparison — Feature differences need validation with actual benchmarks
-- Blog posts on Tailwind v4 migration experiences — May not reflect final v4 release patterns
-- Community discussions on design system versioning — Practices vary by organization
+### Tertiary (LOW confidence)
+- **Community Resources** — GitHub issues (#299 middleware not working, #1746 ClerkProvider dynamic rendering), GitHub discussions (#63736 multiple middlewares, #66037 404s on protected routes), Medium articles on route protection
 
 ---
-*Research completed: 2026-05-07*
+*Research completed: 2026-05-09*
 *Ready for roadmap: yes*
