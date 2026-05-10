@@ -2,26 +2,16 @@
 
 ## Milestones
 
-- v1.0 MVP — Phases 0-5 ([archived](./milestones/v1.0-ROADMAP.md)) — shipped 2026-04-29
-- v1.1 Mill Production Dashboard — Phases 6-9 ([archived](./milestones/v1.1-ROADMAP.md)) — shipped 2026-04-29
-- v1.2 Customers Page — Phases 10-15 ([archived](./milestones/v1.2-ROADMAP.md)) — shipped 2026-05-06
-- v1.3 Design Hardening — Phases 16-19 ([archived](./milestones/v1.3-ROADMAP.md)) — shipped 2026-05-09
+- ✅ **v1.0 MVP** - Phases 0-5 (shipped 2026-04-29)
+- ✅ **v1.1 Mill Production Dashboard** - Phases 6-9 (shipped 2026-04-29)
+- ✅ **v1.2 Customers Page** - Phases 10-15 (shipped 2026-05-06)
+- ✅ **v1.3 Design Hardening** - Phases 16-19 (shipped 2026-05-09)
+- 🚧 **v1.4 Auth with Clerk** - Phases 20-24 (in progress)
 
-## Progress
-
-| Milestone | Phases | Plans | Status | Shipped |
-|-----------|--------|-------|--------|---------|
-| v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
-| v1.1 Mill Production Dashboard | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 27 | Complete | 2026-05-09 |
-
-**Total:** 4 milestones, 20 phases, 59 plans shipped
-
----
+## Phases
 
 <details>
-<summary>v1.0 MVP (Phases 0-5) — SHIPPED 2026-04-29</summary>
+<summary>✅ v1.0 MVP (Phases 0-5) - SHIPPED 2026-04-29</summary>
 
 ### Phase 0: Infrastructure
 **Goal**: Foundation for orders table with type-safe data
@@ -72,7 +62,7 @@ Plans:
 </details>
 
 <details>
-<summary>v1.1 Mill Production Dashboard (Phases 6-9) — SHIPPED 2026-04-29</summary>
+<summary>✅ v1.1 Mill Production Dashboard (Phases 6-9) - SHIPPED 2026-04-29</summary>
 
 ### Phase 6: Design
 **Goal**: Status filter pills designed and approved in mill-production.pen
@@ -106,7 +96,7 @@ Plans:
 </details>
 
 <details>
-<summary>v1.2 Customers Page (Phases 10-15) — SHIPPED 2026-05-06</summary>
+<summary>✅ v1.2 Customers Page (Phases 10-15) - SHIPPED 2026-05-06</summary>
 
 - [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
 - [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
@@ -118,7 +108,7 @@ Plans:
 </details>
 
 <details>
-<summary>v1.3 Design Hardening (Phases 16-19) — SHIPPED 2026-05-09</summary>
+<summary>✅ v1.3 Design Hardening (Phases 16-19) - SHIPPED 2026-05-09</summary>
 
 - [x] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization (5 plans)
 - [x] **Phase 17: Component Library** - Build reusable primitives: Button, Input, Card, Badge, Theme Toggle (5 plans)
@@ -134,9 +124,97 @@ Plans:
 
 </details>
 
+### 🚧 v1.4 Auth with Clerk (In Progress)
+
+**Milestone Goal:** Add user authentication so only logged-in users can access the dashboard.
+
+- [ ] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in/sign-up pages
+- [ ] **Phase 21: Route Protection** - Protect dashboard routes with middleware-based auth
+- [ ] **Phase 22: Auth Page Design** - Design sign-in page and header user area in Pencil.dev
+- [ ] **Phase 23: User Experience Integration** - Add user display to header with sign-out action
+- [ ] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration, live deployment
+
+## Phase Details
+
+### Phase 20: Clerk Foundation Setup
+**Goal**: Clerk SDK installed and configured with functional sign-in/sign-up flows
+**Depends on**: Nothing (first phase of v1.4)
+**Requirements**: AUTH-01, AUTH-03, PROT-03
+**Success Criteria** (what must be TRUE):
+  1. User can create account with email and password through sign-up page
+  2. User can log in with email and password through sign-in page
+  3. User session persists across browser refresh (stays logged in)
+  4. Sign-in and sign-up pages are accessible without authentication
+  5. No middleware detection errors in console during auth operations
+**Plans**: TBD
+
+### Phase 21: Route Protection
+**Goal**: All dashboard pages require authentication, unauthenticated users redirected to sign-in
+**Depends on**: Phase 20
+**Requirements**: PROT-01, PROT-02
+**Success Criteria** (what must be TRUE):
+  1. Unauthenticated user accessing /orders is redirected to sign-in page
+  2. Unauthenticated user accessing /customers is redirected to sign-in page
+  3. Unauthenticated user accessing /mill-production is redirected to sign-in page
+  4. Unauthenticated user accessing /settings is redirected to sign-in page
+  5. After sign-in, user is redirected back to originally requested page
+**Plans**: TBD
+
+### Phase 22: Auth Page Design
+**Goal**: Sign-in page and header user area designed in Pencil.dev files
+**Depends on**: Phase 21
+**Requirements**: None (design phase)
+**Success Criteria** (what must be TRUE):
+  1. Sign-in page layout designed showing email/password form
+  2. Header user area designed showing avatar, name, and sign-out button
+  3. Light and dark theme variants designed for auth components
+  4. Design follows existing component library patterns and tokens
+  5. Design file committed and ready for implementation reference
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 23: User Experience Integration
+**Goal**: Header displays authenticated user info with sign-out action and theme support
+**Depends on**: Phase 22
+**Requirements**: UX-01, UX-02, UX-03, AUTH-02
+**Success Criteria** (what must be TRUE):
+  1. Header displays signed-in user's name or email in all authenticated pages
+  2. Header includes accessible sign-out button that logs user out
+  3. Sign-out redirects user to sign-in page
+  4. Auth UI components (sign-in, sign-up, user button) respect current theme (light/dark)
+  5. No hydration errors or flash of unauthenticated content on page load
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 24: Production Deployment Validation
+**Goal**: Authentication works in production with live Clerk keys and domain verification
+**Depends on**: Phase 23
+**Requirements**: None (validation phase)
+**Success Criteria** (what must be TRUE):
+  1. Production deployment uses live Clerk keys (pk_live_, sk_live_)
+  2. Production domain is associated with Clerk production instance
+  3. Test user can successfully sign in on production URL
+  4. Clerk dashboard shows authentication events from production domain
+  5. No "Invalid publishable key" errors in production logs
+**Plans**: TBD
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 20. Clerk Foundation Setup | 0/TBD | Not started | - |
+| 21. Route Protection | 0/TBD | Not started | - |
+| 22. Auth Page Design | 0/TBD | Not started | - |
+| 23. User Experience Integration | 0/TBD | Not started | - |
+| 24. Production Deployment Validation | 0/TBD | Not started | - |
+
 ---
 *Roadmap created: 2026-03-11*
 *v1.0 shipped: 2026-04-29*
 *v1.1 shipped: 2026-04-29*
 *v1.2 shipped: 2026-05-06*
 *v1.3 shipped: 2026-05-09*
+*v1.4 roadmap created: 2026-05-09*

@@ -64,21 +64,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | TBD | Pending |
-| AUTH-02 | TBD | Pending |
-| AUTH-03 | TBD | Pending |
-| PROT-01 | TBD | Pending |
-| PROT-02 | TBD | Pending |
-| PROT-03 | TBD | Pending |
-| UX-01 | TBD | Pending |
-| UX-02 | TBD | Pending |
-| UX-03 | TBD | Pending |
+| AUTH-01 | Phase 20 | Pending |
+| AUTH-02 | Phase 23 | Pending |
+| AUTH-03 | Phase 20 | Pending |
+| PROT-01 | Phase 21 | Pending |
+| PROT-02 | Phase 21 | Pending |
+| PROT-03 | Phase 20 | Pending |
+| UX-01 | Phase 23 | Pending |
+| UX-02 | Phase 23 | Pending |
+| UX-03 | Phase 23 | Pending |
 
 **Coverage:**
 - v1.4 requirements: 9 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 9
+- Mapped to phases: 9/9 (100%)
+- Unmapped: 0
+
+**Phase breakdown:**
+- Phase 20 (Clerk Foundation Setup): AUTH-01, AUTH-03, PROT-03 (3 requirements)
+- Phase 21 (Route Protection): PROT-01, PROT-02 (2 requirements)
+- Phase 22 (Auth Page Design): 0 requirements (design phase)
+- Phase 23 (User Experience Integration): UX-01, UX-02, UX-03, AUTH-02 (4 requirements)
+- Phase 24 (Production Deployment Validation): 0 requirements (validation phase)
 
 ---
 *Requirements defined: 2026-05-09*
-*Last updated: 2026-05-09 after initial definition*
+*Last updated: 2026-05-09 after roadmap creation*

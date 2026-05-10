@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Auth with Clerk
-status: planning
+status: ready_to_plan
 last_updated: "2026-05-09T23:35:49.194Z"
 last_activity: 2026-05-09
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,35 +21,40 @@ See: .planning/PROJECT.md (updated 2026-05-09)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Milestone v1.3 shipped. Awaiting v1.4 scope definition.
+**Current focus:** Phase 20 - Clerk Foundation Setup
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-09 — Milestone v1.4 started
+Phase: 20 of 24 (Clerk Foundation Setup)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-05-09 — v1.4 roadmap updated (added design phase)
+
+Progress: [████████████████░░░░] 79% (19/24 phases complete from previous milestones)
 
 ## Performance Metrics
 
-**Milestone v1.3 (just shipped):**
+**Velocity:**
+- Total plans completed: 59 (across v1.0-v1.3)
+- Previous milestone (v1.3): 27 plans in 3 days
+- Average duration: ~45 min per plan (estimated from v1.3)
 
-- Phases completed: 4/4 (Phases 16-19)
-- Plans completed: 27/27
-- Requirements delivered: 20/20
-- Tests: 304 passing
-- ESLint: 0 errors
-- Timeline: 3 days (2026-05-07 → 2026-05-09)
+**By Milestone:**
 
-**All-time stats:**
+| Milestone | Phases | Plans | Duration |
+|-----------|--------|-------|----------|
+| v1.0 | 5 | 12 | 49 days |
+| v1.1 | 4 | 5 | 2 days |
+| v1.2 | 6 | 15 | 5 days |
+| v1.3 | 4 | 27 | 3 days |
+| v1.4 | 5 | TBD | In progress |
 
-| Milestone | Phases | Plans | Days |
-|-----------|--------|-------|------|
-| v1.0 MVP | 5 | 12 | 49 |
-| v1.1 Mill Production | 4 | 5 | 2 |
-| v1.2 Customers Page | 6 | 15 | 5 |
-| v1.3 Design Hardening | 4 | 27 | 3 |
-| **Total** | **20** | **59** | **59** |
+**Recent Trend:**
+- Velocity improving across milestones
+- v1.3 completed 27 plans in 3 days (9 plans/day average)
+- Trend: Improving
+
+*Updated after v1.4 roadmap creation*
 
 ## Accumulated Context
 
@@ -57,13 +62,13 @@ Last activity: 2026-05-09 — Milestone v1.4 started
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
-*Decisions from v1.3:*
+*Decisions from v1.3 affecting auth integration:*
 
-- CVA for type-safe component variants — class-variance-authority enables exhaustive variant typing
-- Two-tier token naming (primitive → semantic) — enables automatic theme swapping
-- next-themes for dark mode — handles SSR flash prevention, system preference sync
-- jsx-a11y rules approach over plugin — avoids conflict with eslint-config-next
-- jest-axe for automated a11y testing — catches WCAG violations during development
+- CVA for type-safe component variants — affects auth UI integration with existing components
+- Two-tier token naming (primitive → semantic) — auth components must use semantic tokens
+- next-themes for dark mode — auth UI must respect current theme (light/dark/system)
+- jsx-a11y rules approach — auth UI must maintain WCAG 2.1 AA accessibility compliance
+- jest-axe for automated a11y testing — auth flows require accessibility testing
 
 ### Active Todos
 
@@ -75,7 +80,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 
 ### Deferred Items
 
-*Items deferred from v1.0-v1.2 (not in v1.3 scope):*
+*Items deferred from v1.0-v1.2 (not in v1.3-v1.4 scope):*
 
 **Phase 3 (KPI Cards):**
 
@@ -100,13 +105,16 @@ Decisions are logged in PROJECT.md Key Decisions table.
 1. `.planning/PROJECT.md` — Core value, current milestone, constraints
 2. `.planning/ROADMAP.md` — Phase structure and current position
 3. `.planning/STATE.md` — This file for accumulated context
+4. `.planning/REQUIREMENTS.md` — v1.4 requirements with traceability
+5. `.planning/research/SUMMARY.md` — Clerk integration research and pitfalls
 
 **Quick recovery:**
 
-- Current milestone: v1.3 SHIPPED
-- Next step: `/gsd-new-milestone` for v1.4
-- Archive: .planning/milestones/v1.3-ROADMAP.md
+- Current milestone: v1.4 Auth with Clerk
+- Next step: `/gsd-plan-phase 20` (Clerk Foundation Setup)
+- Research: Complete (HIGH confidence)
+- Requirements: 9 total (3 categories: Authentication, Route Protection, User Experience)
 
 ---
-*State initialized: 2026-05-07 for v1.3 milestone*
-*Milestone shipped: 2026-05-09*
+*State initialized: 2026-05-09 for v1.4 milestone*
+*Roadmap created: 2026-05-09*
