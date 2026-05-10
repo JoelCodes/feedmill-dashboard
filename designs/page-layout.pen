@@ -1,6 +1,181 @@
 {
-  "version": "2.8",
+  "version": "2.11",
   "children": [
+    {
+      "type": "frame",
+      "id": "UA1Dx",
+      "x": -400,
+      "y": 0,
+      "name": "HeaderUserArea/Default",
+      "reusable": true,
+      "width": 120,
+      "height": 40,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-md",
+      "layout": "horizontal",
+      "gap": "$space-2",
+      "padding": "$space-2",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "AV32p",
+          "name": "Avatar",
+          "width": 32,
+          "height": 32,
+          "fill": "$primary",
+          "cornerRadius": 9999,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "IT2Ja",
+              "x": 8,
+              "y": 9,
+              "name": "Initials",
+              "content": "JD",
+              "fill": "$text-white",
+              "fontSize": 12,
+              "fontWeight": "600",
+              "fontFamily": "Helvetica"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "DN4Tb",
+          "name": "DisplayName",
+          "content": "John Doe",
+          "fill": "$text-primary",
+          "fontSize": 13,
+          "fontWeight": "500",
+          "fontFamily": "Helvetica",
+          "lineHeight": 1.5
+        }
+      ]
+    },
+    {
+      "type": "ref",
+      "id": "HV45c",
+      "x": -400,
+      "y": 60,
+      "name": "HeaderUserArea/Hover",
+      "ref": "UA1Dx",
+      "fill": "$bg-page"
+    },
+    {
+      "type": "frame",
+      "id": "DM56d",
+      "x": -400,
+      "y": 120,
+      "name": "UserDropdownMenu",
+      "reusable": true,
+      "width": 200,
+      "fill": "$bg-card",
+      "cornerRadius": "$radius-lg",
+      "layout": "vertical",
+      "gap": 0,
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#00000026",
+        "offset": {
+          "x": 0,
+          "y": 4
+        },
+        "blur": 12
+      },
+      "children": [
+        {
+          "type": "frame",
+          "id": "UI67e",
+          "name": "UserInfo",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$space-1",
+          "padding": "$space-4",
+          "children": [
+            {
+              "type": "text",
+              "id": "TN78f",
+              "name": "FullName",
+              "content": "John Doe",
+              "fill": "$text-primary",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "fontFamily": "Helvetica"
+            },
+            {
+              "type": "text",
+              "id": "EM89g",
+              "name": "Email",
+              "content": "john.doe@example.com",
+              "fill": "$text-secondary",
+              "fontSize": 11,
+              "fontWeight": "400",
+              "fontFamily": "Helvetica"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "DV90h",
+          "name": "Divider",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "$divider"
+        },
+        {
+          "type": "frame",
+          "id": "SO01i",
+          "name": "SignOutButton",
+          "width": "fill_container",
+          "height": 40,
+          "layout": "horizontal",
+          "alignItems": "center",
+          "padding": "$space-4",
+          "children": [
+            {
+              "type": "text",
+              "id": "TX12j",
+              "name": "SignOutText",
+              "content": "Sign Out",
+              "fill": "$text-primary",
+              "fontSize": 13,
+              "fontWeight": "500",
+              "fontFamily": "Helvetica"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DD23k",
+      "x": -400,
+      "y": 280,
+      "name": "HeaderUserArea/DropdownOpen",
+      "reusable": true,
+      "layout": "none",
+      "width": 200,
+      "height": 150,
+      "children": [
+        {
+          "type": "ref",
+          "id": "RU34l",
+          "ref": "UA1Dx",
+          "x": 80,
+          "y": 0
+        },
+        {
+          "type": "ref",
+          "id": "RM45m",
+          "ref": "DM56d",
+          "x": 0,
+          "y": 48
+        }
+      ]
+    },
     {
       "type": "frame",
       "id": "page-layout",
@@ -617,6 +792,327 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "LA56n",
+      "x": 0,
+      "y": 1300,
+      "name": "Header User Area - Light Mode",
+      "theme": {
+        "mode": "light"
+      },
+      "width": 800,
+      "height": 400,
+      "fill": "$bg-page",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "ST67o",
+          "x": 48,
+          "y": 48,
+          "name": "title",
+          "content": "Header User Area - Light Mode",
+          "fill": "$text-primary",
+          "fontSize": 24,
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "text",
+          "id": "DS78p",
+          "x": 48,
+          "y": 100,
+          "name": "defaultLabel",
+          "content": "Default State",
+          "fill": "$text-secondary",
+          "fontSize": 14,
+          "fontWeight": "600",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "ref",
+          "id": "RD89q",
+          "ref": "UA1Dx",
+          "x": 48,
+          "y": 130
+        },
+        {
+          "type": "text",
+          "id": "HL90r",
+          "x": 48,
+          "y": 200,
+          "name": "hoverLabel",
+          "content": "Hover State",
+          "fill": "$text-secondary",
+          "fontSize": 14,
+          "fontWeight": "600",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "ref",
+          "id": "RH01s",
+          "ref": "HV45c",
+          "x": 48,
+          "y": 230
+        },
+        {
+          "type": "text",
+          "id": "DD12t",
+          "x": 300,
+          "y": 100,
+          "name": "dropdownLabel",
+          "content": "Dropdown Open State",
+          "fill": "$text-secondary",
+          "fontSize": 14,
+          "fontWeight": "600",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "ref",
+          "id": "RD23u",
+          "ref": "DD23k",
+          "x": 300,
+          "y": 130
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DM34v",
+      "x": 900,
+      "y": 1300,
+      "name": "Header User Area - Dark Mode",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 800,
+      "height": 400,
+      "fill": "$bg-page",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "DT45w",
+          "x": 48,
+          "y": 48,
+          "name": "title",
+          "content": "Header User Area - Dark Mode",
+          "fill": "$text-primary",
+          "fontSize": 24,
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "text",
+          "id": "DS56x",
+          "x": 48,
+          "y": 100,
+          "name": "defaultLabel",
+          "content": "Default State",
+          "fill": "$text-secondary",
+          "fontSize": 14,
+          "fontWeight": "600",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "ref",
+          "id": "RD67y",
+          "ref": "UA1Dx",
+          "x": 48,
+          "y": 130
+        },
+        {
+          "type": "text",
+          "id": "HL78z",
+          "x": 48,
+          "y": 200,
+          "name": "hoverLabel",
+          "content": "Hover State",
+          "fill": "$text-secondary",
+          "fontSize": 14,
+          "fontWeight": "600",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "ref",
+          "id": "RH89a",
+          "ref": "HV45c",
+          "x": 48,
+          "y": 230
+        },
+        {
+          "type": "text",
+          "id": "DD90b",
+          "x": 300,
+          "y": 100,
+          "name": "dropdownLabel",
+          "content": "Dropdown Open State",
+          "fill": "$text-secondary",
+          "fontSize": 14,
+          "fontWeight": "600",
+          "fontFamily": "Helvetica"
+        },
+        {
+          "type": "ref",
+          "id": "RD01c",
+          "ref": "DD23k",
+          "x": 300,
+          "y": 130
+        }
+      ]
     }
-  ]
+  ],
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "bg-card": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#ffffff",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2d3748",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "bg-page": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#f8f9fa",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#1a202c",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "divider": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#e2e8f0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#4a5568",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#4fd1c5",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#63b3ed",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "primary-hover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#45b8ad",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#7ab8ef",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "radius-md": {
+      "type": "number",
+      "value": 8
+    },
+    "radius-lg": {
+      "type": "number",
+      "value": 12
+    },
+    "space-1": {
+      "type": "number",
+      "value": 4
+    },
+    "space-2": {
+      "type": "number",
+      "value": 8
+    },
+    "space-4": {
+      "type": "number",
+      "value": 16
+    },
+    "text-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#2d3748",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#e2e8f0",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "text-secondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#a0aec0",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#a0aec0",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "text-white": {
+      "type": "color",
+      "value": "#ffffff"
+    }
+  }
 }
