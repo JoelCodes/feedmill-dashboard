@@ -20,7 +20,7 @@ audited: 2026-05-09
 |----------|-------|
 | **Framework** | Jest 30.3.0 with jest-environment-jsdom |
 | **Config file** | jest.config.ts |
-| **Quick run command** | `npm test -- --testPathPattern="clerk-theme\|middleware\|sign-in"` |
+| **Quick run command** | `npm test -- --testPathPatterns="clerk-theme\|middleware\|sign-in"` |
 | **Full suite command** | `npm test` |
 | **Estimated runtime** | ~0.5 seconds (phase tests), ~5 seconds (full suite) |
 
@@ -113,3 +113,21 @@ Existing infrastructure covers all phase requirements.
 - [x] `nyquist_compliant: true` set in frontmatter
 
 **Approval:** approved 2026-05-09
+
+---
+
+## Re-Audit 2026-05-10
+
+| Metric | Value |
+|--------|-------|
+| Tests executed | 30 |
+| Tests passing | 30 |
+| Requirements covered | AUTH-01, AUTH-03, PROT-03 (3/3) |
+| Threats mitigated | T-20-01, T-20-02, T-20-03, T-20-04, T-20-06, T-20-07 (6 mitigate/transfer) |
+| Threats accepted | T-20-05, T-20-08, T-20-03-01 (3 accept) |
+| Gaps found | 0 |
+| Gaps filled | 0 |
+
+**Status:** No Nyquist gaps. Full coverage maintained.
+
+**Command fix:** Updated `--testPathPattern` to `--testPathPatterns` (Jest 30 API change).
