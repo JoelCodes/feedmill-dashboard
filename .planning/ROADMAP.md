@@ -128,7 +128,7 @@ Plans:
 
 **Milestone Goal:** Add user authentication so only logged-in users can access the dashboard.
 
-- [ ] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in/sign-up pages
+- [ ] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page
 - [ ] **Phase 21: Route Protection** - Protect dashboard routes with middleware-based auth
 - [ ] **Phase 22: Auth Page Design** - Design sign-in page and header user area in Pencil.dev
 - [ ] **Phase 23: User Experience Integration** - Add user display to header with sign-out action
@@ -137,16 +137,19 @@ Plans:
 ## Phase Details
 
 ### Phase 20: Clerk Foundation Setup
-**Goal**: Clerk SDK installed and configured with functional sign-in/sign-up flows
+**Goal**: Clerk SDK installed and configured with functional sign-in flow
 **Depends on**: Nothing (first phase of v1.4)
 **Requirements**: AUTH-01, AUTH-03, PROT-03
 **Success Criteria** (what must be TRUE):
-  1. User can create account with email and password through sign-up page
-  2. User can log in with email and password through sign-in page
-  3. User session persists across browser refresh (stays logged in)
-  4. Sign-in and sign-up pages are accessible without authentication
-  5. No middleware detection errors in console during auth operations
-**Plans**: TBD
+  1. User can log in with email and password through sign-in page
+  2. User session persists across browser refresh (stays logged in)
+  3. Sign-in page is accessible without authentication
+  4. No middleware detection errors in console during auth operations
+**Plans**: 2 plans
+
+Plans:
+- [ ] 20-01-PLAN.md — Install Clerk SDK, configure env vars, add ClerkProvider, create middleware
+- [ ] 20-02-PLAN.md — Create Clerk theme config and sign-in page with branding
 
 ### Phase 21: Route Protection
 **Goal**: All dashboard pages require authentication, unauthenticated users redirected to sign-in
@@ -205,7 +208,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Clerk Foundation Setup | 0/TBD | Not started | - |
+| 20. Clerk Foundation Setup | 0/2 | Planning complete | - |
 | 21. Route Protection | 0/TBD | Not started | - |
 | 22. Auth Page Design | 0/TBD | Not started | - |
 | 23. User Experience Integration | 0/TBD | Not started | - |
