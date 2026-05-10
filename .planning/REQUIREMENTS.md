@@ -9,15 +9,15 @@ Requirements for authentication layer. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign in with email and password
+- [x] **AUTH-01**: User can sign in with email and password
 - [ ] **AUTH-02**: User can sign out from any page
-- [ ] **AUTH-03**: User session persists across browser refresh
+- [x] **AUTH-03**: User session persists across browser refresh
 
 ### Route Protection
 
 - [ ] **PROT-01**: Unauthenticated users are redirected to sign-in page
 - [ ] **PROT-02**: All dashboard pages require authentication (orders, customers, mill production, settings)
-- [ ] **PROT-03**: Sign-in page is accessible without authentication
+- [x] **PROT-03**: Sign-in page is accessible without authentication
 
 ### User Experience
 
@@ -64,12 +64,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 20 | Pending |
+| AUTH-01 | Phase 20 | Complete |
 | AUTH-02 | Phase 23 | Pending |
-| AUTH-03 | Phase 20 | Pending |
+| AUTH-03 | Phase 20 | Complete |
 | PROT-01 | Phase 21 | Pending |
 | PROT-02 | Phase 21 | Pending |
-| PROT-03 | Phase 20 | Pending |
+| PROT-03 | Phase 20 | Complete |
 | UX-01 | Phase 23 | Pending |
 | UX-02 | Phase 23 | Pending |
 | UX-03 | Phase 23 | Pending |
