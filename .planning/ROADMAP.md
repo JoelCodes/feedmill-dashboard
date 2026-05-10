@@ -128,8 +128,8 @@ Plans:
 
 **Milestone Goal:** Add user authentication so only logged-in users can access the dashboard.
 
-- [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (UAT gap closure in progress) (completed 2026-05-10)
-- [ ] **Phase 21: Route Protection** - Protect dashboard routes with middleware-based auth
+- [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (completed 2026-05-10)
+- [x] **Phase 21: Route Protection** - Playwright E2E tests verify route protection (completed 2026-05-10)
 - [ ] **Phase 22: Auth Page Design** - Design sign-in page and header user area in Pencil.dev
 - [ ] **Phase 23: User Experience Integration** - Add user display to header with sign-out action
 - [ ] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration, live deployment
@@ -166,7 +166,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 21-01-PLAN.md — Set up Playwright E2E testing and verify route protection with automated tests
+- [x] 21-01-PLAN.md — Set up Playwright E2E testing and verify route protection with automated tests
 
 ### Phase 22: Auth Page Design
 **Goal**: Sign-in page and header user area designed in Pencil.dev files
@@ -214,7 +214,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 20. Clerk Foundation Setup | 4/4 | Complete    | 2026-05-10 |
-| 21. Route Protection | 0/1 | Not started | - |
+| 21. Route Protection | 1/1 | Complete | 2026-05-10 |
 | 22. Auth Page Design | 0/TBD | Not started | - |
 | 23. User Experience Integration | 0/TBD | Not started | - |
 | 24. Production Deployment Validation | 0/TBD | Not started | - |

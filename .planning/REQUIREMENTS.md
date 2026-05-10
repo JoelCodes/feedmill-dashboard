@@ -15,8 +15,8 @@ Requirements for authentication layer. Each maps to roadmap phases.
 
 ### Route Protection
 
-- [ ] **PROT-01**: Unauthenticated users are redirected to sign-in page
-- [ ] **PROT-02**: All dashboard pages require authentication (orders, customers, mill production, settings)
+- [x] **PROT-01**: Unauthenticated users are redirected to sign-in page
+- [x] **PROT-02**: All dashboard pages require authentication (orders, customers, mill production, settings)
 - [x] **PROT-03**: Sign-in page is accessible without authentication
 
 ### User Experience
@@ -67,8 +67,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-01 | Phase 20 | Complete |
 | AUTH-02 | Phase 23 | Pending |
 | AUTH-03 | Phase 20 | Complete |
-| PROT-01 | Phase 21 | Pending |
-| PROT-02 | Phase 21 | Pending |
+| PROT-01 | Phase 21 | Complete |
+| PROT-02 | Phase 21 | Complete |
 | PROT-03 | Phase 20 | Complete |
 | UX-01 | Phase 23 | Pending |
 | UX-02 | Phase 23 | Pending |
@@ -88,4 +88,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-09*
-*Last updated: 2026-05-09 after roadmap creation*
+*Last updated: 2026-05-10 after Phase 21 completion*
