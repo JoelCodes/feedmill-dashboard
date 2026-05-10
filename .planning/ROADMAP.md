@@ -128,7 +128,7 @@ Plans:
 
 **Milestone Goal:** Add user authentication so only logged-in users can access the dashboard.
 
-- [ ] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page
+- [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (completed 2026-05-10)
 - [ ] **Phase 21: Route Protection** - Protect dashboard routes with middleware-based auth
 - [ ] **Phase 22: Auth Page Design** - Design sign-in page and header user area in Pencil.dev
 - [ ] **Phase 23: User Experience Integration** - Add user display to header with sign-out action
@@ -148,8 +148,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 20-01-PLAN.md — Install Clerk SDK, configure env vars, add ClerkProvider, create middleware
-- [ ] 20-02-PLAN.md — Create Clerk theme config and sign-in page with branding
+- [x] 20-01-PLAN.md — Install Clerk SDK, configure env vars, add ClerkProvider, create middleware
+- [x] 20-02-PLAN.md — Create Clerk theme config and sign-in page with branding
 
 ### Phase 21: Route Protection
 **Goal**: All dashboard pages require authentication, unauthenticated users redirected to sign-in
@@ -208,7 +208,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Clerk Foundation Setup | 0/2 | Planning complete | - |
+| 20. Clerk Foundation Setup | 2/2 | Complete   | 2026-05-10 |
 | 21. Route Protection | 0/TBD | Not started | - |
 | 22. Auth Page Design | 0/TBD | Not started | - |
 | 23. User Experience Integration | 0/TBD | Not started | - |
