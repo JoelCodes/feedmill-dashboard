@@ -4,8 +4,16 @@ import SignInPage from "../[[...sign-in]]/page";
 import "@testing-library/jest-dom";
 
 // Mock Clerk components
+interface MockSignInProps {
+  appearance?: unknown;
+  routing?: string;
+  path?: string;
+  signUpUrl?: string;
+  fallbackRedirectUrl?: string;
+}
+
 jest.mock("@clerk/nextjs", () => ({
-  SignIn: ({ appearance, routing, path, signUpUrl, fallbackRedirectUrl }: any) => (
+  SignIn: ({ appearance, routing, path, signUpUrl, fallbackRedirectUrl }: MockSignInProps) => (
     <div data-testid="clerk-signin">
       <div data-testid="appearance">{JSON.stringify(appearance !== undefined)}</div>
       <div data-testid="routing">{routing}</div>
@@ -85,7 +93,7 @@ describe("SignInPage", () => {
   });
 
   it("positions branding above SignIn component", () => {
-    const { container } = render(<SignInPage />);
+    render(<SignInPage />);
 
     const branding = screen.getByText("CGM DASHBOARD").parentElement;
     const signIn = screen.getByTestId("clerk-signin");

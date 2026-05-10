@@ -1,7 +1,7 @@
 // Mock Clerk imports before importing middleware
 jest.mock("@clerk/nextjs/server", () => ({
-  clerkMiddleware: (fn: any) => fn,
-  createRouteMatcher: (routes: string[]) => (req: any) => false,
+  clerkMiddleware: (fn: () => void) => fn,
+  createRouteMatcher: () => () => false,
 }));
 
 import { config } from "./middleware";

@@ -1,5 +1,4 @@
 import { clerkAppearance } from "./clerk-theme";
-import type { Appearance } from "@clerk/types";
 
 // Clerk's Elements type is narrower than what's accepted at runtime.
 // Use Record<string, unknown> for element property access in tests.
