@@ -19,7 +19,8 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3000/sign-in',
     reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000, // 2 minutes for dev server startup
   },
 });
