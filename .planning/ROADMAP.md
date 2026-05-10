@@ -130,7 +130,7 @@ Plans:
 
 - [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (completed 2026-05-10)
 - [x] **Phase 21: Route Protection** - Playwright E2E tests verify route protection (completed 2026-05-10)
-- [ ] **Phase 22: Auth Page Design** - Design sign-in page and header user area in Pencil.dev
+- [ ] **Phase 22: Auth Page Design** - Design header user area in Pencil.dev (sign-in page already implemented)
 - [ ] **Phase 23: User Experience Integration** - Add user display to header with sign-out action
 - [ ] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration, live deployment
 
@@ -169,17 +169,20 @@ Plans:
 - [x] 21-01-PLAN.md — Set up Playwright E2E testing and verify route protection with automated tests
 
 ### Phase 22: Auth Page Design
-**Goal**: Sign-in page and header user area designed in Pencil.dev files
+**Goal**: Header user area designed in Pencil.dev files
 **Depends on**: Phase 21
 **Requirements**: None (design phase)
 **Success Criteria** (what must be TRUE):
-  1. Sign-in page layout designed showing email/password form
+  1. ~~Sign-in page layout designed showing email/password form~~ (SKIP per D-09 - already implemented)
   2. Header user area designed showing avatar, name, and sign-out button
   3. Light and dark theme variants designed for auth components
   4. Design follows existing component library patterns and tokens
   5. Design file committed and ready for implementation reference
-**Plans**: TBD
+**Plans**: 1 plan
 **UI hint**: yes
+
+Plans:
+- [ ] 22-01-PLAN.md — Design header user area component with 3 states and 2 theme variants
 
 ### Phase 23: User Experience Integration
 **Goal**: Header displays authenticated user info with sign-out action and theme support
@@ -215,7 +218,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 |-------|----------------|--------|-----------|
 | 20. Clerk Foundation Setup | 4/4 | Complete    | 2026-05-10 |
 | 21. Route Protection | 1/1 | Complete | 2026-05-10 |
-| 22. Auth Page Design | 0/TBD | Not started | - |
+| 22. Auth Page Design | 0/1 | In progress | - |
 | 23. User Experience Integration | 0/TBD | Not started | - |
 | 24. Production Deployment Validation | 0/TBD | Not started | - |
 
