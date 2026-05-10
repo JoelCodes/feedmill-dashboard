@@ -151,7 +151,7 @@ Plans:
 - [x] 20-01-PLAN.md — Install Clerk SDK, configure env vars, add ClerkProvider, create middleware
 - [x] 20-02-PLAN.md — Create Clerk theme config and sign-in page with branding
 - [x] 20-03-PLAN.md — [Gap closure] Add missing Clerk URL environment variables
-- [ ] 20-04-PLAN.md — [Gap closure] Add ThemeToggle to sign-in page
+- [x] 20-04-PLAN.md — [Gap closure] Add ThemeToggle to sign-in page
 
 ### Phase 21: Route Protection
 **Goal**: All dashboard pages require authentication, unauthenticated users redirected to sign-in
@@ -210,7 +210,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Clerk Foundation Setup | 3/4 | Gap closure   | - |
+| 20. Clerk Foundation Setup | 4/4 | Complete   | 2026-05-10 |
 | 21. Route Protection | 0/TBD | Not started | - |
 | 22. Auth Page Design | 0/TBD | Not started | - |
 | 23. User Experience Integration | 0/TBD | Not started | - |
