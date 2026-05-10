@@ -1,6 +1,20 @@
 import { clerkAppearance } from "./clerk-theme";
 import type { Appearance } from "@clerk/types";
 
+// Clerk's Elements type is narrower than what's accepted at runtime.
+// Use Record<string, unknown> for element property access in tests.
+type ClerkElementStyles = Record<string, unknown> & {
+  backgroundColor?: string;
+  borderRadius?: string;
+  boxShadow?: string;
+  border?: string;
+  padding?: string;
+  "&:hover"?: Record<string, unknown>;
+  "&:focus"?: Record<string, unknown>;
+  "&:active"?: Record<string, unknown>;
+  "&:disabled"?: Record<string, unknown>;
+};
+
 describe("clerk-theme", () => {
   describe("clerkAppearance configuration", () => {
     it("exports a valid Clerk Appearance configuration object", () => {
@@ -40,7 +54,8 @@ describe("clerk-theme", () => {
     });
 
     it("defines primary button with hover, active, disabled, and focus states", () => {
-      const primaryButton = clerkAppearance.elements?.formButtonPrimary;
+      const elements = clerkAppearance.elements as Record<string, ClerkElementStyles>;
+      const primaryButton = elements?.formButtonPrimary;
       expect(primaryButton).toBeDefined();
       expect(primaryButton?.backgroundColor).toBe("var(--primary)");
       expect(primaryButton?.["&:hover"]).toEqual({
@@ -56,7 +71,8 @@ describe("clerk-theme", () => {
     });
 
     it("defines form input field with hover and focus states", () => {
-      const inputField = clerkAppearance.elements?.formFieldInput;
+      const elements = clerkAppearance.elements as Record<string, ClerkElementStyles>;
+      const inputField = elements?.formFieldInput;
       expect(inputField).toBeDefined();
       expect(inputField?.backgroundColor).toBe("var(--bg-card)");
       expect(inputField?.["&:hover"]).toBeDefined();
@@ -64,7 +80,8 @@ describe("clerk-theme", () => {
     });
 
     it("defines card element with comprehensive design token mapping", () => {
-      const card = clerkAppearance.elements?.card;
+      const elements = clerkAppearance.elements as Record<string, ClerkElementStyles>;
+      const card = elements?.card;
       expect(card).toBeDefined();
       expect(card?.backgroundColor).toBe("var(--bg-card)");
       expect(card?.borderRadius).toBe("var(--radius-lg)");
@@ -83,13 +100,14 @@ describe("clerk-theme", () => {
     });
 
     it("defines all status color alert variants", () => {
-      expect(clerkAppearance.elements?.alertTextDanger).toMatchObject({
+      const elements = clerkAppearance.elements as Record<string, Record<string, unknown>>;
+      expect(elements?.alertTextDanger).toMatchObject({
         color: "var(--error)",
       });
-      expect(clerkAppearance.elements?.alertTextSuccess).toMatchObject({
+      expect(elements?.alertTextSuccess).toMatchObject({
         color: "var(--success)",
       });
-      expect(clerkAppearance.elements?.alertTextWarning).toMatchObject({
+      expect(elements?.alertTextWarning).toMatchObject({
         color: "var(--warning)",
       });
     });
