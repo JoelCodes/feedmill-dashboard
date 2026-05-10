@@ -130,7 +130,7 @@ Plans:
 
 - [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (completed 2026-05-10)
 - [x] **Phase 21: Route Protection** - Playwright E2E tests verify route protection (completed 2026-05-10)
-- [ ] **Phase 22: Auth Page Design** - Design header user area in Pencil.dev (sign-in page already implemented)
+- [x] **Phase 22: Auth Page Design** - Design header user area in Pencil.dev (sign-in page already implemented) (completed 2026-05-10)
 - [ ] **Phase 23: User Experience Integration** - Add user display to header with sign-out action
 - [ ] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration, live deployment
 
@@ -182,7 +182,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 22-01-PLAN.md — Design header user area component with 3 states and 2 theme variants
+- [x] 22-01-PLAN.md — Design header user area component with 3 states and 2 theme variants
 
 ### Phase 23: User Experience Integration
 **Goal**: Header displays authenticated user info with sign-out action and theme support
@@ -218,7 +218,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 |-------|----------------|--------|-----------|
 | 20. Clerk Foundation Setup | 4/4 | Complete    | 2026-05-10 |
 | 21. Route Protection | 1/1 | Complete | 2026-05-10 |
-| 22. Auth Page Design | 0/1 | In progress | - |
+| 22. Auth Page Design | 1/1 | Complete   | 2026-05-10 |
 | 23. User Experience Integration | 0/TBD | Not started | - |
 | 24. Production Deployment Validation | 0/TBD | Not started | - |
 
