@@ -137,16 +137,16 @@ describe("middleware", () => {
       expect(middlewareContent).toContain('/demo(.*)');
     });
 
-    it("checks role for demo routes", async () => {
+    it("checks role for demo routes via publicMetadata", async () => {
       const fs = await import("fs/promises");
       const path = await import("path");
 
       const middlewarePath = path.join(__dirname, "middleware.ts");
       const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
 
-      // Per ACCESS-01: Check sessionClaims.metadata.role
-      expect(middlewareContent).toContain("sessionClaims");
-      expect(middlewareContent).toContain("metadata");
+      // Per ACCESS-01: Check user.publicMetadata.role via clerkClient
+      expect(middlewareContent).toContain("clerkClient");
+      expect(middlewareContent).toContain("publicMetadata");
       expect(middlewareContent).toContain("role");
     });
 
