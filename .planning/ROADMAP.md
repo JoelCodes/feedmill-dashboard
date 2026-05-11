@@ -7,7 +7,7 @@
 ## Phases
 
 - [x] **Phase 25: Foundation and Middleware Configuration** - Establish role system infrastructure and layout components (completed 2026-05-11)
-- [ ] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with navigation
+- [x] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with navigation (completed 2026-05-11)
 - [ ] **Phase 27: Role Assignment and Testing** - Assign roles and verify end-to-end access control
 - [ ] **Phase 28: Client Component Security Audit** - Audit client components for security compliance
 
@@ -38,15 +38,15 @@ Plans:
   3. Root homepage displays Coming Soon message with full dashboard layout
   4. Sidebar shows demo-specific navigation when on /demo/* routes
   5. Settings page remains accessible to all authenticated users at /settings
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 **Wave 1**
-- [ ] 26-01-PLAN.md — Context-aware Sidebar navigation (TDD)
-- [ ] 26-02-PLAN.md — Coming Soon homepage and Header route titles
+- [x] 26-01-PLAN.md — Context-aware Sidebar navigation (TDD)
+- [x] 26-02-PLAN.md — Coming Soon homepage and Header route titles
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 26-03-PLAN.md — Migrate demo pages to /demo/* namespace
+- [x] 26-03-PLAN.md — Migrate demo pages to /demo/* namespace
 
 ### Phase 27: Role Assignment and Testing
 **Goal**: Role-based access control is enforced and verified end-to-end
@@ -74,7 +74,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 25. Foundation and Middleware Configuration | 2/2 | Complete    | 2026-05-11 |
-| 26. Route Restructuring and Migration | 0/3 | Planned | - |
+| 26. Route Restructuring and Migration | 3/3 | Complete    | 2026-05-11 |
 | 27. Role Assignment and Testing | 0/? | Not started | - |
 | 28. Client Component Security Audit | 0/? | Not started | - |
 

@@ -9,8 +9,8 @@ Requirements for Production Transition milestone. Each maps to roadmap phases.
 
 ### Route Structure
 
-- [ ] **ROUTE-01**: Existing pages (orders, customers, mill-production) moved to `/demo/*` subdirectory
-- [ ] **ROUTE-02**: New homepage at `/` displays "Coming Soon" message with full layout (header + sidebar)
+- [x] **ROUTE-01**: Existing pages (orders, customers, mill-production) moved to `/demo/*` subdirectory
+- [x] **ROUTE-02**: New homepage at `/` displays "Coming Soon" message with full layout (header + sidebar)
 
 ### Role System
 
@@ -24,7 +24,7 @@ Requirements for Production Transition milestone. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAV-01**: Sidebar displays different navigation based on route context (demo vs production)
+- [x] **NAV-01**: Sidebar displays different navigation based on route context (demo vs production)
 - [x] **NAV-02**: DashboardLayout component wraps all pages, eliminating layout duplication
 
 ## Future Requirements
@@ -62,13 +62,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ROUTE-01 | Phase 26 | Pending |
-| ROUTE-02 | Phase 26 | Pending |
+| ROUTE-01 | Phase 26 | Complete |
+| ROUTE-02 | Phase 26 | Complete |
 | ROLE-01 | Phase 25 | Complete |
 | ROLE-02 | Phase 25 | Complete |
 | ACCESS-01 | Phase 25 | Complete |
 | ACCESS-02 | Phase 27 | Pending |
-| NAV-01 | Phase 26 | Pending |
+| NAV-01 | Phase 26 | Complete |
 | NAV-02 | Phase 25 | Complete |
 
 **Coverage:**
