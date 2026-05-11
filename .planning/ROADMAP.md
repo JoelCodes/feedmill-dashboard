@@ -210,7 +210,11 @@ Plans:
   3. Test user can successfully sign in on production URL
   4. Clerk dashboard shows authentication events from production domain
   5. No "Invalid publishable key" errors in production logs
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — Configure Vercel environment variables and Clerk production domain
+- [ ] 24-02-PLAN.md — Create production smoke tests and GitHub Actions deployment validation
 
 ## Progress
 
@@ -223,7 +227,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 | 21. Route Protection | 1/1 | Complete | 2026-05-10 |
 | 22. Auth Page Design | 1/1 | Complete   | 2026-05-10 |
 | 23. User Experience Integration | 0/1 | Planned | - |
-| 24. Production Deployment Validation | 0/TBD | Not started | - |
+| 24. Production Deployment Validation | 0/2 | Planned | - |
 
 ---
 *Roadmap created: 2026-03-11*
