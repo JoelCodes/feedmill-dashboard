@@ -42,14 +42,18 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - KPI click-to-filter not functional
 - Production E2E automation blocked by Clerk 2FA (custom domain needed)
 
-## Next Milestone Goals
+## Current Milestone: v1.5 Production Transition
 
-**v1.5 candidates (not yet scoped):**
-- Custom domain configuration (enables Clerk 2FA bypass for E2E)
-- Sign-up flow with email verification
-- Password reset via email link
-- Social login (Google, Microsoft)
-- Role-based access control
+**Goal:** Separate demo content from production-ready pages, establishing the foundation for incremental real feature releases.
+
+**Target features:**
+- Move existing pages (orders, customers, mill-production) to `/demo/*` subdirectory
+- Implement formal roles system in Clerk (e.g., `roles: ['demo']`)
+- Restrict `/demo/*` routes to users with demo role via middleware
+- Create new homepage at `/` with full layout (header + sidebar), sidebar shows only "Coming Soon" link
+- Main content area displays "Coming Soon" message
+- Keep `/settings` at root, accessible to all authenticated users
+- Demo area keeps existing sidebar navigation (Orders, Customers, Mill Production)
 
 ## Requirements
 
@@ -127,9 +131,9 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ### Active
 
-<!-- No active requirements - milestone complete -->
+<!-- Requirements being defined for v1.5 -->
 
-(Next milestone requirements TBD)
+See `.planning/REQUIREMENTS.md` for v1.5 requirements (in progress)
 
 ### Deferred
 
@@ -229,4 +233,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-10 after v1.4 milestone shipped*
+*Last updated: 2026-05-10 after v1.5 milestone started*
