@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: complete
 phase: 25-foundation-and-middleware-configuration
 source: [25-01-SUMMARY.md, 25-02-SUMMARY.md]
 started: 2026-05-11T08:00:00Z
-updated: 2026-05-11T08:05:00Z
+updated: 2026-05-11T08:15:00Z
 ---
 
 ## Current Test
@@ -30,15 +30,14 @@ result: pass
 
 ### 5. Demo Route Protection - Correct Role
 expected: Sign in as a user WITH the "demo" role. Visit /demo/any-path. The page loads normally without redirect.
-result: issue
-reported: "It still redirects."
-severity: major
+result: pass
+note: "Initially failed (redirected). Fixed by using clerkClient.users.getUser() to fetch publicMetadata directly instead of sessionClaims."
 
 ## Summary
 
 total: 5
-passed: 4
-issues: 1
+passed: 5
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
@@ -46,15 +45,10 @@ blocked: 0
 ## Gaps
 
 - truth: "Users with 'demo' role can access /demo/* routes without redirect"
-  status: failed
+  status: resolved
   reason: "User reported: It still redirects."
   severity: major
   test: 5
   root_cause: "Clerk JWT template not configured to include publicMetadata.role in session claims. Middleware checks sessionClaims.metadata.role but Clerk doesn't auto-include public metadata in JWT."
-  artifacts:
-    - path: "src/middleware.ts"
-      issue: "Line 30 checks sessionClaims.metadata.role which requires JWT template config"
-  missing:
-    - "Configure Clerk JWT template to map user.public_metadata.role to metadata.role"
-    - "OR change middleware to fetch user publicMetadata directly instead of relying on sessionClaims"
-  debug_session: ""
+  fix_applied: "Changed middleware to use clerkClient.users.getUser(userId) and check user.publicMetadata.role directly"
+  fix_commit: "b65af68"
