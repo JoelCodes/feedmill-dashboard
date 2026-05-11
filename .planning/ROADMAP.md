@@ -41,8 +41,11 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
+**Wave 1**
 - [ ] 26-01-PLAN.md — Context-aware Sidebar navigation (TDD)
 - [ ] 26-02-PLAN.md — Coming Soon homepage and Header route titles
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 26-03-PLAN.md — Migrate demo pages to /demo/* namespace
 
 ### Phase 27: Role Assignment and Testing
