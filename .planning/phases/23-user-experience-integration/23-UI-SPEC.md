@@ -52,14 +52,14 @@ Exceptions: none (32px circular avatar uses space-6 base, within 8-point scale)
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 14px (0.875rem) | 400 | 1.5 |
+| Body | 14px (0.875rem) | 500 | 1.5 |
 | Label | 11px (0.6875rem) | 500 | 1.5 |
-| Small | 12px (0.75rem) | 400 | 1.5 |
+| Small | 12px (0.75rem) | 500 | 1.5 |
 | Header title | 14px (0.875rem) | 700 | 1.2 |
 
 **Source:** `src/app/globals.css` lines 101-105, `src/lib/clerk-theme.ts` lines 51-80 for Clerk component typography
 
-**Note:** UserButton inherits existing font system. Avatar name text uses 14px body size at weight 400. Dropdown menu items use 14px at weight 500.
+**Note:** UserButton inherits existing font system. Avatar name text uses 14px body size at weight 500. Dropdown menu items use 14px at weight 500.
 
 ---
 
