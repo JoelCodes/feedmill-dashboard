@@ -2,7 +2,7 @@
 phase: 23
 slug: user-experience-integration
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-05-10
 ---
@@ -38,13 +38,13 @@ created: 2026-05-10
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 23-01-01 | 01 | 0 | — | — | N/A | unit | `npm test -- Header.test.tsx -x` | ❌ W0 | ⬜ pending |
-| 23-01-02 | 01 | 1 | UX-01, UX-02, UX-03 | — | N/A | unit | `npm test -- Header.test.tsx::user-button -x` | ❌ W0 | ⬜ pending |
-| 23-01-03 | 01 | 1 | AUTH-02 | — | Session invalidated on sign-out | unit | `npm test -- Header.test.tsx::sign-out -x` | ❌ W0 | ⬜ pending |
-| 23-01-04 | 01 | 1 | — | — | N/A | unit | `npm test -- Header.test.tsx::skeleton -x` | ❌ W0 | ⬜ pending |
-| 23-01-05 | 01 | 1 | — | — | N/A | unit | `npm test -- Header.test.tsx::hydration -x` | ❌ W0 | ⬜ pending |
+| 23-01-01 | 01 | 0 | — | — | N/A | unit | `npm test -- Header.test.tsx -x` | [ ] W0 | pending |
+| 23-01-02 | 01 | 1 | UX-01, UX-02, UX-03 | — | N/A | unit | `npm test -- Header.test.tsx::user-button -x` | [ ] W0 | pending |
+| 23-01-03 | 01 | 1 | AUTH-02 | — | Session invalidated on sign-out | unit | `npm test -- Header.test.tsx::sign-out -x` | [ ] W0 | pending |
+| 23-01-04 | 01 | 1 | — | — | N/A | unit | `npm test -- Header.test.tsx::skeleton -x` | [ ] W0 | pending |
+| 23-01-05 | 01 | 1 | — | — | N/A | unit | `npm test -- Header.test.tsx::hydration -x` | [ ] W0 | pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: pending / green / red / flaky*
 
 ---
 
@@ -72,11 +72,11 @@ created: 2026-05-10
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 5s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 5s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** ready
