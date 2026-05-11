@@ -61,7 +61,8 @@ describe("DashboardLayout", () => {
     // Header renders a header element with page title and search
     expect(screen.getByRole("banner")).toBeInTheDocument();
     // Use heading role to find the page title in Header
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Dashboard");
+    // Note: "/" now shows "Coming Soon" after route restructuring (Phase 26)
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Coming Soon");
   });
 
   it("has correct layout structure", () => {
