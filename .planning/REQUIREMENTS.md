@@ -14,18 +14,18 @@ Requirements for Production Transition milestone. Each maps to roadmap phases.
 
 ### Role System
 
-- [ ] **ROLE-01**: Clerk publicMetadata configured with `role` field, included in session token claims
-- [ ] **ROLE-02**: TypeScript `CustomJwtSessionClaims` interface extended for type-safe role checking
+- [x] **ROLE-01**: Clerk publicMetadata configured with `role` field, included in session token claims
+- [x] **ROLE-02**: TypeScript `CustomJwtSessionClaims` interface extended for type-safe role checking
 
 ### Access Control
 
-- [ ] **ACCESS-01**: Middleware protects `/demo/*` routes, redirecting users without `demo` role to root
+- [x] **ACCESS-01**: Middleware protects `/demo/*` routes, redirecting users without `demo` role to root
 - [ ] **ACCESS-02**: Role utility functions (`checkRole()`, `requireRole()`) available for server components
 
 ### Navigation
 
 - [ ] **NAV-01**: Sidebar displays different navigation based on route context (demo vs production)
-- [ ] **NAV-02**: DashboardLayout component wraps all pages, eliminating layout duplication
+- [x] **NAV-02**: DashboardLayout component wraps all pages, eliminating layout duplication
 
 ## Future Requirements
 
@@ -64,12 +64,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | ROUTE-01 | Phase 26 | Pending |
 | ROUTE-02 | Phase 26 | Pending |
-| ROLE-01 | Phase 25 | Pending |
-| ROLE-02 | Phase 25 | Pending |
-| ACCESS-01 | Phase 25 | Pending |
+| ROLE-01 | Phase 25 | Complete |
+| ROLE-02 | Phase 25 | Complete |
+| ACCESS-01 | Phase 25 | Complete |
 | ACCESS-02 | Phase 27 | Pending |
 | NAV-01 | Phase 26 | Pending |
-| NAV-02 | Phase 25 | Pending |
+| NAV-02 | Phase 25 | Complete |
 
 **Coverage:**
 - v1.5 requirements: 8 total
