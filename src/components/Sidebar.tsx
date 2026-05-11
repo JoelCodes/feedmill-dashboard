@@ -6,23 +6,22 @@ import {
   LayoutDashboard,
   ClipboardList,
   Factory,
-  Package,
-  Truck,
   Users,
   FlaskConical,
 } from "lucide-react";
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", href: "/" },
-  { icon: Factory, label: "Production", id: "production", href: "/mill-production" },
-  { icon: ClipboardList, label: "Orders", id: "orders", href: "/orders" },
-  { icon: Users, label: "Customers", id: "customers", href: "/customers" },
-  { icon: Package, label: "Inventory", id: "inventory", href: "/inventory" },
-  { icon: Truck, label: "Shipments", id: "shipments", href: "/shipments" },
+const demoNavItems = [
+  { icon: ClipboardList, label: "Orders", id: "orders", href: "/demo/orders" },
+  { icon: Users, label: "Customers", id: "customers", href: "/demo/customers" },
+  { icon: Factory, label: "Mill Production", id: "mill-production", href: "/demo/mill-production" },
+];
+
+const productionNavItems = [
+  { icon: LayoutDashboard, label: "Coming Soon", id: "coming-soon", href: "/" },
 ];
 
 const settingsItems = [
-  { icon: FlaskConical, label: "Formulas", id: "formulas", href: "#" },
+  { icon: FlaskConical, label: "Settings", id: "settings", href: "/settings" },
 ];
 
 function isActive(href: string, pathname: string): boolean {
@@ -34,6 +33,9 @@ function isActive(href: string, pathname: string): boolean {
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const isDemoContext = pathname.startsWith('/demo');
+  const mainNavItems = isDemoContext ? demoNavItems : productionNavItems;
+
   return (
     <aside className="flex h-full w-[var(--sidebar-width)] flex-col gap-2 bg-[var(--bg-card)] p-6">
       {/* Logo */}
@@ -47,12 +49,12 @@ export default function Sidebar() {
       {/* Divider */}
       <div className="h-px w-full bg-[var(--divider)]" />
 
-      {/* Production Section */}
+      {/* Navigation Section */}
       <span className="mt-2 font-bold tracking-wide text-[var(--fs-10)] text-[var(--text-secondary)]">
-        PRODUCTION
+        {isDemoContext ? "DEMO" : "PRODUCTION"}
       </span>
 
-      {navItems.map((item) => (
+      {mainNavItems.map((item) => (
         <NavItem
           key={item.label}
           icon={item.icon}
