@@ -4,32 +4,43 @@ import Header from "../Header";
 import "@testing-library/jest-dom";
 
 // Mock Clerk components following pattern from sign-in/__tests__/page.test.tsx
-interface MockUserButtonProps {
-  appearance?: unknown;
-  afterSignOutUrl?: string;
-  children?: React.ReactNode;
-}
-
-interface MockClerkLoadedProps {
-  fallback?: React.ReactNode;
-  children: React.ReactNode;
-}
-
-jest.mock("@clerk/nextjs", () => ({
-  UserButton: ({ appearance, afterSignOutUrl, children }: MockUserButtonProps) => (
+jest.mock("@clerk/nextjs", () => {
+  // Create UserButton mock with sub-components inside factory function
+  const MockUserButton = ({ appearance, children }: {
+    appearance?: unknown;
+    children?: React.ReactNode;
+  }) => (
     <div data-testid="clerk-userbutton">
       <div data-testid="appearance">{JSON.stringify(appearance !== undefined)}</div>
-      <div data-testid="after-signout-url">{afterSignOutUrl}</div>
       <div data-testid="menu-items">{children}</div>
     </div>
-  ),
-  ClerkLoaded: ({ fallback, children }: MockClerkLoadedProps) => (
-    <div data-testid="clerk-loaded">
-      <div data-testid="fallback">{fallback}</div>
-      <div data-testid="loaded-content">{children}</div>
+  );
+
+  // Add sub-components to UserButton mock
+  MockUserButton.MenuItems = ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="userbutton-menu-items">{children}</div>
+  );
+
+  MockUserButton.Action = ({ label }: { label?: string }) => (
+    <div data-testid="userbutton-action" data-label={label}>
+      {label}
     </div>
-  ),
-}));
+  );
+
+  return {
+    UserButton: MockUserButton,
+    ClerkLoading: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="clerk-loading">
+        <div data-testid="loading-content">{children}</div>
+      </div>
+    ),
+    ClerkLoaded: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="clerk-loaded">
+        <div data-testid="loaded-content">{children}</div>
+      </div>
+    ),
+  };
+});
 
 // Mock clerk-theme
 jest.mock("@/lib/clerk-theme", () => ({
@@ -80,41 +91,44 @@ describe("Header - UserButton Integration", () => {
     expect(appearanceElement).toHaveTextContent("true");
   });
 
-  it("configures afterSignOutUrl to /sign-in", () => {
-    render(<Header />);
-
-    // Per D-06: Redirect to /sign-in after sign-out
-    const afterSignOutUrl = screen.getByTestId("after-signout-url");
-    expect(afterSignOutUrl).toHaveTextContent("/sign-in");
-  });
-
-  it("renders only signOut action in MenuItems", () => {
+  it("renders MenuItems with signOut action", () => {
     render(<Header />);
 
     // Per D-03: Minimal dropdown (sign-out only)
     const menuItems = screen.getByTestId("menu-items");
     expect(menuItems).toBeInTheDocument();
 
-    // The menu should contain UserButton.Action with label="signOut"
-    // In our mock, children render inside menu-items
-    expect(menuItems.innerHTML).toBeTruthy();
+    // The menu should contain UserButton.MenuItems with signOut action
+    const userButtonMenuItems = screen.getByTestId("userbutton-menu-items");
+    expect(userButtonMenuItems).toBeInTheDocument();
   });
 
-  it("shows skeleton fallback in ClerkLoaded", () => {
+  it("renders signOut action with correct label", () => {
     render(<Header />);
 
-    // Per D-05: ClerkLoaded wrapper with skeleton fallback
-    const fallback = screen.getByTestId("fallback");
-    expect(fallback).toBeInTheDocument();
-    expect(fallback.innerHTML).toBeTruthy();
+    // Per D-03 and D-06: Sign out action is rendered
+    const signOutAction = screen.getByTestId("userbutton-action");
+    expect(signOutAction).toBeInTheDocument();
+    expect(signOutAction).toHaveAttribute("data-label", "signOut");
+  });
+
+  it("shows skeleton in ClerkLoading wrapper", () => {
+    render(<Header />);
+
+    // Per D-05: ClerkLoading wrapper with skeleton content
+    const clerkLoading = screen.getByTestId("clerk-loading");
+    expect(clerkLoading).toBeInTheDocument();
+
+    const loadingContent = screen.getByTestId("loading-content");
+    expect(loadingContent.innerHTML).toBeTruthy();
   });
 
   it("skeleton has correct circular dimensions", () => {
-    const { container } = render(<Header />);
+    render(<Header />);
 
     // Per D-04: 32px circular skeleton (h-8 w-8 rounded-full)
-    const fallback = screen.getByTestId("fallback");
-    const skeleton = fallback.firstChild as HTMLElement;
+    const loadingContent = screen.getByTestId("loading-content");
+    const skeleton = loadingContent.firstChild as HTMLElement;
 
     // Verify skeleton has correct classes
     expect(skeleton).toHaveClass("h-8");

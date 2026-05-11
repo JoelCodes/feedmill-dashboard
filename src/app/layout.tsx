@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ClerkProvider>
+        <ClerkProvider afterSignOutUrl="/sign-in">
           <ThemeProvider>{children}</ThemeProvider>
         </ClerkProvider>
       </body>

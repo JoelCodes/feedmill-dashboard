@@ -8,10 +8,17 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { getNotifications } from '@/services/notifications';
 import { Notification } from '@/types/notification';
 import NotificationDropdown from './NotificationDropdown';
+import { UserButton, ClerkLoaded, ClerkLoading } from '@clerk/nextjs';
+import { clerkAppearance } from '@/lib/clerk-theme';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
 }
+
+// Skeleton component for UserButton - matches 32px avatar per D-04
+const UserButtonSkeleton = () => (
+  <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--divider)]" />
+);
 
 const getPageTitle = (path: string): string => {
   if (path === '/') return 'Dashboard';
@@ -136,6 +143,18 @@ export default function Header({ onSearch }: HeaderProps) {
             readNotificationIds={readNotificationIds}
           />
         </div>
+
+        {/* UserButton - Per D-02: Position after notifications */}
+        <ClerkLoading>
+          <UserButtonSkeleton />
+        </ClerkLoading>
+        <ClerkLoaded>
+          <UserButton appearance={clerkAppearance}>
+            <UserButton.MenuItems>
+              <UserButton.Action label="signOut" />
+            </UserButton.MenuItems>
+          </UserButton>
+        </ClerkLoaded>
       </div>
     </header>
   );
