@@ -1,42 +1,18 @@
-"use client";
+import DashboardLayout from '@/components/DashboardLayout';
 
-import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
-import KPICards from "@/components/KPICard";
-import OrdersTable from "@/components/OrdersTable";
-import OrderDetails from "@/components/OrderDetails";
-
-export default function Dashboard() {
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [headerSearchTerm, setHeaderSearchTerm] = useState('');
-
+export default function HomePage() {
   return (
-    <div className="bg-bg-page flex h-screen">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
-        {/* Header */}
-        <Header onSearch={setHeaderSearchTerm} />
-
-        {/* KPI Cards */}
-        <KPICards />
-
-        {/* Bottom Row */}
-        <div className="flex min-h-0 flex-1 gap-6">
-          {/* Orders Table */}
-          <OrdersTable
-            selectedOrderId={selectedOrderId}
-            onSelectOrder={setSelectedOrderId}
-            externalSearchTerm={headerSearchTerm}
-          />
-
-          {/* Order Details */}
-          <OrderDetails orderId={selectedOrderId} />
+    <DashboardLayout>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">
+            Coming Soon
+          </h1>
+          <p className="text-text-secondary mt-2 text-sm">
+            Production features launching soon.
+          </p>
         </div>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
