@@ -1,377 +1,423 @@
 # Pitfalls Research
 
-**Domain:** Adding Clerk Authentication to Next.js 15 App Router
-**Researched:** 2026-05-09
+**Domain:** Adding role-based access and route restructuring to Next.js + Clerk app
+**Researched:** 2026-05-10
 **Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### Pitfall 1: Missing clerkMiddleware() Configuration
+### Pitfall 1: Middleware Infinite Redirect Loops
 
 **What goes wrong:**
-The error "auth() was called but Clerk can't detect usage of clerkMiddleware()" appears, blocking authentication checks. This commonly occurs when requests hit routes not covered by the middleware matcher, especially on 404 pages or static asset routes.
+Middleware redirects users to the same route that triggers the middleware, creating an infinite loop. For example, redirecting unauthenticated users from `/demo/orders` to `/demo/orders?auth=required` still matches the middleware matcher and triggers another redirect.
 
 **Why it happens:**
-Developers either forget to create the middleware.ts file entirely, or configure the matcher to exclude routes where auth() is called. The middleware matcher defaults exclude static files, but if auth() is used in a layout or component that renders on 404 pages, the middleware never runs to establish auth context.
+Developers forget that query parameters don't change the route path for middleware matching purposes. The middleware matcher sees the base path and runs again, even with query params. Additionally, redirecting to a protected route without checking if you're already on that route causes infinite recursion.
 
 **How to avoid:**
-1. Create `middleware.ts` at project root (not `proxy.ts` — naming matters for Next.js ≤15)
-2. Use the recommended matcher configuration that excludes static files but includes all dynamic routes:
-```tsx
+- Always check current location before redirecting: `if (pathname === targetUrl) return NextResponse.next()`
+- Ensure redirect targets are excluded from middleware matchers
+- Use `NextResponse.next()` for authenticated users instead of redirecting them
+- Next.js uses `x-middleware-subrequest` header to halt execution after 5 iterations, but relying on this is a code smell
+
+**Warning signs:**
+- Browser DevTools shows repeated requests to the same URL
+- Console shows "Too many redirects" error
+- Middleware logs show the same path being processed repeatedly
+- Performance degradation or browser timeout errors
+
+**Phase to address:**
+Phase 1 (Middleware Configuration) - Before implementing any role checks, verify redirect logic with comprehensive test cases for authenticated, unauthenticated, and role-based scenarios.
+
+---
+
+### Pitfall 2: Middleware Matcher Missing Static Assets
+
+**What goes wrong:**
+Middleware runs on every request including static files, images, fonts, and Next.js internals (`_next/static`). This causes authentication checks on resources that should always be public, breaking page loads and causing 401/403 errors for CSS, JS, and images.
+
+**Why it happens:**
+The default middleware matcher is too broad or developers forget to exclude Next.js internals and static assets. When `clerkMiddleware()` runs without a proper matcher, it attempts to authenticate every file request.
+
+**How to avoid:**
+Use Clerk's recommended matcher configuration that excludes internals and static files:
+
+```typescript
 export const config = {
   matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
     '/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
     '/(api|trpc)(.*)',
+    // Always run for Clerk-specific frontend API routes
     '/__clerk/(.*)',
   ],
 }
 ```
-3. Wrap root layout with `<ClerkProvider>` before calling `auth()` anywhere
-4. Enable debug mode during development: `clerkMiddleware((auth, req) => { /* ... */ }, { debug: true })`
 
 **Warning signs:**
-- Console error: "auth() was called but Clerk can't detect usage of clerkMiddleware()"
-- Auth works on some pages but fails on others (inconsistent behavior)
-- 404 pages or error boundaries throw Clerk-related errors
-- Link prefetch requests to protected pages show 401 errors in console
+- Images or fonts fail to load on protected pages
+- CSS files return 401/403 errors in Network tab
+- Browser console shows "Failed to load resource" for static files
+- Pages load but look unstyled
 
 **Phase to address:**
-Phase 1 (Foundation Setup) — Middleware configuration must be correct from the start, as fixing it later requires testing every route.
+Phase 1 (Middleware Configuration) - Test static asset loading immediately after middleware implementation. Verify images, CSS, fonts all load correctly on both protected and public routes.
 
 ---
 
-### Pitfall 2: Default Public Routes (Not Protected)
+### Pitfall 3: Hard Refresh Breaking Route Groups
 
 **What goes wrong:**
-After adding Clerk, all routes remain publicly accessible. Developers assume installing Clerk automatically protects routes, but `clerkMiddleware()` makes all routes public by default — protection is opt-in.
+After restructuring routes into route groups like `(demo)`, soft navigation works perfectly but browser refresh returns 404 errors. Users who bookmark `/demo/orders` or reload the page lose access.
 
 **Why it happens:**
-The mental model changed from `authMiddleware()` (v4, protected by default) to `clerkMiddleware()` (v5+, public by default). Documentation emphasizes the new approach, but developers migrating or following older tutorials expect automatic protection.
+Next.js App Router performs partial rendering during soft navigation but needs additional configuration for hard refreshes. With route groups or parallel routes, Next.js cannot determine active state after a full page load unless you provide a `default.js` file or catch-all segment.
 
 **How to avoid:**
-1. Explicitly protect routes using `createRouteMatcher` and `auth.protect()`:
-```tsx
+- Add `default.js` files to parallel routes: `app/@slot/default.tsx`
+- Use catch-all segments for route groups: `app/(demo)/[...slug]/page.tsx`
+- Test every restructured route with browser refresh, not just `<Link>` navigation
+- Verify bookmarked URLs still work after restructure
+
+**Warning signs:**
+- Routes work when navigating with `<Link>` but 404 on refresh
+- Browser DevTools shows 404 for the route but client-side navigation succeeds
+- Hard reload returns "404 This page could not be found"
+- Bookmarked URLs break after deployment
+
+**Phase to address:**
+Phase 2 (Route Restructure) - Before moving routes to new paths, implement proper `default.js` files and test every route with both soft navigation AND hard refresh.
+
+---
+
+### Pitfall 4: Broken SEO and Bookmarks from Missing Redirects
+
+**What goes wrong:**
+Existing routes are moved to new paths (e.g., `/orders` → `/demo/orders`) but no redirects are implemented. Users with bookmarks get 404 errors, and search engines index broken links, tanking SEO rankings.
+
+**Why it happens:**
+Developers focus on new route structure without considering existing URLs in the wild. Bookmarks, shared links, search engine indexes, and browser history all point to old paths that no longer exist.
+
+**How to avoid:**
+Implement permanent redirects in `next.config.js`:
+
+```typescript
+module.exports = {
+  async redirects() {
+    return [
+      {
+        source: '/orders',
+        destination: '/demo/orders',
+        permanent: true, // 308 status code
+      },
+      {
+        source: '/customers',
+        destination: '/demo/customers',
+        permanent: true,
+      },
+      {
+        source: '/mill-production',
+        destination: '/demo/mill-production',
+        permanent: true,
+      },
+    ]
+  },
+}
+```
+
+Use 308 (permanent redirect) for moved routes to preserve SEO value and pass link equity. Avoid client-side redirects or meta refresh tags - they're bad for SEO.
+
+**Warning signs:**
+- Google Search Console shows increased 404 errors
+- Users report "page not found" after clicking old links
+- Analytics show referrer URLs that 404
+- Old URLs in browser autocomplete lead to 404s
+
+**Phase to address:**
+Phase 2 (Route Restructure) - Configure redirects BEFORE moving routes. Deploy redirects and route moves in the same release to minimize 404 exposure window.
+
+---
+
+### Pitfall 5: Session Token Not Updated After Role Assignment
+
+**What goes wrong:**
+Roles are assigned to users via `publicMetadata`, but the session token doesn't reflect the change until it naturally refreshes (60 seconds). Middleware role checks fail immediately after assignment, causing access denied errors for users who should have access.
+
+**Why it happens:**
+Clerk caches the session token for 60 seconds by default. When you update `publicMetadata` server-side, the user's current session token still contains old data. Middleware reads from the token, not the database.
+
+**How to avoid:**
+1. **Configure session token to include publicMetadata**: In Clerk Dashboard → Sessions → Customize session token:
+```json
+{
+  "metadata": "{{user.public_metadata}}"
+}
+```
+
+2. **Force token refresh after role assignment**:
+```typescript
+// After updating user metadata
+await user.reload() // Fetches updated session data
+// OR
+await getToken({ skipCache: true }) // Forces fresh token
+```
+
+3. **Handle stale token gracefully**: Show "Refreshing permissions..." state instead of access denied, then retry after refresh.
+
+**Warning signs:**
+- Users assigned roles can't access protected routes immediately
+- Role checks work after waiting ~60 seconds but not instantly
+- `auth().sessionClaims.metadata` doesn't match database values
+- Error logs show "unauthorized" immediately after successful role assignment
+
+**Phase to address:**
+Phase 3 (Role Assignment) - Implement token refresh logic when assigning roles. Add E2E test that verifies role access works immediately after assignment, not after delay.
+
+---
+
+### Pitfall 6: `<Protect>` Component Exposes Data in Browser Source
+
+**What goes wrong:**
+Developers use `<Protect role="demo">` to hide sensitive UI components, believing it provides security. However, the component only visually hides content - the data still loads and remains accessible in browser DevTools and page source.
+
+**Why it happens:**
+Misunderstanding client-side vs server-side security. `<Protect>` is a convenience component for UX (showing/hiding UI), not a security boundary. React components run in the browser where users have full access to all loaded data.
+
+**How to avoid:**
+- **Never use `<Protect>` for truly sensitive data** - it's UX, not security
+- **Perform authorization checks on the server** before sending data to client:
+```typescript
+// app/demo/orders/page.tsx
+import { auth } from '@clerk/nextjs/server'
+
+export default async function OrdersPage() {
+  const { has } = await auth()
+
+  if (!has({ role: 'demo' })) {
+    redirect('/unauthorized')
+  }
+
+  // Only now fetch and send sensitive data
+  const orders = await getOrders()
+  return <OrdersList orders={orders} />
+}
+```
+
+- Use `auth.protect()` in middleware or server components for actual security
+- `<Protect>` is fine for showing/hiding UI elements, just not for data access control
+
+**Warning signs:**
+- Security audit reveals sensitive data in page source
+- Browser DevTools Network tab shows API responses with data that shouldn't be visible
+- React DevTools shows components with protected data even when user lacks role
+- Developers comment "hide this from non-admin users" near `<Protect>` usage
+
+**Phase to address:**
+Phase 4 (Client Component Protection) - Audit all `<Protect>` usage. Move sensitive data fetching to server components with `auth.protect()` before rendering client components.
+
+---
+
+### Pitfall 7: Dynamic Routes Break After Restructuring
+
+**What goes wrong:**
+Dynamic route segments like `/customers/[id]` stop working after moving to a route group. Links that worked before (`/customers/123`) now 404 after moving to `/(demo)/customers/[id]/page.tsx`.
+
+**Why it happens:**
+Incorrect folder structure during migration. App Router requires `[id]` to be a folder containing `page.tsx`, not a file. Additionally, moving from Pages Router patterns (`pages/customers/[id].tsx`) to App Router patterns (`app/customers/[id]/page.tsx`) without updating imports breaks param access.
+
+**How to avoid:**
+- **Correct App Router structure**: `app/(demo)/customers/[id]/page.tsx` (folder with bracket name, containing page.tsx)
+- **Update param access method**:
+  - OLD (Pages Router): `const { id } = useRouter().query`
+  - NEW (App Router): `const params = useParams()` (client) or `params` prop (server components)
+- **Verify explicit routes don't shadow dynamic routes**: `/customers/new` must exist as `app/customers/new/page.tsx` to take priority over `[id]`
+- Test with actual IDs, not just navigation from list pages
+
+**Warning signs:**
+- Dynamic routes work locally but 404 in production
+- Clicking links from list pages works, but direct URLs fail
+- Browser shows "No page found for /customers/123"
+- TypeScript errors about `useRouter` from wrong import path
+
+**Phase to address:**
+Phase 2 (Route Restructure) - Create comprehensive test suite for all dynamic routes. Test direct URL access, not just `<Link>` navigation.
+
+---
+
+### Pitfall 8: Middleware Role Checks on Public Routes
+
+**What goes wrong:**
+Middleware checks for roles on routes that should be accessible to all authenticated users (e.g., `/settings`). Users without the "demo" role can't access settings even though it's meant to be universal.
+
+**Why it happens:**
+Overly broad middleware logic applies role checks globally instead of only to specific route patterns. Using `auth.protect({ role: 'demo' })` at the top level affects all routes unless explicitly excluded.
+
+**How to avoid:**
+Use route matchers to scope role checks to specific paths:
+
+```typescript
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
 const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+const isDemoRoute = createRouteMatcher(['/demo(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect()
+  // Public routes: no checks
+  if (isPublicRoute(req)) return
+
+  // Demo routes: require demo role
+  if (isDemoRoute(req)) {
+    await auth.protect({ role: 'demo' })
+    return
   }
+
+  // All other routes: just require authentication
+  await auth.protect()
 })
 ```
-2. Define protected routes, not public routes (inverted logic from v4)
-3. Test unauthenticated access to every major route before deployment
-4. Use route matchers for patterns: `['/dashboard(.*)', '/api/private(.*)']`
 
 **Warning signs:**
-- Can access /dashboard, /settings, or other sensitive pages without signing in
-- No redirect to sign-in page when unauthenticated
-- API routes return data without authentication
-- Manual testing shows no auth enforcement
+- Users with valid authentication can't access universal routes like `/settings`
+- Error logs show "unauthorized" for routes that should be role-agnostic
+- Need to assign "demo" role to every user just to access basic features
+- Support tickets about locked-out authenticated users
 
 **Phase to address:**
-Phase 2 (Route Protection) — After foundation is stable, systematically protect all routes with explicit verification.
+Phase 1 (Middleware Configuration) - Define explicit route matchers for each protection level. Test access matrix: unauthenticated, authenticated without role, authenticated with role.
 
 ---
 
-### Pitfall 3: Async auth() Breaking Changes Not Applied
+### Pitfall 9: Organization Roles vs publicMetadata Confusion
 
 **What goes wrong:**
-TypeScript errors or runtime failures when calling `auth()` without `await`. Code crashes or auth state is undefined. Existing code using synchronous `auth()` from @clerk/nextjs v5 breaks after upgrading to v6.
+Developers use Clerk's organization roles system when they just need simple user-level role flags. This introduces unnecessary complexity (creating organizations for every user, managing memberships) for a feature that could be a simple `publicMetadata.role` field.
 
 **Why it happens:**
-To support Next.js 15's async dynamic APIs, Clerk made `auth()` asynchronous in v6. Developers upgrading from v5 or following v5 documentation use `const { userId } = auth()` instead of `const { userId } = await auth()`. The API changed from `auth().protect()` to `await auth.protect()`.
+Misunderstanding the difference between organization-scoped roles (permissions within a team/company) and application-level roles (feature access tiers). Clerk's documentation shows organization roles prominently, leading developers to use them by default.
 
 **How to avoid:**
-1. Run Clerk's automated codemod: `@clerk/upgrade` CLI scans codebase and produces migration list
-2. Update all `auth()` calls to `await auth()`
-3. Mark functions using `auth()` as `async`
-4. Change `auth().protect()` to `await auth.protect()`
-5. Update Server Components and Route Handlers to be async
-6. Test all auth-dependent code paths after migration
+**Use publicMetadata when:**
+- Roles are application-wide (demo user, admin, premium subscriber)
+- Users don't belong to organizations/teams
+- Single-tier access control (has access or doesn't)
+- Simpler implementation needed
 
-**Warning signs:**
-- TypeScript error: "Property 'userId' does not exist on type 'Promise<...>'"
-- Runtime error: "Cannot read property 'userId' of undefined"
-- ESLint warnings about promises not being awaited
-- Auth checks fail silently or return unexpected values
-- Build fails with async/await-related errors
-
-**Phase to address:**
-Phase 1 (Foundation Setup) — Must be correct before building features, as retrofitting async throughout the codebase is disruptive.
-
----
-
-### Pitfall 4: Environment Variables Missing or Misconfigured
-
-**What goes wrong:**
-Clerk loads silently on the client but refuses every request on the server. Authentication appears to work in browser DevTools but fails server-side. Production deployment breaks despite working locally.
-
-**Why it happens:**
-Missing `NEXT_PUBLIC_` prefix causes variables to be unavailable client-side. Using development keys (`pk_test_...`) in production. Forgetting to set production keys in Vercel/hosting platform. Copy-pasting `.env.local` entries without updating for staging/production environments.
-
-**How to avoid:**
-1. Use exact variable names:
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (client-side, must have NEXT_PUBLIC_ prefix)
-   - `CLERK_SECRET_KEY` (server-side only, no prefix)
-2. Verify key format matches environment:
-   - Development: `pk_test_...` / `sk_test_...`
-   - Production: `pk_live_...` / `sk_live_...`
-3. Configure Vercel environments properly:
-   - Development/Preview: Use test keys
-   - Production: Use live keys, requires custom domain (not *.vercel.app)
-4. Add to .gitignore: `.env*.local`
-5. Document required variables in README or .env.example
-6. Use `CLERK_ENCRYPTION_KEY` if passing `secretKey` at runtime to `clerkMiddleware()`
-
-**Warning signs:**
-- Auth works in development but fails in production
-- "Invalid publishable key" errors in console
-- Clerk dashboard shows no authentication events from production
-- Server-side auth checks always fail while client shows signed-in state
-- Deployment logs mention missing environment variables
-- Different behavior on Vercel Preview vs Production deployments
-
-**Phase to address:**
-Phase 1 (Foundation Setup) and Phase 4 (Production Deployment) — Initial setup must be correct, and production deployment requires separate verification with live keys.
-
----
-
-### Pitfall 5: Dynamic Rendering Opt-Out Breaking Auth
-
-**What goes wrong:**
-`useAuth()` returns `null` or stale data in Client Components. Auth state doesn't update when users sign in/out. Components that work in development fail in production due to static rendering.
-
-**Why it happens:**
-Starting with @clerk/nextjs v6, `<ClerkProvider>` no longer opts the entire app into dynamic rendering. Next.js defaults to static rendering for Client Components. `useAuth()` requires dynamic rendering to access request-time auth data, but developers forget to opt in with the `dynamic` prop.
-
-**How to avoid:**
-1. Wrap Client Components using `useAuth()` with `<ClerkProvider dynamic>`:
-```tsx
-<ClerkProvider dynamic>
-  <ComponentUsingAuth />
-</ClerkProvider>
+```typescript
+// publicMetadata approach
+await clerkClient.users.updateUserMetadata(userId, {
+  publicMetadata: { role: 'demo' }
+})
 ```
-2. Use `auth()` in Server Components instead of `useAuth()` in Client Components when possible
-3. Avoid wrapping entire app with `<ClerkProvider dynamic>` — only wrap routes/components that need it
-4. For Partial Prerendering (PPR), wrap `<ClerkProvider dynamic>` in `<Suspense>`:
-```tsx
-<Suspense fallback={<Skeleton />}>
-  <ClerkProvider dynamic>{children}</ClerkProvider>
-</Suspense>
-```
-5. Server Components using `auth()` automatically opt into dynamic rendering (no action needed)
+
+**Use organization roles when:**
+- Multi-tenant application with separate teams/companies
+- Permissions scoped to specific organizations
+- Users can have different roles in different organizations
+- Need built-in invite/membership management
+
+For v1.5 (demo access for specific users), use `publicMetadata.role` - it's simpler and sufficient.
 
 **Warning signs:**
-- `useAuth()` returns `{ userId: null, isSignedIn: false }` despite being signed in
-- Auth state only updates after full page refresh
-- Sign-in/sign-out doesn't reflect immediately in UI
-- Production build shows different behavior than dev server
-- Components flash between signed-in and signed-out states
-- Next.js build output shows routes as Static when they should be Dynamic
+- Creating organization for every individual user
+- Organization names like "User_123_Org"
+- Complex organization membership management for simple feature flags
+- Code checking "user's role in their only organization"
 
 **Phase to address:**
-Phase 3 (Client-Side Auth State) — After server-side protection is working, client components need proper dynamic rendering configuration.
+Phase 1 (Architecture Decision) - Document which approach to use BEFORE implementing. For demo access, recommend publicMetadata approach.
 
 ---
 
-### Pitfall 6: CVE-2025-29927 Middleware Bypass Vulnerability
+### Pitfall 10: Missing Navigation Updates After Route Restructure
 
 **What goes wrong:**
-Attackers bypass all authentication and authorization middleware by adding `x-middleware-subrequest` header to HTTP requests. Protected routes become publicly accessible. Role-based access control (RBAC) is circumvented.
+Routes are moved to `/demo/*` but sidebar navigation, breadcrumbs, and `<Link>` components still point to old paths. Navigation appears to work in dev (Next.js silently redirects) but breaks in production.
 
 **Why it happens:**
-Next.js versions <15.2.3 (and older 12.x, 13.x, 14.x) have a critical security flaw where the `x-middleware-subrequest` header (intended for internal use) is not properly validated. Attackers discovered they can add this header to external requests, making Next.js skip middleware execution entirely.
+Developers move route files but forget to search codebase for hardcoded paths. Next.js dev server is more forgiving than production builds. Links in components, navigation config, redirects, and analytics tracking all need updates.
 
 **How to avoid:**
-1. Upgrade Next.js to ≥15.2.3 (or ≥14.2.25 for 14.x, ≥13.5.9 for 13.x)
-2. Upgrade @clerk/nextjs to latest version
-3. If immediate upgrade impossible, block `x-middleware-subrequest` header at reverse proxy/CDN level
-4. Verify fix: Test protected routes with curl:
+1. **Grep for old route paths before deployment**:
 ```bash
-curl -H "x-middleware-subrequest: test" https://yourapp.com/protected
-# Should return 401/redirect, not 200 OK
+rg "\/orders" --type tsx
+rg "\/customers" --type tsx
+rg "\/mill-production" --type tsx
 ```
-5. Review audit logs for suspicious access patterns during vulnerability window
-6. **Do not rely solely on middleware for security** — implement defense in depth
+
+2. **Use route constants instead of hardcoded strings**:
+```typescript
+// lib/routes.ts
+export const ROUTES = {
+  DEMO_ORDERS: '/demo/orders',
+  DEMO_CUSTOMERS: '/demo/customers',
+  DEMO_MILL_PRODUCTION: '/demo/mill-production',
+  SETTINGS: '/settings',
+} as const
+```
+
+3. **Update active state detection logic** in navigation components to match new paths
+
+4. **Test all navigation links** after restructure, including breadcrumbs and footer links
 
 **Warning signs:**
-- Next.js version <15.2.3 in package.json
-- Security scanning tools flagging CVE-2025-29927
-- Unusual access patterns in logs (protected routes accessed without auth tokens)
-- Failed authentication attempts that still reach protected resources
-- Dependency audit warnings: `npm audit` or `yarn audit`
+- Navigation links 404 in production but work in dev
+- `isActive` state wrong on sidebar after restructure
+- Users report "broken links" after deployment
+- Analytics show 404s for old paths from internal navigation
 
 **Phase to address:**
-Phase 1 (Foundation Setup) — Must use safe Next.js version from day one. Cannot ship to production with vulnerable version.
+Phase 2 (Route Restructure) - Create checklist of all navigation touchpoints. Test production build locally before deploying.
 
 ---
 
-### Pitfall 7: Deprecated afterSignIn/afterSignUp Props
+### Pitfall 11: Prefetch Errors for Protected Routes
 
 **What goes wrong:**
-Sign-in/sign-up redirects don't work as expected. Users land on wrong pages after authentication. Redirects fail silently, leaving users confused about where to go next.
+Public pages (like homepage) contain `<Link>` components to protected routes. Next.js prefetches these links, triggering middleware redirects to sign-in, causing 401 errors and console warnings even though the user hasn't clicked.
 
 **Why it happens:**
-`afterSignIn`, `afterSignUp`, and `redirectUrl` props are deprecated in favor of `fallbackRedirectUrl` and `signInFallbackRedirectUrl`/`signUpFallbackRedirectUrl`. Developers using older documentation or migrating from v4 continue using deprecated props. The new props have different logic: fallback props only apply if no `redirect_url` query parameter exists.
+Next.js automatically prefetches `<Link>` targets on hover. When middleware redirects prefetch requests to sign-in, it returns a 400-level error. The browser logs this as a failed request even though functionality works correctly.
 
 **How to avoid:**
-1. Replace deprecated props with new equivalents:
-   - `afterSignIn` → `fallbackRedirectUrl`
-   - `afterSignUp` → `fallbackRedirectUrl`
-   - For cross-component links: `signInFallbackRedirectUrl`, `signUpFallbackRedirectUrl`
-2. Use environment variables for global defaults:
-   - `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard`
-   - `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/onboarding`
-3. Understand fallback vs force behavior:
-   - Fallback: Only used if no `redirect_url` in URL
-   - Force: Always redirects, overrides `redirect_url`
-4. Pass `signInForceRedirectUrl` or `signUpForceRedirectUrl` if you need to always redirect regardless of `redirect_url`
-5. Test sign-in flow from multiple entry points (direct navigation, protected route redirect, email link)
-
-**Warning signs:**
-- Users redirected to unexpected pages after sign-in
-- Redirect works in some flows but not others
-- TypeScript deprecation warnings for `afterSignIn`/`afterSignUp`
-- Documentation examples don't match your code
-- Redirect behavior differs between development and production
-
-**Phase to address:**
-Phase 3 (Sign-In/Sign-Up Flow) — Set up correct redirect configuration when implementing auth components.
-
----
-
-### Pitfall 8: Testing Without Clerk Mocks
-
-**What goes wrong:**
-Tests fail with "Cannot read property 'userId' of undefined". Tests make real requests to Clerk API, causing rate limiting. Tests require network access and Clerk account setup, breaking in CI/CD. Test suite is slow and flaky.
-
-**Why it happens:**
-Developers don't mock Clerk hooks and components in Jest/Vitest tests. Tests import real `@clerk/nextjs` which attempts API calls. No `@clerk/testing` package installed for proper test utilities. Unit tests accidentally become integration tests.
-
-**How to avoid:**
-1. Install testing package: `npm install @clerk/testing --save-dev`
-2. Mock Clerk in test setup (Jest example):
+1. **Disable prefetch for protected routes on public pages**:
 ```tsx
-jest.mock('@clerk/nextjs', () => ({
-  useAuth: jest.fn(() => ({ userId: null, isSignedIn: false })),
-  auth: jest.fn(() => Promise.resolve({ userId: null })),
-  ClerkProvider: ({ children }) => <div>{children}</div>,
-  SignIn: () => <div data-testid="clerk-sign-in">Sign In</div>,
-}))
+<Link href="/demo/orders" prefetch={false}>
+  View Demo
+</Link>
 ```
-3. Vitest with `vi.hoisted()` for flexible mocking:
+
+2. **Or conditionally render links based on auth state**:
 ```tsx
-const mocks = vi.hoisted(() => ({
-  useAuth: vi.fn(() => ({ userId: 'test-user', isSignedIn: true }))
-}))
-vi.mock('@clerk/nextjs', () => ({ useAuth: mocks.useAuth }))
+<SignedIn>
+  <Link href="/demo/orders">View Demo</Link>
+</SignedIn>
+<SignedOut>
+  <Link href="/sign-in">Sign In to View Demo</Link>
+</SignedOut>
 ```
-4. Create test utilities that toggle auth state:
-```tsx
-const TestProviders = ({ isLoggedIn = false, children }) => {
-  (useAuth as jest.Mock).mockReturnValue({
-    userId: isLoggedIn ? 'user-id' : null,
-    isSignedIn: isLoggedIn
-  })
-  return <>{children}</>
-}
-```
-5. For E2E tests (Playwright/Cypress), use `setupClerkTestingToken()` to bypass bot detection
-6. Reserve E2E tests for critical flows; unit/integration tests should mock Clerk
 
-**Warning signs:**
-- Test failures: "useAuth is not defined"
-- Tests make network requests (visible in logs)
-- Rate limiting errors from Clerk API during test runs
-- Tests require `.env.test` with real Clerk keys
-- CI/CD tests fail with network/timeout errors
-- Test suite runtime >30 seconds for small apps
+3. **Configure middleware to return 200 for prefetch requests** (advanced):
+```typescript
+export default clerkMiddleware(async (auth, req) => {
+  // Check if it's a prefetch request
+  const isPrefetch = req.headers.get('purpose') === 'prefetch'
 
-**Phase to address:**
-Phase 5 (Testing Setup) — Set up test infrastructure early, before accumulating untested auth-dependent code.
-
----
-
-### Pitfall 9: Hydration Errors from Conditional Auth Rendering
-
-**What goes wrong:**
-React hydration mismatch errors: "Text content does not match server-rendered HTML." UI flashes between authenticated and unauthenticated states. Components render differently on server vs client, breaking React's reconciliation.
-
-**Why it happens:**
-Server-side rendering produces HTML based on server auth state, but client-side JavaScript uses client auth state that hasn't hydrated yet. Using `useAuth()` directly in render logic causes server/client mismatch. Non-deterministic values (like `Date.now()`) combined with auth checks. Browser extensions modifying DOM before React hydration.
-
-**How to avoid:**
-1. Use Server Components with `auth()` for server-side auth checks instead of Client Components with `useAuth()`
-2. Defer client-side auth UI to `useEffect()`:
-```tsx
-const [mounted, setMounted] = useState(false)
-useEffect(() => setMounted(true), [])
-if (!mounted) return <Skeleton />
-```
-3. Use `suppressHydrationWarning` sparingly on time-sensitive elements (not auth state)
-4. Leverage `<ClerkProvider dynamic>` wrapped in `<Suspense>` for PPR:
-```tsx
-<Suspense fallback={<AuthSkeleton />}>
-  <ClerkProvider dynamic>{children}</ClerkProvider>
-</Suspense>
-```
-5. Avoid conditional rendering based on `isSignedIn` in components that SSR — use routing instead
-6. Test with JavaScript disabled to see server-rendered HTML output
-7. Use Next.js 15 dev mode which provides detailed hydration error diagnostics
-
-**Warning signs:**
-- Console error: "Hydration failed because the initial UI does not match"
-- Flash of unauthenticated content (FOUC) before auth state loads
-- Different content on initial page load vs subsequent renders
-- Layout shift when auth state resolves
-- React strict mode exacerbates the errors
-- Production builds have hydration errors that dev mode doesn't show
-
-**Phase to address:**
-Phase 3 (Client-Side Auth State) — When integrating client components, prevent hydration mismatches from the start.
-
----
-
-### Pitfall 10: Link Prefetching to Protected Routes
-
-**What goes wrong:**
-Console filled with 401 errors during development. Next.js Link components prefetch protected pages, triggering auth failures. Error boundaries catch prefetch failures, showing error UI unnecessarily. Logs polluted with failed requests.
-
-**Why it happens:**
-Next.js `<Link>` components prefetch on hover by default. When a public page has links to protected pages, Next.js attempts to prefetch them before the user clicks. Protected pages return 401, causing the prefetch to fail. While this doesn't break functionality (actual navigation works), it creates noise in logs and may trigger error monitoring.
-
-**How to avoid:**
-1. Disable prefetch for links to protected routes on public pages:
-```tsx
-<Link href="/dashboard" prefetch={false}>Dashboard</Link>
-```
-2. Use route groups to separate public/protected layouts
-3. Configure middleware to return 404 instead of 401 for prefetch requests (detect via headers)
-4. Filter prefetch failures in error monitoring (Sentry, LogRocket, etc.)
-5. For critical auth-dependent navigation, use programmatic routing:
-```tsx
-const router = useRouter()
-const handleClick = () => router.push('/dashboard')
-```
-6. Consider disabling prefetch globally in next.config.js for auth-heavy apps:
-```js
-experimental: {
-  optimisticClientCache: false,
-}
+  if (isPrefetch && !isPublicRoute(req)) {
+    return new Response(null, { status: 200 })
+  }
+  // ... rest of middleware logic
+})
 ```
 
 **Warning signs:**
-- Console shows 401 errors when hovering over links
-- Sentry/error monitoring flooded with prefetch failures
-- "Failed to fetch" errors in dev tools Network tab
-- Error boundaries flash briefly on hover
-- Performance monitoring shows failed requests that didn't impact users
+- Console shows 401 errors for routes user hasn't visited
+- Network tab shows failed requests on hover
+- Error monitoring service reports high 401 rates from prefetch
+- Users report seeing error indicators despite functionality working
 
 **Phase to address:**
-Phase 2 (Route Protection) — Configure when setting up protected routes to avoid log pollution during development.
+Phase 2 (Route Restructure) - Audit public pages for links to protected routes. Add `prefetch={false}` or conditional rendering.
 
 ---
 
@@ -381,31 +427,27 @@ Shortcuts that seem reasonable but create long-term problems.
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Using deprecated `authMiddleware()` instead of `clerkMiddleware()` | Faster migration, matches old docs | Will break in next major version, missing new features | Only during staged migration (not for new projects) |
-| Wrapping entire app in `<ClerkProvider dynamic>` | Simpler setup, works everywhere | Opts all routes into dynamic rendering, slower builds, worse performance | Never (use granular opt-in) |
-| Hardcoding redirect URLs in components | Quick to implement | Hard to test, brittle across environments | Only in MVP with single-path auth flow |
-| Skipping E2E tests for auth flows | Faster test suite | Critical auth bugs reach production | Only if comprehensive integration tests exist |
-| Using mock data in tests without `@clerk/testing` | Tests pass without setup | False positives, doesn't test real Clerk integration | Unit tests only (not integration) |
-| Disabling TypeScript strict mode for auth code | Resolves async type errors quickly | Loses type safety on critical auth paths | Never (fix the actual async issues) |
-| Single environment variable set for dev/staging/prod | Less configuration | Dev keys leak to production, security risk | Never (use environment-specific configs) |
-| Ignoring CVE warnings during development | Keeps focus on features | Ships vulnerable code to production | Never (fix before first commit) |
+| Checking roles only in UI (`<Protect>`) | Faster implementation, simpler code | Data leaks in browser source, false security | Never - always add server-side checks |
+| Using `publicMetadata` without session token customization | Works with user.reload(), simpler setup | 60-second delay on role changes, poor UX | Only for non-critical roles where delay is acceptable |
+| Skipping redirects for old route paths | Faster deployment, fewer files to change | SEO penalty, broken bookmarks, poor UX | Never for existing production routes |
+| Testing only soft navigation, not hard refresh | Faster test suite, works in dev | 404s on bookmark/refresh in production | Never - always test both |
+| Broad middleware matchers (all routes) | Simpler config, "just works" | Performance hit, unnecessary auth checks on static files | Only in POC/prototype phase |
+| Client-side route guards with `useAuth()` | Familiar React pattern | Flash of wrong content, client-side only | Only as UX enhancement, never as primary security |
 
 ## Integration Gotchas
 
-Common mistakes when connecting to external services.
+Common mistakes when connecting Clerk with Next.js features.
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Vercel Deployment | Using test keys (`pk_test_`) in production | Set production environment variables with live keys (`pk_live_`), verify domain ownership |
-| Database User IDs | Using Clerk user ID as database primary key | Use UUID/auto-increment for primary key, store Clerk ID as `externalId` or `clerk_user_id` with unique constraint |
-| API Route Protection | Only protecting pages, leaving API routes public | Apply `clerkMiddleware` to API routes: `'/(api|trpc)(.*)'` matcher, verify auth in handlers |
-| Webhooks | Not verifying webhook signatures | Use `@clerk/clerk-sdk-node` to verify `svix` signatures before processing webhook data |
-| Role-Based Access Control | Checking roles in client components | Check roles in middleware or server components: `await auth.protect({ role: 'admin' })` |
-| Custom Session Claims | Storing sensitive data in JWT claims | JWT claims are client-accessible; store sensitive data server-side, only reference IDs in claims |
-| Sign-In Component Styling | Overriding Clerk CSS with `!important` | Use `appearance` prop with proper theme variables and element targeting |
-| Multi-Tenant Apps | Single Clerk instance for all tenants | Use organizations feature or separate Clerk instances per tenant for proper isolation |
-| Email Templates | Using default templates in production | Customize email templates in Clerk dashboard to match brand, test before launch |
-| Development/Production Domains | Using same Clerk instance for dev and prod | Create separate Clerk applications for development and production environments |
+| Middleware + Static Assets | Matcher includes static files, breaking page loads | Use Clerk's recommended matcher excluding `_next/static` and file extensions |
+| Middleware + Redirects | Redirecting to protected routes causes infinite loops | Check current path before redirecting, use `NextResponse.next()` for authenticated users |
+| Middleware + Route Groups | Hard refresh 404s after using route groups | Add `default.js` files or catch-all segments |
+| Session Token + publicMetadata | Roles in metadata don't appear in token | Customize session token in Clerk Dashboard to include metadata claims |
+| Organization Roles + Simple App | Using organizations for single-user feature flags | Use `publicMetadata` for app-level roles, organizations for multi-tenant scenarios |
+| `<Protect>` + Sensitive Data | Hiding components with sensitive data | Fetch data only after `auth.protect()` on server |
+| Dynamic Routes + App Router | Using Pages Router param access in App Router | Update to `useParams()` hook or `params` prop |
+| Clerk Middleware + Next.js Config | `basePath` or proxy headers cause redirect loops | Handle comma-separated proxy headers, test behind load balancers |
 
 ## Performance Traps
 
@@ -413,14 +455,12 @@ Patterns that work at small scale but fail as usage grows.
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| `auth()` called in every Server Component | Build time increases, slower SSR | Cache auth result at layout level, pass as prop to children | >50 Server Components |
-| No route-level caching for auth checks | Every request hits Clerk API | Use Next.js `unstable_cache` for non-critical auth data | >100 req/sec |
-| Client-side org/role checks for every render | Excessive API calls, rate limiting | Fetch once on mount, use context for app-wide state | >1000 DAU |
-| Fetching full user object when only ID needed | Unnecessary data transfer, slower responses | Use `auth()` for ID only, fetch full user when needed | >10,000 users |
-| Dynamic rendering for static marketing pages | All pages SSR on every request | Use `<ClerkProvider dynamic>` only for app pages, not marketing | >500 req/sec |
-| Webhook processing in request handler | Timeout on large batches, blocking requests | Queue webhooks for async processing (BullMQ, Inngest) | >100 webhooks/min |
-| Loading entire user list in admin panel | Page freezes, memory issues | Implement pagination, use Clerk's User API with limits | >1000 users |
-| Inline org/membership checks in loops | O(n) API calls for list rendering | Batch fetch memberships, cache results | >100 items in list |
+| Running middleware on every request | Slow page loads, high server costs | Use specific matchers, exclude static assets | 1000+ requests/min |
+| Fetching user data in middleware | Middleware timeout, slow navigation | Cache session data, use token claims instead of DB queries | 100+ concurrent users |
+| Multiple `user.reload()` calls | Rate limit errors from Clerk API | Batch metadata updates, force refresh once after all changes | 50+ users updating simultaneously |
+| Checking organization membership in every component | Excessive API calls, slow renders | Load org data once in layout, pass down via props/context | 10+ org checks per page |
+| Custom role logic without indexes | Database query slowdown | Index user metadata fields, cache role checks | 10K+ users |
+| Client-side role checking on every render | Unnecessary re-renders, UI jank | Memoize auth checks, use context to avoid prop drilling | Complex dashboards with 20+ components |
 
 ## Security Mistakes
 
@@ -428,16 +468,14 @@ Domain-specific security issues beyond general web security.
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| Trusting client-side auth state without server verification | Client can manipulate `isSignedIn`, bypass access controls | Always verify auth server-side with `auth()` or API calls |
-| Not checking role/permission in server actions | Unauthorized users can execute privileged actions | Use `await auth.protect({ permission: 'org:admin:access' })` in Server Actions |
-| Exposing `CLERK_SECRET_KEY` in client bundles | Complete account takeover, all users compromised | Never prefix with `NEXT_PUBLIC_`, audit builds for leaked secrets |
-| Using `userId` from URL/body without verification | Impersonation attacks, unauthorized data access | Get `userId` from `auth()`, never trust user input |
-| Allowing organization switching without re-auth | Session hijacking in shared-device scenarios | Require re-authentication for sensitive org actions |
-| Not validating redirect URLs after sign-in | Open redirect vulnerability, phishing attacks | Whitelist allowed redirect domains, validate on server |
-| Relying on middleware alone for API protection | CVE-2025-29927 bypass, middleware can be skipped | Verify auth in API route handlers as defense in depth |
-| Storing passwords/secrets in user metadata | Data leaks if metadata accessed, compliance violations | Use Clerk's built-in auth, never store passwords yourself |
-| Not rate-limiting sign-in attempts | Brute force attacks, credential stuffing | Enable Clerk's attack protection, add custom rate limiting |
-| Using test keys in production | Data leaks to dev dashboard, weak security | Separate Clerk apps for dev/prod, CI/CD validates `pk_live_` prefix |
+| Using `<Protect>` as security boundary | Sensitive data exposed in browser source, accessible via DevTools | Always use `auth.protect()` on server before fetching sensitive data |
+| Storing roles in `privateMetadata` but not in session token | Requires additional API call on every role check, performance hit | Store roles in `publicMetadata` and include in session token |
+| Not validating role on server after client check | User can manipulate client state to bypass UI guards | Always verify roles in API routes and server components |
+| Using string comparison for role checks | Typos break security ("adimn" vs "admin"), hard to refactor | Use TypeScript enums or constants for role values |
+| Forgetting to check role on API routes | UI shows/hides correctly but API accepts all requests | Add role checks to every sensitive API endpoint |
+| Allowing role self-assignment | Users can escalate privileges via Clerk user settings | Only allow admin-initiated role changes, use middleware to block updates to certain metadata keys |
+| Not handling missing role gracefully | App crashes or shows errors when role undefined | Provide default role or explicit "no role" handling in authorization logic |
+| Trusting client-provided role claims | User can forge requests with fake roles | Always read roles from `auth()` session, never from request headers or client state |
 
 ## UX Pitfalls
 
@@ -445,35 +483,31 @@ Common user experience mistakes in this domain.
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| No loading state during sign-in redirect | User sees blank page, thinks app broke | Show loading spinner, "Signing you in..." message |
-| Error messages expose technical details | Confusion ("clerkMiddleware not found"), security risk | User-friendly: "Authentication failed. Please try again." |
-| Sign-out doesn't redirect automatically | User stuck on dashboard, sees stale data | Auto-redirect to `/` or landing page after sign-out |
-| No feedback when session expires | Sudden auth failures, lost work | Show modal: "Your session expired. Please sign in again." |
-| Sign-in page accessible when already logged in | User confused, tries to sign in again | Redirect to dashboard if `isSignedIn`, show user info |
-| Auth errors don't explain next steps | User frustrated, abandons flow | "Your session expired. [Sign in again] to continue." |
-| No remember-me option | Users must sign in repeatedly | Enable Clerk's "Keep me signed in" feature |
-| Account deletion has no confirmation | Accidental deletions, support burden | Multi-step confirmation: type username, explain consequences |
-| Password reset doesn't confirm email sent | User unsure if request worked | Success message: "Check your email for reset link" |
-| Organization switching has no visual feedback | User unsure which org is active | Highlight active org, show loading state during switch |
+| No loading state during role check | Flash of wrong content, confusing UX | Show skeleton or loading spinner while `auth()` resolves |
+| Access denied without explanation | Frustration, support tickets | Show clear message: "Demo access required. Contact admin@company.com" |
+| Role changes require sign-out/sign-in | Confusion, "it's broken" reports | Force token refresh automatically, show "Permissions updated" toast |
+| Breaking existing bookmarks without notice | Users report "app is broken" | Implement redirects, show deprecation notice before removing old routes |
+| No fallback when role check fails | Blank page or error screen | Render fallback UI with upgrade prompt or access request form |
+| Inconsistent navigation (some links work, some 404) | Loss of trust, confusion | Test all navigation comprehensively before deploy |
+| Demo content labeled confusingly | Users think it's real data, make business decisions | Clearly label "DEMO" in header, use watermark, different color scheme |
+| No way to see current role | Users don't understand why they can't access features | Show role badge in user menu or profile settings |
 
 ## "Looks Done But Isn't" Checklist
 
 Things that appear complete but are missing critical pieces.
 
-- [ ] **Middleware:** Configured but not tested with unauthenticated user — verify redirect to sign-in works
-- [ ] **Environment Variables:** Set in Vercel but not tested in preview deployment — trigger preview build, verify auth works
-- [ ] **Route Protection:** Protecting pages but forgot API routes — test API calls without auth header, should return 401
-- [ ] **Redirect Flow:** Sign-in works but sign-out doesn't redirect — test sign-out, verify user lands on public page
-- [ ] **Error Handling:** Auth works in happy path but no error boundary for failures — disconnect network, verify graceful degradation
-- [ ] **Testing:** Auth works manually but tests fail — run test suite, verify mocks configured correctly
-- [ ] **Production Keys:** Using live keys but on staging domain — verify production keys only used with production domain
-- [ ] **Webhooks:** Receiving webhooks but not verifying signatures — check webhook handler validates Svix signature
-- [ ] **Role Checks:** Checking roles client-side but not server-side — verify API routes check permissions with `auth.protect()`
-- [ ] **Session Expiration:** Users stay signed in but don't handle expired sessions — test after session expires (>7 days), verify re-auth required
-- [ ] **Security Headers:** Clerk configured but CSP/CORS missing — verify `x-middleware-subrequest` blocked at reverse proxy
-- [ ] **Email Configuration:** Auth works but email templates use defaults — check Clerk dashboard, customize templates with brand
-- [ ] **User Metadata:** Storing data but not sanitizing on read — verify XSS protection if displaying user metadata
-- [ ] **Audit Logs:** Auth working but no logging of auth events — configure Clerk webhooks, log sign-in/sign-up to monitoring
+- [ ] **Route Protection:** Middleware configured BUT redirects not tested with browser refresh
+- [ ] **Role Assignment:** Users can be assigned roles BUT session token not customized to include metadata
+- [ ] **Dynamic Routes:** Routes work via `<Link>` navigation BUT 404 on direct URL access or refresh
+- [ ] **Old Route Handling:** New routes deployed BUT no redirects from old paths (bookmarks break)
+- [ ] **Static Assets:** Middleware matcher defined BUT includes static files (CSS/images fail to load)
+- [ ] **Navigation Update:** Routes moved BUT sidebar still has hardcoded old paths
+- [ ] **Security:** `<Protect>` added to UI BUT server still sends sensitive data to client
+- [ ] **Role Checks:** Middleware checks authentication BUT doesn't verify roles on `/demo/*` routes
+- [ ] **Error Handling:** Role checks implemented BUT no fallback UI when unauthorized
+- [ ] **Production Testing:** Works in dev BUT not tested behind load balancer/proxy (redirect loops)
+- [ ] **Prefetch Errors:** Links work BUT console shows 401s from automatic prefetching
+- [ ] **Token Refresh:** Roles assigned BUT users must wait 60s or reload page to access new features
 
 ## Recovery Strategies
 
@@ -481,18 +515,16 @@ When pitfalls occur despite prevention, how to recover.
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Missing clerkMiddleware() | LOW | 1. Create `middleware.ts` with default config, 2. Add matcher, 3. Test all routes, 4. Deploy |
-| Default public routes | MEDIUM | 1. Add `createRouteMatcher` and `auth.protect()`, 2. Test all protected routes, 3. Verify redirects, 4. Deploy |
-| Async auth() not applied | MEDIUM | 1. Run `@clerk/upgrade` codemod, 2. Manual fixes for edge cases, 3. Update tests, 4. Full regression test |
-| Environment variables wrong | LOW | 1. Update Vercel environment variables, 2. Redeploy affected environments, 3. Verify with test user |
-| Dynamic rendering missing | MEDIUM | 1. Wrap affected components in `<ClerkProvider dynamic>`, 2. Add Suspense boundaries, 3. Test SSR output |
-| CVE-2025-29927 deployed | HIGH | 1. Emergency Next.js upgrade to 15.2.3+, 2. Deploy ASAP, 3. Audit logs for exploitation, 4. Rotate secrets if compromised |
-| afterSignIn deprecated | LOW | 1. Replace with `fallbackRedirectUrl`, 2. Test sign-in flow, 3. Deploy |
-| Tests not mocked | LOW | 1. Install `@clerk/testing`, 2. Add Jest/Vitest mocks, 3. Update test setup file, 4. Fix failing tests |
-| Hydration errors | MEDIUM | 1. Move auth checks to Server Components, 2. Add `useEffect` defer for Client Components, 3. Add Suspense, 4. Test SSR |
-| Link prefetch 401s | LOW | 1. Add `prefetch={false}` to protected route links, 2. Filter errors in monitoring, 3. Document pattern |
-| Exposed secret key | HIGH | 1. Rotate key immediately in Clerk dashboard, 2. Audit codebase for key references, 3. Add pre-commit hook to detect secrets, 4. Deploy |
-| Session hijacking | HIGH | 1. Force sign-out all users via Clerk dashboard, 2. Require re-authentication, 3. Add session re-auth for sensitive actions, 4. Audit access logs |
+| Infinite redirect loop in production | **HIGH** | 1. Immediately revert middleware changes 2. Add conditional check before redirects 3. Add integration test for redirect scenarios 4. Redeploy |
+| Broken bookmarks from missing redirects | **MEDIUM** | 1. Add redirects to `next.config.js` 2. Deploy redirects 3. Submit updated sitemap to Google Search Console 4. Monitor 404 rates |
+| Session token missing metadata | **LOW** | 1. Configure session token in Clerk Dashboard 2. Existing sessions update within 60s automatically 3. Optional: Force refresh for active users |
+| Hard refresh 404s with route groups | **MEDIUM** | 1. Add `default.js` to affected routes 2. Test all routes with hard refresh 3. Deploy 4. Clear CDN cache |
+| `<Protect>` exposing sensitive data | **HIGH** | 1. Move data fetching to server component with `auth.protect()` 2. Pass only non-sensitive props to client 3. Audit all `<Protect>` usage 4. Security review |
+| Dynamic routes broken | **MEDIUM** | 1. Fix folder structure to App Router pattern 2. Update param access from `useRouter()` to `useParams()` 3. Test all dynamic routes directly |
+| Middleware on static assets | **LOW** | 1. Update matcher to exclude file extensions 2. Deploy 3. Verify images/CSS load correctly |
+| Missing navigation updates | **LOW** | 1. Grep codebase for old paths 2. Update all references 3. Test all navigation links 4. Deploy |
+| Role changes not immediate | **LOW** | 1. Add session token customization 2. Call `user.reload()` after role assignment 3. Show "Updating permissions..." state |
+| Prefetch errors flooding logs | **LOW** | 1. Add `prefetch={false}` to protected links on public pages 2. Configure error monitoring to ignore prefetch 401s 3. Deploy |
 
 ## Pitfall-to-Phase Mapping
 
@@ -500,52 +532,51 @@ How roadmap phases should address these pitfalls.
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Missing clerkMiddleware() | Phase 1: Foundation Setup | `auth()` works without errors, debug mode shows middleware executing |
-| Default public routes | Phase 2: Route Protection | Unauthenticated curl requests return 401/redirect, not 200 |
-| Async auth() not applied | Phase 1: Foundation Setup | TypeScript compiles without errors, all `auth()` calls awaited |
-| Environment variables wrong | Phase 1: Foundation Setup, Phase 4: Production Deployment | Verify sign-in works in each environment, check Clerk dashboard for events |
-| Dynamic rendering missing | Phase 3: Client-Side Auth State | `useAuth()` returns current state, Next.js build shows Dynamic routes |
-| CVE-2025-29927 | Phase 1: Foundation Setup | `npm ls next` shows ≥15.2.3, security audit clean |
-| afterSignIn deprecated | Phase 3: Sign-In/Sign-Up Flow | No TypeScript deprecation warnings, redirects work as expected |
-| Tests not mocked | Phase 5: Testing Setup | Tests run without network calls, `npm test` completes <10s |
-| Hydration errors | Phase 3: Client-Side Auth State | No hydration warnings in console, SSR output matches client |
-| Link prefetch 401s | Phase 2: Route Protection | Console clean during navigation, error monitoring shows no prefetch failures |
-| Hardcoded test keys in prod | Phase 4: Production Deployment | CI/CD validates `CLERK_PUBLISHABLE_KEY` starts with `pk_live_` |
-| API routes unprotected | Phase 2: Route Protection | API calls without auth header return 401, integration tests verify |
-| Webhook signature not verified | Phase 6: Webhook Integration (if needed) | Tampered webhooks rejected, logs show verification success |
-| No role checks server-side | Phase 2: Route Protection | Admin-only actions fail for non-admin users in server actions |
+| Middleware infinite loops | Phase 1: Middleware Config | Test: unauthenticated redirects don't loop, authenticated users proceed |
+| Middleware on static assets | Phase 1: Middleware Config | Test: images/CSS load on protected routes |
+| Missing route matchers | Phase 1: Middleware Config | Test: public routes accessible, demo routes require role |
+| Org roles vs metadata confusion | Phase 1: Architecture Decision | Doc: decision recorded with rationale for publicMetadata approach |
+| Session token without metadata | Phase 1: Clerk Configuration | Test: `auth().sessionClaims.metadata` contains role |
+| Hard refresh 404s | Phase 2: Route Restructure | Test: every route works with both soft nav AND browser refresh |
+| Broken bookmarks/SEO | Phase 2: Route Restructure | Test: old paths redirect to new paths with 308 status |
+| Dynamic routes broken | Phase 2: Route Restructure | Test: `/customers/[id]` routes work via direct URL |
+| Missing navigation updates | Phase 2: Route Restructure | Test: all sidebar/breadcrumb links point to new paths |
+| Prefetch errors | Phase 2: Route Restructure | Test: public page links to protected routes don't cause console errors |
+| Role assignment token delay | Phase 3: Role Assignment | Test: role access works immediately after assignment |
+| `<Protect>` data exposure | Phase 4: Client Protection | Audit: sensitive data only loaded after `auth.protect()` on server |
+| Client-side only role checks | Phase 4: Client Protection | Test: API routes verify roles, not just UI |
 
 ## Sources
 
-**Official Clerk Documentation (HIGH confidence):**
-- [clerkMiddleware() Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware)
-- [auth() was called error documentation](https://clerk.com/docs/reference/nextjs/errors/auth-was-called)
-- [Next.js Quickstart (App Router)](https://clerk.com/docs/nextjs/getting-started/quickstart)
-- [Upgrade to @clerk/nextjs v6](https://clerk.com/docs/guides/development/upgrading/upgrade-guides/nextjs-v6)
-- [Next.js rendering modes and Clerk](https://clerk.com/docs/guides/development/rendering-modes)
-- [Customize redirect URLs](https://clerk.com/docs/guides/development/customize-redirect-urls)
-- [Deploying to Vercel](https://clerk.com/docs/guides/development/deployment/vercel)
-- [A practical guide to testing Clerk Next.js applications](https://clerk.com/blog/testing-clerk-nextjs)
-- [Appearance prop customization](https://clerk.com/docs/nextjs/guides/customizing-clerk/appearance-prop/overview)
+**Official Documentation:**
+- [Clerk clerkMiddleware() Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware)
+- [Clerk Role-Based Access Control Guide](https://clerk.com/docs/guides/secure/basic-rbac)
+- [Clerk Session Token Customization](https://clerk.com/docs/guides/sessions/session-tokens)
+- [Clerk `<Protect>` Component Reference](https://clerk.com/docs/nextjs/reference/components/control/protect)
+- [Next.js Middleware Documentation](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+- [Next.js Redirects Guide](https://nextjs.org/docs/app/building-your-application/routing/redirecting)
+- [Next.js Dynamic Routes](https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes)
+- [Next.js Linking and Navigating](https://nextjs.org/docs/app/building-your-application/routing/linking-and-navigating)
 
-**Security Advisories (HIGH confidence):**
-- [CVE-2025-29927: Next.js Middleware Authorization Bypass](https://clerk.com/blog/cve-2025-29927)
-- [CVE-2025-29927 Technical Analysis (ProjectDiscovery)](https://projectdiscovery.io/blog/nextjs-middleware-authorization-bypass)
-- [CVE-2025-29927 Analysis (Datadog Security Labs)](https://securitylabs.datadoghq.com/articles/nextjs-middleware-auth-bypass/)
+**Community Resources:**
+- [Common mistakes with the Next.js App Router - Vercel Blog](https://vercel.com/blog/common-mistakes-with-the-next-js-app-router-and-how-to-fix-them)
+- [Next.js Middleware Redirect Loops Discussion](https://github.com/vercel/next.js/issues/62547)
+- [Clerk Middleware Auth Detection Error](https://clerk.com/docs/reference/nextjs/errors/auth-was-called)
+- [Hard Navigation vs Soft Navigation in Next.js](https://typeshare.co/tume/posts/hard-navigation-vs-soft-navigation)
+- [Handling Redirects Without Breaking SEO](https://medium.com/@sureshdotariya/handling-redirects-in-next-js-without-breaking-seo-2f8c754bf586)
+- [How to Use Matcher in Next.js Middleware](https://medium.com/@turingvang/how-to-use-matcher-in-next-js-middleware-cf18f441d52a)
 
-**Community Resources (MEDIUM confidence):**
-- [Update on Clerk Authentication with Next.js: Route Protection Issues](https://medium.com/@extraone033/update-on-clerk-authentication-with-next-js-how-to-resolve-route-protection-issues-0baf38c3f739)
-- [Clerk Authentication in Next.js 15 App Router: Full Integration Guide](https://www.buildwithmatija.com/blog/clerk-authentication-nextjs15-app-router)
-- [Added @clerk/nextjs and now I get 404s on protected routes (GitHub Discussion)](https://github.com/vercel/next.js/discussions/66037)
-- [ClerkProvider Should Not Force All Children to Render Dynamically (Issue #1746)](https://github.com/clerk/javascript/issues/1746)
+**Issue Trackers:**
+- [Clerk publicMetadata sync issues](https://github.com/clerk/javascript/issues/1944)
+- [Next.js middleware matcher discussions](https://github.com/vercel/next.js/discussions/38615)
+- [Clerk infinite redirect loop](https://github.com/clerk/javascript/issues/1436)
+- [Next.js Parallel Routes and Hard Navigation](https://github.com/vercel/next.js/issues/73939)
 
-**Context7 Documentation Lookup (HIGH confidence):**
-- Clerk library ID: `/clerk/clerk-docs`
-- Middleware configuration snippets
-- Route protection patterns
-- Environment variable setup
-- Dynamic rendering guidance
+**Context7 Documentation:**
+- Clerk v7 role-based access control patterns
+- Clerk middleware configuration best practices
+- Session token customization for publicMetadata
 
 ---
-*Pitfalls research for: Adding Clerk Authentication to Next.js 15 App Router*
-*Researched: 2026-05-09*
+*Pitfalls research for: CGM Dashboard v1.5 - Adding role-based demo access and route restructuring*
+*Researched: 2026-05-10*

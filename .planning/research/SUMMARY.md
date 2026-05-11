@@ -1,308 +1,333 @@
 # Project Research Summary
 
-**Project:** CGM Dashboard v1.4 - Authentication Layer
-**Domain:** Next.js 15 App Router authentication with Clerk
-**Researched:** 2026-05-09
+**Project:** CGM Dashboard v1.5 Production Transition
+**Domain:** Role-Based Access Control and Route Restructuring
+**Researched:** 2026-05-10
 **Confidence:** HIGH
 
 ## Executive Summary
 
-This project adds enterprise-grade authentication to an existing CGM Dashboard using Clerk. Research shows Clerk is the optimal choice for Next.js 15 App Router apps requiring rapid deployment with minimal boilerplate. The recommended approach uses middleware-based route protection, prebuilt UI components, and server-side auth verification. This pattern delivers production-ready authentication in 5-10 minutes of setup time while avoiding common pitfalls like middleware detection errors and hydration mismatches.
+The CGM Dashboard v1.5 transition to production requires adding role-based access control and restructuring routes to separate demo content from future production features. Research shows this can be achieved with **zero new package installations** — all required APIs already exist in the current stack (Clerk v7.3.3 + Next.js 15). The solution involves configuring Clerk session tokens to include role metadata, extending middleware for route protection, and restructuring routes into a `/demo/*` namespace.
 
-The critical path is straightforward: install Clerk SDK, configure middleware with proper matchers, add ClerkProvider to root layout, create sign-in/sign-up pages with prebuilt components, and integrate UserButton into the header. The primary risk is CVE-2025-29927 (middleware bypass vulnerability) which requires Next.js ≥15.2.3. Secondary risks include async auth() migration issues and dynamic rendering opt-out breaking client components. All risks are mitigated by using current versions and following documented patterns.
+The recommended approach uses Clerk's `publicMetadata` stored in session tokens for role checks, avoiding the complexity of organization-based RBAC. Middleware checks roles at the edge before pages load, providing security without additional network requests. Routes should be moved to a regular `demo/` folder (not a route group) to enable URL-based middleware matching. A component-based DashboardLayout eliminates current code duplication while maintaining flexibility for shared routes like `/settings`.
 
-Research identifies three distinct implementation phases: Foundation Setup (critical infrastructure), Route Protection (security hardening), and User Experience Integration (loading states, appearance customization). The minimal viable authentication requires only the first two phases, with polish deferred to post-launch based on user feedback.
+Key risks center on middleware configuration errors (infinite redirects, missing static asset exclusions), session token sync delays after role assignment, and breaking existing bookmarks without proper redirects. All critical pitfalls have well-documented prevention strategies from official Clerk and Next.js sources, providing high confidence in the implementation approach.
 
 ## Key Findings
 
 ### Recommended Stack
 
-Clerk is purpose-built for Next.js with first-class App Router support. The only required dependency is `@clerk/nextjs` (v7.3.3+), which includes TypeScript types, middleware helpers, server/client components, and prebuilt UI. NextAuth.js was rejected due to requiring custom form implementation. Auth0 was rejected due to 15x higher cost and enterprise complexity unsuited for a single-tenant dashboard. Custom auth solutions were rejected as security liabilities with maintenance burden.
+**No stack changes required** — the existing Next.js 15 + Clerk v7 integration already provides all necessary APIs for role-based access control. Research confirmed that Clerk v7.3.3 includes full RBAC support via `publicMetadata`, `auth().sessionClaims`, and role-based route protection.
 
-**Core technologies:**
-- **@clerk/nextjs v7.3.3+**: Official Next.js 15+ authentication SDK — provides middleware, server helpers (auth(), currentUser()), client hooks (useAuth(), useUser()), and prebuilt components (SignIn, SignUp, UserButton) with zero configuration
-- **Next.js 16.1.6 (existing)**: Web framework — already in use, compatible with Clerk requirements (≥15.2.3 needed for CVE-2025-29927 fix)
-- **React 19.2.3 (existing)**: UI library — already in use, compatible with Clerk peer dependencies
+**Current stack (sufficient for v1.5):**
+- **@clerk/nextjs@^7.3.3**: Provides session claims API, middleware with role checking, publicMetadata management — already installed
+- **next@16.1.6 (Next.js 15 framework)**: Supports route groups, middleware with createRouteMatcher, App Router patterns — already installed
+- **@clerk/types@^4.101.23**: Enables TypeScript interface extensions for type-safe role checking — already installed
 
-**Integration approach:**
-- Clerk middleware (`clerkMiddleware()`) protects routes at the edge before page render
-- Environment variables (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`) configured per environment (dev uses `pk_test_`, production uses `pk_live_`)
-- Dark mode integration via `appearance` prop or CSS `color-scheme` (compatible with existing `next-themes`)
-- No conflicts with existing Tailwind CSS 4, TypeScript, or component library (CVA)
+**Implementation approach:**
+1. Configure Clerk Dashboard to include `publicMetadata` in session token claims
+2. Create TypeScript type definitions for roles (`type Roles = 'demo' | 'admin'`)
+3. Extend middleware with role-based route matchers
+4. Use regular `demo/` folder (not route group) for URL-based middleware matching
+5. Extract existing layout patterns into reusable DashboardLayout component
+
+**Critical finding:** Next.js version is 15, NOT 16 (package version `next@16.1.6` is misleading). Continue using `middleware.ts` convention, not the Next.js 16 `proxy.ts` pattern.
 
 ### Expected Features
 
-Email + password authentication is table stakes. Users expect sign-up with email verification, sign-in with password, password reset via email, and sign-out functionality. The dashboard requires route protection (middleware-based), user display in header (UserButton component), and dark/light theme support for auth UI. All of these features are built into Clerk with zero custom code.
+**Must have (table stakes for v1.5):**
+- Route protection by role — users with `demo` role can access `/demo/*` routes, others redirected to root
+- Clear visual feedback when unauthorized — middleware redirects with 404 or redirect to Coming Soon page
+- Session-based role assignment — roles available in session token without additional API calls
+- Context-aware sidebar — navigation adapts based on route (demo vs production)
+- Coming Soon homepage — root `/` displays placeholder with full layout
+- Universal settings access — `/settings` accessible to all authenticated users regardless of role
 
-**Must have (table stakes):**
-- Email + Password Sign-Up — standard registration with automatic email verification flow
-- Email + Password Sign-In — returning user authentication with password strategy
-- Password Reset / Forgot Password — built-in flow: sendResetPasswordEmailCode() → verifyCode() → resetPassword()
-- Sign Out — simple signOut() method with optional redirect URL
-- Route Protection via Middleware — clerkMiddleware() with auth.protect() auto-redirects unauthenticated users to sign-in
-- User Display in Header — UserButton component shows avatar, name, sign-out dropdown
-- Session Management — automatic maintenance of auth state across pages via Next.js Server Components
-- Prebuilt UI Components — SignIn, SignUp, UserButton components eliminate need for custom forms
-- Dark/Light Theme Support — appearance.theme prop or CSS color-scheme integration with next-themes
+**Should have (competitive advantage):**
+- Progressive feature rollout infrastructure — demo namespace at `/demo/*` allows incremental real feature releases at root
+- Graceful empty states — professional Coming Soon placeholder instead of blank pages
+- Seamless route migration — existing routes move to `/demo/*` with proper redirects (no broken bookmarks)
 
-**Should have (competitive, defer to v1.5+):**
-- Multi-Factor Authentication (MFA) — TOTP/SMS/email codes for enhanced security, add when customers request or compliance requires
-- Social OAuth (Google/Microsoft) — 1-click social login if user feedback shows email sign-up friction
-- User Profile Management — self-service password change, email update reduces support burden
-- Appearance Customization — match auth UI to dashboard design tokens after visual design review
-- Session Token for API Auth — getToken() returns JWT for backend API authorization headers (add when building API routes)
-- Webhooks for User Sync — sync user.created events to database when storing user data for foreign keys
+**Defer to v1.x (post-launch):**
+- Auto-redirect demo users from root to `/demo/orders` on first load — improves UX but not essential
+- Role assignment UI via admin interface — manual Clerk dashboard assignment sufficient initially
+- Onboarding flow explaining demo vs production contexts — add when user confusion emerges
+- Audit logging for role-based access attempts — add when security review demands it
 
-**Defer (v2+):**
-- Organizations/Teams — multi-tenant B2B feature, only needed if building mill-specific user groups
-- Custom JWT Templates — advanced RBAC with custom claims, wait until permission requirements validated
-- Advanced MFA (WebAuthn/Passkeys) — emerging standard, browser support maturing
-- Passwordless Magic Links — paradigm shift requiring user education, replaces passwords entirely
-- Custom Email Templates — branding polish, default Clerk emails functional for MVP
-- Rate Limiting Customization — premature optimization, defaults handle normal traffic
+**Anti-features to avoid:**
+- Fine-grained permission system — premature optimization, start with simple role flags
+- Client-side role checking as security boundary — security theater, always enforce server-side
+- Automatic role assignment based on metadata — hidden magic leads to debugging nightmares
+- Nested role hierarchies — role explosion and inheritance conflicts
 
 ### Architecture Approach
 
-The standard Clerk pattern for Next.js App Router uses three layers: middleware for route protection, ClerkProvider in root layout for global auth context, and server/client components for auth state access. Middleware runs at the edge before page render, checking session cookies and redirecting unauthenticated users. Server Components use auth() helper for user ID access. Client Components use useAuth()/useUser() hooks for reactive state. This separation ensures zero auth logic in page components — middleware handles protection transparently.
+The architecture integrates Next.js App Router route groups with Clerk RBAC through middleware-based protection and component-based layouts. Routes are organized into a regular `demo/` folder (not a route group with parentheses) to enable URL path matching in middleware. The solution eliminates current code duplication where every page manually renders Sidebar + Header + main wrapper by extracting this pattern into a reusable DashboardLayout component.
 
 **Major components:**
-1. **middleware.ts (NEW)** — Route protection using clerkMiddleware() with createRouteMatcher() for pattern-based public/protected route definitions; must use broad matcher to avoid "auth() called but no middleware detected" errors
-2. **app/layout.tsx (MODIFIED)** — Add ClerkProvider wrapper around existing ThemeProvider to provide auth context app-wide; no other layout changes needed
-3. **app/sign-in/[[...sign-in]]/page.tsx (NEW)** — Drop-in SignIn component with catch-all route for password reset, verification flows
-4. **app/sign-up/[[...sign-up]]/page.tsx (NEW)** — Drop-in SignUp component with catch-all route for email verification, multi-step flows
-5. **components/Header.tsx (MODIFIED)** — Replace static user info with UserButton component; add 'use client' directive and isLoaded check to prevent hydration errors
-6. **.env.local (NEW, gitignored)** — Store NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY; separate keys for dev (pk_test_) and production (pk_live_)
+1. **Middleware Layer** — Extends existing clerkMiddleware with role-based route matchers, checks `sessionClaims.metadata.role` before allowing access to `/demo/*` routes, redirects unauthorized users to root `/`
+2. **Route Structure** — Regular `demo/` folder containing moved pages (orders, customers, mill-production), root `/` becomes Coming Soon page, `/settings` remains shared across contexts
+3. **DashboardLayout Component** — Reusable wrapper composing Sidebar + Header + main, used consistently across all pages to eliminate duplication
+4. **Conditional Sidebar** — Client component using `usePathname()` to render different nav items based on route context (demo vs production)
+5. **Session Token Configuration** — Clerk Dashboard customization to include `publicMetadata.role` in session claims, enabling role checks without network requests
 
-**Key patterns:**
-- **Middleware-based protection**: All routes protected by default except sign-in/sign-up; centralized auth logic prevents duplication across pages
-- **Server Components for auth checks**: Use auth() in RSC for user ID access; avoid client-side hooks when server-side sufficient
-- **Dynamic rendering opt-in**: Wrap client components using useAuth() in `<ClerkProvider dynamic>` + Suspense to prevent static rendering issues
-- **No custom auth UI**: Use prebuilt components exclusively; custom forms introduce security risks and maintenance burden
+**Key architectural patterns:**
+- **Middleware Role-Based Protection**: Check roles at edge using `createRouteMatcher()` and `sessionClaims.metadata.role`
+- **Component-Based Layouts**: DashboardLayout wrapper instead of route group layouts for consistency across shared routes
+- **Conditional Navigation**: Single Sidebar component with conditional logic based on pathname rather than duplicate components
+- **TypeScript Type Safety**: Extend `CustomJwtSessionClaims` interface for compile-time role checking
+
+**Data flow:** User navigates → Middleware intercepts → `auth.protect()` verifies authentication → Check if demo route → Read `sessionClaims.metadata.role` → Allow if `role === 'demo'`, redirect otherwise → Page loads with DashboardLayout → Sidebar reads pathname → Renders appropriate nav items
 
 ### Critical Pitfalls
 
-The top 5 pitfalls account for 80% of reported integration issues. All are preventable with proper initial setup.
+1. **Middleware Infinite Redirect Loops** — Redirecting to routes that trigger the same middleware creates infinite loops. Prevention: Check current location before redirecting, ensure redirect targets excluded from matchers, use `NextResponse.next()` for authenticated users. Address in Phase 1 before any role logic.
 
-1. **Missing clerkMiddleware() Configuration** — Error "auth() was called but Clerk can't detect usage of clerkMiddleware()" blocks all auth checks. Caused by missing middleware.ts file or narrow matcher excludes routes where auth() called. Fix: Create middleware.ts at src/ root with recommended broad matcher pattern that excludes only static files (_next, images, fonts). Enable debug mode during development to verify middleware execution. Must address in Phase 1 (Foundation) before any auth calls.
+2. **Middleware Matcher Missing Static Assets** — Running authentication checks on CSS/JS/images breaks page loads. Prevention: Use Clerk's recommended matcher excluding `_next/static` and file extensions. Address in Phase 1 during middleware configuration.
 
-2. **Default Public Routes (Not Protected)** — All routes remain publicly accessible after Clerk installation. clerkMiddleware() makes routes public by default; protection is opt-in via auth.protect(). Developers migrating from authMiddleware() (v4) expect automatic protection. Fix: Explicitly protect routes using createRouteMatcher for public routes (['/sign-in(.*)', '/sign-up(.*)']), then call auth.protect() for all non-public routes. Test unauthenticated access to /dashboard, /orders, /settings before deployment. Must address in Phase 2 (Route Protection).
+3. **Hard Refresh Breaking Route Groups** — Soft navigation works but browser refresh returns 404. Prevention: Add `default.js` files to parallel routes, test all routes with both soft and hard refresh. Address in Phase 2 during route restructure.
 
-3. **Async auth() Breaking Changes Not Applied** — TypeScript errors or runtime failures when calling auth() without await. Clerk v6 made auth() asynchronous to support Next.js 15's async dynamic APIs. Existing code using synchronous auth() from v5 breaks. Fix: Update all auth() calls to await auth(), mark functions as async, change auth().protect() to await auth.protect(). Run @clerk/upgrade codemod to scan codebase. Must address in Phase 1 (Foundation) before building features.
+4. **Broken Bookmarks from Missing Redirects** — Moving routes without redirects breaks bookmarks and SEO. Prevention: Implement permanent redirects (308) in `next.config.js` for all moved routes. Address in Phase 2 alongside route moves.
 
-4. **Environment Variables Missing or Misconfigured** — Auth works in development but fails in production. Missing NEXT_PUBLIC_ prefix makes publishable key unavailable client-side. Using development keys (pk_test_) in production. Fix: Use exact variable names (NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY), verify key format matches environment (pk_test_/sk_test_ for dev, pk_live_/sk_live_ for prod), configure Vercel environments separately. Must address in Phase 1 (Foundation) and verify in Phase 4 (Production Deployment).
+5. **Session Token Not Updated After Role Assignment** — Roles assigned via publicMetadata don't appear in session token until 60-second refresh. Prevention: Configure session token to include metadata in Clerk Dashboard, force refresh with `user.reload()` after assignment. Address in Phase 1 during Clerk configuration.
 
-5. **CVE-2025-29927 Middleware Bypass Vulnerability** — Attackers bypass all authentication by adding x-middleware-subrequest header to HTTP requests. Protected routes become publicly accessible. Affects Next.js <15.2.3 (and older 12.x, 13.x, 14.x versions). Fix: Upgrade Next.js to ≥15.2.3 before first commit. Current project uses 16.1.6 (safe). Verify with curl test: `curl -H "x-middleware-subrequest: test" https://app/protected` should return 401, not 200. Must address in Phase 1 (Foundation) — cannot ship vulnerable version to production.
+6. **`<Protect>` Component Exposes Data** — Using `<Protect>` to hide sensitive UI doesn't prevent data loading in browser source. Prevention: Never use `<Protect>` for security, always check roles server-side before fetching data. Address in Phase 4 during client component audits.
 
-**Secondary pitfalls:**
-- **Dynamic Rendering Opt-Out** — useAuth() returns null in client components due to static rendering; requires `<ClerkProvider dynamic>` wrapper with Suspense
-- **Hydration Errors** — Server/client render mismatch from conditional auth rendering; fix by using Server Components with auth() or deferring client UI to useEffect()
-- **Link Prefetching to Protected Routes** — Console filled with 401 errors when hovering links; fix by adding prefetch={false} to protected route links on public pages
+7. **Dynamic Routes Break After Restructuring** — Moving `/customers/[id]` to demo folder breaks param access. Prevention: Use correct App Router folder structure `[id]/page.tsx`, update from `useRouter().query` to `useParams()`. Address in Phase 2 during route moves.
+
+8. **Middleware Role Checks on Public Routes** — Overly broad middleware applies role checks to routes that should be universally accessible. Prevention: Use route matchers to scope checks only to `/demo/*`, allow authenticated users to access `/settings`. Address in Phase 1 during middleware design.
 
 ## Implications for Roadmap
 
-Based on research, this project requires 3 core phases plus 1 optional polish phase. The critical path is Foundation → Route Protection → User Experience Integration. Testing setup should occur in parallel with Phase 3.
+Based on combined research, the implementation follows a clear dependency chain with 4 phases. Route restructuring and middleware configuration have interdependencies that require careful sequencing to avoid breaking existing functionality.
 
-### Phase 1: Foundation Setup (Critical Path)
-**Rationale:** Middleware configuration and environment setup must be correct from the start. Async auth() migration is disruptive to retrofit later. CVE-2025-29927 vulnerability cannot exist in committed code.
+### Suggested Phase Structure
 
-**Delivers:**
-- Clerk SDK installed (@clerk/nextjs v7.3.3+)
-- Environment variables configured (.env.local with publishable key and secret key)
-- ClerkProvider added to root layout (app/layout.tsx)
-- Middleware created with proper matcher (src/middleware.ts)
-- Sign-in and sign-up pages created with prebuilt components
-- All auth() calls use await (async pattern established)
-- Next.js version verified ≥15.2.3 (CVE fix confirmed)
+**4 phases recommended** based on technical dependencies from architecture research and pitfall prevention strategies:
 
-**Addresses features:**
-- Session Management (automatic via ClerkProvider)
-- Prebuilt UI Components (SignIn, SignUp)
-
-**Avoids pitfalls:**
-- Pitfall 1: Missing clerkMiddleware() Configuration
-- Pitfall 3: Async auth() Breaking Changes Not Applied
-- Pitfall 4: Environment Variables Missing or Misconfigured
-- Pitfall 6: CVE-2025-29927 Middleware Bypass Vulnerability
-
-**Success criteria:**
-- Unauthenticated users redirected to /sign-in when accessing dashboard
-- Sign-up flow completes with email verification
-- Sign-in flow authenticates user and redirects to dashboard
-- No "auth() was called but middleware not detected" errors
-- TypeScript compiles without Promise-related errors
-
-**Estimated complexity:** LOW (1-2 hours implementation + testing)
-
-### Phase 2: Route Protection (Security Hardening)
-**Rationale:** Phase 1 sets up foundation but doesn't protect routes by default. Explicit route protection must be verified across all pages and API routes before considering auth "complete."
+### Phase 1: Foundation and Middleware Configuration
+**Rationale:** Middleware and type definitions have no dependencies on route moves. Implementing these first allows testing auth logic without breaking existing routes. Clerk configuration must complete before middleware can access role data.
 
 **Delivers:**
-- Middleware configured with createRouteMatcher for public routes
-- auth.protect() called for all non-public routes
-- API routes protected (if they exist)
-- Unauthenticated access testing for all major routes
-- Redirect flow verification (sign-in → dashboard, sign-out → home)
+- TypeScript role definitions with `CustomJwtSessionClaims` interface extension
+- Clerk Dashboard session token customization to include `publicMetadata.role`
+- Updated middleware with role-based route matchers for `/demo/*`
+- DashboardLayout component extraction (eliminates duplication, needed before moving pages)
+- Conditional Sidebar logic with pathname-based nav items
 
-**Addresses features:**
-- Route Protection via Middleware
-- Sign Out (with proper redirect)
+**Addresses from FEATURES.md:**
+- Session-based role assignment (session token config)
+- Context-aware sidebar (conditional nav logic)
 
-**Avoids pitfalls:**
-- Pitfall 2: Default Public Routes (Not Protected)
-- Pitfall 10: Link Prefetching to Protected Routes (disable prefetch for protected links on public pages)
+**Avoids from PITFALLS.md:**
+- Middleware infinite redirect loops (test redirect logic comprehensively)
+- Middleware matcher missing static assets (use Clerk's recommended matcher)
+- Middleware role checks on public routes (explicit route matchers for demo vs universal routes)
+- Session token not updated after role assignment (configure token before assigning roles)
 
-**Success criteria:**
-- Unauthenticated curl requests to /dashboard return 401 or redirect
-- Unauthenticated curl requests to /orders return 401 or redirect
-- API routes (if present) return 401 without auth header
-- Sign-out redirects to home page, not dashboard
-- No console 401 errors from link prefetching
+**Stack elements from STACK.md:**
+- Clerk v7 session claims API
+- Next.js middleware with createRouteMatcher
+- TypeScript interface extensions
 
-**Estimated complexity:** LOW (1 hour implementation + comprehensive testing)
+**Research flag:** Standard patterns — skip deep research. Well-documented in Clerk and Next.js official docs.
 
-### Phase 3: User Experience Integration
-**Rationale:** Phase 1-2 establish functional auth but user-facing integration (header, loading states) improves UX. This phase can occur in parallel with testing setup.
+---
 
-**Delivers:**
-- Header component updated with UserButton
-- Conditional rendering with isLoaded check (prevent hydration errors)
-- Loading skeleton while auth state loads
-- Dynamic rendering opt-in for Header component (<ClerkProvider dynamic>)
-- Dark mode integration (appearance prop or color-scheme CSS)
-
-**Addresses features:**
-- User Display in Header
-- Dark/Light Theme Support
-
-**Avoids pitfalls:**
-- Pitfall 5: Dynamic Rendering Opt-Out Breaking Auth
-- Pitfall 9: Hydration Errors from Conditional Auth Rendering
-
-**Success criteria:**
-- Header shows authenticated user's name/avatar
-- UserButton dropdown includes Sign Out option
-- No hydration mismatch warnings in console
-- No flash of unauthenticated content (FOUC) on page load
-- Auth UI respects dark/light theme toggle
-
-**Estimated complexity:** LOW (1 hour implementation)
-
-### Phase 4: Production Deployment Validation
-**Rationale:** Development environment uses test keys; production requires separate Clerk instance with live keys and domain verification. Environment-specific configuration often breaks despite working locally.
+### Phase 2: Route Restructuring and Migration
+**Rationale:** Must complete after Phase 1 because moved pages need DashboardLayout component. Route moves and redirects should deploy together to minimize 404 exposure. Middleware already configured in Phase 1, so protection activates immediately after routes move.
 
 **Delivers:**
-- Production environment variables set (pk_live_, sk_live_)
-- Vercel environment configuration verified
-- Production domain associated with Clerk production instance
-- Test user sign-in on production URL
-- Rate limiting verification (ensure not hitting limits)
-- Audit logs reviewed for authentication events
+- Create `demo/` folder structure in app directory
+- Move existing pages to `/demo/orders`, `/demo/customers`, `/demo/customers/[id]`, `/demo/mill-production`
+- Update all page components to use DashboardLayout wrapper
+- Implement permanent redirects (308) in `next.config.js` for old paths
+- Create Coming Soon page at root `/`
+- Update all navigation links, breadcrumbs, and hardcoded paths
 
-**Addresses features:**
-- All production-ready configurations
+**Addresses from FEATURES.md:**
+- Coming Soon homepage (root placeholder)
+- Seamless route migration (redirects preserve bookmarks)
+- Progressive feature rollout infrastructure (demo namespace established)
 
-**Avoids pitfalls:**
-- Pitfall 4: Environment Variables Missing or Misconfigured (production keys)
+**Avoids from PITFALLS.md:**
+- Hard refresh breaking route groups (test both soft and hard navigation)
+- Broken bookmarks from missing redirects (308 redirects in next.config.js)
+- Dynamic routes break after restructuring (correct [id]/page.tsx structure)
+- Missing navigation updates (grep codebase for old paths)
+- Prefetch errors for protected routes (add prefetch={false} or conditional rendering)
 
-**Success criteria:**
-- Production sign-in works with live keys
-- Clerk dashboard shows authentication events from production domain
-- No "Invalid publishable key" errors in production logs
-- Preview deployments use test keys, production uses live keys
-- Security headers configured (x-middleware-subrequest blocked at reverse proxy if possible)
+**Implements from ARCHITECTURE.md:**
+- Route structure with regular `demo/` folder
+- DashboardLayout usage across all pages
+- Proper dynamic route folder patterns
 
-**Estimated complexity:** LOW (1 hour configuration + verification)
+**Research flag:** Standard patterns — skip deep research. Route moves and redirects are well-established Next.js practices.
 
-### Optional: Testing & Polish (Parallel to Phase 3)
-**Rationale:** Testing infrastructure should be set up early but can run in parallel with Phase 3. Polish features (appearance customization, advanced loading states) can be deferred to post-launch based on feedback.
+---
+
+### Phase 3: Role Assignment and Testing
+**Rationale:** Routes protected and redirects in place, now need to assign demo roles to users and verify end-to-end access control. Must complete after Phase 2 so there are protected routes to test against.
 
 **Delivers:**
-- Jest/Vitest mocks for @clerk/nextjs
-- Test utilities for toggling auth state
-- Integration tests for sign-in/sign-up flows
-- Appearance customization (match dashboard design tokens)
-- Advanced loading states beyond basic skeleton
+- Assign `demo` role to initial test users via Clerk Dashboard
+- Verify session token includes role in `sessionClaims.metadata`
+- Create role assignment utility functions (`checkRole()`, `requireRole()`)
+- Test authenticated users without role redirect to root
+- Test authenticated users with demo role can access `/demo/*`
+- Test all users can access `/settings`
+- Force token refresh logic after role assignment
 
-**Addresses features:**
-- Appearance Customization
+**Addresses from FEATURES.md:**
+- Route protection by role (verify middleware enforcement)
+- Clear visual feedback when unauthorized (test redirect behavior)
+- Universal settings access (verify `/settings` accessible to all)
 
-**Avoids pitfalls:**
-- Pitfall 8: Testing Without Clerk Mocks
+**Avoids from PITFALLS.md:**
+- Session token not updated after role assignment (force refresh with user.reload())
+- Organization roles vs publicMetadata confusion (document decision to use publicMetadata)
 
-**Success criteria:**
-- Test suite runs without network calls
-- Tests complete in <10 seconds
-- Auth state can be toggled in tests (signed-in vs signed-out)
-- Clerk components match dashboard visual design (colors, fonts, spacing)
+**Testing considerations from FEATURES.md:**
+- E2E tests for role-based access (no role → 404/redirect, with role → success)
+- Middleware unit tests (mock auth() with different role values)
+- Manual testing checklist for all demo routes with and without role
 
-**Estimated complexity:** MEDIUM (2-3 hours for comprehensive test setup)
+**Research flag:** Standard patterns — skip deep research. Role assignment via Clerk Dashboard is straightforward, well-documented process.
+
+---
+
+### Phase 4: Client Component Security Audit
+**Rationale:** All routes protected server-side, now audit client components to ensure no data exposure or security theater. This is the "defense in depth" phase that catches missed security checks.
+
+**Delivers:**
+- Audit all `<Protect>` component usage
+- Verify sensitive data only fetched after server-side role checks
+- Add defense-in-depth role checks in Server Components
+- Document client vs server role checking patterns
+- Remove any client-side-only security checks
+
+**Addresses from FEATURES.md:**
+- Clear visual feedback when unauthorized (UX enhancements after security verified)
+
+**Avoids from PITFALLS.md:**
+- `<Protect>` component exposes data (move sensitive data fetching to server)
+- Client-side only role checks (enforce server-side verification)
+
+**Implements from ARCHITECTURE.md:**
+- Role verification utility usage in Server Components
+- Proper separation of client UX checks vs server security checks
+
+**Research flag:** Standard patterns — skip deep research. Client vs server security boundaries are well-understood React Server Components patterns.
+
+---
 
 ### Phase Ordering Rationale
 
-- **Foundation first** because middleware configuration errors and async auth() issues block all subsequent work. Environment variables must be correct before any auth calls work.
-- **Route Protection second** because Phase 1 delivers functional auth but leaves routes publicly accessible (critical security gap). Must verify protection before considering MVP complete.
-- **User Experience third** because it's user-facing integration, not functional requirement. Header integration improves UX but auth works without it (middleware handles redirects).
-- **Production Deployment last** because it requires working dev environment first. Separate phase ensures production-specific concerns (live keys, domain verification) don't get forgotten.
-- **Testing parallel to Phase 3** because test infrastructure should be set up early but doesn't block user-facing features. Mocks can be added as components are built.
+**Why this sequence:**
+1. **Phase 1 before Phase 2**: DashboardLayout must exist before pages can use it during migration. TypeScript types and middleware logic can be implemented and tested without moving routes.
 
-**Dependencies identified:**
-- Phase 2 requires Phase 1 (can't protect routes without middleware foundation)
-- Phase 3 requires Phase 1 (can't integrate UserButton without ClerkProvider)
-- Phase 4 requires Phase 1-2 (must have working dev auth before production deployment)
-- Testing can start during Phase 1 and run in parallel
+2. **Phase 2 depends on Phase 1**: Pages need DashboardLayout component. Middleware configuration complete so role protection activates immediately when routes move.
+
+3. **Phase 3 after Phase 2**: Can't test role-based access until protected routes exist at `/demo/*` paths. Role assignment requires session token customization from Phase 1.
+
+4. **Phase 4 is final audit**: All server-side protection in place, now verify client components don't create false security assumptions or data leaks.
+
+**Dependency chain:**
+```
+Phase 1 (Foundation)
+    ├── TypeScript types (no deps)
+    ├── Clerk session token config (no deps)
+    ├── DashboardLayout component (no deps)
+    └── Middleware with role matchers (needs Clerk config)
+        ↓
+Phase 2 (Route Restructure)
+    ├── Create demo/ folder (no deps)
+    ├── Move pages (needs DashboardLayout from Phase 1)
+    ├── Add redirects (needs route moves)
+    └── Update navigation (needs route moves)
+        ↓
+Phase 3 (Role Assignment)
+    ├── Assign roles (needs Clerk config from Phase 1)
+    └── Test access control (needs protected routes from Phase 2)
+        ↓
+Phase 4 (Security Audit)
+    └── Audit client components (needs server security from Phase 1-3)
+```
+
+**Grouping rationale:**
+- **Phase 1** groups all zero-dependency foundation work that can be implemented and tested independently
+- **Phase 2** groups all route-related changes that must deploy atomically (moves + redirects + nav updates)
+- **Phase 3** groups testing and validation that verifies the system works end-to-end
+- **Phase 4** separates security audit as distinct from implementation to ensure thorough review
 
 ### Research Flags
 
-Phases with standard patterns (skip `/gsd-research-phase`):
-- **Phase 1: Foundation Setup** — Well-documented Clerk quickstart, official Next.js integration guide, high-confidence sources (Context7 /clerk/clerk-docs)
-- **Phase 2: Route Protection** — Standard middleware patterns, established best practices, examples in Clerk docs
-- **Phase 3: User Experience Integration** — Straightforward component integration, prebuilt components eliminate custom code
-- **Phase 4: Production Deployment** — Documented Vercel deployment guide, environment variable checklist in Clerk docs
+**Phases with standard patterns (skip research-phase):**
+- **Phase 1**: Clerk session token customization, middleware configuration, and TypeScript types are all well-documented with official examples
+- **Phase 2**: Next.js route restructuring, redirects, and App Router patterns have extensive official documentation
+- **Phase 3**: Role assignment via Clerk Dashboard UI is straightforward and well-documented
+- **Phase 4**: React Server Components security patterns have clear guidance in official docs
 
-No phases require deeper research. All implementation patterns are established with high-confidence official documentation.
-
-**Research completed:** All research files (STACK, FEATURES, ARCHITECTURE, PITFALLS) have HIGH confidence ratings based on official Clerk documentation (Context7 library /clerk/clerk-docs) and verified Next.js 15 App Router patterns.
+**All 4 phases use standard, well-documented patterns.** No phases require `/gsd-research-phase` during planning. Research provided comprehensive implementation details with high confidence from official sources.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Official Clerk documentation via Context7 (/clerk/clerk-docs), npm version verification, Next.js compatibility confirmed |
-| Features | HIGH | Comprehensive Clerk feature documentation, competitive analysis from official Clerk comparison articles, NIST security guidance |
-| Architecture | HIGH | Official Next.js App Router patterns, Clerk integration guides from multiple high-quality sources (Clerk docs, Build with Matija, Prismic tutorial) |
-| Pitfalls | HIGH | CVE security advisories with technical analysis, official Clerk error documentation, GitHub issues with maintainer responses, community patterns from Medium/Dev.to |
+| Stack | HIGH | All required APIs verified in current packages via official Clerk v7 docs. Zero new installations needed confirmed. |
+| Features | HIGH | Feature requirements well-defined with clear table stakes vs differentiators. Anti-features identified from community experience. |
+| Architecture | HIGH | All patterns verified from official Next.js and Clerk documentation. Existing codebase structure analyzed for integration points. |
+| Pitfalls | HIGH | Critical pitfalls documented with prevention strategies from official docs and community issue trackers. Recovery strategies included. |
 
 **Overall confidence:** HIGH
 
-All recommendations based on official documentation and verified integration patterns. Clerk is a mature product with Next.js 15 as first-class target. No uncertainty in critical path implementation.
+All research findings verified against official documentation (Next.js App Router docs, Clerk v7 API references) and supported by community consensus. No conflicting information found. Implementation path clear with well-defined phases.
 
 ### Gaps to Address
 
-No significant gaps identified. Minor considerations for future phases:
+**Open questions for validation during planning:**
 
-- **Webhook integration patterns** — Not researched because not required for v1.4. If v1.5+ needs user data sync to database, research webhook verification with @clerk/clerk-sdk-node and Svix signatures.
-- **Organization/RBAC implementation** — Not researched because not required for v1.4 single-tenant app. If future multi-tenant requirements emerge, research Clerk Organizations feature and permission-based route protection.
-- **Advanced MFA configuration** — Basic MFA patterns researched but not WebAuthn/passkey implementation details. Defer until customer request triggers need.
+1. **Next.js Framework Version Confirmation** — PROJECT.md states Next.js 15, package.json shows `next@16.1.6`. Research assumes Next.js 15 based on existing `middleware.ts` file. Validation: Run `npx next --version` to confirm framework version. **Impact**: If actually Next.js 16, need to migrate middleware.ts to proxy.ts (codemod available).
 
-All gaps are for deferred features (v1.5+), not MVP (v1.4). Current research covers all Phase 1-4 requirements with high confidence.
+2. **Demo Role Assignment Process** — Research recommends manual assignment via Clerk Dashboard for v1.5. Alternative options exist (sign-up flow with role selection, admin UI). Validation: Confirm manual approach acceptable for initial rollout. **Impact**: If automatic assignment needed, add to Phase 3 scope.
+
+3. **Route Group Layout Decision** — Research recommends shared DashboardLayout component for all pages. Alternative: Separate layouts for demo vs production with different `layout.tsx` files. Validation: Confirm whether demo and production need significantly different sidebars. **Impact**: If different sidebars required, restructure to use route-specific layouts.
+
+4. **Settings Route Strategy** — Research shows single `/settings` shared by all authenticated users. Alternative: Separate `/demo/settings` with demo-specific configuration options. Validation: Confirm settings should be universal. **Impact**: If demo needs separate settings, create `/demo/settings` in Phase 2.
+
+**None of these gaps block implementation.** All have reasonable defaults documented in research. Can proceed with roadmap creation using recommended approaches, adjust during planning if validation reveals different requirements.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- **Context7: /clerk/clerk-docs** — Clerk official documentation including installation, middleware, App Router patterns, environment variables, webhooks, system limits, production deployment, testing
-- **npm: @clerk/nextjs@7.3.3** — Latest stable version verification, peer dependencies (Next.js ≥15.2.3, React 18.x/19.x, Node.js ≥20.9.0)
-- **Official Clerk Guides** — Next.js Quickstart, clerkMiddleware() reference, auth() helper, currentUser() helper, UserButton component, environment variables, upgrade to v6, rendering modes, redirect customization, Vercel deployment, testing guide, appearance customization
-- **Security Advisories** — CVE-2025-29927 technical analysis from Clerk blog, ProjectDiscovery, Datadog Security Labs
+
+**Context7 Clerk Documentation:**
+- [Clerk: Basic RBAC with Metadata](https://clerk.com/docs/guides/secure/basic-rbac) — Role storage in publicMetadata, session token customization
+- [Clerk: Next.js Middleware Reference](https://github.com/clerk/clerk-docs/blob/main/docs/reference/nextjs/clerk-middleware.mdx) — clerkMiddleware patterns, createRouteMatcher usage
+- [Clerk: User Metadata Guide](https://clerk.com/docs/guides/users/extending) — publicMetadata vs privateMetadata best practices
+- [Clerk: Session Token Customization](https://clerk.com/docs/guides/sessions/session-tokens) — Including metadata in JWT claims
+
+**Official Next.js Documentation:**
+- [Next.js: Route Groups API Reference](https://nextjs.org/docs/app/api-reference/file-conventions/route-groups) — Route group patterns and gotchas
+- [Next.js: Middleware Documentation](https://nextjs.org/docs/app/building-your-application/routing/middleware) — Middleware configuration and matchers
+- [Next.js: Dynamic Routes](https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes) — App Router dynamic segment patterns
+- [Next.js: Redirects](https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites) — Permanent redirect configuration
 
 ### Secondary (MEDIUM confidence)
-- **Competitive Comparisons** — Clerk vs Auth0 for Next.js (clerk.com), Full-Stack Authentication Comparison (C-Sharp Corner), Next.js Authentication Showdown 2025 (Medium)
-- **Security Best Practices** — Google Cloud account authentication best practices, Authgear password reset guide, LoginRadius password management
-- **Integration Tutorials** — Build with Matija: Clerk Authentication in Next.js 15, Prismic: Next.js Authentication with Clerk, Complete Authentication Guide for Next.js App Router (Clerk articles)
-- **File Structure Patterns** — Next.js official project structure, Best Practices for Organizing Next.js 15 (Dev.to), Ultimate Guide to Next.js 15 Project Structure (Wisp blog)
 
-### Tertiary (LOW confidence)
-- **Community Resources** — GitHub issues (#299 middleware not working, #1746 ClerkProvider dynamic rendering), GitHub discussions (#63736 multiple middlewares, #66037 404s on protected routes), Medium articles on route protection
+**Community Resources:**
+- [Vercel Blog: Common mistakes with Next.js App Router](https://vercel.com/blog/common-mistakes-with-the-next-js-app-router-and-how-to-fix-them) — Hard refresh 404s, route group pitfalls
+- [LogRocket: Guide to Next.js Layouts](https://blog.logrocket.com/guide-next-js-layouts-nested-layouts/) — Layout composition patterns
+- [DEV: Role-Based Sidebar Navigation in React](https://dev.to/dmadridy/role-based-sidebar-navigation-in-react-applications-415o) — Conditional navigation patterns
+- [This Dot Labs: Next.js Route Groups](https://www.thisdot.co/blog/next-js-route-groups) — Route organization strategies
+
+**Issue Trackers:**
+- [Next.js Middleware Redirect Loops Discussion](https://github.com/vercel/next.js/issues/62547) — Infinite redirect prevention
+- [Clerk publicMetadata Sync Issues](https://github.com/clerk/javascript/issues/1944) — Token refresh timing
+- [Next.js Parallel Routes Hard Navigation](https://github.com/vercel/next.js/issues/73939) — Hard refresh gotchas
 
 ---
-*Research completed: 2026-05-09*
-*Ready for roadmap: yes*
+
+*Research completed: 2026-05-10*
+*Ready for roadmap: Yes*
+*Synthesis by: gsd-synthesizer agent*

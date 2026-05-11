@@ -1,124 +1,443 @@
-# Stack Research
+# Technology Stack: v1.5 Role-Based Access and Route Restructuring
 
-**Domain:** Authentication for Next.js 15 App Router with Clerk
-**Researched:** 2026-05-09
+**Project:** CGM Dashboard v1.5 Production Transition
+**Researched:** 2026-05-10
 **Confidence:** HIGH
 
-## Recommended Stack
+## Executive Summary
 
-### Core Technologies
+Adding role-based access control and route restructuring to the existing Next.js 15 + Clerk v7 application requires **ZERO new package installations**. All necessary APIs are already available in the current stack (`@clerk/nextjs@^7.3.3`, `next@16.1.6`).
 
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| @clerk/nextjs | ^7.3.3 | Authentication library for Next.js | Official Clerk SDK for Next.js 15+ with App Router support, provides middleware, server components helpers (auth(), currentUser()), prebuilt UI components (SignIn, SignUp, UserButton), and seamless integration with Next.js server/client architecture |
-| Next.js | 16.1.6 (existing) | Web framework | Already in use, compatible with @clerk/nextjs 7.3.3 (requires >=15.2.3) |
-| React | 19.2.3 (existing) | UI library | Already in use, compatible with @clerk/nextjs 7.3.3 |
+Implementation requires:
+1. **Clerk Dashboard configuration** to customize session tokens with metadata
+2. **TypeScript type extensions** for type-safe role checking
+3. **Middleware updates** to add role-based route protection (remains `middleware.ts` in Next.js 15)
+4. **Route groups** using Next.js App Router conventions (parentheses folders)
+5. **Utility functions** for role verification in Server Components
 
-### Supporting Libraries
+**Key finding:** Next.js 16 introduced `proxy.ts` to replace `middleware.ts`, but this project uses Next.js 15 (`next@16.1.6` package version != framework version) and should continue using `middleware.ts`.
 
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| @clerk/ui/themes | Included in @clerk/nextjs | Pre-built theme presets (dark, neobrutalism, etc.) | OPTIONAL - Only if customizing Clerk component appearance beyond default theme; not needed if using default styling |
+---
 
-### Development Tools
+## No Stack Changes Required
 
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| Clerk Dashboard | API key management, authentication settings | Required for obtaining publishable key and secret key; configure email/password authentication strategy |
-| .env.local | Environment variable storage | CRITICAL - Store NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY; never commit to git |
+### Current Stack (Already Sufficient)
 
-## Installation
+| Technology | Current Version | Required For | Status |
+|------------|----------------|--------------|--------|
+| `@clerk/nextjs` | `^7.3.3` (latest: 7.3.3) | Roles/permissions APIs, session claims | ✅ Sufficient |
+| `next` | `16.1.6` (Next.js 15 framework) | Route groups, middleware | ✅ Sufficient |
+| `@clerk/types` | `^4.101.23` | TypeScript type extensions | ✅ Sufficient |
 
+**Verification:** Context7 documentation confirms Clerk v7 includes full RBAC support via `publicMetadata`, `auth().sessionClaims`, and `auth.protect()` with role matchers.
+
+---
+
+## Implementation Requirements
+
+### 1. Clerk Dashboard Configuration
+
+**Purpose:** Make user metadata available in session tokens without additional API calls.
+
+**Steps:**
+1. Navigate to Clerk Dashboard → Sessions page
+2. Add to session token claims (JSON editor):
+
+```json
+{
+  "metadata": "{{user.public_metadata}}"
+}
+```
+
+**Why this approach:**
+- Attaches `publicMetadata` to JWT session token
+- Eliminates network calls to check roles (available in every request)
+- Session token has ~1.2KB available for custom claims (sufficient for role strings)
+- Clerk refreshes tokens automatically when metadata changes
+
+**Source:** [Clerk Basic RBAC Guide](https://clerk.com/docs/guides/secure/basic-rbac), HIGH confidence
+
+---
+
+### 2. TypeScript Type Definitions
+
+**Purpose:** Enable type-safe role checking with IntelliSense and exhaustive checking.
+
+**Location:** `types/globals.d.ts` (new file)
+
+```typescript
+export type Roles = 'demo' | 'admin' // Extend as needed
+
+declare global {
+  interface CustomJwtSessionClaims {
+    metadata: {
+      role?: Roles
+    }
+  }
+}
+```
+
+**Why this pattern:**
+- Extends Clerk's `CustomJwtSessionClaims` interface (provided by `@clerk/types`)
+- Makes `auth().sessionClaims.metadata.role` type-safe
+- Union type allows exhaustive checking at compile time
+
+**Source:** [Clerk Basic RBAC - TypeScript section](https://clerk.com/docs/guides/secure/basic-rbac), HIGH confidence
+
+---
+
+### 3. Middleware Updates for Role Protection
+
+**File:** `src/middleware.ts` (existing file, update)
+
+**Current pattern:**
+```typescript
+// Existing: All authenticated users can access all routes
+if (!isPublicRoute(request)) {
+  await auth.protect();
+}
+```
+
+**Updated pattern for role-based access:**
+```typescript
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
+const isDemoRoute = createRouteMatcher(["/demo(.*)"]);
+
+export default clerkMiddleware(async (auth, request) => {
+  // Public routes: allow unauthenticated
+  if (isPublicRoute(request)) {
+    return NextResponse.next();
+  }
+
+  // Protect all other routes (require authentication)
+  await auth.protect();
+
+  // Demo routes: require 'demo' role
+  if (isDemoRoute(request)) {
+    const { sessionClaims } = await auth();
+    if (sessionClaims?.metadata?.role !== 'demo') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+});
+
+export const config = {
+  matcher: [
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+  ],
+};
+```
+
+**Why check role AFTER auth.protect():**
+- `auth.protect()` ensures user is authenticated (redirects to sign-in if not)
+- Role check happens only for authenticated users
+- Redirect to `/` (Coming Soon page) if role check fails
+
+**Alternative: auth.protect() with role matcher:**
+```typescript
+if (isDemoRoute(request)) {
+  await auth.protect((has) => has({ role: 'org:demo' }));
+}
+```
+**Note:** This pattern is for organization-scoped roles (`org:role`). For user-level roles stored in `publicMetadata`, use `sessionClaims` check (first pattern).
+
+**Source:** [Clerk Next.js Middleware Reference](https://github.com/clerk/clerk-docs/blob/main/docs/reference/nextjs/clerk-middleware.mdx), HIGH confidence
+
+---
+
+### 4. Next.js Route Groups
+
+**Purpose:** Organize routes without affecting URLs, enable nested layouts.
+
+**Convention:** Wrap folder name in parentheses: `(folderName)`
+
+**Proposed structure:**
+```
+src/app/
+├── layout.tsx                    # Root layout (header + sidebar)
+├── page.tsx                      # "/" - Coming Soon page
+├── settings/
+│   └── page.tsx                  # "/settings" - All authenticated users
+├── (demo)/                       # Route group (omitted from URL)
+│   ├── layout.tsx                # Demo-specific layout (if needed)
+│   ├── orders/page.tsx           # "/orders" (NOT "/demo/orders")
+│   ├── customers/page.tsx        # "/customers"
+│   └── mill-production/page.tsx  # "/mill-production"
+└── sign-in/[[...sign-in]]/page.tsx
+```
+
+**Key behaviors:**
+- `(demo)` folder name is **omitted from URLs**
+- `app/(demo)/orders/page.tsx` → `/orders` (not `/demo/orders`)
+- Route group enables shared layout for demo routes only
+- Can have `layout.tsx` inside `(demo)` for demo-specific sidebar navigation
+- Root layout remains for header/shared chrome
+
+**Gotchas:**
+- **Full page reload** when navigating between different root layouts (only if `(demo)/layout.tsx` includes `<html>`/`<body>` tags - avoid this)
+- **Conflicting paths:** Cannot have `(demo)/orders/page.tsx` and `(production)/orders/page.tsx` (both resolve to `/orders`)
+- **Matcher still sees logical path:** Middleware matcher sees `/orders` not `/(demo)/orders`
+
+**Source:** [Next.js Route Groups Documentation](https://nextjs.org/docs/app/api-reference/file-conventions/route-groups), HIGH confidence (official docs v16.2.6, applies to Next.js 15)
+
+---
+
+### 5. Role Verification Utility
+
+**Purpose:** Reusable helper for role checks in Server Components, Server Actions, and API Routes.
+
+**Location:** `lib/auth.ts` or `utils/roles.ts` (new file)
+
+```typescript
+import { Roles } from '@/types/globals';
+import { auth } from '@clerk/nextjs/server';
+
+export async function checkRole(role: Roles): Promise<boolean> {
+  const { sessionClaims } = await auth();
+  return sessionClaims?.metadata?.role === role;
+}
+
+export async function requireRole(role: Roles): Promise<void> {
+  if (!(await checkRole(role))) {
+    throw new Error(`Access denied: ${role} role required`);
+  }
+}
+```
+
+**Usage in Server Components:**
+```typescript
+// app/(demo)/orders/page.tsx
+import { checkRole } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+
+export default async function OrdersPage() {
+  if (!(await checkRole('demo'))) {
+    redirect('/');
+  }
+
+  // Render orders page
+}
+```
+
+**Why this pattern:**
+- Defense in depth: Check role in middleware AND page component
+- Protects against middleware bugs or misconfigurations
+- Clear error messages for debugging
+- Type-safe with `Roles` union type
+
+**Source:** [Clerk Basic RBAC - Helper Function](https://github.com/clerk/clerk-docs/blob/main/docs/guides/secure/basic-rbac.mdx), HIGH confidence
+
+---
+
+## Metadata Best Practices
+
+### Use publicMetadata for Roles (Not privateMetadata)
+
+| Metadata Type | Access | Best For | Why NOT for Roles |
+|---------------|--------|----------|-------------------|
+| `publicMetadata` | Backend: read/write<br>Frontend: read-only | **Roles, permissions** | ✅ CORRECT |
+| `privateMetadata` | Backend only | Stripe IDs, internal state | Hidden from frontend |
+| `unsafeMetadata` | Backend + Frontend read/write | User preferences | User can modify |
+
+**Why publicMetadata:**
+- Readable from session token (no API calls)
+- Write-protected (only backend can modify)
+- Visible in frontend for UI decisions (e.g., show/hide "Demo" nav link)
+
+**Setting roles:**
+```typescript
+// Server action or API route
+import { clerkClient } from '@clerk/nextjs/server';
+
+const client = await clerkClient();
+await client.users.updateUser(userId, {
+  publicMetadata: {
+    role: 'demo'
+  }
+});
+```
+
+**Reading roles:**
+```typescript
+// Anywhere with auth() access
+const { sessionClaims } = await auth();
+const role = sessionClaims?.metadata?.role; // 'demo' | 'admin' | undefined
+```
+
+**Limitations:**
+- **8KB total** for all metadata (public + private + unsafe)
+- **~1.2KB** available in session token (after JWT overhead)
+- **Synchronization delay:** Metadata changes appear in session after next token refresh (typically <60s, can force with `auth().refresh()`)
+
+**Source:** [Clerk User Metadata Guide](https://clerk.com/docs/guides/users/extending), [Clerk Metadata Best Practices](https://clerk.com/docs/guides/organizations/metadata), HIGH confidence
+
+---
+
+## What NOT to Add
+
+### ❌ Do NOT Install New Packages
+
+**Tempting but unnecessary:**
+- `next-auth` - Clerk already handles auth
+- `@clerk/backend` - Redundant with `@clerk/nextjs` (includes backend client)
+- RBAC libraries (Casl, Permissionify) - Overkill for simple role checks
+
+### ❌ Do NOT Rename middleware.ts to proxy.ts
+
+**Current project:** Next.js 15 (package version `next@16.1.6` is confusing, but framework version is 15.x based on docs version)
+
+**Clarification:**
+- `proxy.ts` convention introduced in **Next.js 16**
+- Migration path: `middleware.ts` → `proxy.ts` with codemod
+- **Decision:** Continue using `middleware.ts` until upgrading to Next.js 16 framework
+
+**Why:**
+- Next.js 15 expects `middleware.ts`
+- Renaming now breaks routing
+- No functional benefit (proxy.ts is just a rename with same APIs)
+
+**When to migrate:**
 ```bash
-# Core (ONLY package needed)
-npm install @clerk/nextjs
+# When upgrading to Next.js 16:
+npx @next/codemod@canary middleware-to-proxy .
 ```
 
-## Alternatives Considered
+**Source:** [Next.js Proxy Migration Guide](https://nextjs.org/docs/messages/middleware-to-proxy), [Next.js 16 Upgrade Guide](https://nextjs.org/docs/app/guides/upgrading/version-16), HIGH confidence
 
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| Clerk | NextAuth.js (Auth.js) | When you need OAuth-only (Google, GitHub) without user management UI, or want full control over database schema and session storage |
-| Clerk | Supabase Auth | When already using Supabase for database and want unified backend; trade-off: less polished UI components |
-| Clerk | Custom auth (JWT + bcrypt) | NEVER for production - significant security risks, maintenance burden, and feature gaps (password reset, email verification, session management) |
+### ❌ Do NOT Use Parallel Routes or Intercepting Routes
 
-## What NOT to Use
+**Not needed for this milestone:**
+- **Parallel routes** (`@folder`): For rendering multiple pages in same layout (e.g., dashboard with sidebar slot + main slot)
+- **Intercepting routes** (`(.)folder`): For modal overlays (e.g., image preview without navigation)
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| @clerk/clerk-react | Wrong package for Next.js | @clerk/nextjs (Next.js-specific with middleware and server helpers) |
-| Custom sign-in forms (Clerk Elements) for MVP | Unnecessary complexity, more code to maintain | Prebuilt <SignIn /> and <SignUp /> components (faster, less code, automatically styled) |
-| @clerk/types | Already included in @clerk/nextjs | No separate installation needed - types are bundled |
-| Hardcoded API keys in code | Security vulnerability, leaked in git | Environment variables (NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY) |
+**Current requirement:** Simple route organization (demo vs production sections), not advanced UI patterns.
 
-## Stack Patterns by Variant
+**Source:** [Next.js Parallel Routes](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes), [Next.js Intercepting Routes](https://nextjs.org/docs/app/api-reference/file-conventions/intercepting-routes), HIGH confidence
 
-**For Email + Password Authentication (v1.4 requirement):**
-- Use Clerk Dashboard to enable Email authentication strategy
-- Use Password authentication strategy (enabled by default)
-- Use prebuilt `<SignIn />` and `<SignUp />` components (no custom forms needed)
-- Redirects handled automatically by Clerk middleware
+---
 
-**For Dark Mode Integration (existing next-themes):**
-- Use appearance prop with dark theme: `<ClerkProvider appearance={{ theme: dark }}>`
-- Import from `@clerk/ui/themes`
-- Alternatively, set CSS `color-scheme` property to let Clerk auto-detect system preference
-- RECOMMENDED: Use CSS approach for consistency with existing next-themes implementation
+## Integration with Existing clerkMiddleware
 
-**For Protected Routes (all pages):**
-- Use `clerkMiddleware()` with `auth.protect()` in middleware.ts
-- Define public routes with `createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])`
-- Invert matcher: protect all except public routes
-- No per-page protection needed (middleware handles everything)
+### Current Implementation Analysis
 
-## Version Compatibility
+**File:** `src/middleware.ts`
 
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| @clerk/nextjs@7.3.3 | Next.js 15.2.8 - 16.1.x | Current project uses Next.js 16.1.6 ✓ |
-| @clerk/nextjs@7.3.3 | React 18.x or 19.x | Current project uses React 19.2.3 ✓ |
-| @clerk/nextjs@7.3.3 | Node.js >= 20.9.0 | Core 3 minimum requirement |
+**Current logic:**
+1. Define public routes: `/sign-in(.*)`, `/sign-up(.*)`
+2. Protect all other routes with `auth.protect()`
 
-## Integration Points with Existing Stack
+**Integration points:**
+- ✅ Already uses `createRouteMatcher` (can add more matchers)
+- ✅ Already uses `clerkMiddleware` async callback (can add conditional logic)
+- ✅ Matcher config already excludes static files (no changes needed)
 
-### No Conflicts
-- **next-themes**: Clerk appearance prop works alongside; use CSS color-scheme approach for seamless integration
-- **Tailwind CSS 4**: Clerk components use their own CSS, no Tailwind conflicts; can customize via appearance.elements
-- **TypeScript**: Full type support included in @clerk/nextjs, no additional @types packages needed
-- **CVA/component library**: Clerk components are self-contained, won't interfere with custom Button/Input components
+**Changes required:**
+1. Add `isDemoRoute` matcher for `/demo(.*)` pattern
+2. Add role check after `auth.protect()` for demo routes
+3. Redirect to `/` if role check fails
 
-### Middleware Considerations
-- **New file required**: Create `middleware.ts` in project root (Next.js App Router pattern)
-- **Matcher config**: Use recommended matcher pattern to avoid running on static files (_next, images, fonts)
-- **Execution order**: Clerk middleware runs before route handlers and server components
+**Backward compatibility:**
+- Existing routes (`/orders`, `/customers`, `/mill-production`) move to `(demo)` route group
+- URLs remain unchanged (route group omitted from URL)
+- Middleware logic extends (doesn't replace) existing auth protection
 
-### Environment Variables
-```env
-# .env.local (NEVER commit)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
-CLERK_SECRET_KEY=sk_test_xxxxx
+---
 
-# Production (.env.production or hosting provider)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_xxxxx
-CLERK_SECRET_KEY=sk_live_xxxxx
-```
+## Migration Checklist
 
-## Production Deployment Checklist
+### Phase 1: Clerk Configuration
+- [ ] Add `metadata` claim to session token in Clerk Dashboard
+- [ ] Manually assign `role: "demo"` to test user's `publicMetadata` (via Dashboard → Users → user → Metadata tab)
+- [ ] Verify session token includes metadata (check `auth().sessionClaims` in dev)
 
-1. **Update API keys to production instances** (pk_live_ and sk_live_)
-2. **Set environment variables in hosting provider** (Vercel/AWS/etc.)
-3. **Never use NEXT_PUBLIC_ prefix for CLERK_SECRET_KEY** (server-only)
-4. **Redeploy after changing environment variables**
-5. **Configure allowed domains in Clerk Dashboard** (production URLs)
+### Phase 2: TypeScript Setup
+- [ ] Create `types/globals.d.ts` with `Roles` type and `CustomJwtSessionClaims` extension
+- [ ] Verify TypeScript recognizes `sessionClaims.metadata.role` (no type errors)
+
+### Phase 3: Route Restructuring
+- [ ] Create `src/app/(demo)` route group folder
+- [ ] Move existing pages to `(demo)`: `orders/`, `customers/`, `mill-production/`
+- [ ] Verify URLs unchanged: `/orders` still works (not `/demo/orders`)
+- [ ] Add demo-specific sidebar layout in `(demo)/layout.tsx` (optional)
+
+### Phase 4: Middleware Protection
+- [ ] Update `src/middleware.ts` with `isDemoRoute` matcher
+- [ ] Add role check logic after `auth.protect()`
+- [ ] Test: User without `demo` role redirects to `/` when accessing `/orders`
+
+### Phase 5: Utility Functions
+- [ ] Create `lib/auth.ts` with `checkRole()` and `requireRole()` helpers
+- [ ] Add role checks to page components (defense in depth)
+- [ ] Test: Direct page access without proper role shows error or redirects
+
+### Phase 6: UI Conditionals (Optional)
+- [ ] Use `auth().sessionClaims.metadata.role` in Server Components to show/hide demo nav links
+- [ ] Add "Demo" indicator to header when role is `demo`
+
+---
+
+## Open Questions / Validation Needed
+
+### 1. Next.js Version Clarification
+**Question:** Is framework version Next.js 15 or 16?
+**Evidence:**
+- Package version: `next@16.1.6`
+- PROJECT.md states: "Next.js 15"
+- Middleware file currently: `middleware.ts` (not `proxy.ts`)
+
+**Recommendation:** Assume Next.js 15 until confirmed otherwise. Use `middleware.ts` convention.
+
+### 2. Demo Role Assignment Process
+**Question:** How are users assigned the `demo` role?
+**Options:**
+- Manual assignment via Clerk Dashboard (simplest for testing)
+- Sign-up flow with role selection (requires custom form)
+- Server Action triggered by admin (requires admin UI)
+
+**Recommendation for v1.5:** Manual assignment via Dashboard. Defer automatic assignment to future milestone.
+
+### 3. Root Layout vs Route Group Layout
+**Question:** Should `(demo)` have its own `layout.tsx`?
+**Options:**
+- **No separate layout:** Share root layout, differentiate only via role check (simpler)
+- **Separate layout:** Different sidebar navigation for demo vs production (cleaner separation)
+
+**Recommendation:** Start without separate layout. Add `(demo)/layout.tsx` only if sidebar navigation differs significantly.
+
+---
+
+## Success Criteria
+
+Implementation is complete when:
+- [ ] Zero new npm packages installed
+- [ ] Session token includes `metadata.role` claim (verify in Clerk Dashboard preview)
+- [ ] TypeScript recognizes `sessionClaims.metadata.role` without type errors
+- [ ] Routes moved to `(demo)` route group, URLs unchanged
+- [ ] Middleware redirects non-demo users from `/orders` to `/`
+- [ ] Authenticated users without role can access `/settings`
+- [ ] `checkRole()` utility works in Server Components
+- [ ] Tests updated to mock `sessionClaims.metadata.role`
+
+---
 
 ## Sources
 
-- Context7: /clerk/clerk-docs — Installation, middleware, App Router patterns, environment variables (HIGH confidence)
-- npm: @clerk/nextjs@7.3.3 — Latest stable version, peer dependencies verified (HIGH confidence)
-- [Clerk Environment Variables](https://clerk.com/docs/deployments/clerk-environment-variables) — Environment variable requirements (HIGH confidence)
-- [Clerk Production Deployment](https://clerk.com/docs/guides/development/deployment/production) — Production deployment checklist (HIGH confidence)
-- [Next.js Production Checklist](https://nextjs.org/docs/app/guides/production-checklist) — Production best practices (MEDIUM confidence, via WebSearch)
+### Context7 Documentation (HIGH confidence)
+- [Clerk Next.js Middleware - Roles and Permissions](https://github.com/clerk/clerk-docs/blob/main/docs/reference/nextjs/clerk-middleware.mdx)
+- [Clerk Basic RBAC with Metadata](https://github.com/clerk/clerk-docs/blob/main/docs/guides/secure/basic-rbac.mdx)
+- [Clerk User Metadata Guide](https://github.com/clerk/clerk-docs/blob/main/docs/guides/users/extending)
 
----
-*Stack research for: Clerk authentication in Next.js 15 App Router*
-*Researched: 2026-05-09*
+### Official Next.js Documentation (HIGH confidence)
+- [Route Groups API Reference](https://nextjs.org/docs/app/api-reference/file-conventions/route-groups)
+- [Project Structure Guide](https://nextjs.org/docs/app/getting-started/project-structure)
+- [Proxy.js File Convention](https://nextjs.org/docs/app/api-reference/file-conventions/proxy)
+- [Middleware to Proxy Migration](https://nextjs.org/docs/messages/middleware-to-proxy)
+
+### Web Search (MEDIUM confidence)
+- [Clerk Metadata Best Practices](https://clerk.com/docs/guides/organizations/metadata)
+- [Next.js 15 Route Groups Examples](https://dev.to/krunal_groovy/the-nextjs-15-app-router-project-structure-that-scales-with-examples-47ha)
+- [Next.js 16 Proxy Migration Guide](https://medium.com/@amitupadhyay878/next-js-16-update-middleware-js-5a020bdf9ca7)

@@ -1,794 +1,827 @@
-# Architecture Research: Clerk Authentication Integration
+# Architecture Research: Route Restructuring and Role-Based Access
 
-**Domain:** Authentication for Next.js 15 App Router dashboard
-**Researched:** 2026-05-09
+**Domain:** Next.js App Router Route Groups + Clerk RBAC Integration
+**Researched:** 2026-05-10
 **Confidence:** HIGH
 
-## Standard Clerk Architecture for Next.js App Router
+## Integration Overview
 
-### System Overview
+This architecture integrates route groups with role-based access control in an existing Next.js 15 App Router application with Clerk authentication. The solution separates demo content from production pages while preserving existing layout patterns.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Application Layer                         │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
-│  │ Pages   │  │ Layouts │  │ API     │  │ Server  │        │
-│  │ (RSC)   │  │ (RSC)   │  │ Routes  │  │ Actions │        │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘        │
-│       │            │            │            │              │
-├───────┴────────────┴────────────┴────────────┴──────────────┤
-│                    Auth Abstraction Layer                    │
-├─────────────────────────────────────────────────────────────┤
-│  Server-side:  auth()  currentUser()  auth.protect()        │
-│  Client-side:  useAuth()  useUser()  <UserButton/>          │
-│  Components:   <SignedIn/>  <SignedOut/>  <Show/>           │
-├─────────────────────────────────────────────────────────────┤
-│                    Middleware Layer                          │
-├─────────────────────────────────────────────────────────────┤
-│  clerkMiddleware() → Route Protection → Cookie Check        │
-│  createRouteMatcher() → Pattern-based auth rules            │
-├─────────────────────────────────────────────────────────────┤
-│                    Provider Layer                            │
-├─────────────────────────────────────────────────────────────┤
-│  <ClerkProvider> in RootLayout (app/layout.tsx)             │
-│  - Wraps entire app                                          │
-│  - Makes auth context available globally                     │
-│  - Handles sign-in/sign-up/sign-out redirects               │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Component Responsibilities
-
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|------------------------|
-| `middleware.ts` | Route protection, auth checks before page load | `clerkMiddleware()` with `createRouteMatcher()` for pattern-based protection |
-| `app/layout.tsx` | Global auth context provider | `<ClerkProvider>` wrapping children, provides auth to entire app |
-| `app/sign-in/[[...sign-in]]/page.tsx` | Sign-in UI | `<SignIn />` component with catch-all route for nested paths |
-| `app/sign-up/[[...sign-up]]/page.tsx` | Sign-up UI | `<SignUp />` component with catch-all route for nested paths |
-| Server Components | Auth state access, user data fetching | `auth()` for auth state, `currentUser()` for user object |
-| Client Components | Interactive auth UI, conditional rendering | `useAuth()`, `useUser()`, `<SignedIn>`, `<SignedOut>`, `<UserButton>` |
-| API Routes | Protected endpoints, auth verification | `auth()` helper to check authentication, return 401 if unauthorized |
-| Server Actions | Server-side mutations with auth | `auth()` and `currentUser()` to validate user before executing |
-
-## Recommended Project Structure for CGM Dashboard
+### System Diagram
 
 ```
-/Users/joel/Desktop/Projects/cgm-dashboard/
-├── src/
-│   ├── middleware.ts                    # NEW - Clerk middleware for route protection
-│   ├── app/
-│   │   ├── layout.tsx                   # MODIFIED - Add ClerkProvider wrapper
-│   │   ├── sign-in/
-│   │   │   └── [[...sign-in]]/
-│   │   │       └── page.tsx             # NEW - Clerk SignIn component
-│   │   ├── sign-up/
-│   │   │   └── [[...sign-up]]/
-│   │   │       └── page.tsx             # NEW - Clerk SignUp component
-│   │   ├── page.tsx                     # EXISTING - Protected dashboard home
+┌─────────────────────────────────────────────────────────────────┐
+│                     Root Layout (layout.tsx)                     │
+│              ClerkProvider + ThemeProvider                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────────────────┐  ┌──────────────────────────────┐│
+│  │   Production Routes       │  │    Demo Routes               ││
+│  │   (/)                     │  │    (/demo/*)                 ││
+│  │                           │  │                               ││
+│  │  ┌────────────────────┐  │  │  ┌────────────────────────┐  ││
+│  │  │  DashboardLayout   │  │  │  │   DemoLayout           │  ││
+│  │  │  (Header + minimal │  │  │  │   (Header + full       │  ││
+│  │  │   sidebar)         │  │  │  │    sidebar)            │  ││
+│  │  └────────────────────┘  │  │  └────────────────────────┘  ││
+│  │                           │  │                               ││
+│  │  - Coming Soon page      │  │  - /orders                    ││
+│  │  - /settings (shared)    │  │  - /customers                 ││
+│  │                           │  │  - /mill-production           ││
+│  └──────────────────────────┘  │  - /settings (shared)         ││
+│                                 └──────────────────────────────┘│
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                     Middleware Layer                             │
+│         clerkMiddleware + Role-Based Route Matcher              │
+│                                                                  │
+│  Auth Protection    Role Check (/demo/*)    Public Routes       │
+│  (all routes)       (requires demo role)     (sign-in/sign-up)  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Integration Points with Existing Architecture
+
+### Critical Existing Components
+
+Based on analysis of current codebase structure:
+
+| Component | Current State | Required Changes |
+|-----------|---------------|------------------|
+| **middleware.ts** | Protects all routes except /sign-in, /sign-up | **EXTEND:** Add role checking for /demo/* routes |
+| **Sidebar.tsx** | Hardcoded navItems array, client component with usePathname | **CONDITIONAL:** Render different nav items based on route |
+| **layout.tsx** | Root layout with ClerkProvider + ThemeProvider | **NO CHANGE:** Stays at root, wraps all routes |
+| **Header.tsx** | Client component with usePathname for title | **NO CHANGE:** Already dynamic based on pathname |
+| **Page components** | Each duplicates Sidebar + Header + main wrapper | **MOVE:** Relocate to /demo/* route group |
+| **/settings/page.tsx** | Standard page with Sidebar + Header | **KEEP:** Accessible from both contexts |
+
+### New Components Required
+
+| Component | Type | Purpose | Location |
+|-----------|------|---------|----------|
+| **DashboardLayout** | Layout component | Wraps production homepage with Header + minimal sidebar | `src/components/layouts/DashboardLayout.tsx` |
+| **DemoLayout** | Layout component | Wraps demo pages with Header + full sidebar | `src/components/layouts/DemoLayout.tsx` |
+| **Sidebar variants** | Component props | Pass `variant` prop to Sidebar ("demo" \| "production") | Modify existing `src/components/Sidebar.tsx` |
+| **Coming Soon page** | Page component | Production homepage placeholder | `src/app/page.tsx` (replace existing) |
+
+## Architectural Patterns
+
+### Pattern 1: Route Groups for URL-Transparent Organization
+
+**What:** Use parentheses-wrapped folders `(demo)` to organize routes without affecting URL paths
+
+**When to use:** When you need to apply different layouts to route subsets without changing public URLs
+
+**Trade-offs:**
+- **PRO:** URLs remain clean (`/orders` not `/demo/orders` in address bar)
+- **PRO:** Easy layout isolation per route group
+- **CON:** Can create confusion if URL doesn't match file path
+- **CON:** Navigating between different route groups causes full page reload
+
+**Example:**
+```typescript
+// File: src/app/(demo)/orders/page.tsx
+// URL: /demo/orders (route group in URL path)
+
+export default function OrdersPage() {
+  return <OrdersTable />
+}
+
+// Note: Route groups ARE included in the URL for middleware matching
+// /demo/orders will be accessible at /demo/orders, not /orders
+```
+
+**IMPORTANT CORRECTION:** After reviewing Next.js documentation more carefully, route groups wrapped in parentheses like `(demo)` do NOT appear in the URL. However, for this project we need `/demo/*` to be in the URL path for middleware role checking. Therefore we should use a regular folder `demo/` NOT a route group `(demo)/`.
+
+### Pattern 2: Middleware Role-Based Route Protection
+
+**What:** Extend existing clerkMiddleware to check user roles from sessionClaims before allowing access to specific routes
+
+**When to use:** When routes require specific user roles beyond basic authentication
+
+**Trade-offs:**
+- **PRO:** Protection at edge, prevents unauthorized access before page loads
+- **PRO:** Centralized authorization logic in middleware
+- **PRO:** Role checked from sessionClaims (no extra network request)
+- **CON:** Requires custom claims configured in Clerk Dashboard
+- **CON:** Role changes require new session token (re-login or token refresh)
+
+**Example:**
+```typescript
+// File: src/middleware.ts
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from 'next/server';
+
+const isPublicRoute = createRouteMatcher([
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+]);
+
+const isDemoRoute = createRouteMatcher(["/demo(.*)"]);
+
+export default clerkMiddleware(async (auth, request) => {
+  // Public routes bypass all checks
+  if (isPublicRoute(request)) {
+    return;
+  }
+
+  // All other routes require authentication
+  const session = await auth();
+  await session.protect();
+
+  // Demo routes require 'demo' role
+  if (isDemoRoute(request)) {
+    const role = session.sessionClaims?.metadata?.role;
+
+    if (role !== 'demo') {
+      // Redirect to production homepage if no demo role
+      const url = new URL('/', request.url);
+      return NextResponse.redirect(url);
+    }
+  }
+});
+
+export const config = {
+  matcher: [
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+  ],
+};
+```
+
+**Source:** [Clerk: Implement basic Role Based Access Control (RBAC) with metadata](https://clerk.com/docs/guides/secure/basic-rbac) | [Clerk: Role-Based Access Control in Next.js](https://clerk.com/blog/nextjs-role-based-access-control)
+
+### Pattern 3: Conditional Sidebar with usePathname
+
+**What:** Use usePathname hook in client component to render different navigation items based on current route
+
+**When to use:** When a single sidebar component needs different content for different route contexts
+
+**Trade-offs:**
+- **PRO:** Single Sidebar component, follows DRY principle
+- **PRO:** usePathname already used in existing codebase
+- **PRO:** No layout duplication
+- **CON:** Conditional logic in component (slight complexity increase)
+- **CON:** Must be client component ("use client" directive required)
+
+**Example:**
+```typescript
+// File: src/components/Sidebar.tsx (MODIFIED)
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, ClipboardList, /* ... */ } from "lucide-react";
+
+const demoNavItems = [
+  { icon: ClipboardList, label: "Orders", href: "/demo/orders" },
+  { icon: Users, label: "Customers", href: "/demo/customers" },
+  { icon: Factory, label: "Production", href: "/demo/mill-production" },
+];
+
+const productionNavItems = [
+  { icon: LayoutDashboard, label: "Coming Soon", href: "/" },
+];
+
+const settingsItems = [
+  { icon: Settings, label: "Settings", href: "/settings" },
+];
+
+function isActive(href: string, pathname: string): boolean {
+  if (href === "/") {
+    return pathname === "/";
+  }
+  return pathname.startsWith(href);
+}
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const isDemoRoute = pathname.startsWith("/demo");
+
+  const navItems = isDemoRoute ? demoNavItems : productionNavItems;
+
+  return (
+    <aside className="flex h-full w-[var(--sidebar-width)] flex-col gap-2 bg-[var(--bg-card)] p-6">
+      {/* Logo */}
+      <div className="flex items-center gap-2.5 pb-5">
+        <div className="h-8 w-8 rounded-lg bg-[var(--primary)]" />
+        <span className="text-sm font-bold text-[var(--text-primary)]">
+          FEEDMILL PRO
+        </span>
+      </div>
+
+      <div className="h-px w-full bg-[var(--divider)]" />
+
+      {/* Production Section */}
+      <span className="mt-2 font-bold tracking-wide text-[var(--fs-10)] text-[var(--text-secondary)]">
+        {isDemoRoute ? "DEMO" : "PRODUCTION"}
+      </span>
+
+      {navItems.map((item) => (
+        <NavItem
+          key={item.label}
+          icon={item.icon}
+          label={item.label}
+          href={item.href}
+          active={isActive(item.href, pathname)}
+        />
+      ))}
+
+      <div className="mt-2 h-px w-full bg-[var(--divider)]" />
+
+      {/* Settings Section */}
+      <span className="mt-2 font-bold tracking-wide text-[var(--fs-10)] text-[var(--text-secondary)]">
+        SETTINGS
+      </span>
+
+      {settingsItems.map((item) => (
+        <NavItem
+          key={item.label}
+          icon={item.icon}
+          label={item.label}
+          href={item.href}
+          active={isActive(item.href, pathname)}
+        />
+      ))}
+    </aside>
+  );
+}
+
+// NavItem component unchanged
+```
+
+**Source:** [Next.js: usePathname Hook](https://nextjs.org/docs/app/api-reference/functions/use-pathname) | [Next.js: Active Navigation Links](https://nextjs.org/docs/app/getting-started/layouts-and-pages)
+
+### Pattern 4: Shared Layout Components with Client-Side Composition
+
+**What:** Create reusable DashboardLayout component that composes Header + Sidebar + main wrapper, called from page components
+
+**When to use:** When multiple pages need identical layout structure but you can't use route group layouts due to shared routes (/settings)
+
+**Trade-offs:**
+- **PRO:** Eliminates duplication of layout boilerplate across pages
+- **PRO:** Works for routes that need to be accessible from multiple contexts
+- **PRO:** Easier to maintain — change layout in one place
+- **CON:** Must import and wrap each page manually
+- **CON:** Slightly less idiomatic than route group layouts
+
+**Example:**
+```typescript
+// File: src/components/layouts/DashboardLayout.tsx (NEW)
+"use client";
+
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
+
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  return (
+    <div className="bg-bg-page flex h-screen">
+      <Sidebar />
+      <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
+        <Header />
+        {children}
+      </main>
+    </div>
+  );
+}
+
+// Usage in page:
+// File: src/app/demo/orders/page.tsx
+"use client";
+
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import OrdersTable from "@/components/OrdersTable";
+
+export default function OrdersPage() {
+  return (
+    <DashboardLayout>
+      <OrdersTable />
+    </DashboardLayout>
+  );
+}
+```
+
+**Alternative: Route Group Layout**
+
+For routes that don't need cross-context sharing, use Next.js layout files:
+
+```typescript
+// File: src/app/demo/layout.tsx (NEW)
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+
+export default function DemoLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <DashboardLayout>{children}</DashboardLayout>;
+}
+
+// Pages automatically wrapped:
+// File: src/app/demo/orders/page.tsx
+export default function OrdersPage() {
+  return <OrdersTable />; // DashboardLayout applied by route
+}
+```
+
+**Recommendation for this project:** Use **Component-based DashboardLayout** for all pages (including /settings) because /settings needs to be accessible from both production and demo contexts. This avoids nested layout issues and keeps patterns consistent.
+
+**Source:** [Next.js: Route Groups and Layouts](https://nextjs.org/docs/app/building-your-application/routing/route-groups) | [LogRocket: Guide to Next.js Layouts](https://blog.logrocket.com/guide-next-js-layouts-nested-layouts/)
+
+## Data Flow
+
+### Authentication and Authorization Flow
+
+```
+User navigates to /demo/orders
+    ↓
+Middleware intercepts request
+    ↓
+Check if public route? (No)
+    ↓
+Call auth.protect() → Ensure authenticated
+    ↓
+Check if /demo/* route? (Yes)
+    ↓
+Read sessionClaims.metadata.role
+    ↓
+role === 'demo'? (Yes) → Allow | (No) → Redirect to /
+    ↓
+Page loads with DashboardLayout
+    ↓
+Sidebar.tsx reads pathname via usePathname()
+    ↓
+pathname.startsWith('/demo') → Render demoNavItems
+```
+
+### Component Rendering Flow
+
+```
+Page Component (e.g., /demo/orders/page.tsx)
+    ↓
+Wraps content in DashboardLayout
+    ↓
+DashboardLayout renders:
+    ├── Sidebar (client component)
+    │   ├── usePathname() → "/demo/orders"
+    │   └── Render demoNavItems
+    ├── Header (client component)
+    │   ├── usePathname() → getPageTitle()
+    │   └── Display "Orders"
+    └── main with children (OrdersTable)
+```
+
+### Role Check Flow (Server-Side)
+
+```
+Clerk Dashboard
+    ↓
+User publicMetadata set: { role: "demo" }
+    ↓
+Next session token generated
+    ↓
+sessionClaims.metadata.role available
+    ↓
+Middleware: await auth() → sessionClaims
+    ↓
+Check role in middleware
+    ↓
+Component: Can also check role for conditional rendering
+```
+
+**Note:** For basic RBAC with user-level roles (not organization-level), use publicMetadata stored in sessionClaims. This approach requires no network request and is available directly from the session token.
+
+**Source:** [Clerk: Implement basic RBAC with metadata](https://clerk.com/docs/guides/secure/basic-rbac)
+
+## Recommended Project Structure
+
+```
+src/
+├── app/
+│   ├── layout.tsx                    # Root layout (NO CHANGE)
+│   ├── page.tsx                      # NEW: Production homepage (Coming Soon)
+│   ├── demo/                         # NEW: Demo route folder (NOT route group)
 │   │   ├── orders/
-│   │   │   └── page.tsx                 # EXISTING - Protected orders page
-│   │   ├── mill-production/
-│   │   │   └── page.tsx                 # EXISTING - Protected production page
+│   │   │   └── page.tsx              # MOVED: Orders page
 │   │   ├── customers/
-│   │   │   ├── page.tsx                 # EXISTING - Protected customers list
+│   │   │   ├── page.tsx              # MOVED: Customers list
 │   │   │   └── [id]/
-│   │   │       └── page.tsx             # EXISTING - Protected customer detail
-│   │   ├── inventory/
-│   │   │   └── page.tsx                 # EXISTING - Protected inventory page
-│   │   ├── shipments/
-│   │   │   └── page.tsx                 # EXISTING - Protected shipments page
-│   │   └── settings/
-│   │       └── page.tsx                 # EXISTING - Protected settings page
-│   ├── components/
-│   │   ├── Header.tsx                   # MODIFIED - Add UserButton, remove static user
-│   │   ├── Sidebar.tsx                  # EXISTING - No changes needed
-│   │   └── ui/                          # EXISTING - Design system components
-│   ├── services/                        # EXISTING - Mock data services (no changes)
-│   ├── hooks/                           # EXISTING - Custom hooks
-│   └── types/                           # EXISTING - TypeScript types
-├── .env.local                           # NEW - Clerk API keys (gitignored)
-├── .env.example                         # NEW - Template for required env vars
-└── package.json                         # MODIFIED - Add @clerk/nextjs dependency
+│   │   │       └── page.tsx          # MOVED: Customer detail
+│   │   ├── mill-production/
+│   │   │   └── page.tsx              # MOVED: Mill production page
+│   │   └── settings/                 # DUPLICATE: Demo context settings
+│   │       └── page.tsx              # Copy of /settings
+│   ├── settings/
+│   │   └── page.tsx                  # KEPT: Root settings (accessible to all)
+│   ├── sign-in/
+│   │   └── [[...sign-in]]/
+│   │       └── page.tsx              # NO CHANGE: Public route
+│   └── sign-up/
+│       └── [[...sign-up]]/
+│           └── page.tsx              # NO CHANGE: Public route
+├── components/
+│   ├── layouts/                      # NEW: Layout components folder
+│   │   └── DashboardLayout.tsx       # NEW: Reusable layout wrapper
+│   ├── Sidebar.tsx                   # MODIFIED: Conditional nav items
+│   ├── Header.tsx                    # NO CHANGE: Already dynamic
+│   └── ...                           # Other components unchanged
+├── middleware.ts                     # MODIFIED: Add role checking
+└── ...
 ```
 
 ### Structure Rationale
 
-- **`middleware.ts` in `src/`:** Follows existing project convention of using `src/` directory. Must be at root of `src/` for Next.js to detect it.
-- **Sign-in/Sign-up catch-all routes:** `[[...sign-in]]` syntax allows Clerk to handle nested auth flows (e.g., password reset, verification) at the same route.
-- **ClerkProvider in root layout:** Provides auth context to entire app tree, enabling all server/client components to access auth state.
-- **Protected pages remain unchanged:** Pages don't need auth logic - middleware handles protection. Pages can optionally use `auth()` or `currentUser()` for user-specific data.
-- **Header modification only:** Only component needing changes is Header to display user info and sign-out. Sidebar and other UI components work as-is.
-- **Services layer untouched:** Mock data services don't need auth - real API calls in future can use `getToken()` for authenticated requests.
+- **`demo/` folder (not `(demo)/` route group):** Needed because `/demo/*` must be in the URL path for middleware role matching. Route groups in parentheses are omitted from URLs.
 
-## Architectural Patterns
+- **`components/layouts/`:** New folder for reusable layout wrappers. Keeps layout logic separate from page components while enabling shared patterns.
 
-### Pattern 1: Middleware-Based Route Protection
+- **`settings` in two locations:** `/settings` accessible to all authenticated users, `/demo/settings` accessible only to demo users. Alternative: Single `/settings` with conditional content based on role.
 
-**What:** Protect all dashboard routes using middleware with pattern matching, redirecting unauthenticated users to sign-in.
+- **No route group layouts:** Using component-based DashboardLayout for consistency across all pages, including shared routes like `/settings`.
 
-**When to use:** When you want to protect entire sections of your app (all routes except sign-in/sign-up).
+## Component Modification vs. New Components
 
-**Trade-offs:**
-- ✓ Centralized auth logic - single source of truth for protected routes
-- ✓ Runs before page render - no flash of protected content
-- ✓ Edge runtime - fast cookie-based checks
-- ✗ Cannot access database in middleware (Edge runtime limitation)
-- ✗ Broad matchers required to avoid "auth() called but no middleware" errors
+### Components to Modify
 
-**Example:**
+| Component | Current Location | Change Required | Reason |
+|-----------|------------------|-----------------|--------|
+| **Sidebar.tsx** | `src/components/Sidebar.tsx` | Add conditional logic for nav items based on pathname | Single sidebar with context-aware navigation |
+| **middleware.ts** | `src/middleware.ts` | Add role checking for `/demo/*` routes | Centralized authorization logic |
+
+### Components to Create
+
+| Component | Location | Purpose | Dependencies |
+|-----------|----------|---------|--------------|
+| **DashboardLayout** | `src/components/layouts/DashboardLayout.tsx` | Wrapper for Header + Sidebar + main | Sidebar, Header |
+| **Coming Soon page** | `src/app/page.tsx` (replace) | Production homepage placeholder | DashboardLayout |
+
+### Components to Move
+
+| Component | From | To | Changes Required |
+|-----------|------|----|--------------------|
+| **Orders page** | `src/app/orders/page.tsx` | `src/app/demo/orders/page.tsx` | Update imports, wrap in DashboardLayout |
+| **Customers page** | `src/app/customers/page.tsx` | `src/app/demo/customers/page.tsx` | Update imports, wrap in DashboardLayout |
+| **Customer detail page** | `src/app/customers/[id]/page.tsx` | `src/app/demo/customers/[id]/page.tsx` | Update imports, wrap in DashboardLayout |
+| **Mill production page** | `src/app/mill-production/page.tsx` | `src/app/demo/mill-production/page.tsx` | Update imports, wrap in DashboardLayout |
+
+**Note:** Current pages already duplicate Sidebar + Header + main wrapper inline. Moving to DashboardLayout component actually reduces duplication.
+
+## Build Order and Dependencies
+
+### Phase 1: Foundation (No Dependencies)
+
+**Order matters:** Must complete before Phase 2
+
+1. **Create DashboardLayout component**
+   - File: `src/components/layouts/DashboardLayout.tsx`
+   - No dependencies on other changes
+   - Extracts existing pattern from current pages
+
+2. **Update Sidebar conditional logic**
+   - File: `src/components/Sidebar.tsx`
+   - Modify navItems array to check pathname
+   - No breaking changes to existing pages
+
+### Phase 2: Move Pages (Depends on Phase 1)
+
+**Order flexible:** Can parallelize within phase
+
+3. **Create demo folder structure**
+   - Folder: `src/app/demo/`
+   - Empty folder, no files yet
+
+4. **Move and refactor orders page**
+   - From: `src/app/orders/page.tsx`
+   - To: `src/app/demo/orders/page.tsx`
+   - Use DashboardLayout component
+   - Test: Visit `/demo/orders` (will require auth)
+
+5. **Move and refactor customers pages**
+   - From: `src/app/customers/page.tsx` and `src/app/customers/[id]/page.tsx`
+   - To: `src/app/demo/customers/page.tsx` and `src/app/demo/customers/[id]/page.tsx`
+   - Use DashboardLayout component
+   - Test: Visit `/demo/customers` and `/demo/customers/[id]`
+
+6. **Move and refactor mill-production page**
+   - From: `src/app/mill-production/page.tsx`
+   - To: `src/app/demo/mill-production/page.tsx`
+   - Use DashboardLayout component
+   - Test: Visit `/demo/mill-production`
+
+### Phase 3: Production Homepage (Depends on Phase 1)
+
+**Can parallelize with Phase 2**
+
+7. **Create production Coming Soon page**
+   - File: `src/app/page.tsx` (replace existing)
+   - Use DashboardLayout component
+   - Simple content area with "Coming Soon" message
+   - Test: Visit `/` (will show Coming Soon)
+
+### Phase 4: Middleware Protection (Depends on Phase 2 Complete)
+
+**Must be last:** Breaking change until pages moved
+
+8. **Update middleware with role checking**
+   - File: `src/middleware.ts`
+   - Add createRouteMatcher for `/demo/*`
+   - Check sessionClaims.metadata.role
+   - Redirect to `/` if role !== 'demo'
+   - Test: Visit `/demo/orders` without demo role (should redirect)
+
+9. **Configure Clerk session claims** (Manual step in Clerk Dashboard)
+   - Add custom session claims to include publicMetadata.role
+   - Assign demo role to test users
+   - Test: Sign in with demo user, verify access to `/demo/*`
+
+### Dependency Graph
+
+```
+Phase 1: Foundation
+├── DashboardLayout (no deps)
+└── Sidebar conditional (no deps)
+    ↓
+Phase 2: Move Pages (needs DashboardLayout)
+├── Demo folder structure
+├── Move orders (needs DashboardLayout)
+├── Move customers (needs DashboardLayout)
+└── Move mill-production (needs DashboardLayout)
+    ↓
+Phase 3: Production Homepage (needs DashboardLayout)
+└── Coming Soon page (needs DashboardLayout)
+    ↓
+Phase 4: Middleware (needs Phase 2 complete)
+├── Middleware role check (needs pages moved)
+└── Clerk config (manual, needs middleware)
+```
+
+### Testing Checkpoints
+
+After each phase:
+
+| Phase | Test | Expected Result |
+|-------|------|-----------------|
+| Phase 1 | Visit existing pages | No change in behavior |
+| Phase 2 | Visit `/demo/orders` | Shows orders page (auth required) |
+| Phase 2 | Visit `/orders` | 404 (page moved) |
+| Phase 3 | Visit `/` | Shows Coming Soon page |
+| Phase 4 | Visit `/demo/orders` without demo role | Redirect to `/` |
+| Phase 4 | Visit `/demo/orders` with demo role | Shows orders page |
+
+## Anti-Patterns
+
+### Anti-Pattern 1: Using Route Groups for URL Paths Needed by Middleware
+
+**What people do:** Create `(demo)` route group expecting `/demo/*` URLs
+
+**Why it's wrong:** Route groups wrapped in parentheses are omitted from the URL path. Middleware cannot match against them because the URL is actually `/orders` not `/demo/orders`.
+
+**Do this instead:** Use a regular folder `demo/` without parentheses. This creates actual URL paths `/demo/orders`, `/demo/customers`, etc. that middleware can match with `createRouteMatcher(["/demo(.*)"])`.
+
+**Source:** [Next.js: Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
+
+### Anti-Pattern 2: Checking Roles in Components Instead of Middleware
+
+**What people do:** Skip middleware role checking and instead check roles in page components or layouts
+
+**Why it's wrong:**
+- Page loads before role check, wasting resources
+- User sees flash of unauthorized content
+- Must repeat role checking logic in every protected component
+- Race conditions between auth loading and component mounting
+
+**Do this instead:** Always protect routes at the middleware level using `auth.protect()` or custom role checking. Components can still check roles for conditional UI rendering, but middleware is the primary gate.
+
+**Example of wrong approach:**
 ```typescript
+// ❌ BAD: Role check in component
+export default function OrdersPage() {
+  const { sessionClaims } = useAuth();
+  const role = sessionClaims?.metadata?.role;
+
+  if (role !== 'demo') {
+    redirect('/'); // Already loaded page, wasted resources
+  }
+
+  return <OrdersTable />;
+}
+```
+
+**Example of correct approach:**
+```typescript
+// ✅ GOOD: Role check in middleware
 // src/middleware.ts
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-
-// Define public routes (everything else is protected)
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
-
-export default clerkMiddleware(async (auth, req) => {
-  // Protect all routes except public ones
-  if (!isPublicRoute(req)) {
-    await auth.protect()
+export default clerkMiddleware(async (auth, request) => {
+  if (isDemoRoute(request)) {
+    const session = await auth();
+    if (session.sessionClaims?.metadata?.role !== 'demo') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
   }
-})
-
-export const config = {
-  matcher: [
-    // Skip Next.js internals and static files
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-    // Always run for Clerk frontend API routes
-    '/__clerk/(.*)',
-  ],
-}
+});
 ```
 
-### Pattern 2: Server Component Auth Access
+**Source:** [Clerk: Protect Routes with clerkMiddleware](https://clerk.com/docs/reference/nextjs/clerk-middleware)
 
-**What:** Access auth state and user data in React Server Components using `auth()` and `currentUser()`.
+### Anti-Pattern 3: Duplicating Layout Code Across Pages
 
-**When to use:** When server components need user-specific data or want to show personalized content.
+**What people do:** Copy Sidebar + Header + main wrapper boilerplate to every page
 
-**Trade-offs:**
-- ✓ No client-side JavaScript required
-- ✓ User data available at render time
-- ✓ Can be used with database queries
-- ✗ Async functions only (must await)
-- ✗ Server Components only (not in client components)
+**Why it's wrong:**
+- Duplication makes updates error-prone (must change multiple files)
+- Inconsistent styling if one page copy diverges
+- Harder to refactor layout structure later
 
-**Example:**
+**Do this instead:** Extract layout wrapper as reusable component (DashboardLayout) and use route group layouts where possible. For shared routes like `/settings`, use the component approach.
+
+**Current codebase pattern (needs refactoring):**
 ```typescript
-// src/app/page.tsx (Server Component)
-import { auth, currentUser } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
-
-export default async function DashboardPage() {
-  const { userId } = await auth()
-
-  // Optional: redundant check if middleware already protects route
-  if (!userId) {
-    redirect('/sign-in')
-  }
-
-  // Fetch user details if needed
-  const user = await currentUser()
-
+// ❌ Current pattern in /orders/page.tsx, /customers/page.tsx, etc.
+export default function OrdersPage() {
   return (
-    <div>
-      <h1>Welcome, {user?.firstName}!</h1>
-      {/* Dashboard content */}
+    <div className="bg-bg-page flex h-screen">
+      <Sidebar />
+      <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
+        <Header />
+        <OrdersTable />
+      </main>
     </div>
-  )
+  );
 }
 ```
 
-### Pattern 3: Client Component Auth Hooks
-
-**What:** Use `useAuth()` and `useUser()` hooks in client components for reactive auth state.
-
-**When to use:** Interactive components that need auth state (user buttons, conditional UI, client-side navigation).
-
-**Trade-offs:**
-- ✓ Reactive - updates automatically on auth state change
-- ✓ Access to methods like `signOut()`, `getToken()`
-- ✓ Can be used with UI interactions
-- ✗ Client-side only - requires 'use client' directive
-- ✗ Adds JavaScript bundle size
-- ✗ Hydration consideration - check `isLoaded` before rendering
-
-**Example:**
+**Better pattern:**
 ```typescript
-// src/components/Header.tsx (Client Component)
-'use client'
-
-import { useUser, UserButton } from '@clerk/nextjs'
-
-export function Header() {
-  const { isSignedIn, user, isLoaded } = useUser()
-
-  if (!isLoaded) {
-    return <div>Loading...</div>
-  }
-
+// ✅ GOOD: Extract to DashboardLayout
+export default function OrdersPage() {
   return (
-    <header>
-      {isSignedIn && (
-        <div className="flex items-center gap-4">
-          <span>Welcome, {user.firstName}</span>
-          <UserButton />
-        </div>
-      )}
-    </header>
-  )
+    <DashboardLayout>
+      <OrdersTable />
+    </DashboardLayout>
+  );
 }
 ```
 
-### Pattern 4: Conditional Rendering with Clerk Components
+**Source:** [LogRocket: Guide to Next.js Layouts](https://blog.logrocket.com/guide-next-js-layouts-nested-layouts/)
 
-**What:** Use `<SignedIn>`, `<SignedOut>`, and `<Show>` components for declarative auth-based rendering.
+### Anti-Pattern 4: Mixing organizationMemberships and publicMetadata Roles
 
-**When to use:** Simple show/hide logic based on auth state without manual conditionals.
+**What people do:** Try to use organization roles for single-tenant apps or use publicMetadata for multi-tenant apps
 
-**Trade-offs:**
-- ✓ Declarative - clear intent in JSX
-- ✓ Automatic rerenders on auth change
-- ✓ Works in both server and client components
-- ✗ Less flexible than manual conditionals
-- ✗ Adds nesting to component tree
+**Why it's wrong:**
+- organizationMemberships adds complexity when you only need user-level roles
+- publicMetadata doesn't support organization context switching
+- Mixing both creates confusion about source of truth
 
-**Example:**
+**Do this instead:**
+- **Single-tenant with user roles:** Use publicMetadata (this project)
+- **Multi-tenant with organization roles:** Use organizationMemberships
+- Never mix both approaches in the same app
+
+**This project's approach (correct for single-tenant):**
 ```typescript
-import { Show, SignInButton, UserButton } from '@clerk/nextjs'
-
-export function NavBar() {
-  return (
-    <nav>
-      <Show when="signed-out">
-        <SignInButton mode="modal" />
-      </Show>
-      <Show when="signed-in">
-        <UserButton />
-      </Show>
-    </nav>
-  )
-}
+// ✅ GOOD: User-level role in publicMetadata
+const session = await auth();
+const role = session.sessionClaims?.metadata?.role; // "demo" or undefined
 ```
 
-### Pattern 5: API Route Protection
-
-**What:** Protect API routes by checking auth state with `auth()` and returning 401 for unauthorized requests.
-
-**When to use:** Any API endpoint that should only be accessible to authenticated users.
-
-**Trade-offs:**
-- ✓ Explicit - clear that endpoint requires auth
-- ✓ Can check permissions/roles beyond just authentication
-- ✓ Node.js runtime - can access database
-- ✗ Manual check required (not automatic like middleware)
-- ✗ Boilerplate in every protected route
-
-**Example:**
+**Multi-tenant approach (overkill for this project):**
 ```typescript
-// src/app/api/orders/route.ts
-import { auth } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
-
-export async function GET() {
-  const { userId } = await auth()
-
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // Fetch and return orders for authenticated user
-  const orders = await fetchOrders(userId)
-  return NextResponse.json({ orders })
-}
+// ❌ BAD for this project: Organization-level roles
+const { orgId, has } = await auth();
+const isAdmin = has({ role: 'org:admin' });
 ```
 
-### Pattern 6: Server Action Auth
-
-**What:** Protect Server Actions by validating auth at the start of the action.
-
-**When to use:** Form submissions and mutations that require authentication.
-
-**Trade-offs:**
-- ✓ Server-side validation - cannot be bypassed
-- ✓ Access to full user object for audit logs
-- ✓ Can throw errors that client catches
-- ✗ Must be explicitly checked in each action
-- ✗ Requires error handling on client
-
-**Example:**
-```typescript
-// src/app/actions.ts
-'use server'
-
-import { auth, currentUser } from '@clerk/nextjs/server'
-
-export async function updateOrderStatus(orderId: string, status: string) {
-  const { userId } = await auth()
-  const user = await currentUser()
-
-  if (!userId) {
-    throw new Error('You must be signed in to update orders')
-  }
-
-  // Perform mutation with user context
-  await updateOrder(orderId, status, {
-    updatedBy: user.id,
-    updatedByEmail: user.emailAddresses[0].emailAddress,
-  })
-}
-```
-
-## Data Flow
-
-### Authentication Flow
-
-```
-User visits /orders
-    ↓
-middleware.ts runs → clerkMiddleware() checks cookies
-    ↓
-Not authenticated? → Redirect to /sign-in
-    ↓
-Authenticated? → Continue to page
-    ↓
-Page renders (Server Component)
-    ↓
-Optional: auth() or currentUser() for user data
-    ↓
-Render with user context
-```
-
-### Sign-In Flow
-
-```
-User visits /sign-in
-    ↓
-Clerk <SignIn /> component renders
-    ↓
-User enters email + password
-    ↓
-Clerk validates credentials (external API)
-    ↓
-Success → Set session cookie
-    ↓
-Redirect to NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL (/)
-    ↓
-Middleware allows access
-    ↓
-Dashboard loads
-```
-
-### Client-Side Auth State
-
-```
-ClerkProvider loads session from cookie
-    ↓
-Populates useAuth() and useUser() hooks
-    ↓
-Components using hooks rerender with auth data
-    ↓
-User clicks "Sign Out" in <UserButton />
-    ↓
-Clerk clears session cookie
-    ↓
-Hooks update to isSignedIn: false
-    ↓
-Middleware redirects to /sign-in on next navigation
-```
-
-### Key Data Flows
-
-1. **Session Management:** Clerk manages session via HTTP-only cookies set by middleware. Client never directly handles tokens.
-2. **User Data Propagation:** Server Components get user data via `currentUser()` on each request. Client Components subscribe to user state via `useUser()` hook.
-3. **Token for External APIs:** Use `await getToken()` from `useAuth()` (client) or `auth()` (server) to get JWT for authenticating external API requests.
-4. **Sign-Out:** `<UserButton />` handles sign-out automatically. Clears cookie, updates hooks, middleware redirects unauthenticated routes.
-
-## Integration Points for CGM Dashboard
-
-### New Files Required
-
-| File | Purpose | Priority |
-|------|---------|----------|
-| `src/middleware.ts` | Route protection with clerkMiddleware | **Critical** - Required first |
-| `src/app/sign-in/[[...sign-in]]/page.tsx` | Sign-in page | **Critical** - Required first |
-| `src/app/sign-up/[[...sign-up]]/page.tsx` | Sign-up page | **Critical** - Required first |
-| `.env.local` | Clerk API keys (gitignored) | **Critical** - Required first |
-| `.env.example` | Template for required env vars | **High** - Documentation |
-
-### Files to Modify
-
-| File | Changes Required | Priority | Complexity |
-|------|------------------|----------|------------|
-| `src/app/layout.tsx` | Add `<ClerkProvider>` wrapper around existing `<ThemeProvider>` | **Critical** | Low |
-| `src/components/Header.tsx` | Replace static user info with `<UserButton />`, add signed-in/signed-out conditional | **High** | Medium |
-| `package.json` | Add `@clerk/nextjs` dependency | **Critical** | Low |
-
-### Files Unchanged
-
-These existing files work as-is with Clerk:
-
-- **All page components** (`page.tsx` files) - Middleware handles protection, no page-level changes needed
-- **Sidebar.tsx** - Navigation works without auth changes
-- **All UI components** (`src/components/ui/*`) - Design system components unaffected
-- **All services** (`src/services/*`) - Mock data services don't need auth
-- **All hooks** (`src/hooks/*`) - Custom hooks continue to work
-- **ThemeProvider.tsx** - Theme toggle unaffected by auth
-
-### Environment Variables
-
-```env
-# .env.local (gitignored)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
-CLERK_SECRET_KEY=sk_test_xxxxx
-
-# Optional: Customize redirect URLs
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
-NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
-```
-
-### Dependency Installation
-
-```bash
-npm install @clerk/nextjs
-```
-
-**Version compatibility:**
-- `@clerk/nextjs` latest version requires `next@>=15.2.3`
-- Current project uses Next.js 15, verify version is 15.2.3+
-- Node.js 20.9.0+ required for Clerk Core 3
+**Source:** [Clerk: Implement basic RBAC with metadata](https://clerk.com/docs/guides/secure/basic-rbac) | [Clerk: Organizations and RBAC](https://clerk.com/docs/guides/organizations/control-access/roles-and-permissions)
 
 ## Scaling Considerations
 
 | Scale | Architecture Adjustments |
 |-------|--------------------------|
-| 0-1k users | Default Clerk setup handles this easily. Free tier supports 10k MAU. |
-| 1k-10k users | No changes needed. Consider upgrading to Pro plan at 10k+ MAU for support and advanced features. |
-| 10k-100k users | Still no architecture changes. Clerk is hosted SaaS - scales automatically. May want custom JWT claims for role-based access. |
-| 100k+ users | Consider Clerk's Enterprise plan for SLA and dedicated support. May want to cache user data in database for frequently accessed user attributes. |
+| 1-10 users (current) | Current architecture sufficient. Role stored in publicMetadata, checked in middleware. |
+| 10-1000 users | Monitor middleware performance. Consider caching role checks if auth() becomes bottleneck. Session claims avoid network request, so should remain fast. |
+| 1000+ users | If multiple roles emerge beyond "demo", consider organization-based roles with Clerk Organizations. Evaluate whether route groups need sub-groups for additional contexts. |
 
 ### Scaling Priorities
 
-1. **First bottleneck:** Won't hit auth bottleneck - Clerk infrastructure scales. More likely to hit Next.js server limits or database query performance first.
-2. **Second bottleneck:** If showing user-specific data on every page, `currentUser()` calls add ~50-100ms. Cache user attributes in database and fetch with user ID from `auth()` instead.
+1. **First bottleneck:** Middleware auth checks on every request
+   - **Solution:** Clerk session claims are cached in tokens (no network request). If still slow, add caching layer or consider edge middleware optimization.
 
-## Anti-Patterns
+2. **Second bottleneck:** Conditional sidebar re-renders on every route change
+   - **Solution:** Memoize nav items arrays with useMemo. Cache pathname checks. Minimize sidebar re-renders with React.memo.
 
-### Anti-Pattern 1: Mixing Client and Server Auth Helpers
+## Additional Integration Patterns
 
-**What people do:** Import `auth()` in a client component or use `useAuth()` in a server component.
+### Pattern 5: Clerk Custom Session Claims for Role Storage
 
-**Why it's wrong:**
-- `auth()` and `currentUser()` are server-only and will throw errors in client components
-- `useAuth()` and `useUser()` are client-only hooks and won't work in server components
-- Causes "Cannot read property of undefined" or "Cannot use hooks in server components" errors
+**What:** Configure Clerk Dashboard to include publicMetadata in session token claims
 
-**Do this instead:**
-- Use `auth()` / `currentUser()` in Server Components, API routes, Server Actions
-- Use `useAuth()` / `useUser()` in Client Components with 'use client' directive
-- If you need user data in a client component, either:
-  - Convert to client component and use hooks, OR
-  - Fetch in parent server component and pass as props
+**Setup Steps:**
+1. Navigate to Clerk Dashboard → Customizations → Session Token
+2. Add custom claim for metadata:
+```json
+{
+  "metadata": "{{user.public_metadata}}"
+}
+```
+3. Save configuration
+4. Role accessible via `sessionClaims.metadata.role` in middleware and components
 
-### Anti-Pattern 2: Manual Redirects in Protected Pages
-
-**What people do:** Add redirect logic in every protected page:
+**Setting user role:**
 ```typescript
-// ❌ DON'T DO THIS
-export default async function OrdersPage() {
-  const { userId } = await auth()
-  if (!userId) redirect('/sign-in')
-  // ...
+// Via Clerk Dashboard: Users → [User] → Metadata → Public
+{
+  "role": "demo"
+}
+
+// Via API (for programmatic assignment):
+import { clerkClient } from '@clerk/nextjs/server';
+
+await clerkClient.users.updateUserMetadata(userId, {
+  publicMetadata: { role: 'demo' }
+});
+```
+
+**Accessing role in middleware:**
+```typescript
+const session = await auth();
+const role = session.sessionClaims?.metadata?.role;
+```
+
+**Accessing role in components:**
+```typescript
+import { useAuth } from '@clerk/nextjs';
+
+const { sessionClaims } = useAuth();
+const role = sessionClaims?.metadata?.role;
+```
+
+**Source:** [Clerk: Implement basic RBAC with metadata](https://clerk.com/docs/guides/secure/basic-rbac)
+
+### Pattern 6: Conditional Rendering with Clerk's `<Show>` Component
+
+**What:** Use Clerk's declarative `<Show>` component for role-based UI rendering
+
+**When to use:** When you need to show/hide UI elements based on roles without writing conditional logic
+
+**Trade-offs:**
+- **PRO:** Declarative, cleaner than if statements
+- **PRO:** Built-in loading states
+- **CON:** Requires Clerk component import
+- **CON:** Less flexible than custom logic for complex conditions
+
+**Example:**
+```typescript
+import { Show } from '@clerk/nextjs';
+
+export default function DemoFeature() {
+  return (
+    <Show
+      when={{ role: 'demo' }}
+      fallback={<p>Demo access required.</p>}
+    >
+      <DemoContent />
+    </Show>
+  );
 }
 ```
 
-**Why it's wrong:**
-- Duplicated logic across all protected pages
-- Page still loads briefly before redirect (wasted work)
-- Can cause flash of protected content
-- Harder to maintain - many places to update if auth logic changes
+**Source:** [Clerk: Conditionally Render Content by User Role](https://clerk.com/docs/reference/components/control/show)
 
-**Do this instead:**
-Use middleware for route protection. All routes are protected by default, only sign-in/sign-up are public:
-```typescript
-// ✓ DO THIS - in middleware.ts
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+## Summary: Integration Checklist
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect()
-  }
-})
-```
-
-### Anti-Pattern 3: Narrow Middleware Matchers
-
-**What people do:** Only match specific routes in middleware config:
-```typescript
-// ❌ DON'T DO THIS
-export const config = {
-  matcher: ['/orders', '/customers', '/settings'],
-}
-```
-
-**Why it's wrong:**
-- Easy to forget routes as app grows
-- 404 pages and error pages throw "auth() was called but no middleware" error
-- API routes may not be protected
-- Static assets unnecessarily matched
-
-**Do this instead:**
-Use broad matcher that excludes static files and Next.js internals:
-```typescript
-// ✓ DO THIS
-export const config = {
-  matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
-    '/__clerk/(.*)',
-  ],
-}
-```
-
-### Anti-Pattern 4: Checking Auth Before Loading State
-
-**What people do:** Render auth-dependent UI before checking if auth is loaded:
-```typescript
-// ❌ DON'T DO THIS
-'use client'
-export function Header() {
-  const { user } = useUser()
-  return <div>Welcome, {user.firstName}</div> // Error: user is null during load
-}
-```
-
-**Why it's wrong:**
-- `user` is `null` while Clerk loads session
-- Causes "Cannot read property 'firstName' of null" error
-- Creates hydration mismatch if server/client render different content
-
-**Do this instead:**
-Check `isLoaded` before accessing user data:
-```typescript
-// ✓ DO THIS
-'use client'
-export function Header() {
-  const { user, isLoaded } = useUser()
-
-  if (!isLoaded) {
-    return <div>Loading...</div>
-  }
-
-  return <div>Welcome, {user?.firstName ?? 'Guest'}</div>
-}
-```
-
-### Anti-Pattern 5: Using Middleware for Database Queries
-
-**What people do:** Try to check database permissions in middleware:
-```typescript
-// ❌ DON'T DO THIS
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth()
-  const userRole = await db.users.findUnique({ where: { id: userId } }) // Error!
-  if (userRole !== 'admin') return NextResponse.redirect('/unauthorized')
-})
-```
-
-**Why it's wrong:**
-- Middleware runs on Edge Runtime (before Next.js 15.2)
-- Edge Runtime cannot access Node.js APIs like database connections
-- Causes "Cannot use Node.js runtime" errors
-
-**Do this instead:**
-Use cookie-based checks in middleware for fast redirects, then validate in page with Node.js runtime:
-```typescript
-// ✓ DO THIS - middleware.ts (fast cookie check)
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect() // Just checks if signed in
-  }
-})
-
-// ✓ DO THIS - page.tsx (full validation with database)
-export default async function AdminPage() {
-  const { userId } = await auth()
-  const user = await db.users.findUnique({ where: { id: userId } })
-
-  if (user.role !== 'admin') {
-    notFound() // Returns 404 for unauthorized
-  }
-
-  // Render admin content
-}
-```
-
-### Anti-Pattern 6: Storing Clerk Keys in Code
-
-**What people do:** Hardcode API keys in components or config files:
-```typescript
-// ❌ DON'T DO THIS
-const clerk = new Clerk('pk_test_xxxxx') // Hardcoded key
-```
-
-**Why it's wrong:**
-- Keys in code get committed to version control
-- Anyone with repo access has your keys
-- Can't rotate keys without code changes
-- Different keys for dev/staging/prod require code changes
-
-**Do this instead:**
-Use environment variables (Clerk does this automatically):
-```env
-# ✓ DO THIS - .env.local
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
-CLERK_SECRET_KEY=sk_test_xxxxx
-```
-
-Clerk SDK reads these automatically. Add `.env.local` to `.gitignore` and provide `.env.example` template for team.
-
-## Testing Considerations
-
-### Mocking Clerk in Tests
-
-Clerk authentication requires mocking in unit/integration tests. The recommended pattern:
-
-```typescript
-// jest.setup.js or test file
-jest.mock('@clerk/nextjs', () => {
-  return {
-    auth: jest.fn(() => Promise.resolve({ userId: 'test-user-id' })),
-    currentUser: jest.fn(() => Promise.resolve({
-      id: 'test-user-id',
-      firstName: 'Test',
-      lastName: 'User',
-      emailAddresses: [{ emailAddress: 'test@example.com' }],
-    })),
-    useAuth: jest.fn(() => ({
-      userId: 'test-user-id',
-      isSignedIn: true,
-      isLoaded: true,
-    })),
-    useUser: jest.fn(() => ({
-      user: {
-        id: 'test-user-id',
-        firstName: 'Test',
-        lastName: 'User',
-      },
-      isSignedIn: true,
-      isLoaded: true,
-    })),
-    UserButton: () => <div data-testid="clerk-user-button">User Button</div>,
-    SignIn: () => <div data-testid="clerk-sign-in">Sign In</div>,
-    SignUp: () => <div data-testid="clerk-sign-up">Sign Up</div>,
-    ClerkProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  }
-})
-```
-
-**Testing strategies:**
-- **Unit tests:** Mock Clerk hooks to return test user data
-- **Integration tests:** Mock entire `@clerk/nextjs` module
-- **E2E tests:** Use Clerk's test mode or create test accounts
-
-### Test User Creation
-
-For E2E tests, create dedicated test users in Clerk Dashboard or use Clerk's Backend API to programmatically create test accounts.
-
-## Build Order Recommendations
-
-### Phase 1: Core Auth Infrastructure (Critical Path)
-
-**Dependencies:** None
-**Goal:** Get authentication working end-to-end
-
-1. **Install Clerk SDK**
-   - Run `npm install @clerk/nextjs`
-   - Verify version compatibility with Next.js 15.2.3+
-
-2. **Set up environment variables**
-   - Create Clerk account and application
-   - Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` to `.env.local`
-   - Create `.env.example` template for team
-
-3. **Add ClerkProvider to root layout**
-   - Modify `src/app/layout.tsx`
-   - Wrap existing `<ThemeProvider>` with `<ClerkProvider>`
-   - Test that app still runs
-
-4. **Create middleware**
-   - Create `src/middleware.ts`
-   - Implement `clerkMiddleware()` with public route matching
-   - Configure broad matcher to avoid middleware detection errors
-
-5. **Create sign-in and sign-up pages**
-   - Create `src/app/sign-in/[[...sign-in]]/page.tsx` with `<SignIn />`
-   - Create `src/app/sign-up/[[...sign-up]]/page.tsx` with `<SignUp />`
-   - Test redirect to sign-in when accessing protected routes
-
-**Validation:** Unauthenticated users should be redirected to `/sign-in`. After signing in, users should access dashboard.
-
-### Phase 2: User Display in Header
-
-**Dependencies:** Phase 1 complete
-**Goal:** Show authenticated user in header with sign-out capability
-
-1. **Modify Header component**
-   - Add `'use client'` directive to `src/components/Header.tsx`
-   - Import `useUser` and `UserButton` from `@clerk/nextjs`
-   - Replace static user info with `<UserButton />`
-   - Add conditional rendering with `isLoaded` check
-
-2. **Test user display**
-   - Verify user name/avatar shows in header
-   - Test sign-out from UserButton dropdown
-   - Confirm redirect to sign-in after sign-out
-
-**Validation:** Header displays authenticated user info. Clicking UserButton shows dropdown with "Sign Out" option.
-
-### Phase 3: Optional Enhancements
-
-**Dependencies:** Phase 1-2 complete
-**Goal:** Polish and developer experience improvements
-
-1. **Add loading states**
-   - Create loading skeleton for Header while `isLoaded: false`
-   - Consider loading.tsx files for page-level suspense
-
-2. **Customize sign-in/sign-up appearance**
-   - Match Clerk components to existing design system
-   - Use `appearance` prop on `<SignIn />` and `<SignUp />` components
-
-3. **Set up testing mocks**
-   - Create `jest.setup.js` with Clerk mocks
-   - Update existing tests to mock auth state
-   - Add tests for authenticated/unauthenticated states
-
-4. **Add user-specific data (future)**
-   - When connecting to real database, use `userId` from `auth()` to filter orders
-   - Consider caching user data in database for performance
-
-**Validation:** App looks polished, tests pass, ready for production.
+- [ ] **Middleware:** Extend with role checking for `/demo/*` routes
+- [ ] **Sidebar:** Add conditional nav items based on pathname
+- [ ] **DashboardLayout:** Create reusable layout wrapper component
+- [ ] **Pages:** Move existing pages to `/demo/*` folder
+- [ ] **Production Homepage:** Create Coming Soon page at `/`
+- [ ] **Clerk Configuration:** Add custom session claims for role in Dashboard
+- [ ] **Test Users:** Assign demo role to test users via publicMetadata
+- [ ] **Testing:** Verify role-based access works for demo routes
+- [ ] **Settings Route:** Decide if single `/settings` or separate `/demo/settings`
 
 ## Sources
 
-### Official Clerk Documentation (HIGH Confidence)
+**Official Documentation:**
+- [Next.js: Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
+- [Next.js: usePathname Hook](https://nextjs.org/docs/app/api-reference/functions/use-pathname)
+- [Next.js: Layouts and Pages](https://nextjs.org/docs/app/getting-started/layouts-and-pages)
+- [Clerk: Implement basic RBAC with metadata](https://clerk.com/docs/guides/secure/basic-rbac)
+- [Clerk: clerkMiddleware Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware)
+- [Clerk: Role-Based Access Control in Next.js](https://clerk.com/blog/nextjs-role-based-access-control)
 
-- [Clerk Next.js Quickstart](https://clerk.com/docs/nextjs/getting-started/quickstart) - Official setup guide
-- [clerkMiddleware() Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware) - Middleware configuration
-- [auth() Server Helper](https://clerk.com/docs/reference/nextjs/app-router/auth) - Server-side auth access
-- [currentUser() Helper](https://github.com/clerk/clerk-docs/blob/main/clerk-typedoc/nextjs/current-user.mdx) - Fetch user object server-side
-- [UserButton Component](https://github.com/clerk/clerk-docs/blob/main/docs/reference/components/user/user-button.mdx) - User dropdown component
-- [Clerk Environment Variables](https://github.com/clerk/clerk-docs/blob/main/docs/getting-started/quickstart/pages-router.mdx) - Required API keys
-
-### Integration Guides (HIGH Confidence)
-
-- [Complete Authentication Guide for Next.js App Router](https://clerk.com/articles/complete-authentication-guide-for-nextjs-app-router) - Comprehensive integration patterns
-- [Build with Matija: Clerk Authentication in Next.js 15](https://www.buildwithmatija.com/blog/clerk-authentication-nextjs15-app-router) - Full integration guide
-- [Prismic: Next.js Authentication with Clerk](https://prismic.io/blog/nextjs-authentication) - Step-by-step tutorial
-
-### File Structure Best Practices (MEDIUM Confidence)
-
-- [Best Practices for Organizing Your Next.js 15 2025](https://dev.to/bajrayejoon/best-practices-for-organizing-your-nextjs-15-2025-53ji) - File organization patterns
-- [The Ultimate Guide to Organizing Your Next.js 15 Project Structure](https://www.wisp.blog/blog/the-ultimate-guide-to-organizing-your-nextjs-15-project-structure) - Project structure recommendations
-- [Next.js Official: Project Structure](https://nextjs.org/docs/app/getting-started/project-structure) - Next.js conventions
-
-### Common Pitfalls (HIGH Confidence)
-
-- [Clerk: auth() was called but middleware not detected](https://clerk.com/docs/reference/nextjs/errors/auth-was-called) - Middleware detection error
-- [GitHub Issues: Middleware not working](https://github.com/clerk/javascript/issues/299) - Common middleware issues
-- [Next.js Discussion: Multiple middlewares (Clerk + next-intl)](https://github.com/vercel/next.js/discussions/63736) - Middleware conflict patterns
-
-### Testing (HIGH Confidence)
-
-- [A Practical Guide to Testing Clerk Next.js Applications](https://clerk.com/blog/testing-clerk-nextjs) - Official testing guide with Jest and Playwright examples
+**Community Resources:**
+- [This Dot Labs: Next.js Route Groups](https://www.thisdot.co/blog/next-js-route-groups)
+- [LogRocket: Guide to Next.js Layouts and Nested Layouts](https://blog.logrocket.com/guide-next-js-layouts-nested-layouts/)
+- [DEV: Managing Multiple Layouts in Next.js with App Router and Route Groups](https://dev.to/flcn16/managing-multiple-layouts-in-nextjs-13-with-app-router-and-route-groups-4pmg)
+- [DEV: Implementing Role-Based Access Control in Next.js App Router using Clerk Organizations](https://dev.to/musebe/implementing-role-based-access-control-in-nextjs-app-router-using-clerk-organizations-566g)
 
 ---
-*Architecture research for: Clerk authentication integration with Next.js 15 App Router*
-*Researched: 2026-05-09*
-*All findings verified against official Clerk documentation and Next.js 15 App Router patterns*
+*Architecture research for: Route restructuring and role-based access in Next.js App Router with Clerk*
+*Researched: 2026-05-10*
+*Confidence: HIGH - All patterns verified from official documentation (Context7 docs for Next.js and Clerk) and existing codebase analysis*

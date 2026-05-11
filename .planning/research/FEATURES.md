@@ -1,7 +1,7 @@
 # Feature Research
 
-**Domain:** Clerk Authentication for Next.js Dashboard
-**Researched:** 2026-05-09
+**Domain:** Role-based demo access and route restructuring
+**Researched:** 2026-05-10
 **Confidence:** HIGH
 
 ## Feature Landscape
@@ -12,16 +12,11 @@ Features users assume exist. Missing these = product feels incomplete.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Email + Password Sign-Up | Standard authentication method, baseline expectation | LOW | Clerk provides `useSignUp()` hook with built-in email verification flow |
-| Email + Password Sign-In | Standard authentication method, baseline expectation | LOW | Clerk provides `useSignIn()` hook with password strategy |
-| Email Verification | Security best practice, prevents fake accounts | LOW | Automatically handled by Clerk via `sendEmailCode()` and `verifyEmailCode()` |
-| Password Reset / Forgot Password | Users forget passwords regularly | LOW | Built-in flow: `sendResetPasswordEmailCode()` → `verifyCode()` → `resetPassword()` |
-| Sign Out | Users need to end their session | LOW | Simple `signOut()` method with optional redirect URL |
-| Route Protection (Middleware) | Protect dashboard pages from unauthenticated access | LOW | `clerkMiddleware()` with `auth.protect()` auto-redirects to sign-in |
-| User Display in Header | Users need to see who's logged in | LOW | `<UserButton />` component shows avatar, name, sign-out option |
-| Session Management | Maintain authentication state across pages | LOW | Automatic with Next.js Server Components via `auth()` helper |
-| Prebuilt UI Components | Don't rebuild sign-in/sign-up forms from scratch | LOW | `<SignIn />`, `<SignUp />`, `<UserButton />` components included |
-| Dark/Light Theme Support | Modern expectation for dashboard apps | LOW | Clerk components support `appearance.theme` prop with built-in themes |
+| Route protection by role | Standard RBAC expectation — different user types see different content | MEDIUM | Clerk middleware with `createRouteMatcher()` and role checking in `sessionClaims.metadata.role`. Requires session token configuration in Clerk dashboard. |
+| Clear visual feedback when unauthorized | Users expect immediate feedback when they lack permissions, not silent failures | LOW | Standard HTTP 404 via `auth.protect()` or redirect with `NextResponse.redirect()`. Clerk handles this at edge before page loads. |
+| Persistent navigation state | Users expect sidebar to remember expanded/collapsed state and active route highlighting | LOW | Client-side state with localStorage + `usePathname()` for active state detection. Already implemented in existing dashboard. |
+| Fallback routes for unauthorized access | Users without demo role need somewhere to land (not a 404) | LOW | Redirect to root `/` homepage or settings. Middleware handles before route resolution. |
+| Session-based role assignment | Roles must be available without additional network requests for performance | MEDIUM | Clerk `publicMetadata` in session token (1.2KB limit). Role available in `sessionClaims?.metadata.role` after session token customization. |
 
 ### Differentiators (Competitive Advantage)
 
@@ -29,16 +24,11 @@ Features that set the product apart. Not required, but valuable.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Multi-Factor Authentication (MFA) | Enhanced security, compliance requirement for some industries | MEDIUM | SMS codes, TOTP (authenticator apps), email codes, backup codes all supported |
-| Social OAuth (Google, Microsoft, GitHub) | Faster sign-up, reduces password fatigue | MEDIUM | 20+ providers supported including Google, Microsoft, GitHub, Facebook, LinkedIn |
-| Passwordless (Magic Links) | Better UX, no password to remember/reset | LOW | Email magic links supported via `signInWithEmailLink()` |
-| Session Token for API Auth | Enables authenticated requests to backend APIs | LOW | `getToken()` returns JWT for Authorization header |
-| User Profile Management | Self-service account management reduces support burden | LOW | `<UserProfile />` component handles password change, email update, delete account |
-| Custom JWT Templates | Add custom claims for RBAC/permissions | MEDIUM | Define custom fields in Clerk Dashboard, access via token claims |
-| Webhooks for Data Sync | Keep user data in sync with your database | MEDIUM | Events: `user.created`, `user.updated`, `user.deleted`, `session.created` |
-| Organizations/Teams | Multi-tenant B2B apps where users belong to teams | HIGH | Full RBAC with roles, permissions, invitations, member management |
-| Appearance Customization | Match auth UI to existing dashboard design | LOW | `appearance` prop accepts theme variables, custom CSS, element overrides |
-| Compromised Password Detection | Prevent use of leaked passwords (security) | LOW | Automatic check during sign-in, falls back to email code if detected |
+| Context-aware sidebar | Navigation adapts to current route context (demo vs production), providing focused navigation | MEDIUM | Route groups with separate `layout.tsx` files. Sidebar config driven by route context. React Router `useLocation()` pattern for conditional rendering. |
+| Progressive feature rollout infrastructure | Foundation for incremental real feature releases without code changes | MEDIUM | Demo namespace established at `/demo/*`. Future production features at root `/` without affecting demo content. Similar to feature flag architecture. |
+| Graceful empty states | Professional "Coming Soon" placeholder with clear messaging instead of blank pages | LOW | Empty state pattern with illustration + message + CTA. Dashboard design patterns show content-shaped skeleton loaders for consistency. |
+| Seamless route migration | Existing routes move to `/demo/*` without breaking external links or bookmarks | LOW | Next.js rewrites in `next.config.js` can proxy old paths to new locations if needed. File-based routing requires physical file moves. |
+| Universal settings access | Settings accessible to all authenticated users regardless of role | LOW | `/settings` remains at root, excluded from demo-specific middleware checks. Reinforces settings as user-level, not role-level. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
@@ -46,341 +36,275 @@ Features that seem good but create problems.
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| Custom Auth UI from Scratch | Full design control, unique branding | Reinventing the wheel, security vulnerabilities, maintenance burden, email delivery issues | Use Clerk's prebuilt components with `appearance` customization — supports theme variables, custom CSS, and element-level styling |
-| SMS-Only 2FA | "Everyone knows SMS" | NIST deprecated due to SIM swap attacks, SMS delivery unreliable internationally, carrier costs | Offer TOTP (authenticator apps) as primary MFA, SMS as optional fallback |
-| Storing Passwords Yourself | "We want full control" | Massive security liability, compliance nightmare (GDPR, SOC 2), credential leak risk | Let Clerk handle password storage — they're SOC 2 Type II certified |
-| Username-Only Login (No Email) | "Simpler sign-up" | No password reset mechanism, no way to contact user, account recovery impossible | Require email as identifier — username can be optional display name |
-| Infinite Session Duration | "Don't make users re-login" | Security risk (stolen device = permanent access), compliance violation, stale permissions | Use Clerk's auto-refresh tokens (60s default) with reasonable session expiry |
-| Account Enumeration in Login Errors | "Tell users if email exists" | Security vulnerability — attackers can discover valid accounts | Show generic error "Invalid email or password" for both cases |
-| Rolling Your Own OAuth | "We only need Google login, how hard can it be?" | OAuth spec complexity, token refresh logic, security edge cases, ongoing maintenance | Use Clerk's OAuth — handles token refresh, security, 20+ providers out-of-box |
+| Fine-grained permission system | "We need permissions, not just roles" | Premature optimization. Adds complexity (permission arrays, hierarchies, edge cases) before understanding actual needs. RBAC roles are static and don't capture conditions. | Start with simple role-based access (`demo` role). Add permissions only when specific use cases emerge requiring sub-role distinctions. |
+| Client-side role checking | "Check roles in React components for conditional rendering" | Security theater. Client-side checks are suggestions, not enforcement. Attackers can bypass. Creates false sense of security. | Always enforce roles in middleware (edge) and Server Components. Use client checks ONLY for UI/UX (hiding buttons), never for access control. |
+| Automatic role assignment based on user metadata | "Assign roles based on email domain or signup source" | Hidden magic leads to debugging nightmares. Users get wrong roles with no clear reason. Brittle logic breaks as organization grows. | Explicit role assignment via Clerk dashboard or admin API. Clear audit trail of who assigned what role when. |
+| Multiple root layouts without page reload warning | "Users shouldn't notice they're moving between demo and production" | Next.js triggers full page reload when navigating between different root layouts. Fighting the framework creates jank. | Accept the reload as a boundary between demo and production contexts. Use route groups with shared root layout if seamless navigation is critical. |
+| Nested role hierarchies | "Admins should automatically have demo access" | Role explosion and inheritance conflicts. Middleware logic becomes brittle with cascading checks (`if admin OR demo OR moderator...`). | Flat role structure. If user needs multiple contexts, assign multiple explicit roles in metadata array, not implicit inheritance. |
 
 ## Feature Dependencies
 
 ```
-Route Protection
-    └──requires──> ClerkProvider Setup
-                       └──requires──> API Keys Configured
+Route Restructuring (move files to /demo/*)
+    └──requires──> Existing Dashboard Pages (already built)
+                       └──requires──> Authentication (v1.4 shipped)
 
-Email + Password Sign-In
-    └──requires──> Sign-Up Flow (users must register first)
-                       └──requires──> Email Verification
+Role-Based Middleware
+    └──requires──> Route Restructuring
+    └──requires──> Session Token Configuration (Clerk dashboard)
+    └──requires──> TypeScript role types
 
-Password Reset
-    └──requires──> Email Verification System
+Context-Aware Sidebar
+    └──requires──> Route Restructuring
+    └──enhances──> Progressive Feature Rollout
 
-MFA (TOTP/SMS)
-    └──requires──> Email + Password Auth (can't enable MFA without primary auth)
+Coming Soon Homepage
+    └──requires──> Route Restructuring (frees up root `/`)
+    └──requires──> Shared Layout Components
 
-Organizations/Teams
-    └──requires──> User Authentication
-                       └──enhances──> Route Protection (can protect by role/permission)
-
-Webhooks
-    └──enhances──> Database Sync (optional, but needed to store user data locally)
-
-Social OAuth
-    └──conflicts──> Password Requirements (users signing in via Google don't have passwords)
-
-Custom JWT Templates
-    └──requires──> API Token Strategy (used when calling backend APIs)
+Progressive Feature Rollout ──enabled_by──> Demo Namespace Isolation
 ```
 
 ### Dependency Notes
 
-- **Route Protection requires ClerkProvider:** Middleware and `auth()` helpers won't work without ClerkProvider wrapping the app
-- **Sign-In requires Sign-Up first:** New users can't sign in until they've completed registration
-- **Email Verification required for Password Reset:** Can't send reset code without verified email
-- **MFA enhances Email + Password Auth:** MFA is a second factor, requires primary authentication method
-- **Organizations enhance Route Protection:** Can protect routes by role (`org:admin`) or permission
-- **Social OAuth conflicts with Password Requirements:** Google/Microsoft users don't have passwords — handle this edge case in password change UI
-- **Webhooks enhance Database Sync:** If you need user data in your DB (e.g., for foreign keys in orders table), use webhooks to sync `user.created` events
+- **Route Restructuring requires Existing Dashboard Pages:** Physical file moves from `/app/(dashboard)/orders` to `/app/(dashboard)/demo/orders`. Must preserve imports and data flows.
+- **Role-Based Middleware requires Session Token Configuration:** Clerk session must include `publicMetadata.role` via dashboard configuration before middleware can check `sessionClaims.metadata.role`.
+- **Context-Aware Sidebar requires Route Restructuring:** Sidebar logic depends on distinguishing `/demo/*` from root routes. Can't implement conditional navigation without clear route boundaries.
+- **Progressive Feature Rollout enabled by Demo Namespace Isolation:** Once demo content lives in `/demo/*`, root routes become available for production features without affecting demo functionality.
+- **TypeScript role types enhance all role features:** `type Roles = 'demo'` with `CustomJwtSessionClaims` interface extension provides type safety and autocomplete in middleware and Server Components.
 
 ## MVP Definition
 
-### Launch With (v1.4)
+### Launch With (v1.5)
 
-Minimum viable authentication — what's needed to protect the dashboard.
+Minimum viable product — what's needed to validate the concept.
 
-- [x] **ClerkProvider Setup** — Wrap app in `<ClerkProvider>`, configure API keys
-- [x] **Route Protection (Middleware)** — Protect all dashboard pages, redirect to sign-in if unauthenticated
-- [x] **Email + Password Sign-Up** — Users can create accounts with email verification
-- [x] **Email + Password Sign-In** — Returning users can sign in with credentials
-- [x] **Sign Out** — Users can end their session
-- [x] **User Display in Header** — Show logged-in user's name/avatar with `<UserButton />`
-- [x] **Prebuilt UI Components** — Use Clerk's `<SignIn />` and `<SignUp />` for forms
-- [x] **Password Reset Flow** — Forgot password with email verification code
+- [x] **Route Restructuring** — Move existing pages to `/demo/*` subdirectory. Essential foundation. Unblocks everything else.
+- [x] **Role-Based Middleware** — Restrict `/demo/*` to users with `demo` role. Core security requirement. Without this, restructuring is pointless.
+- [x] **Session Token Configuration** — Add `publicMetadata.role` to Clerk session claims. Technical prerequisite for middleware checks.
+- [x] **TypeScript Role Types** — Define `Roles = 'demo'` and extend `CustomJwtSessionClaims`. Type safety prevents runtime role check errors.
+- [x] **Context-Aware Sidebar** — Demo routes show demo navigation, root shows minimal navigation. Users must understand where they are.
+- [x] **Coming Soon Homepage** — Root `/` displays placeholder with full layout. Prevents authenticated users from landing on empty page.
+- [x] **Universal Settings Access** — `/settings` accessible to all authenticated users. Users need access to theme/preferences regardless of role.
 
-**Rationale:** These features establish basic authentication security. Without them, the dashboard is completely open. This set is the minimum to answer "Is this user allowed to see this data?"
+### Add After Validation (v1.x)
 
-### Add After Validation (v1.5+)
+Features to add once core is working.
 
-Features to add once core authentication is working.
-
-- [ ] **MFA (TOTP/Email Codes)** — After launch, if customers request enhanced security or compliance requires it
-- [ ] **Social OAuth (Google/Microsoft)** — If user feedback shows friction with email sign-up, add 1-click social login
-- [ ] **User Profile Management** — Allow users to change password, update email without admin help (reduces support burden)
-- [ ] **Appearance Customization** — Match auth UI to dashboard design tokens (colors, fonts, spacing)
-- [ ] **Session Token for API Auth** — If adding backend API routes that need authentication
-- [ ] **Webhooks for User Sync** — If storing user data in database (e.g., `users` table for foreign keys)
-
-**Trigger conditions:**
-- MFA: Customer request or compliance requirement (SOC 2, HIPAA)
-- Social OAuth: User feedback citing sign-up friction
-- User Profile: Support tickets about password/email changes
-- Appearance: Visual design review shows auth UI doesn't match dashboard
-- Session Token: Backend API routes requiring authenticated requests
-- Webhooks: Need to associate users with orders/customers in database
+- [ ] **Redirect to Demo for Demo Users** — Auto-redirect users with `demo` role from root to `/demo/orders` on first load — Trigger: User confusion about empty homepage when they have demo access
+- [ ] **Role Assignment UI** — Admin interface to assign/revoke demo role via Clerk API — Trigger: Manual Clerk dashboard access becomes bottleneck
+- [ ] **Onboarding Flow** — First-time user guidance explaining demo vs production contexts — Trigger: Support requests about "where's my data"
+- [ ] **Navigation Breadcrumbs** — Show current location within demo/production context — Trigger: Users getting lost in nested routes
+- [ ] **Audit Logging** — Track role-based access attempts (successful and denied) — Trigger: Security review or compliance requirement
 
 ### Future Consideration (v2+)
 
 Features to defer until product-market fit is established.
 
-- [ ] **Organizations/Teams** — If building multi-tenant B2B (multiple mills, each with their own users)
-- [ ] **Custom JWT Templates** — If implementing granular RBAC (roles: admin, operator, viewer)
-- [ ] **Advanced MFA (WebAuthn/Passkeys)** — Emerging standard, not yet widely adopted
-- [ ] **Passwordless Magic Links** — Replaces passwords entirely, requires user education
-- [ ] **Custom Email Templates** — Rebrand verification emails, requires design and copy work
-- [ ] **Rate Limiting Customization** — Default limits sufficient for most apps, only tune under load
-
-**Why defer:**
-- Organizations: Major feature, only needed if going multi-tenant
-- Custom JWT: Complexity overkill until RBAC requirements are validated
-- WebAuthn: Cutting edge, browser support still maturing
-- Passwordless: Paradigm shift, requires user behavior change
-- Email Templates: Nice-to-have, default Clerk emails functional
-- Rate Limiting: Premature optimization, defaults handle normal traffic
+- [ ] **Multiple Demo Environments** — Separate demo roles like `demo-basic`, `demo-advanced` with different content visibility — Why defer: Unknown if multiple demo tiers are needed. Wait for customer feedback.
+- [ ] **Time-Limited Demo Access** — Demo role expires after N days automatically — Why defer: Adds complexity (cron jobs, expiry checking). Validate that persistent demo access is actually a problem first.
+- [ ] **Feature Flags Integration** — Progressive rollout system for production features with percentage-based exposure — Why defer: Overkill for small team. Manual releases sufficient until scale demands it.
+- [ ] **Usage Analytics by Role** — Track what demo users interact with vs production users — Why defer: Analytics infrastructure not established. Add when data-driven decisions are needed.
+- [ ] **Custom Landing Pages by Role** — Different homepage content based on user role — Why defer: Only one role (`demo`) exists. Wait until role proliferation justifies custom experiences.
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Route Protection | HIGH (security baseline) | LOW (middleware config) | P1 |
-| Email + Password Sign-In/Up | HIGH (table stakes) | LOW (prebuilt components) | P1 |
-| Sign Out | HIGH (users need to logout) | LOW (single function call) | P1 |
-| User Display in Header | HIGH (show who's logged in) | LOW (drop-in component) | P1 |
-| Password Reset | HIGH (users forget passwords) | LOW (built-in flow) | P1 |
-| Email Verification | HIGH (security, prevents spam) | LOW (automatic with sign-up) | P1 |
-| Session Management | HIGH (maintain auth state) | LOW (automatic with Next.js) | P1 |
-| User Profile Management | MEDIUM (self-service UX) | LOW (prebuilt component) | P2 |
-| Appearance Customization | MEDIUM (visual consistency) | LOW (CSS props) | P2 |
-| MFA (TOTP/SMS) | MEDIUM (enhanced security) | MEDIUM (setup + UX flows) | P2 |
-| Social OAuth (Google/Microsoft) | MEDIUM (UX convenience) | MEDIUM (provider config) | P2 |
-| Session Token for API Auth | MEDIUM (enables API calls) | LOW (getToken() helper) | P2 |
-| Webhooks for User Sync | MEDIUM (database integration) | MEDIUM (endpoint + verification) | P2 |
-| Organizations/Teams | LOW (future multi-tenant) | HIGH (major feature) | P3 |
-| Custom JWT Templates | LOW (advanced RBAC) | MEDIUM (config + testing) | P3 |
-| Passwordless Magic Links | LOW (niche preference) | LOW (alternative sign-in strategy) | P3 |
-| Advanced MFA (WebAuthn) | LOW (emerging standard) | HIGH (browser compat + UX) | P3 |
-| Custom Email Templates | LOW (branding polish) | MEDIUM (design + copywriting) | P3 |
+| Route Restructuring | HIGH | LOW | P1 |
+| Role-Based Middleware | HIGH | MEDIUM | P1 |
+| Session Token Configuration | HIGH | LOW | P1 |
+| TypeScript Role Types | MEDIUM | LOW | P1 |
+| Context-Aware Sidebar | HIGH | MEDIUM | P1 |
+| Coming Soon Homepage | MEDIUM | LOW | P1 |
+| Universal Settings Access | MEDIUM | LOW | P1 |
+| Redirect to Demo for Demo Users | MEDIUM | LOW | P2 |
+| Role Assignment UI | MEDIUM | MEDIUM | P2 |
+| Onboarding Flow | MEDIUM | MEDIUM | P2 |
+| Navigation Breadcrumbs | LOW | LOW | P2 |
+| Audit Logging | LOW | MEDIUM | P3 |
+| Multiple Demo Environments | LOW | HIGH | P3 |
+| Time-Limited Demo Access | LOW | MEDIUM | P3 |
+| Feature Flags Integration | MEDIUM | HIGH | P3 |
 
 **Priority key:**
-- P1: Must have for launch (v1.4) — security baseline, table stakes
-- P2: Should have, add when possible (v1.5+) — UX improvements, common requests
-- P3: Nice to have, future consideration (v2+) — advanced features, edge cases
+- P1: Must have for launch (v1.5)
+- P2: Should have, add when possible (v1.x)
+- P3: Nice to have, future consideration (v2+)
 
-## Integration Patterns
+**Prioritization rationale:**
+- **Route Restructuring** is P1 because nothing else works without it. Low cost (file moves) + high value (unblocks everything).
+- **Role-Based Middleware** is P1 despite MEDIUM cost because it's the core security mechanism. Without it, demo/production separation is meaningless.
+- **Context-Aware Sidebar** is P1 because users need to understand navigation context. MEDIUM cost justified by high user value.
+- **Redirect to Demo for Demo Users** is P2 because it improves UX but isn't essential. Demo users can manually navigate to `/demo/orders`.
+- **Audit Logging** is P3 because no compliance requirement exists yet. Add when security posture review demands it.
+- **Feature Flags Integration** is P3 despite MEDIUM user value because HIGH implementation cost (third-party service, SDK integration, infrastructure). Manual releases work fine at current scale.
 
-### Next.js 15 App Router Integration
+## Competitor Feature Analysis
 
-Clerk is purpose-built for Next.js with first-class App Router support:
+| Feature | Linear (SaaS Dashboard) | Vercel Dashboard | Our Approach |
+|---------|-------------------------|------------------|--------------|
+| Role-Based Access | Organization-based with roles (Admin, Member, Guest). Roles control access to settings, billing, deployments. | Team-based access with Owner/Member roles. Project-level permissions. | Single `demo` role for now. Simpler model fits small team. Can expand to org-based later if needed. |
+| Empty States | Content-shaped skeleton loaders with shimmer animation. No spinners. | Placeholder cards with "No projects yet" + CTA to create. | "Coming Soon" message with full layout (header + sidebar). More explicit than placeholder because we're not waiting on user action. |
+| Navigation Context | Sidebar always visible. Nested sections expand/collapse. Active state via router. | Sidebar with project switcher. Navigation changes based on selected project context. | Context-aware sidebar that shows different nav based on route group (demo vs root). Similar to Vercel's project context switching. |
+| Route Organization | `/team/[slug]/projects/[id]` pattern. Organization slug in URL. | `/dashboard/[team]/[project]` nested structure. | `/demo/*` namespace for demo content. Root `/` for production. Simpler than nested dynamic routes. |
+| Access Denied Handling | Redirect to team selection page if no access. Clear message: "You don't have access to this team." | 404 page for projects you don't own. No explicit "access denied" message. | Following Clerk best practice: `auth.protect()` returns 404 for unauthorized. Consider redirect to root with message if 404 is too cryptic. |
 
-| Integration Point | How It Works | Complexity |
-|------------------|--------------|------------|
-| Server Components | `auth()` helper returns `{ userId, sessionId }` for server-side auth checks | LOW |
-| Client Components | `useAuth()`, `useUser()` hooks provide reactive auth state | LOW |
-| Middleware | `clerkMiddleware()` protects routes at the edge before page render | LOW |
-| API Routes | `auth()` in route handlers authenticates API requests | LOW |
-| Layouts | `<ClerkProvider>` wraps app in root layout, provides context | LOW |
+**Key takeaways:**
+- **Linear** uses organization context heavily. We're avoiding this complexity for now with flat role structure.
+- **Vercel** uses team/project hierarchy. Our demo namespace is simpler but less flexible for future multi-tenancy.
+- **Both** use router-based active state detection. We already have this pattern from v1.0 (usePathname with prefix matching).
+- **Empty states** vary widely. Our "Coming Soon" approach is more explicit than skeleton loaders because we're not loading data — features genuinely don't exist yet.
 
-**Code Example (Minimal Setup):**
+## Edge Cases & Testing Considerations
 
-```tsx
-// app/layout.tsx
-import { ClerkProvider } from '@clerk/nextjs'
+### Critical Edge Cases
 
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        <ClerkProvider>{children}</ClerkProvider>
-      </body>
-    </html>
-  )
-}
+| Scenario | Expected Behavior | Notes |
+|----------|-------------------|-------|
+| User with no role assigned | Redirect to root `/`. No demo access. Settings still accessible. | `sessionClaims?.metadata.role === undefined` should not crash. Middleware must handle gracefully. |
+| User logs out while on `/demo/*` page | Redirect to sign-in via Clerk middleware. After sign-in, redirect to root `/` (not back to demo). | Clerk's `afterSignOutUrl` handles first part. Need to prevent redirect back to protected route after sign-in. |
+| User role changes while session active | Old session token still has old role until refresh. User has stale permissions. | Document in PITFALLS: Session token updates aren't instant. Users may need to sign out/in to see new roles. Consider adding refresh button in UI. |
+| Navigating from demo to production routes | Full page reload because different root layouts (if using route groups). | This is a Next.js limitation with multiple root layouts. Accept or use shared root layout if reload is unacceptable. |
+| Direct URL access to `/demo/orders` without role | Middleware returns 404 via `auth.protect()`. User never sees page. | Edge-level protection. No React component mount. Fast and secure. |
+| Concurrent login from multiple devices | Each device has independent session token. Role changes propagate on next token refresh. | Not an issue for this milestone. No session invalidation needed. |
+| Session expiry during demo navigation | Clerk middleware redirects to sign-in. Session state lost. | Standard auth flow. After re-auth, redirect to root (safe default) not back to demo (which requires role check). |
+| User manually assigns role via Clerk API | Role available immediately in new sessions. Existing sessions have stale token. | Document: Role changes don't affect active sessions until sign out/in or token refresh. |
+| Deeply nested demo routes (e.g., `/demo/orders/[id]`) | Route matcher must use glob pattern `/demo(.*)` not `/demo/*` to catch nested routes. | Clerk `createRouteMatcher` uses glob syntax, not filesystem glob. Critical for nested route protection. |
+| Special characters in routes (e.g., `/demo/orders?tab=pending`) | Query params don't affect route matching. Middleware checks pathname only. | Route matchers ignore query params. No special handling needed. |
 
-// middleware.ts
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+### Automated Testing Strategy
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+**Middleware Tests (Unit):**
+- Mock `auth()` to return different role values
+- Verify `createRouteMatcher` correctly identifies demo routes
+- Test redirect behavior for unauthorized users
+- Verify 404 response from `auth.protect()` for missing roles
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) await auth.protect()
-})
+**E2E Tests (Playwright - Already have infrastructure from v1.4):**
+- Sign in as user with no role → attempt `/demo/orders` → expect 404 or redirect
+- Sign in as user with `demo` role → navigate to `/demo/orders` → expect success
+- Sign in as any user → navigate to `/settings` → expect success (universal access)
+- Sign out from `/demo/*` route → expect redirect to sign-in → after sign-in, expect root `/` not demo
+- Test navigation from demo to root and back (verify page reload for different layouts)
 
-export const config = {
-  matcher: ['/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)']
-}
+**Integration Tests:**
+- Verify sidebar shows correct navigation based on route context
+- Test active state highlighting in both demo and root contexts
+- Verify "Coming Soon" placeholder renders with full layout
 
-// app/page.tsx (Server Component)
-import { auth } from '@clerk/nextjs/server'
+**Manual Testing Checklist:**
+- [ ] Assign demo role via Clerk dashboard → verify session token includes role in claims
+- [ ] Remove demo role → sign out/in → verify no demo access
+- [ ] Test all demo routes (orders, customers, mill-production) with demo role
+- [ ] Test all demo routes without demo role → expect access denied
+- [ ] Verify settings accessible from both demo and root contexts
+- [ ] Test browser back/forward through demo and root routes
+- [ ] Verify no console errors or React warnings during navigation
+- [ ] Test theme toggle works in both contexts (state persists)
 
-export default async function Home() {
-  const { userId } = await auth()
-  return <div>Welcome, user {userId}</div>
-}
+## Implementation Complexity Assessment
 
-// components/Header.tsx (Client Component)
-'use client'
-import { UserButton, SignInButton, Show } from '@clerk/nextjs'
+**Route Restructuring: LOW**
+- File moves in Next.js app directory
+- Update imports (TypeScript will catch broken imports)
+- Risk: Breaking existing route tests (need to update test paths)
 
-export function Header() {
-  return (
-    <header>
-      <Show when="signed-out">
-        <SignInButton />
-      </Show>
-      <Show when="signed-in">
-        <UserButton />
-      </Show>
-    </header>
-  )
-}
-```
+**Role-Based Middleware: MEDIUM**
+- Clerk middleware already exists from v1.4
+- Add route matcher and role check logic
+- Risk: Glob pattern syntax errors in route matching (`.*/` not `*`)
+- Risk: Session token not configured → `sessionClaims.metadata.role` undefined → crashes
 
-### Existing Dashboard Integration Points
+**Session Token Configuration: LOW**
+- UI-based configuration in Clerk dashboard
+- Add `{{user.public_metadata.role}}` to session claims
+- Risk: Exceeding 1.2KB token size limit (not a risk with single role field)
 
-Based on PROJECT.md, the CGM Dashboard has these existing features:
+**Context-Aware Sidebar: MEDIUM**
+- Conditional rendering based on route context
+- Option 1: Single sidebar with conditional logic (simpler)
+- Option 2: Separate layout.tsx per route group (more Next.js idiomatic)
+- Risk: Duplicate code if using separate layouts
+- Risk: Shared state between contexts if using single sidebar
 
-| Existing Feature | Auth Integration | Notes |
-|-----------------|------------------|-------|
-| Orders Table | Filter by user's mill/permissions | Could add `userId` to order data via webhooks, filter by org membership |
-| Customer List | Filter by user's assigned customers | Could add `userId` to customer records, implement RBAC |
-| Settings Page | Per-user preferences | Could store theme/density in Clerk user metadata instead of localStorage |
-| Header | User display + sign-out | Replace mock user with `<UserButton showName />` component |
-| Navigation | Public vs authenticated routes | Use middleware to protect `/orders`, `/customers`, `/settings`, allow `/sign-in` |
+**Coming Soon Homepage: LOW**
+- New page component at `/app/(dashboard)/page.tsx`
+- Reuse existing layout (header + sidebar)
+- Empty state pattern (message + illustration)
+- Risk: None — straightforward React component
 
-**Migration strategy:**
-1. Add ClerkProvider to root layout
-2. Add middleware to protect all routes except `/sign-in`, `/sign-up`
-3. Replace header mock user with `<UserButton />`
-4. Create `/sign-in` and `/sign-up` routes with Clerk components
-5. Test: unauthenticated users redirected to sign-in
-6. Test: signed-in users can access dashboard
+**TypeScript Role Types: LOW**
+- Define `type Roles = 'demo'`
+- Extend `CustomJwtSessionClaims` interface
+- Add to global types or types/globals.d.ts
+- Risk: None — pure TypeScript, no runtime impact
 
-## Competitive Comparison
+## Dependencies on Existing Auth (v1.4)
 
-| Feature | Clerk | Auth0 | NextAuth.js |
-|---------|-------|-------|-------------|
-| Prebuilt React Components | ✅ `<SignIn />`, `<UserButton />` | ⚠️ SDK, not components | ❌ DIY forms |
-| Next.js 15 App Router Support | ✅ Native, first-class | ⚠️ Works, not optimized | ✅ Native |
-| Email + Password Auth | ✅ Built-in | ✅ Built-in | ✅ Built-in |
-| Social OAuth Providers | ✅ 20+ providers | ✅ 30+ providers | ✅ 40+ providers |
-| MFA (TOTP/SMS/Email) | ✅ All methods | ✅ All methods + biometrics | ❌ Custom implementation |
-| Organizations/Teams | ✅ Native RBAC | ✅ Advanced RBAC | ❌ Custom implementation |
-| Webhooks | ✅ User events | ✅ Extensive events | ❌ Not applicable |
-| Pricing (10K MAU) | $25/mo | $240/mo (15x more) | Free (self-hosted costs) |
-| Setup Time | 5-10 minutes | 30-60 minutes | 60-120 minutes |
-| Customization | Theme + CSS | Full control | Full control |
-| Session Management | Auto-refresh (60s) | Custom config | Custom config |
-| Compliance | SOC 2 Type II | SOC 2, HIPAA, ISO 27001 | Self-managed |
+**What we're building on:**
+- Clerk SDK already integrated (`ClerkProvider`, `clerkMiddleware`)
+- Middleware config already exists with route matchers
+- `UserButton` in header already shows user info
+- Themed sign-in page already matches dashboard design
+- Route protection already enforced for all dashboard routes
 
-**Verdict for CGM Dashboard (v1.4):**
-- **Choose Clerk** — Best fit for Next.js 15, prebuilt components match "Design → Infrastructure → Build" approach, fast setup aligns with milestone velocity
-- **Not Auth0** — Overkill for single-tenant dashboard, 15x more expensive, enterprise features not needed
-- **Not NextAuth.js** — Requires building UI from scratch, defeats purpose of using prebuilt components, more maintenance burden
+**What changes:**
+- Middleware logic becomes more sophisticated (role-based, not just authenticated)
+- Route matcher patterns expand (need to distinguish demo routes from root routes)
+- Session token customization required (new Clerk dashboard config)
+- TypeScript types need extension (session claims interface)
 
-*Sources:*
-- [Clerk vs Auth0 for Next.js](https://clerk.com/articles/clerk-vs-auth0-for-nextjs)
-- [Full-Stack Authentication Comparison](https://www.c-sharpcorner.com/article/full-stack-authentication-clerk-vs-auth0-vs-nextauth-compared/)
-- [Next.js Authentication Showdown 2025](https://medium.com/@sagarsangwan/next-js-authentication-showdown-nextauth-free-databases-vs-clerk-vs-auth0-in-2025-e40b3e8b0c45)
+**What stays the same:**
+- Authentication flow (sign-in, sign-out, session management)
+- Protected route pattern (middleware-based, edge-level enforcement)
+- Clerk UI components (UserButton, SignIn page)
+- Theme integration (CSS variables already mapped)
 
-## Production Considerations
-
-### Rate Limits
-
-Clerk enforces rate limits to prevent abuse:
-
-| Endpoint | Limit (Development) | Limit (Production) | Scope |
-|----------|-------------------|-------------------|-------|
-| Backend API (general) | 100 req/10s | 1000 req/10s | Per Secret Key |
-| Frontend Sign-In Create | 5 req/10s | 5 req/10s | Per IP address |
-| Frontend Sign-In Attempt | 3 req/10s | 3 req/10s | Per IP address |
-| Frontend Sign-Up Create | 5 req/10s | 5 req/10s | Per IP address |
-| Invitations (single) | 100 req/hour | 100 req/hour | Per instance |
-| Organization Invitations | 250 req/hour | 250 req/hour | Per org |
-
-**Implications for CGM Dashboard:**
-- Normal login traffic won't hit limits (5 sign-ins per 10s = 1800/hour)
-- Backend API calls for user lookup in routes covered by 1000/10s limit
-- If adding organization invitations (future), batch endpoint limited to 50/hour
-
-*Source: [Clerk System Limits](https://github.com/clerk/clerk-docs/blob/main/docs/guides/how-clerk-works/system-limits.mdx)*
-
-### Environment Management
-
-Clerk uses separate Development and Production instances:
-
-| Instance Type | Purpose | Rate Limits | Security |
-|--------------|---------|-------------|----------|
-| Development | Local/staging testing | 100 req/10s | Relaxed (localhost allowed) |
-| Production | Live app | 1000 req/10s | Strict (must associate production domain) |
-
-**Common deployment mistake:** Forgetting to change API keys from development to production keys. Use environment variables:
-
-```bash
-# .env.local (development)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxx
-CLERK_SECRET_KEY=sk_test_xxx
-
-# .env.production
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_xxx
-CLERK_SECRET_KEY=sk_live_xxx
-```
-
-*Source: [Deploying to Production](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/deployment/production.mdx)*
-
-### Security Best Practices
-
-Based on industry research and Clerk documentation:
-
-| Practice | Why | How (Clerk) |
-|----------|-----|-------------|
-| Email Verification Required | Prevents fake accounts, spam | Automatic in Clerk sign-up flow |
-| Password Minimum 12 Characters | Balances security and usability (NIST guidance) | Configure in Clerk Dashboard → User & Authentication → Email, Phone, Username → Password settings |
-| No Password Reuse Across Sites | One breach compromises all accounts | Educate users, consider password manager integration |
-| Compromised Password Detection | Prevent leaked passwords from breaches | Automatic in Clerk, falls back to email code |
-| MFA for Admin/Sensitive Actions | Defense against credential theft | Enable MFA strategies in Dashboard |
-| Generic Login Error Messages | Prevent account enumeration | Clerk returns generic "Invalid credentials" |
-| Session Auto-Refresh | Balance security and UX | Clerk refreshes JWT every 60s automatically |
-| No Credentials in Logs | Prevent leak via log aggregation | Clerk handles auth, never log passwords/tokens in app code |
-| HTTPS Only in Production | Prevent MITM attacks on credentials | Clerk enforces HTTPS for production domains |
-
-*Sources:*
-- [Google Cloud Account Authentication Best Practices](https://cloud.google.com/blog/products/identity-security/account-authentication-and-password-management-best-practices)
-- [Password Reset Best Practices (Authgear)](https://www.authgear.com/post/authentication-security-password-reset-best-practices-and-more/)
-- [Password Management Best Practices (LoginRadius)](https://www.loginradius.com/blog/identity/password-management-best-practices)
+**Migration considerations:**
+- All existing authenticated users will NOT have demo role by default
+- After v1.5 ships, manually assign demo role to users who should see demo content
+- Existing bookmarks to `/orders` will 404 after restructure to `/demo/orders`
+- Consider adding rewrites in `next.config.js` if external links exist (unlikely for localhost development)
 
 ## Sources
 
-### High Confidence (Context7 + Official Docs)
-- [Clerk Documentation (Context7)](https://context7.com/clerk/clerk-docs/llms.txt) — Primary source for all Clerk features
-- [Clerk Email/Password Authentication Flow](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/custom-flows/authentication/email-password.mdx)
-- [Clerk Next.js Middleware Reference](https://github.com/clerk/clerk-docs/blob/main/docs/reference/nextjs/clerk-middleware.mdx)
-- [Clerk useAuth() Hook Documentation](https://github.com/clerk/clerk-docs/blob/main/docs/_partials/hooks/use-auth.mdx)
-- [Clerk Multi-Factor Authentication Guide](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/custom-flows/authentication/multi-factor-authentication.mdx)
-- [Clerk Organizations Overview](https://github.com/clerk/clerk-docs/blob/main/docs/guides/organizations/overview.mdx)
-- [Clerk Webhooks Sync Guide](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/webhooks/syncing.mdx)
-- [Clerk System Limits](https://github.com/clerk/clerk-docs/blob/main/docs/guides/how-clerk-works/system-limits.mdx)
-- [Clerk Production Deployment](https://github.com/clerk/clerk-docs/blob/main/docs/guides/development/deployment/production.mdx)
+**Role-Based Access Control Patterns:**
+- [Clerk: Basic RBAC with Metadata](https://clerk.com/docs/guides/secure/basic-rbac)
+- [Clerk Middleware Reference](https://github.com/clerk/clerk-docs/blob/main/docs/reference/nextjs/clerk-middleware.mdx)
+- [Auth.js RBAC Guide](https://authjs.dev/guides/role-based-access-control)
+- [DEV: Role-Based Navigation in React](https://dev.to/dmadridy/role-based-sidebar-navigation-in-react-applications-415o)
+- [IBM: RBAC Implementation Guide](https://www.ibm.com/think/topics/role-based-access-control-implementation)
+- [Frontegg: RBAC Best Practices](https://frontegg.com/guides/role-based-access-control-best-practices)
 
-### Medium Confidence (Web Search with Multiple Sources)
-- [Clerk vs Auth0 for Next.js](https://clerk.com/articles/clerk-vs-auth0-for-nextjs)
-- [Full-Stack Authentication: Clerk vs Auth0 vs NextAuth Compared](https://www.c-sharpcorner.com/article/full-stack-authentication-clerk-vs-auth0-vs-nextauth-compared/)
-- [Next.js Authentication Showdown 2025](https://medium.com/@sagarsangwan/next-js-authentication-showdown-nextauth-free-databases-vs-clerk-vs-auth0-in-2025-e40b3e8b0c45)
-- [Account Authentication Best Practices (Google Cloud)](https://cloud.google.com/blog/products/identity-security/account-authentication-and-password-management-best-practices)
-- [Password Reset Best Practices (Authgear)](https://www.authgear.com/post/authentication-security-password-reset-best-practices-and-more/)
-- [Password Management Best Practices (LoginRadius)](https://www.loginradius.com/blog/identity/password-management-best-practices)
+**Next.js Route Patterns:**
+- [Next.js: Layouts and Pages](https://nextjs.org/docs/app/getting-started/layouts-and-pages)
+- [Next.js: Route Groups](https://nextjs.org/docs/app/api-reference/file-conventions/route-groups)
+- [Next.js: Rewrites](https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites)
+- [LogRocket: Guide to Next.js Layouts and Nested Layouts](https://blog.logrocket.com/guide-next-js-layouts-nested-layouts/)
+- [This Dot Labs: Next.js Route Groups](https://www.thisdot.co/blog/next-js-route-groups)
+
+**Navigation Patterns:**
+- [Fireship: Location Aware Sidebar with React Router](https://fireship.dev/react-router-sidebar-breadcrumbs)
+- [DEV: Building Collapsible Admin Sidebar with React Router](https://dev.to/cristiansifuentes/building-a-collapsible-admin-sidebar-with-react-router-uselocation-pro-patterns-7im)
+- [Medium: Creating Dynamic Sidebar Menu with React Hooks](https://medium.com/geekculture/creating-a-dynamic-sidebar-menu-with-one-route-using-react-hooks-9d31640fb78c)
+
+**Empty State Design:**
+- [UserOnboard: Empty States Onboarding Pattern](https://www.useronboard.com/onboarding-ux-patterns/empty-states/)
+- [Pencil & Paper: Empty State UX Best Practices](https://www.pencilandpaper.io/articles/empty-states)
+- [Smashing Magazine: The Role of Empty States in User Onboarding](https://www.smashingmagazine.com/2017/02/user-onboarding-empty-states-mobile-apps/)
+- [Dashboard Design Patterns (2026)](https://artofstyleframe.com/blog/dashboard-design-patterns-web-apps/)
+
+**Progressive Rollout & Feature Flags:**
+- [Feature Flags Production Guide](https://www.askantech.com/feature-flags-production-progressive-delivery-implementation-guide/)
+- [Microsoft: Progressive Experimentation with Feature Flags](https://learn.microsoft.com/en-us/devops/operate/progressive-experimentation-feature-flags)
+- [GrowthBook: What Are Feature Flags](https://blog.growthbook.io/what-are-feature-flags/)
+
+**Testing & Edge Cases:**
+- [Frugal Testing: Testing Login & Authentication Edge Cases](https://www.frugaltesting.com/blog/testing-login-authentication-flows-edge-cases-people-forget)
+- [testRigor: What Are Edge Test Cases](https://testrigor.com/blog/what-are-edge-test-cases/)
+- [ZAP: Access Control Testing](https://www.zaproxy.org/docs/desktop/addons/access-control-testing/)
 
 ---
-*Feature research for: Clerk Authentication for Next.js Dashboard*
-*Researched: 2026-05-09*
+*Feature research for: CGM Dashboard v1.5 — Role-based demo access*
+*Researched: 2026-05-10*
