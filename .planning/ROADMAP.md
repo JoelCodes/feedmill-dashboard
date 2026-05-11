@@ -1,165 +1,97 @@
-# Roadmap: CGM Dashboard
+# Roadmap: v1.5 Production Transition
 
-## Milestones
-
-- ✅ **v1.0 MVP** - Phases 0-5 (shipped 2026-04-29)
-- ✅ **v1.1 Mill Production Dashboard** - Phases 6-9 (shipped 2026-04-29)
-- ✅ **v1.2 Customers Page** - Phases 10-15 (shipped 2026-05-06)
-- ✅ **v1.3 Design Hardening** - Phases 16-19 (shipped 2026-05-09)
-- ✅ **v1.4 Auth with Clerk** - Phases 20-24 (shipped 2026-05-10)
+**Created:** 2026-05-10
+**Milestone:** v1.5 Production Transition
+**Goal:** Separate demo content from production-ready pages, establishing the foundation for incremental real feature releases.
 
 ## Phases
 
-<details>
-<summary>✅ v1.0 MVP (Phases 0-5) - SHIPPED 2026-04-29</summary>
+- [ ] **Phase 25: Foundation and Middleware Configuration** - Establish role system infrastructure and layout components
+- [ ] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with redirects
+- [ ] **Phase 27: Role Assignment and Testing** - Assign roles and verify end-to-end access control
+- [ ] **Phase 28: Client Component Security Audit** - Audit client components for security compliance
 
-### Phase 0: Infrastructure
-**Goal**: Foundation for orders table with type-safe data
-**Plans**: 2 plans
+## Phase Details
 
-Plans:
-- [x] 00-01: Define TypeScript types and create mock orders service
-- [x] 00-02: Create StatusBadge component and loading skeletons
+### Phase 25: Foundation and Middleware Configuration
+**Goal**: Role-based middleware and shared layouts are ready for route protection
+**Depends on**: Nothing (first phase)
+**Requirements**: ROLE-01, ROLE-02, ACCESS-01, NAV-02
+**Success Criteria** (what must be TRUE):
+  1. Authenticated users have role data available in session token without additional network requests
+  2. TypeScript provides compile-time type safety for role checks (no string literals)
+  3. Middleware intercepts /demo/* routes and checks for demo role before allowing access
+  4. All dashboard pages can wrap content with DashboardLayout eliminating layout duplication
+**Plans**: TBD
 
-### Phase 1: Orders Table
-**Goal**: Interactive table with filtering and search
-**Plans**: 3 plans
+### Phase 26: Route Restructuring and Migration
+**Goal**: Existing demo pages are accessible at /demo/* paths with navigation and redirects
+**Depends on**: Phase 25
+**Requirements**: ROUTE-01, ROUTE-02, NAV-01
+**Success Criteria** (what must be TRUE):
+  1. Users can access orders, customers, and mill production pages at /demo/* paths
+  2. Users navigating to old paths (e.g., /orders) are redirected to /demo/* equivalents
+  3. Root homepage displays Coming Soon message with full dashboard layout
+  4. Sidebar shows demo-specific navigation when on /demo/* routes
+  5. Settings page remains accessible to all authenticated users at /settings
+**Plans**: TBD
+**UI hint**: yes
 
-Plans:
-- [x] 01-01: Display order lines with all required columns
-- [x] 01-02: Implement status filtering with clickable pills
-- [x] 01-03: Add search functionality and row selection
+### Phase 27: Role Assignment and Testing
+**Goal**: Role-based access control is enforced and verified end-to-end
+**Depends on**: Phase 26
+**Requirements**: ACCESS-02
+**Success Criteria** (what must be TRUE):
+  1. Users with demo role can access all /demo/* pages without redirects
+  2. Users without demo role are redirected to root when attempting to access /demo/* pages
+  3. Server components can check roles programmatically using utility functions
+  4. All users regardless of role can access /settings page
+**Plans**: TBD
 
-### Phase 2: Order Details
-**Goal**: Complete order details panel with timeline
-**Plans**: 2 plans
-
-Plans:
-- [x] 02-01: Implement order details panel with dynamic data
-- [x] 02-02: Add timeline visualization and change history
-
-### Phase 3: KPI Cards (DEFERRED)
-**Goal**: Dashboard KPIs with click-to-filter
-**Status**: Deferred to v1.2+
-
-### Phase 4: Navigation
-**Goal**: Functional navigation with auto-detecting active state
-**Plans**: 1 plan
-
-Plans:
-- [x] 04-01: Implement sidebar with auto-detecting active state
-
-### Phase 5: Header & Settings
-**Goal**: Complete header system with notifications and settings
-**Plans**: 4 plans
-
-Plans:
-- [x] 05-01: Implement notification system with localStorage state
-- [x] 05-02: Wire header search to OrdersTable
-- [x] 05-03: Create settings page with preferences
-- [x] 05-04: Integrate header search with table filtering
-
-</details>
-
-<details>
-<summary>✅ v1.1 Mill Production Dashboard (Phases 6-9) - SHIPPED 2026-04-29</summary>
-
-### Phase 6: Design
-**Goal**: Status filter pills designed and approved in mill-production.pen
-**Plans**: 1 plan
-
-Plans:
-- [x] 06-01: Design filter pills with interaction states in mill-production.pen
-
-### Phase 7: Data Infrastructure
-**Goal**: Production orders mock service derived from Book1.xlsx example data
-**Plans**: 1 plan
-
-Plans:
-- [x] 07-01: Expand mock service to 33 orders with textureType and lineCode fields
-
-### Phase 8: Filter Implementation
-**Goal**: Interactive status filter pills with toggle behavior
-**Plans**: 2 plans
-
-Plans:
-- [x] 08-01: Extract shared FilterPill component with TDD
-- [x] 08-02: Integrate filter pills into mill-production page
-
-### Phase 9: Polish
-**Goal**: Mill production view matches .pen design pixel-perfect
-**Plans**: 1 plan
-
-Plans:
-- [x] 09-01: Add design tokens and replace hardcoded values with token-based styling
-
-</details>
-
-<details>
-<summary>✅ v1.2 Customers Page (Phases 10-15) - SHIPPED 2026-05-06</summary>
-
-- [x] **Phase 10: Design** - Create Pencil.dev design files for customers page components (COMPLETED 2026-05-02)
-- [x] **Phase 11: Foundation (Data Layer)** - Type definitions and mock services for customers and bins (COMPLETED 2026-05-05)
-- [x] **Phase 12: Customer List Page** - Searchable customer table with status indicators (COMPLETED 2026-05-05)
-- [x] **Phase 13: Customer Detail Infrastructure** - Customer detail page with header and summary stats (COMPLETED 2026-05-05)
-- [x] **Phase 14: Activity Timeline** - Unified chronological timeline across orders, deliveries, and bin alerts (COMPLETED 2026-05-05)
-- [x] **Phase 15: Bin Visualization** - Bin fill level bars with threshold-based color coding (COMPLETED 2026-05-05)
-
-</details>
-
-<details>
-<summary>✅ v1.3 Design Hardening (Phases 16-19) - SHIPPED 2026-05-09</summary>
-
-- [x] **Phase 16: Foundation & Design System Setup** - Establish token system, theming infrastructure, and design file organization (5 plans)
-- [x] **Phase 17: Component Library** - Build reusable primitives: Button, Input, Card, Badge, Theme Toggle (5 plans)
-- [x] **Phase 18: Page Migration** - Migrate all pages to design system and eliminate hardcoded values (7 plans)
-- [x] **Phase 19: Documentation & Accessibility** - Document usage patterns and verify WCAG compliance (10 plans)
-
-**Key deliverables:**
-- 200+ semantic design tokens (colors, spacing, typography, shadows)
-- CVA-based component library (10 components)
-- Light/dark theme support with next-themes
-- WCAG 2.1 AA accessibility compliance
-- 304 passing tests
-
-</details>
-
-<details>
-<summary>✅ v1.4 Auth with Clerk (Phases 20-24) - SHIPPED 2026-05-10</summary>
-
-- [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (4 plans)
-- [x] **Phase 21: Route Protection** - Playwright E2E tests verify route protection (1 plan)
-- [x] **Phase 22: Auth Page Design** - Design header user area in Pencil.dev (1 plan)
-- [x] **Phase 23: User Experience Integration** - Add user display to header with sign-out action (1 plan)
-- [x] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration (2 plans)
-
-**Key deliverables:**
-- Clerk SDK with 79 CSS variable references for theme auto-switching
-- Playwright E2E testing infrastructure (5 parameterized tests)
-- UserButton in header with sign-out action and loading skeleton
-- Themed sign-in page with CGM Dashboard branding
-- Production deployment on Vercel with Clerk production keys
-
-**Archive:** [v1.4-ROADMAP.md](./milestones/v1.4-ROADMAP.md)
-
-</details>
+### Phase 28: Client Component Security Audit
+**Goal**: Client components follow security best practices with no data exposure
+**Depends on**: Phase 27
+**Requirements**: (No direct requirements - security verification)
+**Success Criteria** (what must be TRUE):
+  1. No sensitive data fetched in client components before server-side role verification
+  2. Protect component usage documented with clear guidelines on client vs server checks
+  3. All role-dependent data loading happens in Server Components with proper guards
+**Plans**: TBD
 
 ## Progress
 
-| Milestone | Phases | Plans | Status | Shipped |
-|-----------|--------|-------|--------|---------|
-| v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
-| v1.1 Mill Production | 6-9 | 5 | Complete | 2026-04-29 |
-| v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
-| v1.3 Design Hardening | 16-19 | 27 | Complete | 2026-05-09 |
-| v1.4 Auth with Clerk | 20-24 | 9 | Complete | 2026-05-10 |
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 25. Foundation and Middleware Configuration | 0/? | Not started | - |
+| 26. Route Restructuring and Migration | 0/? | Not started | - |
+| 27. Role Assignment and Testing | 0/? | Not started | - |
+| 28. Client Component Security Audit | 0/? | Not started | - |
 
-**Total:** 5 milestones, 24 phases, 68 plans
+## Research Flags
+
+All phases use standard, well-documented patterns:
+- **Phase 25**: Clerk session token customization, Next.js middleware - official docs cover comprehensively
+- **Phase 26**: Next.js route restructuring and redirects - well-established patterns
+- **Phase 27**: Clerk Dashboard role assignment - straightforward UI workflow
+- **Phase 28**: React Server Components security patterns - clear guidance in official docs
+
+**No phases require /gsd-research-phase during planning.** Research provided comprehensive implementation details with HIGH confidence.
+
+## Notes
+
+**Phase numbering**: Continues from v1.4 milestone (ended at Phase 24)
+
+**Granularity**: Standard (4 phases for 8 requirements)
+
+**Coverage**: All 8 v1.5 requirements mapped to phases
+
+**Dependencies**: Linear chain with clear technical dependencies
+- Phase 25 establishes foundation (types, middleware, layout component)
+- Phase 26 uses foundation to restructure routes
+- Phase 27 assigns roles and tests protection
+- Phase 28 audits client security after server protection verified
+
+**UI phases**: Phase 26 involves Coming Soon homepage creation and sidebar navigation
 
 ---
-*Roadmap created: 2026-03-11*
-*v1.0 shipped: 2026-04-29*
-*v1.1 shipped: 2026-04-29*
-*v1.2 shipped: 2026-05-06*
-*v1.3 shipped: 2026-05-09*
-*v1.4 shipped: 2026-05-10*
+*Last updated: 2026-05-10 after roadmap creation*

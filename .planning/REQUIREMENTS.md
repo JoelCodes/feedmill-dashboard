@@ -62,20 +62,26 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ROUTE-01 | TBD | Pending |
-| ROUTE-02 | TBD | Pending |
-| ROLE-01 | TBD | Pending |
-| ROLE-02 | TBD | Pending |
-| ACCESS-01 | TBD | Pending |
-| ACCESS-02 | TBD | Pending |
-| NAV-01 | TBD | Pending |
-| NAV-02 | TBD | Pending |
+| ROUTE-01 | Phase 26 | Pending |
+| ROUTE-02 | Phase 26 | Pending |
+| ROLE-01 | Phase 25 | Pending |
+| ROLE-02 | Phase 25 | Pending |
+| ACCESS-01 | Phase 25 | Pending |
+| ACCESS-02 | Phase 27 | Pending |
+| NAV-01 | Phase 26 | Pending |
+| NAV-02 | Phase 25 | Pending |
 
 **Coverage:**
 - v1.5 requirements: 8 total
-- Mapped to phases: 0
-- Unmapped: 8 (pending roadmap creation)
+- Mapped to phases: 8
+- Unmapped: 0
+
+**Phase distribution:**
+- Phase 25: 4 requirements (ROLE-01, ROLE-02, ACCESS-01, NAV-02)
+- Phase 26: 3 requirements (ROUTE-01, ROUTE-02, NAV-01)
+- Phase 27: 1 requirement (ACCESS-02)
+- Phase 28: 0 requirements (security verification phase)
 
 ---
 *Requirements defined: 2026-05-10*
-*Last updated: 2026-05-10 after initial definition*
+*Last updated: 2026-05-10 after roadmap creation*

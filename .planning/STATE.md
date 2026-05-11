@@ -2,117 +2,107 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Production Transition
-status: planning
-last_updated: "2026-05-11T05:17:09.957Z"
-last_activity: 2026-05-11
+status: roadmap_created
+last_updated: "2026-05-10T00:00:00.000Z"
+last_activity: 2026-05-10
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
   percent: 0
 ---
 
-# Project State
+# Project State: v1.5 Production Transition
+
+**Initialized:** 2026-05-10
+**Milestone:** v1.5 Production Transition
+**Last updated:** 2026-05-10
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-10)
+**Core Value**: Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
-
-**Current focus:** Planning next milestone (v1.5)
+**Current Focus**: Separate demo content from production-ready pages, establishing the foundation for incremental real feature releases.
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-11 — Milestone v1.5 started
+**Phase:** 25 - Foundation and Middleware Configuration
+**Plan:** Not started
+**Status:** Roadmap created, ready for planning
+**Progress:** `[ ---------- ]` 0% (0/4 phases)
+
+**Next actions:**
+1. Run `/gsd-plan-phase 25` to create execution plan
+2. Execute Phase 25 plans
+3. Transition to Phase 26
 
 ## Performance Metrics
 
-**Velocity:**
+**Milestone v1.5:**
+- **Phases planned:** 4
+- **Phases complete:** 0
+- **Requirements:** 8 total, 0 satisfied
+- **Tests:** 304 passing (carried from v1.4)
+- **Timeline:** Started 2026-05-10
 
-- Total plans completed: 67 (across v1.0-v1.3)
-- Previous milestone (v1.3): 27 plans in 3 days
-- Average duration: ~45 min per plan (estimated from v1.3)
-
-**By Milestone:**
-
-| Milestone | Phases | Plans | Duration |
-|-----------|--------|-------|----------|
-| v1.0 | 5 | 12 | 49 days |
-| v1.1 | 4 | 5 | 2 days |
-| v1.2 | 6 | 15 | 5 days |
-| v1.3 | 4 | 27 | 3 days |
-| v1.4 | 5 | TBD | In progress |
-
-**Recent Trend:**
-
-- Velocity improving across milestones
-- v1.3 completed 27 plans in 3 days (9 plans/day average)
-- Trend: Improving
-
-*Updated after v1.4 roadmap creation*
+**Historical (v1.4):**
+- **Phases:** 5 phases (20-24)
+- **Plans:** 9 plans executed
+- **Timeline:** 2 days
+- **Quality:** 304 tests passing, 5 E2E tests, 0 ESLint errors
 
 ## Accumulated Context
 
-### Recent Decisions
+### Decisions Made
 
-Decisions are logged in PROJECT.md Key Decisions table.
+_No decisions logged yet for v1.5._
 
-*Decisions from v1.3 affecting auth integration:*
-
-- CVA for type-safe component variants — affects auth UI integration with existing components
-- Two-tier token naming (primitive → semantic) — auth components must use semantic tokens
-- next-themes for dark mode — auth UI must respect current theme (light/dark/system)
-- jsx-a11y rules approach — auth UI must maintain WCAG 2.1 AA accessibility compliance
-- jest-axe for automated a11y testing — auth flows require accessibility testing
+**Carry forward from v1.4:**
+- Use Clerk publicMetadata for role storage (simpler than organization-based RBAC)
+- Regular demo/ folder structure (not route group) for URL-based middleware matching
+- Shared DashboardLayout component instead of route group layouts
+- Manual role assignment via Clerk Dashboard for v1.5 (defer automatic assignment)
 
 ### Active Todos
 
-*No active todos*
+_No active TODOs._
 
 ### Known Blockers
 
-*No blockers*
+_No blockers identified._
 
 ### Deferred Items
 
-*Items deferred from v1.0-v1.2 (not in v1.3-v1.4 scope):*
+_No items deferred from v1.5 phases yet._
 
-**Phase 3 (KPI Cards):**
+**Carried from v1.4:**
+- Production E2E automation requires custom domain to disable Clerk 2FA
 
-- KPI cards display computed values from order data (deferred from v1.0)
-- Click KPI card to filter table to relevant orders (deferred from v1.0)
+### Implementation Notes
 
-**Performance:**
-
-- Consider memoizing filtered/sorted data in OrdersTable
-- Evaluate transform-based animations for card hover
-
-**UX Refinements:**
-
-- Add subtle animation when filter count changes
-- Consider "Clear all filters" action when multiple selected
-- Add tooltip on hover showing full filter label for truncated text
+_No implementation notes yet._
 
 ## Session Continuity
 
-**If context is lost, reload:**
+**Context for next session:**
 
-1. `.planning/PROJECT.md` — Core value, shipped milestones, constraints
-2. `.planning/ROADMAP.md` — All milestones complete, no active phases
-3. `.planning/MILESTONES.md` — Summary of shipped milestones
-4. `.planning/STATE.md` — This file for accumulated context
+We are at the start of v1.5 milestone. The roadmap has been created with 4 phases:
+- Phase 25: Foundation and Middleware Configuration
+- Phase 26: Route Restructuring and Migration
+- Phase 27: Role Assignment and Testing
+- Phase 28: Client Component Security Audit
 
-**Quick recovery:**
+Research completed with HIGH confidence. All patterns are well-documented. No deep research needed during planning.
 
-- Last shipped: v1.4 Auth with Clerk (2026-05-10)
-- Next step: `/gsd-new-milestone` to start v1.5
-- All 68 plans across 24 phases complete
+**Next step:** Run `/gsd-plan-phase 25` to create execution plan for Foundation and Middleware Configuration.
+
+**Key context to preserve:**
+- v1.4 ended at Phase 24, v1.5 continues numbering from Phase 25
+- All 8 v1.5 requirements mapped to phases with 100% coverage
+- Success criteria derived using goal-backward thinking
+- Research flags indicate standard patterns throughout
 
 ---
-*State initialized: 2026-05-09 for v1.4 milestone*
-*v1.4 shipped: 2026-05-10*
+*State initialized: 2026-05-10*
+*Auto-updated by GSD workflow*
