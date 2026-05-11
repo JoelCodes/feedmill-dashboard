@@ -21,13 +21,20 @@ const UserButtonSkeleton = () => (
 );
 
 const getPageTitle = (path: string): string => {
-  if (path === '/') return 'Dashboard';
+  // Demo routes (check first - more specific)
+  if (path.startsWith('/demo/orders')) return 'Orders';
+  if (path.startsWith('/demo/customers')) return 'Customers';
+  if (path.startsWith('/demo/mill-production')) return 'Mill Production';
+
+  // Production routes
+  if (path === '/') return 'Coming Soon';
+  if (path.startsWith('/settings')) return 'Settings';
+
+  // Legacy routes (404 fallback)
   if (path.startsWith('/orders')) return 'Orders';
   if (path.startsWith('/mill-production')) return 'Production';
-  if (path.startsWith('/inventory')) return 'Inventory';
-  if (path.startsWith('/shipments')) return 'Shipments';
   if (path.startsWith('/customers')) return 'Customers';
-  if (path.startsWith('/settings')) return 'Settings';
+
   return 'Dashboard';
 };
 
