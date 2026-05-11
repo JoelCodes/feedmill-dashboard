@@ -214,6 +214,7 @@ See `.planning/REQUIREMENTS.md` for v1.5 requirements (in progress)
 | ClerkLoading + ClerkLoaded pattern | Handles loading states without flash of unauthenticated content | ✓ Good |
 | Playwright for E2E testing | Parameterized tests for route protection, webServer integration | ✓ Good |
 | afterSignOutUrl on ClerkProvider | Centralizes redirect config (UserButton prop not supported in v7) | ✓ Good |
+| clerkClient for role checking | Fetch user.publicMetadata directly instead of relying on JWT template config | ✓ Good |
 
 ## Evolution
 
@@ -233,4 +234,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-10 after v1.5 milestone started*
+*Last updated: 2026-05-11 after Phase 25*
