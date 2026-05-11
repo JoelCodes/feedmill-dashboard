@@ -6,7 +6,7 @@
 
 ## Phases
 
-- [ ] **Phase 25: Foundation and Middleware Configuration** - Establish role system infrastructure and layout components
+- [x] **Phase 25: Foundation and Middleware Configuration** - Establish role system infrastructure and layout components (completed 2026-05-11)
 - [ ] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with redirects
 - [ ] **Phase 27: Role Assignment and Testing** - Assign roles and verify end-to-end access control
 - [ ] **Phase 28: Client Component Security Audit** - Audit client components for security compliance
@@ -22,11 +22,11 @@
   2. TypeScript provides compile-time type safety for role checks (no string literals)
   3. Middleware intercepts /demo/* routes and checks for demo role before allowing access
   4. All dashboard pages can wrap content with DashboardLayout eliminating layout duplication
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 25-01-PLAN.md — TypeScript role types and DashboardLayout component
-- [ ] 25-02-PLAN.md — Middleware role-based route protection (TDD)
+- [x] 25-01-PLAN.md — TypeScript role types and DashboardLayout component
+- [x] 25-02-PLAN.md — Middleware role-based route protection (TDD)
 
 ### Phase 26: Route Restructuring and Migration
 **Goal**: Existing demo pages are accessible at /demo/* paths with navigation and redirects
@@ -66,7 +66,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 25. Foundation and Middleware Configuration | 0/2 | Planning complete | - |
+| 25. Foundation and Middleware Configuration | 2/2 | Complete   | 2026-05-11 |
 | 26. Route Restructuring and Migration | 0/? | Not started | - |
 | 27. Role Assignment and Testing | 0/? | Not started | - |
 | 28. Client Component Security Audit | 0/? | Not started | - |
