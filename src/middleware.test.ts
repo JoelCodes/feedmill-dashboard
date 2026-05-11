@@ -113,4 +113,58 @@ describe("middleware", () => {
       expect(middlewareContent).toContain('from "@clerk/nextjs/server"');
     });
   });
+
+  describe("demo route protection", () => {
+    // Tests verify middleware SOURCE CODE contains correct patterns for ACCESS-01
+    // Using fs/promises file read pattern (same as existing public route tests)
+
+    it("defines /demo/* as a protected route", async () => {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+
+      const middlewarePath = path.join(__dirname, "middleware.ts");
+      const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
+
+      // Per ACCESS-01: Demo routes require role-based protection
+      expect(middlewareContent).toContain("isDemoRoute");
+      expect(middlewareContent).toContain('/demo(.*)');
+    });
+
+    it("checks role for demo routes", async () => {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+
+      const middlewarePath = path.join(__dirname, "middleware.ts");
+      const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
+
+      // Per ACCESS-01: Check sessionClaims.metadata.role
+      expect(middlewareContent).toContain("sessionClaims");
+      expect(middlewareContent).toContain("metadata");
+      expect(middlewareContent).toContain("role");
+    });
+
+    it("redirects to root when role check fails", async () => {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+
+      const middlewarePath = path.join(__dirname, "middleware.ts");
+      const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
+
+      // Per D-01: Redirect to / with 307 status
+      expect(middlewareContent).toContain("new URL('/', request.url)");
+      expect(middlewareContent).toContain("NextResponse.redirect");
+    });
+
+    it("imports NextResponse from next/server", async () => {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+
+      const middlewarePath = path.join(__dirname, "middleware.ts");
+      const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
+
+      // NextResponse required for redirect
+      expect(middlewareContent).toContain("NextResponse");
+      expect(middlewareContent).toContain("from 'next/server'");
+    });
+  });
 });
