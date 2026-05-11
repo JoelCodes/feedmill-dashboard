@@ -22,7 +22,11 @@
   2. TypeScript provides compile-time type safety for role checks (no string literals)
   3. Middleware intercepts /demo/* routes and checks for demo role before allowing access
   4. All dashboard pages can wrap content with DashboardLayout eliminating layout duplication
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 25-01-PLAN.md — TypeScript role types and DashboardLayout component
+- [ ] 25-02-PLAN.md — Middleware role-based route protection (TDD)
 
 ### Phase 26: Route Restructuring and Migration
 **Goal**: Existing demo pages are accessible at /demo/* paths with navigation and redirects
@@ -62,7 +66,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 25. Foundation and Middleware Configuration | 0/? | Not started | - |
+| 25. Foundation and Middleware Configuration | 0/2 | Planning complete | - |
 | 26. Route Restructuring and Migration | 0/? | Not started | - |
 | 27. Role Assignment and Testing | 0/? | Not started | - |
 | 28. Client Component Security Audit | 0/? | Not started | - |
@@ -94,4 +98,4 @@ All phases use standard, well-documented patterns:
 **UI phases**: Phase 26 involves Coming Soon homepage creation and sidebar navigation
 
 ---
-*Last updated: 2026-05-10 after roadmap creation*
+*Last updated: 2026-05-11 after Phase 25 planning*
