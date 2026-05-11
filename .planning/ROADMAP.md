@@ -7,7 +7,7 @@
 ## Phases
 
 - [x] **Phase 25: Foundation and Middleware Configuration** - Establish role system infrastructure and layout components (completed 2026-05-11)
-- [ ] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with redirects
+- [ ] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with navigation
 - [ ] **Phase 27: Role Assignment and Testing** - Assign roles and verify end-to-end access control
 - [ ] **Phase 28: Client Component Security Audit** - Audit client components for security compliance
 
@@ -29,17 +29,21 @@ Plans:
 - [x] 25-02-PLAN.md — Middleware role-based route protection (TDD)
 
 ### Phase 26: Route Restructuring and Migration
-**Goal**: Existing demo pages are accessible at /demo/* paths with navigation and redirects
+**Goal**: Existing demo pages are accessible at /demo/* paths with navigation
 **Depends on**: Phase 25
 **Requirements**: ROUTE-01, ROUTE-02, NAV-01
 **Success Criteria** (what must be TRUE):
   1. Users can access orders, customers, and mill production pages at /demo/* paths
-  2. Users navigating to old paths (e.g., /orders) are redirected to /demo/* equivalents
+  2. Old paths (/orders, /customers, /mill-production) return 404 (clean break per D-01)
   3. Root homepage displays Coming Soon message with full dashboard layout
   4. Sidebar shows demo-specific navigation when on /demo/* routes
   5. Settings page remains accessible to all authenticated users at /settings
-**Plans**: TBD
-**UI hint**: yes
+**Plans:** 3 plans
+
+Plans:
+- [ ] 26-01-PLAN.md — Context-aware Sidebar navigation (TDD)
+- [ ] 26-02-PLAN.md — Coming Soon homepage and Header route titles
+- [ ] 26-03-PLAN.md — Migrate demo pages to /demo/* namespace
 
 ### Phase 27: Role Assignment and Testing
 **Goal**: Role-based access control is enforced and verified end-to-end
@@ -67,7 +71,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 25. Foundation and Middleware Configuration | 2/2 | Complete    | 2026-05-11 |
-| 26. Route Restructuring and Migration | 0/? | Not started | - |
+| 26. Route Restructuring and Migration | 0/3 | Planned | - |
 | 27. Role Assignment and Testing | 0/? | Not started | - |
 | 28. Client Component Security Audit | 0/? | Not started | - |
 
@@ -98,4 +102,4 @@ All phases use standard, well-documented patterns:
 **UI phases**: Phase 26 involves Coming Soon homepage creation and sidebar navigation
 
 ---
-*Last updated: 2026-05-11 after Phase 25 planning*
+*Last updated: 2026-05-11 after Phase 26 planning*
