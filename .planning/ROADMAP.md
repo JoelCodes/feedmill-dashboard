@@ -213,7 +213,10 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
+**Wave 1**
 - [ ] 24-01-PLAN.md — Configure Vercel environment variables and Clerk production domain
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 24-02-PLAN.md — Create production smoke tests and GitHub Actions deployment validation
 
 ## Progress
