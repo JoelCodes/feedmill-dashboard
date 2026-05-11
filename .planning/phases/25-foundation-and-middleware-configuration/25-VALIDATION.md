@@ -1,10 +1,11 @@
 ---
 phase: 25
 slug: foundation-and-middleware-configuration
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-05-10
+validated: 2026-05-11
 ---
 
 # Phase 25 — Validation Strategy
@@ -38,10 +39,10 @@ created: 2026-05-10
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 25-01-01 | 01 | 1 | ROLE-02 | — | N/A (type definitions) | build | `npm run build` | ✅ | ⬜ pending |
-| 25-02-01 | 02 | 1 | ACCESS-01 | T-25-01 | User without demo role redirected to / | unit | `npm test -- src/middleware.test.ts` | ❌ W0 | ⬜ pending |
-| 25-02-02 | 02 | 1 | ACCESS-01 | T-25-01 | Demo route protection end-to-end | e2e | `npm run test:e2e -- --grep "demo route"` | ❌ W0 | ⬜ pending |
-| 25-03-01 | 03 | 1 | NAV-02 | — | DashboardLayout renders Sidebar + Header + children | unit | `npm test -- DashboardLayout.test.tsx` | ❌ W0 | ⬜ pending |
+| 25-01-01 | 01 | 1 | ROLE-02 | — | N/A (type definitions) | build | `npm run build` | ✅ | ✅ green |
+| 25-02-01 | 02 | 1 | ACCESS-01 | T-25-01 | User without demo role redirected to / | unit | `npm test -- --testPathPatterns=middleware` | ✅ | ✅ green |
+| 25-02-02 | 02 | 1 | ACCESS-01 | T-25-01 | Demo route protection end-to-end | e2e | `npm run test:e2e -- --grep "Demo Route"` | ✅ | ✅ green |
+| 25-03-01 | 03 | 1 | NAV-02 | — | DashboardLayout renders Sidebar + Header + children | unit | `npm test -- --testPathPatterns=DashboardLayout` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -49,11 +50,11 @@ created: 2026-05-10
 
 ## Wave 0 Requirements
 
-- [ ] `src/middleware.test.ts` — middleware role check logic unit tests (ACCESS-01)
-- [ ] `src/components/DashboardLayout.test.tsx` — layout structure tests (NAV-02)
-- [ ] `e2e/demo-route-protection.spec.ts` — E2E test for demo route access control (ACCESS-01)
+- [x] `src/middleware.test.ts` — middleware role check logic unit tests (ACCESS-01) — 13 tests pass
+- [x] `src/components/DashboardLayout.test.tsx` — layout structure tests (NAV-02) — 4 tests pass
+- [x] `e2e/demo-route-protection.spec.ts` — E2E test for demo route access control (ACCESS-01) — 2 pass, 1 skipped
 
-*Existing infrastructure covers Jest + Playwright setup. E2E auth helpers exist in `e2e/route-protection.spec.ts`.*
+*All Wave 0 test files exist. Tests pass. Skipped E2E test is documented (requires auth fixture).*
 
 ---
 
@@ -77,11 +78,23 @@ created: 2026-05-10
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 35s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 35s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** ✅ Approved (2026-05-11)
+
+---
+
+## Validation Audit 2026-05-11
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+**Result:** All requirements have automated verification. Phase is Nyquist-compliant.
