@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
   },
   projects: [
@@ -16,11 +16,23 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'production-smoke',
+      testMatch: '**/production-smoke.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
+      },
+      retries: 0,
+      timeout: 30000,
+    },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000/sign-in',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes for dev server startup
-  },
+  webServer: process.env.PLAYWRIGHT_BASE_URL
+    ? undefined
+    : {
+        command: 'npm run dev',
+        url: 'http://localhost:3000/sign-in',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120 * 1000,
+      },
 });
