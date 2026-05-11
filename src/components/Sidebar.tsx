@@ -31,6 +31,16 @@ function isActive(href: string, pathname: string): boolean {
   return pathname.startsWith(href);
 }
 
+/**
+ * Context-aware sidebar navigation component.
+ *
+ * Displays different navigation items based on the current route:
+ * - Demo routes (/demo/*): Shows Orders, Customers, and Mill Production links
+ * - Production routes: Shows Coming Soon placeholder
+ * - Settings link is visible in both contexts
+ *
+ * Section label dynamically displays "DEMO" or "PRODUCTION" based on context.
+ */
 export default function Sidebar() {
   const pathname = usePathname();
   const isDemoContext = pathname.startsWith('/demo');
