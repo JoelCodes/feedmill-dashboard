@@ -4,6 +4,13 @@ jest.mock("@clerk/nextjs/server", () => ({
   createRouteMatcher: () => () => false,
 }));
 
+// Mock next/server to avoid Request global requirement in test environment
+jest.mock("next/server", () => ({
+  NextResponse: {
+    redirect: jest.fn(),
+  },
+}));
+
 import { config } from "./middleware";
 
 // Note: We cannot directly test the middleware function behavior without a full Next.js runtime

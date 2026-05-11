@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from 'next/server';
 
 /**
  * Routes that are publicly accessible without authentication.
@@ -9,10 +10,27 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
 ]);
 
+/**
+ * Routes that require demo role (ACCESS-01).
+ * Users without demo role are redirected to root.
+ */
+const isDemoRoute = createRouteMatcher(['/demo(.*)']);
+
 export default clerkMiddleware(async (auth, request) => {
   // Protect all routes except public ones
   if (!isPublicRoute(request)) {
     await auth.protect();
+  }
+
+  // Demo route protection per ACCESS-01
+  // Users without demo role are redirected to root (D-01: 307 status)
+  // No logging per D-02
+  if (isDemoRoute(request)) {
+    const { sessionClaims } = await auth();
+    if (sessionClaims?.metadata?.role !== 'demo') {
+      const url = new URL('/', request.url);
+      return NextResponse.redirect(url);
+    }
   }
 });
 
