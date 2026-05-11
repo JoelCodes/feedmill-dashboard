@@ -10,7 +10,7 @@ Requirements for authentication layer. Each maps to roadmap phases.
 ### Authentication
 
 - [x] **AUTH-01**: User can sign in with email and password
-- [ ] **AUTH-02**: User can sign out from any page
+- [x] **AUTH-02**: User can sign out from any page
 - [x] **AUTH-03**: User session persists across browser refresh
 
 ### Route Protection
@@ -21,9 +21,9 @@ Requirements for authentication layer. Each maps to roadmap phases.
 
 ### User Experience
 
-- [ ] **UX-01**: Header displays signed-in user's name or email
-- [ ] **UX-02**: Header includes sign-out action
-- [ ] **UX-03**: Auth UI respects current theme (light/dark)
+- [x] **UX-01**: Header displays signed-in user's name or email
+- [x] **UX-02**: Header includes sign-out action
+- [x] **UX-03**: Auth UI respects current theme (light/dark)
 
 ## Future Requirements
 
@@ -65,14 +65,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | AUTH-01 | Phase 20 | Complete |
-| AUTH-02 | Phase 23 | Pending |
+| AUTH-02 | Phase 23 | Complete |
 | AUTH-03 | Phase 20 | Complete |
 | PROT-01 | Phase 21 | Complete |
 | PROT-02 | Phase 21 | Complete |
 | PROT-03 | Phase 20 | Complete |
-| UX-01 | Phase 23 | Pending |
-| UX-02 | Phase 23 | Pending |
-| UX-03 | Phase 23 | Pending |
+| UX-01 | Phase 23 | Complete |
+| UX-02 | Phase 23 | Complete |
+| UX-03 | Phase 23 | Complete |
 
 **Coverage:**
 - v1.4 requirements: 9 total
@@ -88,4 +88,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-09*
-*Last updated: 2026-05-10 after Phase 21 completion*
+*Last updated: 2026-05-10 after Phase 23 completion — all 9 requirements satisfied*
