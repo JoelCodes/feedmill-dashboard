@@ -6,7 +6,7 @@
 - ✅ **v1.1 Mill Production Dashboard** - Phases 6-9 (shipped 2026-04-29)
 - ✅ **v1.2 Customers Page** - Phases 10-15 (shipped 2026-05-06)
 - ✅ **v1.3 Design Hardening** - Phases 16-19 (shipped 2026-05-09)
-- 🚧 **v1.4 Auth with Clerk** - Phases 20-24 (in progress)
+- ✅ **v1.4 Auth with Clerk** - Phases 20-24 (shipped 2026-05-10)
 
 ## Phases
 
@@ -124,113 +124,37 @@ Plans:
 
 </details>
 
-### 🚧 v1.4 Auth with Clerk (In Progress)
+<details>
+<summary>✅ v1.4 Auth with Clerk (Phases 20-24) - SHIPPED 2026-05-10</summary>
 
-**Milestone Goal:** Add user authentication so only logged-in users can access the dashboard.
+- [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (4 plans)
+- [x] **Phase 21: Route Protection** - Playwright E2E tests verify route protection (1 plan)
+- [x] **Phase 22: Auth Page Design** - Design header user area in Pencil.dev (1 plan)
+- [x] **Phase 23: User Experience Integration** - Add user display to header with sign-out action (1 plan)
+- [x] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration (2 plans)
 
-- [x] **Phase 20: Clerk Foundation Setup** - Install SDK, configure middleware, create sign-in page (completed 2026-05-10)
-- [x] **Phase 21: Route Protection** - Playwright E2E tests verify route protection (completed 2026-05-10)
-- [x] **Phase 22: Auth Page Design** - Design header user area in Pencil.dev (sign-in page already implemented) (completed 2026-05-10)
-- [x] **Phase 23: User Experience Integration** - Add user display to header with sign-out action (completed 2026-05-10)
-- [x] **Phase 24: Production Deployment Validation** - Verify production keys, domain configuration, live deployment (completed 2026-05-11)
+**Key deliverables:**
+- Clerk SDK with 79 CSS variable references for theme auto-switching
+- Playwright E2E testing infrastructure (5 parameterized tests)
+- UserButton in header with sign-out action and loading skeleton
+- Themed sign-in page with CGM Dashboard branding
+- Production deployment on Vercel with Clerk production keys
 
-## Phase Details
+**Archive:** [v1.4-ROADMAP.md](./milestones/v1.4-ROADMAP.md)
 
-### Phase 20: Clerk Foundation Setup
-**Goal**: Clerk SDK installed and configured with functional sign-in flow
-**Depends on**: Nothing (first phase of v1.4)
-**Requirements**: AUTH-01, AUTH-03, PROT-03
-**Success Criteria** (what must be TRUE):
-  1. User can log in with email and password through sign-in page
-  2. User session persists across browser refresh (stays logged in)
-  3. Sign-in page is accessible without authentication
-  4. No middleware detection errors in console during auth operations
-**Plans**: 4 plans
-
-Plans:
-- [x] 20-01-PLAN.md — Install Clerk SDK, configure env vars, add ClerkProvider, create middleware
-- [x] 20-02-PLAN.md — Create Clerk theme config and sign-in page with branding
-- [x] 20-03-PLAN.md — [Gap closure] Add missing Clerk URL environment variables
-- [x] 20-04-PLAN.md — [Gap closure] Add ThemeToggle to sign-in page
-
-### Phase 21: Route Protection
-**Goal**: All dashboard pages require authentication, unauthenticated users redirected to sign-in
-**Depends on**: Phase 20
-**Requirements**: PROT-01, PROT-02
-**Success Criteria** (what must be TRUE):
-  1. Unauthenticated user accessing /orders is redirected to sign-in page
-  2. Unauthenticated user accessing /customers is redirected to sign-in page
-  3. Unauthenticated user accessing /mill-production is redirected to sign-in page
-  4. Unauthenticated user accessing /settings is redirected to sign-in page
-  5. After sign-in, user is redirected back to originally requested page
-**Plans**: 1 plan
-
-Plans:
-- [x] 21-01-PLAN.md — Set up Playwright E2E testing and verify route protection with automated tests
-
-### Phase 22: Auth Page Design
-**Goal**: Header user area designed in Pencil.dev files
-**Depends on**: Phase 21
-**Requirements**: None (design phase)
-**Success Criteria** (what must be TRUE):
-  1. ~~Sign-in page layout designed showing email/password form~~ (SKIP per D-09 - already implemented)
-  2. Header user area designed showing avatar, name, and sign-out button
-  3. Light and dark theme variants designed for auth components
-  4. Design follows existing component library patterns and tokens
-  5. Design file committed and ready for implementation reference
-**Plans**: 1 plan
-**UI hint**: yes
-
-Plans:
-- [x] 22-01-PLAN.md — Design header user area component with 3 states and 2 theme variants
-
-### Phase 23: User Experience Integration
-**Goal**: Header displays authenticated user info with sign-out action and theme support
-**Depends on**: Phase 22
-**Requirements**: UX-01, UX-02, UX-03, AUTH-02
-**Success Criteria** (what must be TRUE):
-  1. Header displays signed-in user's name or email in all authenticated pages
-  2. Header includes accessible sign-out button that logs user out
-  3. Sign-out redirects user to sign-in page
-  4. Auth UI components (sign-in, sign-up, user button) respect current theme (light/dark)
-  5. No hydration errors or flash of unauthenticated content on page load
-**Plans**: 1 plan
-**UI hint**: yes
-
-Plans:
-- [x] 23-01-PLAN.md — Integrate UserButton into header with ClerkLoaded wrapper and sign-out action
-
-### Phase 24: Production Deployment Validation
-**Goal**: Authentication works in production with live Clerk keys and domain verification
-**Depends on**: Phase 23
-**Requirements**: None (validation phase)
-**Success Criteria** (what must be TRUE):
-  1. Production deployment uses live Clerk keys (pk_live_, sk_live_)
-  2. Production domain is associated with Clerk production instance
-  3. Test user can successfully sign in on production URL
-  4. Clerk dashboard shows authentication events from production domain
-  5. No "Invalid publishable key" errors in production logs
-**Plans**: 2 plans
-
-Plans:
-**Wave 1**
-- [x] 24-01-PLAN.md — Configure Vercel environment variables and Clerk production domain
-
-**Wave 2** *(blocked on Wave 1 completion)*
-- [x] 24-02-PLAN.md — Create production smoke tests and GitHub Actions deployment validation
+</details>
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
+| Milestone | Phases | Plans | Status | Shipped |
+|-----------|--------|-------|--------|---------|
+| v1.0 MVP | 0-5 | 12 | Complete | 2026-04-29 |
+| v1.1 Mill Production | 6-9 | 5 | Complete | 2026-04-29 |
+| v1.2 Customers Page | 10-15 | 15 | Complete | 2026-05-06 |
+| v1.3 Design Hardening | 16-19 | 27 | Complete | 2026-05-09 |
+| v1.4 Auth with Clerk | 20-24 | 9 | Complete | 2026-05-10 |
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 20. Clerk Foundation Setup | 4/4 | Complete    | 2026-05-10 |
-| 21. Route Protection | 1/1 | Complete | 2026-05-10 |
-| 22. Auth Page Design | 1/1 | Complete   | 2026-05-10 |
-| 23. User Experience Integration | 1/1 | Complete | 2026-05-10 |
-| 24. Production Deployment Validation | 2/2 | Complete    | 2026-05-11 |
+**Total:** 5 milestones, 24 phases, 68 plans
 
 ---
 *Roadmap created: 2026-03-11*
@@ -238,4 +162,4 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 *v1.1 shipped: 2026-04-29*
 *v1.2 shipped: 2026-05-06*
 *v1.3 shipped: 2026-05-09*
-*v1.4 roadmap created: 2026-05-09*
+*v1.4 shipped: 2026-05-10*

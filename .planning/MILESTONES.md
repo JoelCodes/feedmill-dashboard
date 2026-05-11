@@ -1,5 +1,25 @@
 # Milestones
 
+## v1.4 Auth with Clerk (Shipped: 2026-05-10)
+
+**Phases completed:** 5 phases (20-24), 9 plans
+**Tests:** 304 passing + 5 E2E tests | **Requirements:** 9/9 satisfied
+**Timeline:** 2 days (2026-05-09 → 2026-05-10)
+
+**Key accomplishments:**
+
+- Clerk SDK integration with 79 CSS variable references for automatic light/dark theme switching
+- Playwright E2E testing infrastructure with 5 parameterized route protection tests
+- Header UserButton displaying user avatar/name with sign-out action and loading skeleton
+- Themed sign-in page with CGM Dashboard branding and ThemeToggle
+- Production deployment with Vercel/Clerk configuration (Clerk 2FA blocks full E2E automation)
+
+**Deferred items at close:** 1 (production E2E automation requires custom domain to disable Clerk 2FA)
+
+**Archive:** [v1.4-ROADMAP.md](./milestones/v1.4-ROADMAP.md), [v1.4-REQUIREMENTS.md](./milestones/v1.4-REQUIREMENTS.md), [v1.4-MILESTONE-AUDIT.md](./milestones/v1.4-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.3 Design Hardening (Shipped: 2026-05-09)
 
 **Phases completed:** 4 phases (16-19), 27 plans

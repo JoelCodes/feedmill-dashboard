@@ -88,6 +88,49 @@
 
 ---
 
+## Milestone: v1.4 — Auth with Clerk
+
+**Shipped:** 2026-05-10
+**Phases:** 5 | **Plans:** 9 | **Timeline:** 2 days
+
+### What Was Built
+- Clerk SDK integration with ClerkProvider and clerkMiddleware
+- Themed sign-in page with 79 CSS variable mappings for design token integration
+- Playwright E2E testing infrastructure with 5 parameterized route protection tests
+- UserButton in header with sign-out action and loading skeleton
+- Production deployment on Vercel with Clerk production keys
+
+### What Worked
+- **CSS variable references for theme auto-switching:** Clerk appearance API using `var(--token)` means light/dark theme works without manual sync
+- **Parameterized E2E tests:** Single test block covers all 4 protected routes efficiently
+- **ClerkLoading + ClerkLoaded pattern:** Clean loading state handling without flash of unauthenticated content
+- **Gap closure plans:** 20-03 and 20-04 caught and fixed env var and ThemeToggle issues before UAT
+- **Milestone audit before completion:** Surfaced documentation debt early, allowing cleanup
+
+### What Was Inefficient
+- **VERIFICATION.md not generated for phases 21-24:** Functional evidence existed in tests/summaries but formal reports skipped
+- **Clerk API documentation drift:** Research documented `fallback` prop on ClerkLoaded and `afterSignOutUrl` on UserButton — neither worked in v7.3.3
+- **Production E2E blocked:** Clerk 2FA on production instance cannot be disabled without custom domain — infrastructure ready but untestable
+
+### Patterns Established
+- `clerkAppearance` config with 79 CSS variable references for comprehensive theme integration
+- `ClerkLoading` + `ClerkLoaded` sibling pattern (not nested fallback)
+- `afterSignOutUrl` on ClerkProvider (not UserButton) for sign-out redirect
+- Playwright webServer health check on public route (/sign-in) instead of root
+
+### Key Lessons
+1. **Verify API against installed version:** Research docs don't always match installed package — test props before planning
+2. **E2E tests need auth bypass strategy:** Production 2FA blocks automated testing; plan for custom domain or test instance
+3. **Documentation debt is acceptable:** Missing VERIFICATION.md files don't block functional completion when test evidence exists
+4. **Gap closure plans work:** Catching issues in UAT and creating targeted fix plans is efficient
+
+### Cost Observations
+- Fast milestone: 2 days for 5 phases
+- Clerk integration mostly straightforward — SDK handles complexity
+- E2E test setup (~10 min) provides ongoing regression protection
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -96,6 +139,9 @@
 |-----------|--------|-------|------------|
 | v1.0 | 5 | 12 | Established Design → Infra → Build pattern |
 | v1.1 | 4 | 5 | Added TDD, design tokens, shared component extraction |
+| v1.2 | 6 | 15 | Customer management system, activity timeline |
+| v1.3 | 4 | 27 | Design system foundation, CVA components, WCAG compliance |
+| v1.4 | 5 | 9 | Auth integration, E2E testing, production deployment |
 
 ### Cumulative Quality
 
@@ -103,6 +149,9 @@
 |-----------|-------|----------|-------------------|
 | v1.0 | 0 | 0% | useDebounce, useLocalStorage hooks |
 | v1.1 | 11 | FilterPill 100% | FilterPill component, Jest infrastructure |
+| v1.2 | 104 | Services, components | Mock data services, timeline component |
+| v1.3 | 304 | CVA components | Design system, jest-axe, WCAG compliance |
+| v1.4 | 304 + 5 E2E | Auth, routes | Clerk SDK, Playwright infrastructure |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -111,3 +160,6 @@
 3. Single source of truth for state (STATUS_CONFIG, localStorage-backed) prevents drift
 4. TDD for shared components ensures clean extraction and documents behavior
 5. Design tokens should be established early — retrofitting is more work
+6. CSS variable references enable theme auto-switching without manual sync
+7. Gap closure plans catch issues efficiently without derailing main execution
+8. Milestone audits before completion surface documentation debt early

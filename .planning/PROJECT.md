@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators. The v1.3 release establishes a unified design system with 200+ semantic tokens, a CVA-based component library, and WCAG 2.1 AA accessibility compliance.
+A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators. The v1.3 release establishes a unified design system with 200+ semantic tokens, a CVA-based component library, and WCAG 2.1 AA accessibility compliance. The v1.4 release adds user authentication with Clerk, protecting all dashboard routes and displaying user info in the header.
 
 ## Core Value
 
@@ -10,12 +10,16 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ## Current State
 
-**Shipped:** v1.3 Design Hardening (2026-05-09)
-**Codebase:** ~7,000 LOC TypeScript
-**Tech stack:** Next.js 15, React 19, Tailwind CSS 4
-**Tests:** 304 passing | **ESLint:** 0 errors
+**Shipped:** v1.4 Auth with Clerk (2026-05-10)
+**Codebase:** ~7,500 LOC TypeScript
+**Tech stack:** Next.js 15, React 19, Tailwind CSS 4, Clerk v7
+**Tests:** 304 unit + 5 E2E | **ESLint:** 0 errors
 
 **What's working:**
+- **User authentication** with Clerk SDK (email/password sign-in, session persistence)
+- **Route protection** via middleware (all dashboard routes require authentication)
+- **UserButton in header** displaying avatar/name with sign-out action
+- **Themed sign-in page** with CGM Dashboard branding and ThemeToggle
 - Orders table with multi-status filtering, search, keyboard navigation
 - Order details panel with timeline and change history
 - Functional sidebar navigation with auto-detecting active state
@@ -27,25 +31,25 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Activity timeline merging orders, deliveries, bin alerts with expand/collapse
 - Bin visualization with vertical tank gauges and threshold coloring (green/yellow/red)
 - 18 mock customers with stats aggregation, 38 mock bins with fill percentages
-- **Design system with 200+ semantic tokens** (colors, spacing, typography, shadows)
-- **CVA-based component library** (Button, Card, Input, Select, Textarea, StatusBadge, FilterPill, Gauge, Timeline, ThemeToggle)
-- **Light/dark theme support** via next-themes with flash prevention
-- **WCAG 2.1 AA accessibility compliance** with jest-axe testing and VoiceOver verification
-- **Comprehensive documentation** (148 token definitions, 10 component API guides)
+- Design system with 200+ semantic tokens (colors, spacing, typography, shadows)
+- CVA-based component library (Button, Card, Input, Select, Textarea, StatusBadge, FilterPill, Gauge, Timeline, ThemeToggle)
+- Light/dark theme support via next-themes with flash prevention
+- WCAG 2.1 AA accessibility compliance with jest-axe testing and VoiceOver verification
+- Comprehensive documentation (148 token definitions, 10 component API guides)
 
 **Known gaps (deferred):**
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
+- Production E2E automation blocked by Clerk 2FA (custom domain needed)
 
-## Current Milestone: v1.4 Auth with Clerk
+## Next Milestone Goals
 
-**Goal:** Add user authentication so only logged-in users can access the dashboard.
-
-**Target features:**
-- Clerk integration for authentication
-- Email + password sign-in/sign-up
-- All pages protected (redirect to sign-in if unauthenticated)
-- User display in header (name/avatar + sign-out)
+**v1.5 candidates (not yet scoped):**
+- Custom domain configuration (enables Clerk 2FA bypass for E2E)
+- Sign-up flow with email verification
+- Password reset via email link
+- Social login (Google, Microsoft)
+- Role-based access control
 
 ## Requirements
 
@@ -112,11 +116,20 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - ✓ WCAG 2.1 AA accessibility compliance verified — v1.3
 - ✓ Component library .pen file as single source of truth — v1.3
 
+**v1.4:**
+- ✓ Clerk SDK integration with ClerkProvider and middleware — v1.4
+- ✓ Themed sign-in page with CSS variable mapping (79 references) — v1.4
+- ✓ Route protection for all dashboard pages via clerkMiddleware — v1.4
+- ✓ Playwright E2E tests verifying unauthenticated redirect — v1.4
+- ✓ UserButton in header with sign-out action and loading skeleton — v1.4
+- ✓ Auth UI respects light/dark theme via CSS variables — v1.4
+- ✓ Production deployment with Vercel/Clerk configuration — v1.4
+
 ### Active
 
-<!-- v1.4 Auth with Clerk requirements -->
+<!-- No active requirements - milestone complete -->
 
-(See REQUIREMENTS.md for full v1.4 requirement definitions)
+(Next milestone requirements TBD)
 
 ### Deferred
 
@@ -132,7 +145,7 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Mobile app — web-first, responsive later
 - Real-time push updates — polling or manual refresh sufficient for v1
 - Multi-tenant / multi-mill — single mill focus initially
-- User authentication — **v1.4 scope** (moved from out of scope)
+- User authentication — shipped in v1.4
 - Database integration — mock data until explicitly requested
 - Inline editing of orders — dedicated forms provide better UX
 - Advanced query builder — simple filters cover 90% of use cases
@@ -193,6 +206,10 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 | next-themes for dark mode | Handles SSR flash prevention, system preference sync, localStorage persistence | ✓ Good |
 | jsx-a11y rules approach over plugin | Avoids conflict with eslint-config-next, enables granular rule control | ✓ Good |
 | jest-axe for automated a11y testing | Catches WCAG violations during development, enforces compliance | ✓ Good |
+| Clerk for authentication | Prebuilt components reduce security risk, CSS variables for theme integration | ✓ Good |
+| ClerkLoading + ClerkLoaded pattern | Handles loading states without flash of unauthenticated content | ✓ Good |
+| Playwright for E2E testing | Parameterized tests for route protection, webServer integration | ✓ Good |
+| afterSignOutUrl on ClerkProvider | Centralizes redirect config (UserButton prop not supported in v7) | ✓ Good |
 
 ## Evolution
 
@@ -212,4 +229,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-09 after v1.4 milestone started*
+*Last updated: 2026-05-10 after v1.4 milestone shipped*
