@@ -194,8 +194,11 @@ Plans:
   3. Sign-out redirects user to sign-in page
   4. Auth UI components (sign-in, sign-up, user button) respect current theme (light/dark)
   5. No hydration errors or flash of unauthenticated content on page load
-**Plans**: TBD
+**Plans**: 1 plan
 **UI hint**: yes
+
+Plans:
+- [ ] 23-01-PLAN.md — Integrate UserButton into header with ClerkLoaded wrapper and sign-out action
 
 ### Phase 24: Production Deployment Validation
 **Goal**: Authentication works in production with live Clerk keys and domain verification
@@ -219,7 +222,7 @@ Phases execute in numeric order: 20 → 21 → 22 → 23 → 24
 | 20. Clerk Foundation Setup | 4/4 | Complete    | 2026-05-10 |
 | 21. Route Protection | 1/1 | Complete | 2026-05-10 |
 | 22. Auth Page Design | 1/1 | Complete   | 2026-05-10 |
-| 23. User Experience Integration | 0/TBD | Not started | - |
+| 23. User Experience Integration | 0/1 | Planned | - |
 | 24. Production Deployment Validation | 0/TBD | Not started | - |
 
 ---
