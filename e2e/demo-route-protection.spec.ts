@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+// Authenticated demo-route protection scenarios per D-11 (#1, #2, #3). Runs under demo-user and norole-user Playwright projects (storageState supplied at project level). Unauthenticated regression (D-11 #4) lives in demo-route-protection-unauth.spec.ts.
+
 /**
  * Demo Route Protection E2E Tests
  *
@@ -13,19 +15,6 @@ import { test, expect } from '@playwright/test';
 const demoRoutes = ['/demo/orders', '/demo/customers'] as const;
 
 test.describe('Demo Route Protection', () => {
-  test.describe('PROT-03: Unauthenticated user accessing /demo/* redirects to sign-in', () => {
-    for (const route of demoRoutes) {
-      test(`unauthenticated user accessing ${route} redirects to sign-in`, async ({ page }) => {
-        // Navigate to demo route without authentication
-        await page.goto(route);
-
-        // Verify redirect to sign-in page (regex handles query params)
-        // Clerk middleware protects all non-public routes first
-        await expect(page).toHaveURL(/\/sign-in/);
-      });
-    }
-  });
-
   test.describe('ACCESS-01: Authenticated user without demo role redirected to root', () => {
     // Note: This test documents expected behavior but requires Playwright auth setup
     // to run green. The middleware implementation is verified by unit tests.
