@@ -156,7 +156,7 @@ export default function CustomerOrdersTab({ orders }: CustomerOrdersTabProps) {
           filteredOrders.map((order, index) => (
             <div key={order.id}>
               <Link
-                href={`/orders?selected=${order.id}`}
+                href={`/demo/orders?selected=${order.id}`}
                 className={`flex cursor-pointer items-center py-3 transition-colors hover:bg-gray-50`}
               >
                 <div className="flex w-[var(--table-col-lg)] items-center gap-2">
