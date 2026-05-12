@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
-status: executing
-last_updated: "2026-05-12T18:43:09.833Z"
+status: completed
+last_updated: "2026-05-12T18:48:47.485Z"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -26,17 +26,18 @@ progress:
 
 ## Current Position
 
-Phase: 29 (Close gap: ROUTE-01 cleanup — Timeline.tsx href, Header.tsx dead branches, stale E2E specs, settings → DashboardLayout) — EXECUTED, PENDING VERIFICATION
+Phase: 29 — COMPLETE
 Plan: 6 of 6 (wave 1 complete)
 **Phase:** 29
 **Plan:** All 6 plans complete (29-01 → 29-06)
-**Status:** Wave 1 merged to main — verifier pending
+**Status:** Phase 29 complete
 **Resume file:** `.planning/phases/29-close-gap-route-01-cleanup-timeline-tsx-href-header-tsx-dead/29-VERIFICATION.md`
 
 **Next actions:**
 
-1. Run gsd-verifier on Phase 29 (orchestrator-managed)
-2. Re-run `/gsd-audit-milestone v1.5` to confirm `status: gaps_resolved`
+1. Re-run `/gsd-audit-milestone v1.5` to confirm `status: gaps_resolved`
+2. Optionally run `/gsd-verify-work 29` for conversational UAT against the cleanup outcomes
+3. `/gsd-complete-milestone v1.5` to archive once audit passes
 
 ## Performance Metrics
 
