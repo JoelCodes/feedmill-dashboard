@@ -65,7 +65,14 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Producing")).toBeInTheDocument();
+      // Disambiguate FilterPill from per-row StatusBadge: both render the
+      // same status label ("Producing"), so getByText("Producing") would
+      // multi-match once orders render synchronously from the prop. The
+      // FilterPill carries a unique aria-label `Filter by <label>, N orders`
+      // which uniquely identifies the pill button.
+      expect(
+        screen.getByRole("button", { name: /Filter by Producing/ })
+      ).toBeInTheDocument();
 
       // Search for hardcoded hex pattern in any element's class
       const allElements = container.querySelectorAll("*");
@@ -91,7 +98,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Ready")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Ready/ })
+      ).toBeInTheDocument();
 
       const allElements = container.querySelectorAll("*");
       let hasHardcodedHex = false;
@@ -116,7 +125,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Transit")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Transit/ })
+      ).toBeInTheDocument();
 
       const allElements = container.querySelectorAll("*");
       let hasHardcodedHex = false;
@@ -141,7 +152,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Complete")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Complete/ })
+      ).toBeInTheDocument();
 
       const allElements = container.querySelectorAll("*");
       let hasHardcodedHex = false;
@@ -166,7 +179,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Pending")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Pending/ })
+      ).toBeInTheDocument();
 
       const hardcodedBg = container.querySelectorAll(".bg-gray-100");
       expect(hardcodedBg.length).toBe(0);
@@ -181,7 +196,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Pending")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Pending/ })
+      ).toBeInTheDocument();
 
       const hardcodedText = container.querySelectorAll(".text-gray-600");
       expect(hardcodedText.length).toBe(0);
@@ -198,13 +215,14 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      // All status filter pills should render
-      expect(screen.getByText("Complete")).toBeInTheDocument();
-      expect(screen.getByText("Transit")).toBeInTheDocument();
-      expect(screen.getByText("Producing")).toBeInTheDocument();
-      expect(screen.getByText("Ready")).toBeInTheDocument();
-      expect(screen.getByText("Pending")).toBeInTheDocument();
-      expect(screen.getByText("Has Changes")).toBeInTheDocument();
+      // Filter pills are uniquely reachable via aria-label even when row
+      // StatusBadges echo the same status text.
+      expect(screen.getByRole("button", { name: /Filter by Complete/ })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Filter by Transit/ })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Filter by Producing/ })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Filter by Ready/ })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Filter by Pending/ })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Filter by Has Changes/ })).toBeInTheDocument();
     });
 
     it("FilterPill uses token-based countBg with var(--status-mixing-bg-22)", () => {
@@ -216,7 +234,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Producing")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Producing/ })
+      ).toBeInTheDocument();
 
       // Check that token-based class is present somewhere in the rendered output
       // Verify the component uses token-based config classes
@@ -232,7 +252,9 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
         />
       );
 
-      expect(screen.getByText("Complete")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Filter by Complete/ })
+      ).toBeInTheDocument();
     });
   });
 
@@ -279,8 +301,8 @@ describe("OrdersTable - MIG-01 Design System Migration", () => {
 
       expect(screen.getByText("Test Farm")).toBeInTheDocument();
 
-      const tokenHover = container.querySelectorAll(".hover\\:bg-\\[var\\(--bg-page\\)\\]");
-      expect(tokenHover.length).toBeGreaterThan(0);
+      const hardcodedHover = container.querySelectorAll(".hover\\:bg-\\[var\\(--bg-page\\)\\]");
+      expect(hardcodedHover.length).toBeGreaterThan(0);
     });
   });
 });

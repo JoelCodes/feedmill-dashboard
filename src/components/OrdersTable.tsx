@@ -5,7 +5,6 @@ import { CheckCircle, Package, Search } from "lucide-react";
 import StatusBadge from "@/components/ui/StatusBadge";
 import FilterPill, { FilterPillColorConfig } from "@/components/ui/FilterPill";
 import { OrderStatus, Order } from "@/types/order";
-import { getOrders } from "@/services/orders";
 import { formatDeliveryDate } from "@/utils/formatDate";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -43,13 +42,13 @@ const STATUS_PILL_CONFIG: Record<OrderStatus, FilterPillColorConfig> = {
 };
 
 interface OrdersTableProps {
+  orders: Order[];
   selectedOrderId: string | null;
   onSelectOrder: (id: string) => void;
   externalSearchTerm?: string;
 }
 
-export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSearchTerm }: OrdersTableProps) {
-  const [orders, setOrders] = useState<Order[]>([]);
+export default function OrdersTable({ orders, selectedOrderId, onSelectOrder, externalSearchTerm }: OrdersTableProps) {
   const [activeStatuses, setActiveStatuses] = useState<Set<OrderStatus>>(new Set());
   const [hasChangesFilter, setHasChangesFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,16 +59,6 @@ export default function OrdersTable({ selectedOrderId, onSelectOrder, externalSe
     externalSearchTerm || debouncedSearch,
     [externalSearchTerm, debouncedSearch]
   );
-
-  useEffect(() => {
-    getOrders()
-      .then(setOrders)
-      .catch((error) => {
-        if (process.env.NODE_ENV !== 'production') {
-          console.error('Failed to load orders:', error);
-        }
-      });
-  }, []);
 
   const toggleStatus = (status: OrderStatus) => {
     setActiveStatuses(prev => {
