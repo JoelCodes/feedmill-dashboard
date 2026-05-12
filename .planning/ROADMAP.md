@@ -79,7 +79,22 @@ Plans:
   1. No sensitive data fetched in client components before server-side role verification
   2. Protect component usage documented with clear guidelines on client vs server checks
   3. All role-dependent data loading happens in Server Components with proper guards
-**Plans**: TBD
+**Plans:** 6 plans
+
+Plans:
+**Wave 0**
+- [ ] 28-01-PLAN.md — Reusable Clerk auth + next/navigation test fixture (TDD)
+
+**Wave 1** *(blocked on Wave 0)*
+- [ ] 28-02-PLAN.md — Add requireRole guard to customers/[id]/page.tsx (TDD, minimal-delta canonical-pattern proof)
+
+**Wave 2** *(blocked on 28-02; parallelizable — file-disjoint)*
+- [ ] 28-03-PLAN.md — Refactor /demo/orders to async RSC + OrdersTable accepts orders prop
+- [ ] 28-04-PLAN.md — Refactor /demo/customers to async RSC + extract CustomersList client component
+- [ ] 28-05-PLAN.md — Refactor /demo/mill-production to async RSC + extract MillProductionUI client component
+
+**Wave 3** *(blocked on Wave 2)*
+- [ ] 28-06-PLAN.md — docs/security-patterns.md (audit findings table + guidelines, all 6 D-09 sections)
 
 ## Progress
 
@@ -88,7 +103,7 @@ Plans:
 | 25. Foundation and Middleware Configuration | 2/2 | Complete    | 2026-05-11 |
 | 26. Route Restructuring and Migration | 3/3 | Complete    | 2026-05-11 |
 | 27. Role Assignment and Testing | 5/5 | Complete   | 2026-05-12 |
-| 28. Client Component Security Audit | 0/? | Not started | - |
+| 28. Client Component Security Audit | 0/6 | Not started | - |
 
 ## Research Flags
 
