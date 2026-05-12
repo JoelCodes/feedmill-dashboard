@@ -52,9 +52,24 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Production E2E automation blocked by Clerk 2FA (custom domain needed)
 - 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 deferred from Phase 27)
 
-## Next Milestone
+## Current Milestone: v2.0 Mill Production MVP
 
-_To be defined via `/gsd-new-milestone` — likely focus: deliver first production feature inside the `/` namespace now that the demo/production split is in place._
+**Goal:** Replace the Coming Soon homepage at `/` with a real, DB-backed mill production dashboard — first production feature shipped to authenticated users.
+
+**Target features:**
+- Real Postgres + Drizzle data layer for mill production orders
+- Order status transitions (Pending → Mixing → Completed) with audit trail
+- Bulk import (CSV / XLSX) following Book1.xlsx format
+- Mill capacity / throughput KPIs (closes deferred KPI cards from v1.0)
+- Real-time updates + URL-shareable filter and search state
+- Mixed-role dashboard sections (operator queue, supervisor shift status, manager KPIs/trends)
+- Mill production page promoted to `/` (replaces Coming Soon); `/demo/orders` and `/demo/customers` remain in /demo
+
+**Scope boundaries:**
+- Mill production only — orders and customers pages stay in `/demo/*` for this milestone
+- Design source: existing `designs/mill-production.pen` (no dedicated design phase)
+- Backend on Postgres + Drizzle (Vercel-deployable); provider confirmed in research
+- Role gating reuses Clerk JWT claim pattern from v1.5; new role string for production access if needed
 
 ## Requirements
 
@@ -142,9 +157,9 @@ _To be defined via `/gsd-new-milestone` — likely focus: deliver first producti
 
 ### Active
 
-<!-- Requirements for next milestone — defined via /gsd-new-milestone -->
+<!-- Requirements for v2.0 — finalized in REQUIREMENTS.md, summarized here -->
 
-_None — next milestone to be defined._
+_v2.0 requirements will be enumerated in `.planning/REQUIREMENTS.md` after research and scoping._
 
 ### Deferred
 
@@ -260,4 +275,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-12 after v1.5 milestone*
+*Last updated: 2026-05-12 — v2.0 Mill Production MVP started*
