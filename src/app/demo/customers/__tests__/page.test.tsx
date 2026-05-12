@@ -35,8 +35,17 @@ jest.mock("@/services/notifications", () => ({
   getNotifications: jest.fn().mockResolvedValue([]),
 }));
 
+// Mock sortCustomersByRecentActivity as a pass-through. Sort now runs server-side
+// in the RSC; we assert it was called once with the fetched customers, but the
+// page tests don't need to re-validate the sort algorithm (that's the
+// customerSort.test.ts contract).
+jest.mock("@/utils/customerSort", () => ({
+  sortCustomersByRecentActivity: jest.fn((customers) => customers),
+}));
+
 // Import mocks after jest.mock
 import { getCustomers } from "@/services/customers";
+import { sortCustomersByRecentActivity } from "@/utils/customerSort";
 import { CustomerWithStats } from "@/types/customer";
 
 const mockCustomers: CustomerWithStats[] = [
@@ -110,6 +119,36 @@ describe("CustomersPage - MIG-02 Design System Migration (RSC harness)", () => {
       mockNonDemoSession("admin");
 
       await expect(CustomersPage()).rejects.toMatchObject({ url: "/" });
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // RSC data-flow contract: the page fetches once, sorts server-side, and
+  // hands data to <CustomersList>. These assertions migrated here from the
+  // (now-deleted) sibling customers/page.test.tsx during CR-01 dedup.
+  // ---------------------------------------------------------------------------
+
+  describe("RSC data-flow contract", () => {
+    it("calls sortCustomersByRecentActivity exactly once with the fetched customers", async () => {
+      await CustomersPage();
+
+      expect(sortCustomersByRecentActivity).toHaveBeenCalledTimes(1);
+      expect(sortCustomersByRecentActivity).toHaveBeenCalledWith(mockCustomers);
+    });
+
+    it("renders the visible status indicators handed off to CustomersList", async () => {
+      const element = await CustomersPage();
+      render(element);
+
+      // Verify the rendered DOM still surfaces status indicators (i.e., that the
+      // RSC successfully passed data to CustomersList — not a re-test of the
+      // indicator logic, which lives in CustomersList.test.tsx).
+      const greenfieldRow = screen.getByText("Greenfield Farms").closest("[data-customer-id]");
+      expect(greenfieldRow?.querySelector('[data-testid="status-orders"]')).toBeInTheDocument();
+
+      const valleyRow = screen.getByText("Valley Ranch").closest("[data-customer-id]");
+      expect(valleyRow?.querySelector('[data-testid="status-bin-low"]')).toBeInTheDocument();
+      expect(valleyRow?.querySelector('[data-testid="status-changes"]')).toBeInTheDocument();
     });
   });
 
