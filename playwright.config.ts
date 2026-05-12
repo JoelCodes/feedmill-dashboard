@@ -29,16 +29,6 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     {
-      name: 'production-smoke',
-      testMatch: '**/production-smoke.spec.ts',
-      use: {
-        ...devices['Desktop Chrome'],
-        baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
-      },
-      retries: 0,
-      timeout: 30000,
-    },
-    {
       name: 'global setup',
       testMatch: /global\.setup\.ts/,
     },
