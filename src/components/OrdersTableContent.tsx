@@ -25,13 +25,14 @@ export default function OrdersTableContent({ orders }: OrdersTableContentProps) 
   const initialSelected = searchParams.get("selected");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(initialSelected);
 
-  // Sync URL param to state when it changes (e.g., navigating from timeline)
+  // Two-way URL → state sync: when the `?selected=` param changes (incl.
+  // being cleared), reflect that in component state. Writing `null` when
+  // the param is absent ensures clearing `?selected=` also clears the
+  // selection — without this the UI would keep a stale row highlighted
+  // and scrolled-into-view despite the URL claiming no selection.
   useEffect(() => {
     const urlSelected = searchParams.get("selected");
-    if (urlSelected) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing URL param to state on navigation
-      setSelectedOrderId(urlSelected);
-    }
+    setSelectedOrderId(urlSelected);
   }, [searchParams]);
 
   return (
