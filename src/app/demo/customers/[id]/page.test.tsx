@@ -1,14 +1,20 @@
+import {
+  clerkAuthMockFactory,
+  nextNavigationMockFactory,
+  mockAuth,
+  mockDemoSession,
+  mockNonDemoSession,
+  mockUnauthenticatedSession,
+} from '@/test/fixtures/clerkAuth';
+
+// Mock dependencies — jest.mock calls are hoisted above all imports (Pattern C
+// from src/lib/auth.test.ts). The 28-01 factory imports above are hoisted
+// alongside, so the references inside the factory arrows resolve correctly.
+jest.mock('@clerk/nextjs/server', () => clerkAuthMockFactory());
+jest.mock('next/navigation', () => nextNavigationMockFactory());
+
 import { render, screen } from '@testing-library/react';
 import CustomerDetailPage from './page';
-
-// Mock dependencies
-jest.mock('next/navigation', () => ({
-  notFound: jest.fn(),
-  usePathname: jest.fn(() => '/demo/customers/CUST-001'),
-  useRouter: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-}));
 
 // Mock @clerk/nextjs components used by Header
 jest.mock("@clerk/nextjs", () => ({
@@ -46,7 +52,6 @@ jest.mock('@/components/ui/Timeline', () => ({
 }));
 
 // Import mocks after jest.mock
-import { notFound } from 'next/navigation';
 import { getCustomerById } from '@/services/customers';
 import { getActivityEvents } from '@/services/activity';
 import { getBinsByCustomerId } from '@/services/bins';
@@ -77,6 +82,8 @@ const mockCustomer: CustomerWithStats = {
 
 describe('CustomerDetailPage', () => {
   beforeEach(() => {
+    mockAuth.mockReset();
+    mockDemoSession();
     jest.clearAllMocks();
     (getBinsByCustomerId as jest.Mock).mockResolvedValue([]);
     (getOrdersByCustomerId as jest.Mock).mockResolvedValue([]);
@@ -97,17 +104,15 @@ describe('CustomerDetailPage', () => {
   it('calls notFound when customer ID does not exist', async () => {
     (getCustomerById as jest.Mock).mockResolvedValue(null);
     (getActivityEvents as jest.Mock).mockResolvedValue([]);
-    (notFound as jest.Mock).mockImplementation(() => {
-      throw new Error('NEXT_NOT_FOUND');
-    });
 
-    await expect(async () => {
-      await CustomerDetailPage({
-        params: Promise.resolve({ id: 'INVALID-999' }),
-      });
-    }).rejects.toThrow('NEXT_NOT_FOUND');
-
-    expect(notFound).toHaveBeenCalled();
+    // The 28-01 nextNavigationMockFactory's `notFound` is a sentinel-throw
+    // (throws `Object.assign(new Error('NEXT_NOT_FOUND'), {})`) — it mirrors
+    // real Next.js runtime behavior, so we assert by catching the throw rather
+    // than spying on a jest.fn(). This is the canonical pattern for both
+    // redirect and notFound branches across all 28-02..28-05 page tests.
+    await expect(
+      CustomerDetailPage({ params: Promise.resolve({ id: 'INVALID-999' }) }),
+    ).rejects.toThrow('NEXT_NOT_FOUND');
   });
 
   it('renders CustomerDetailHeader with customer stats', async () => {
@@ -123,6 +128,35 @@ describe('CustomerDetailPage', () => {
     expect(screen.getByText('5')).toBeInTheDocument(); // totalOrders
     expect(screen.getByText('Total Orders')).toBeInTheDocument();
     expect(screen.getByText('Active Bins')).toBeInTheDocument();
+  });
+
+  // ---------------------------------------------------------------------------
+  // New redirect-branch coverage (28-02 D-05 inner guard, defense-in-depth).
+  // Source pattern: src/lib/auth.test.ts lines 67-89 (redirect-sentinel-throw).
+  // ---------------------------------------------------------------------------
+
+  it('redirects to /sign-in when userId is missing (unauthenticated)', async () => {
+    mockUnauthenticatedSession();
+
+    await expect(
+      CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
+    ).rejects.toMatchObject({ url: '/sign-in' });
+  });
+
+  it('redirects to / when role is user (non-demo)', async () => {
+    mockNonDemoSession('user');
+
+    await expect(
+      CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
+    ).rejects.toMatchObject({ url: '/' });
+  });
+
+  it('redirects to / when role is admin (any non-demo role)', async () => {
+    mockNonDemoSession('admin');
+
+    await expect(
+      CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
+    ).rejects.toMatchObject({ url: '/' });
   });
 
   describe('partial failure handling', () => {
