@@ -25,8 +25,13 @@ export default async function CustomerDetailPage({
     getOrdersByCustomerId(id),
   ]);
 
-  // 404 handling
-  if (!customer) {
+  // 404 handling. We also reject when `customer.stats` is missing — the
+  // `CustomerWithStats.stats` type is non-optional, but the `Promise.all`
+  // shape (and a future service contract that fetches stats separately
+  // and may fail) leaves room for the property to be absent at runtime.
+  // Guarding here is cheaper than rendering with `FALLBACK_STATS` and
+  // also narrows `customer.stats` to non-undefined for the prop hand-off.
+  if (!customer || !customer.stats) {
     notFound();
   }
 

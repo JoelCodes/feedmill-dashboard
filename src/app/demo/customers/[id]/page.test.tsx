@@ -177,45 +177,32 @@ describe('CustomerDetailPage', () => {
   });
 
   describe('partial failure handling', () => {
-    it('should use fallback stats when stats are unavailable', async () => {
-      // D-05 requirement: page defines FALLBACK_STATS constant and uses it when stats fail
-      // IMPLEMENTATION BUG: FALLBACK_STATS is mentioned in plan but not implemented in page.tsx
-      // Current page.tsx does NOT define FALLBACK_STATS or handle missing stats
-
-      const EXPECTED_FALLBACK_STATS = {
-        totalOrders: 0,
-        activeOrders: 0,
-        completedOrders: 0,
-        hasChanges: false,
-        binAlertLevel: 'none' as const,
-        activeBins: 0,
-      };
-
-      // Simulate stats failure - CustomerWithStats type requires stats, but service could fail
+    // Phase 28 WR-04/WR-06 follow-up: the page contract is "customer exists
+    // AND has stats, or the page 404s." Plan 13-03's FALLBACK_STATS shape was
+    // never implemented; rather than re-introduce graceful degradation in a
+    // page that has no UI affordance for "stats unavailable," we treat
+    // missing stats as a 404 (same shape as missing customer). This test
+    // locks the guard in place so a future regression that drops the
+    // `!customer.stats` check is caught.
+    it('calls notFound when customer is returned without stats', async () => {
       const customerWithoutStats = {
         ...mockCustomer,
-        stats: EXPECTED_FALLBACK_STATS, // Use fallback manually since implementation doesn't
+        // Cast away the non-optional `stats` type so we can simulate a
+        // partial service-shape regression. The page must guard at runtime
+        // even though TypeScript treats `stats` as non-optional.
+        stats: undefined as unknown as (typeof mockCustomer)['stats'],
       };
 
       (getCustomerById as jest.Mock).mockResolvedValue(customerWithoutStats);
       (getActivityEvents as jest.Mock).mockResolvedValue([]);
 
-      const Page = await CustomerDetailPage({
-        params: Promise.resolve({ id: 'CUST-001' }),
-      });
-      render(Page);
-
-      // Verify fallback stats are displayed
-      expect(screen.getByText('Total Orders')).toBeInTheDocument();
-      expect(screen.getByText('Active Bins')).toBeInTheDocument();
-
-      // Verify zero values for stats when using fallback
-      const statValues = screen.getAllByText('0');
-      expect(statValues.length).toBeGreaterThanOrEqual(2); // totalOrders and activeBins both 0
-
-      // ESCALATION NOTE: Implementation missing FALLBACK_STATS constant and graceful degradation logic
-      // Per plan 13-03-PLAN.md lines 123-131, page should define and use FALLBACK_STATS
-      // Current test manually provides fallback stats, but implementation should handle this
+      // The notFound mock throws an error whose `digest` matches real
+      // Next.js 16 (`'NEXT_HTTP_ERROR_FALLBACK;404'`). Asserting on the
+      // digest keeps the test stable against any future error-boundary
+      // that branches on `error.digest`.
+      await expect(
+        CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
+      ).rejects.toMatchObject({ digest: expect.stringContaining(';404') });
     });
   });
 
