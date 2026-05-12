@@ -20,10 +20,20 @@ import type { Role } from '@/types/clerk';
  * Reads `auth().sessionClaims?.metadata?.role` (verified JWT claim) — does
  * NOT call the Clerk Backend API. Returns `false` for every missing-data
  * path: no session, no `sessionClaims`, no `metadata.role`, or mismatched
- * role. Never throws.
+ * role. Never throws. Server-only (see module JSDoc).
  *
- * @param role - The Role to check against the current session.
- * @returns `true` if the session role matches `role`; `false` otherwise.
+ * @param role - The {@link Role} to check against the current session.
+ * @returns `Promise<boolean>` — `true` if the session role matches `role`;
+ *   `false` otherwise.
+ *
+ * @example
+ * // In a server component, conditionally render demo-only UI:
+ * import { checkRole } from '@/lib/auth';
+ *
+ * export default async function Page() {
+ *   const isDemo = await checkRole('demo');
+ *   return <main>{isDemo ? <DemoBanner /> : <PublicBanner />}</main>;
+ * }
  */
 export async function checkRole(role: Role): Promise<boolean> {
   const { sessionClaims } = await auth();
@@ -41,9 +51,18 @@ export async function checkRole(role: Role): Promise<boolean> {
  * `next/navigation`'s `redirect()` throws `NEXT_REDIRECT` internally — it
  * never returns. Callers do NOT need to `return` after `await requireRole(...)`.
  *
- * @param role - The Role the caller requires.
+ * @param role - The {@link Role} the caller requires.
  * @returns `Promise<void>` that resolves on success; otherwise the call
  *   never resolves (redirect throws).
+ *
+ * @example
+ * // Guard a server-component page so only demo users reach the content:
+ * import { requireRole } from '@/lib/auth';
+ *
+ * export default async function DemoOnlyPage() {
+ *   await requireRole('demo'); // throws NEXT_REDIRECT if not 'demo'
+ *   return <main>Demo-only content</main>;
+ * }
  */
 export async function requireRole(role: Role): Promise<void> {
   const { userId, sessionClaims } = await auth();
