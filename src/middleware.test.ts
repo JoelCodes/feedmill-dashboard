@@ -144,10 +144,12 @@ describe("middleware", () => {
       const middlewarePath = path.join(__dirname, "middleware.ts");
       const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
 
-      // Per D-04: Read role from sessionClaims.metadata.role (no network call)
+      // Per D-04: Read roles from sessionClaims.metadata.roles (no network call)
       expect(middlewareContent).toContain("sessionClaims");
       expect(middlewareContent).toContain("metadata");
       expect(middlewareContent).toContain("role");
+      expect(middlewareContent).toContain("roles");
+      expect(middlewareContent).toContain("includes('demo')");
       expect(middlewareContent).not.toContain("clerkClient");
       expect(middlewareContent).not.toContain("publicMetadata");
 

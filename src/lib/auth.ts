@@ -2,7 +2,7 @@
  * Server-only role utilities (ACCESS-02).
  *
  * These helpers read the role claim from the verified session JWT via
- * `auth().sessionClaims?.metadata?.role` — no Clerk Backend API call.
+ * `auth().sessionClaims?.metadata?.roles` — no Clerk Backend API call.
  *
  * SERVER-ONLY: never import this module into a client component. `auth()`
  * from `@clerk/nextjs/server` is server-only and will throw when invoked
@@ -19,7 +19,7 @@ import type { Role } from '@/types/clerk';
  *
  * Branches (in order):
  *   1. No `userId` → `redirect('/sign-in')`
- *   2. `sessionClaims.metadata.role !== role` → `redirect('/')`
+ *   2. `!sessionClaims.metadata.roles?.includes(role)` → `redirect('/')`
  *   3. Otherwise resolves with `undefined`.
  *
  * `next/navigation`'s `redirect()` throws `NEXT_REDIRECT` internally — it
@@ -43,7 +43,7 @@ export async function requireRole(role: Role): Promise<void> {
   if (!userId) {
     redirect('/sign-in');
   }
-  if (sessionClaims?.metadata?.role !== role) {
+  if (!sessionClaims?.metadata?.roles?.includes(role)) {
     redirect('/');
   }
 }

@@ -161,25 +161,27 @@ export function nextNavigationMockFactory() {
 }
 
 /**
- * Seed `mockAuth` to resolve with a session whose role is `'demo'`.
+ * Seed `mockAuth` to resolve with a session whose roles array contains `'demo'`.
  * Use in tests that exercise the happy path of a `/demo/*` RSC page.
  */
 export function mockDemoSession(): void {
   mockAuth.mockResolvedValue({
     userId: 'u1',
-    sessionClaims: { metadata: { role: 'demo' } },
+    sessionClaims: { metadata: { roles: ['demo'] } },
   });
 }
 
 /**
- * Seed `mockAuth` to resolve with a session whose role is a non-demo role.
+ * Seed `mockAuth` to resolve with a session whose roles array contains a non-demo role.
  * Defaults to `'user'`; pass `'admin'` to exercise the admin path. Use in
  * tests that assert `requireRole('demo')` triggers `redirect('/')`.
+ *
+ * Example session shape: `{ userId: 'u1', sessionClaims: { metadata: { roles: ['user'] } } }`
  */
 export function mockNonDemoSession(role: Exclude<Role, 'demo'> = 'user'): void {
   mockAuth.mockResolvedValue({
     userId: 'u1',
-    sessionClaims: { metadata: { role } },
+    sessionClaims: { metadata: { roles: [role] } },
   });
 }
 

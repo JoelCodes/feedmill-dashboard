@@ -33,7 +33,7 @@ describe('requireRole', () => {
   it('redirects to / when role does not match', async () => {
     mockAuth.mockResolvedValue({
       userId: 'u1',
-      sessionClaims: { metadata: { role: 'user' } },
+      sessionClaims: { metadata: { roles: ['user'] } },
     });
     await expect(requireRole('demo')).rejects.toMatchObject({ url: '/' });
   });
@@ -41,8 +41,30 @@ describe('requireRole', () => {
   it('resolves without throwing when role matches', async () => {
     mockAuth.mockResolvedValue({
       userId: 'u1',
-      sessionClaims: { metadata: { role: 'demo' } },
+      sessionClaims: { metadata: { roles: ['demo'] } },
     });
     await expect(requireRole('demo')).resolves.toBeUndefined();
+  });
+
+  it('resolves for each role in a multi-role session', async () => {
+    mockAuth.mockResolvedValue({
+      userId: 'u1',
+      sessionClaims: { metadata: { roles: ['demo', 'admin'] } },
+    });
+    await expect(requireRole('demo')).resolves.toBeUndefined();
+
+    mockAuth.mockResolvedValue({
+      userId: 'u1',
+      sessionClaims: { metadata: { roles: ['demo', 'admin'] } },
+    });
+    await expect(requireRole('admin')).resolves.toBeUndefined();
+  });
+
+  it('redirects to / when roles field is missing from metadata', async () => {
+    mockAuth.mockResolvedValue({
+      userId: 'u1',
+      sessionClaims: { metadata: {} },
+    });
+    await expect(requireRole('demo')).rejects.toMatchObject({ url: '/' });
   });
 });
