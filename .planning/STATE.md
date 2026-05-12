@@ -1,9 +1,10 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.5
-milestone_name: milestone
-status: completed
-last_updated: "2026-05-12T20:02:52.293Z"
+milestone_name: Production Transition
+status: shipped
+last_updated: "2026-05-12T20:21:08.897Z"
+last_activity: 2026-05-12 — Milestone v1.5 completed and archived
 progress:
   total_phases: 6
   completed_phases: 6
@@ -12,109 +13,66 @@ progress:
   percent: 100
 ---
 
-# Project State: v1.5 Production Transition
+# Project State: Between Milestones
 
-**Initialized:** 2026-05-10
-**Milestone:** v1.5 Production Transition
-**Last updated:** 2026-05-10
+**Last shipped:** v1.5 Production Transition (2026-05-12)
+**Last updated:** 2026-05-12
 
 ## Project Reference
 
-**Core Value**: Operations staff can see and manage feed orders in real-time, from pending through delivery.
+See: `.planning/PROJECT.md` (updated 2026-05-12)
 
-**Current Focus**: Separate demo content from production-ready pages, establishing the foundation for incremental real feature releases.
+**Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
+
+**Current focus:** Planning next milestone — run `/gsd-new-milestone` to scope.
 
 ## Current Position
 
-Phase: 30 — COMPLETE
-Plan: 1 of 2
-**Phase:** 29
-**Plan:** All 6 plans complete (29-01 → 29-06)
-**Status:** Phase 30 complete
-**Resume file:** .planning/phases/30-close-gap-int-07-customerorderstab-href-summary-frontmatter-/30-CONTEXT.md
-
-**Next actions:**
-
-1. Re-run `/gsd-audit-milestone v1.5` to confirm `status: gaps_resolved`
-2. Optionally run `/gsd-verify-work 29` for conversational UAT against the cleanup outcomes
-3. `/gsd-complete-milestone v1.5` to archive once audit passes
+Phase: — (no active milestone)
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-05-12 — Milestone v1.5 shipped and archived
 
 ## Performance Metrics
 
-**Milestone v1.5:**
+**Milestone v1.5 (just shipped):**
 
-- **Phases planned:** 4
-- **Phases complete:** 0
-- **Requirements:** 8 total, 0 satisfied
-- **Tests:** 304 passing (carried from v1.4)
-- **Timeline:** Started 2026-05-10
+- **Phases:** 6 phases (25-30)
+- **Plans:** 24 plans, 28 tasks
+- **Requirements:** 8/8 satisfied
+- **Timeline:** 3 days (2026-05-10 → 2026-05-12)
+- **Audit:** passed (re-audit #3, all gaps closed)
 
-**Historical (v1.4):**
-
-- **Phases:** 5 phases (20-24)
-- **Plans:** 9 plans executed
-- **Timeline:** 2 days
-- **Quality:** 304 tests passing, 5 E2E tests, 0 ESLint errors
+**Cumulative across milestones:** see `.planning/MILESTONES.md` and `.planning/RETROSPECTIVE.md`
 
 ## Accumulated Context
 
-### Roadmap Evolution
+### Open Blockers
 
-- Phase 29 added: Close gap: ROUTE-01 cleanup — Timeline.tsx href, Header.tsx dead branches, stale E2E specs, settings → DashboardLayout
+_None._
 
-### Decisions Made
+### Carried Deferred Items
 
-_No decisions logged yet for v1.5._
-
-**Carry forward from v1.4:**
-
-- Use Clerk publicMetadata for role storage (simpler than organization-based RBAC)
-- Regular demo/ folder structure (not route group) for URL-based middleware matching
-- Shared DashboardLayout component instead of route group layouts
-- Manual role assignment via Clerk Dashboard for v1.5 (defer automatic assignment)
-
-### Active Todos
-
-_No active TODOs._
-
-### Known Blockers
-
-_No blockers identified._
-
-### Deferred Items
-
-_No items deferred from v1.5 phases yet._
-
-**Carried from v1.4:**
-
-- Production E2E automation requires custom domain to disable Clerk 2FA
+- Production E2E automation requires custom domain to disable Clerk 2FA (carried from v1.4)
+- KPI Cards display computed values + click-to-filter (carried from v1.0)
+- 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 deferred from Phase 27)
 
 ### Implementation Notes
 
-_No implementation notes yet._
+_None pending — full decision log lives in PROJECT.md Key Decisions table._
 
 ## Session Continuity
 
 **Context for next session:**
 
-We are at the start of v1.5 milestone. The roadmap has been created with 4 phases:
+v1.5 milestone is shipped and archived. The demo namespace is established under `/demo/*` with role-based access control; `/` renders Coming Soon under the shared DashboardLayout. The codebase is integration-clean per the v1.5 audit.
 
-- Phase 25: Foundation and Middleware Configuration
-- Phase 26: Route Restructuring and Migration
-- Phase 27: Role Assignment and Testing
-- Phase 28: Client Component Security Audit
-
-Research completed with HIGH confidence. All patterns are well-documented. No deep research needed during planning.
-
-**Next step:** Run `/gsd-plan-phase 25` to create execution plan for Foundation and Middleware Configuration.
-
-**Key context to preserve:**
-
-- v1.4 ended at Phase 24, v1.5 continues numbering from Phase 25
-- All 8 v1.5 requirements mapped to phases with 100% coverage
-- Success criteria derived using goal-backward thinking
-- Research flags indicate standard patterns throughout
+**Next step:** Run `/gsd-new-milestone` to scope and plan the next milestone.
 
 ---
-*State initialized: 2026-05-10*
+*State updated: 2026-05-12 after v1.5 milestone close*
 *Auto-updated by GSD workflow*
+
+## Operator Next Steps
+
+- Start the next milestone with `/gsd-new-milestone`

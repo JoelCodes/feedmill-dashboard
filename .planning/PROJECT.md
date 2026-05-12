@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators. The v1.3 release establishes a unified design system with 200+ semantic tokens, a CVA-based component library, and WCAG 2.1 AA accessibility compliance. The v1.4 release adds user authentication with Clerk, protecting all dashboard routes and displaying user info in the header.
+A feed mill operations dashboard that displays and manages feed orders in real-time. Built with Next.js, React, and Tailwind CSS following a Design → Infrastructure → Build pattern. The v1.0 MVP provides interactive order management including filtering, search, selection, order details with timeline visualization, and functional navigation. The v1.1 update adds a polished mill production dashboard with multi-select status filtering and design token system. The v1.2 release adds a customer management system with customer list, detail pages, unified activity timeline, and bin visualization with fill level indicators. The v1.3 release establishes a unified design system with 200+ semantic tokens, a CVA-based component library, and WCAG 2.1 AA accessibility compliance. The v1.4 release adds user authentication with Clerk. The v1.5 release separates demo content from production-ready pages via a `/demo/*` namespace gated by role-based access control, establishing the foundation for incremental real feature releases under a Coming Soon homepage.
 
 ## Core Value
 
@@ -10,19 +10,28 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 
 ## Current State
 
-**Shipped:** v1.4 Auth with Clerk (2026-05-10)
-**Codebase:** ~7,500 LOC TypeScript
+**Shipped:** v1.5 Production Transition (2026-05-12)
+**Codebase:** ~11,650 LOC TypeScript
 **Tech stack:** Next.js 15, React 19, Tailwind CSS 4, Clerk v7
-**Tests:** 304 unit + 5 E2E | **ESLint:** 0 errors
+**Tests:** Unit + E2E suite green | **ESLint:** 0 errors | **Milestone audit:** passed
 
 **What's working:**
+- **Demo namespace** — orders, customers, mill-production live under `/demo/*` with 404s on legacy paths
+- **Coming Soon homepage** at `/` rendered through the shared DashboardLayout
+- **Role-based access control** — Clerk `publicMetadata.role` claim wired into session JWT via custom template; middleware enforces `demo` role on `/demo/*` with redirect to root
+- **Server-only role utilities** — `checkRole(role)` and `requireRole(role)` read session claims directly (no Clerk Backend API call), TDD-driven with an 8-case Jest suite
+- **Type-safe role checks** — `CustomJwtSessionClaims` interface eliminates string-literal role checks
+- **Async RSC data loading** — `/demo/orders`, `/demo/customers`, `/demo/mill-production` refactored to Server Components with extracted client list components
+- **Security pattern documentation** — `docs/security-patterns.md` captures canonical RSC guard pattern; `docs/clerk-setup.md` runbook for JWT template configuration
+- **Context-aware Sidebar** — demo vs production navigation based on route context
+- **DashboardLayout adoption** — wraps every page including `/settings`, eliminating inline Sidebar+Header duplication (NAV-02 fully satisfied)
+- **Playwright E2E expansion** — parameterized role-asymmetric route-protection tests with Clerk auth fixtures, JWT template scenarios, localhost-pinned authenticated projects
 - **User authentication** with Clerk SDK (email/password sign-in, session persistence)
 - **Route protection** via middleware (all dashboard routes require authentication)
 - **UserButton in header** displaying avatar/name with sign-out action
 - **Themed sign-in page** with CGM Dashboard branding and ThemeToggle
 - Orders table with multi-status filtering, search, keyboard navigation
 - Order details panel with timeline and change history
-- Functional sidebar navigation with auto-detecting active state
 - Header with global search and notification system
 - Settings page with theme toggle (light/dark/system) and density preferences
 - Mill production view with 3 columns, state cards, and multi-select filter pills
@@ -41,19 +50,11 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - Phase 3 (KPI Cards) not implemented — KPI cards show static values, not computed from order data
 - KPI click-to-filter not functional
 - Production E2E automation blocked by Clerk 2FA (custom domain needed)
+- 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 deferred from Phase 27)
 
-## Current Milestone: v1.5 Production Transition
+## Next Milestone
 
-**Goal:** Separate demo content from production-ready pages, establishing the foundation for incremental real feature releases.
-
-**Target features:**
-- Move existing pages (orders, customers, mill-production) to `/demo/*` subdirectory
-- Implement formal roles system in Clerk (e.g., `roles: ['demo']`)
-- Restrict `/demo/*` routes to users with demo role via middleware
-- Create new homepage at `/` with full layout (header + sidebar), sidebar shows only "Coming Soon" link
-- Main content area displays "Coming Soon" message
-- Keep `/settings` at root, accessible to all authenticated users
-- Demo area keeps existing sidebar navigation (Orders, Customers, Mill Production)
+_To be defined via `/gsd-new-milestone` — likely focus: deliver first production feature inside the `/` namespace now that the demo/production split is in place._
 
 ## Requirements
 
@@ -129,11 +130,21 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 - ✓ Auth UI respects light/dark theme via CSS variables — v1.4
 - ✓ Production deployment with Vercel/Clerk configuration — v1.4
 
+**v1.5:**
+- ✓ ROUTE-01: Existing pages (orders, customers, mill-production) moved to `/demo/*` subdirectory — v1.5
+- ✓ ROUTE-02: New homepage at `/` displays "Coming Soon" message with full layout (header + sidebar) — v1.5
+- ✓ ROLE-01: Clerk publicMetadata configured with `role` field, included in session token claims — v1.5
+- ✓ ROLE-02: TypeScript `CustomJwtSessionClaims` interface extended for type-safe role checking — v1.5
+- ✓ ACCESS-01: Middleware protects `/demo/*` routes, redirecting users without `demo` role to root — v1.5
+- ✓ ACCESS-02: Role utility functions (`requireRole()`, `checkRole()`) available for server components — v1.5
+- ✓ NAV-01: Sidebar displays different navigation based on route context (demo vs production) — v1.5
+- ✓ NAV-02: DashboardLayout component wraps all pages, eliminating layout duplication — v1.5
+
 ### Active
 
-<!-- Requirements being defined for v1.5 -->
+<!-- Requirements for next milestone — defined via /gsd-new-milestone -->
 
-See `.planning/REQUIREMENTS.md` for v1.5 requirements (in progress)
+_None — next milestone to be defined._
 
 ### Deferred
 
@@ -153,6 +164,10 @@ See `.planning/REQUIREMENTS.md` for v1.5 requirements (in progress)
 - Database integration — mock data until explicitly requested
 - Inline editing of orders — dedicated forms provide better UX
 - Advanced query builder — simple filters cover 90% of use cases
+- Fine-grained permissions — premature optimization; simple role flags sufficient (carried from v1.5)
+- Client-side role checking for security — security theater; always enforce server-side (carried from v1.5)
+- Organization-based RBAC — over-engineering for single-tenant app (carried from v1.5)
+- Nested role hierarchies — flat roles sufficient (carried from v1.5)
 
 ## Context
 
@@ -214,7 +229,18 @@ See `.planning/REQUIREMENTS.md` for v1.5 requirements (in progress)
 | ClerkLoading + ClerkLoaded pattern | Handles loading states without flash of unauthenticated content | ✓ Good |
 | Playwright for E2E testing | Parameterized tests for route protection, webServer integration | ✓ Good |
 | afterSignOutUrl on ClerkProvider | Centralizes redirect config (UserButton prop not supported in v7) | ✓ Good |
-| clerkClient for role checking | Fetch user.publicMetadata directly instead of relying on JWT template config | ✓ Good |
+| clerkClient for role checking | Fetch user.publicMetadata directly instead of relying on JWT template config | ✓ Good (superseded in v1.5 by session-claim approach) |
+| Demo namespace via regular folder, not route group | URL-based middleware matching simpler than route-group prefixes | ✓ Good |
+| Clean break — old paths return 404 instead of redirect | No legacy URL contract to maintain; simpler middleware (D-01) | ✓ Good |
+| Roles in Clerk publicMetadata, not organizations | Simpler than organization-based RBAC for single-tenant app | ✓ Good |
+| Session JWT custom template for role claim | Eliminates per-request Clerk Backend API calls in middleware/utilities | ✓ Good |
+| TypeScript CustomJwtSessionClaims interface | Compile-time role-string safety eliminates literal-string checks | ✓ Good |
+| Manual Clerk Dashboard role assignment for v1.5 | Defer admin UI; manual assignment sufficient at this scale | ✓ Good |
+| Shared DashboardLayout instead of route group layouts | Single layout component composes cleanly across `/`, `/demo/*`, `/settings` | ✓ Good |
+| Async RSC + extracted client list components | Server-side data fetching keeps sensitive logic off the client | ✓ Good |
+| Server-only role utilities reading session claims directly | No Clerk Backend API round-trip in hot path; 8-case TDD suite | ✓ Good |
+| Localhost-pinned authenticated Playwright projects | Prevents env leak between local and remote test runs | ✓ Good |
+| Two integration-closure phases (29, 30) | Cross-phase drift surfaced by milestone audit; targeted closure cleaner than carrying tech debt | ✓ Good |
 
 ## Evolution
 
@@ -234,4 +260,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-11 after Phase 25*
+*Last updated: 2026-05-12 after v1.5 milestone*

@@ -1,5 +1,29 @@
 # Milestones
 
+## v1.5 Production Transition (Shipped: 2026-05-12)
+
+**Phases completed:** 6 phases (25-30), 24 plans, 28 tasks
+**Requirements:** 8/8 satisfied | **Timeline:** 3 days (2026-05-10 → 2026-05-12)
+**Codebase:** ~11,650 LOC TypeScript | Audit: passed (re-audit #3, all gaps closed)
+
+**Key accomplishments:**
+
+- `/demo/*` namespace migration: orders, customers, and mill-production pages relocated with 404s on legacy paths; new Coming Soon homepage at `/` with full DashboardLayout
+- Role-based access control end-to-end: Clerk `publicMetadata.role` wired into session JWT via custom template, type-safe `CustomJwtSessionClaims`, middleware enforces `demo` role on `/demo/*` with redirect to root
+- Server-only role utilities (`checkRole`, `requireRole`) reading session claims without Clerk Backend API calls — fully TDD with 8-case Jest suite
+- Client-component security audit: `/demo/orders`, `/demo/customers`, `/demo/mill-production` refactored to async RSCs with extracted client list components; `docs/security-patterns.md` captures canonical guard pattern
+- Context-aware Sidebar showing demo vs production navigation; `DashboardLayout` adopted across all pages (including `/settings`), eliminating inline Sidebar+Header duplication
+- Playwright E2E expansion: parameterized role-asymmetric route-protection coverage with Clerk auth fixtures, JWT template scenarios, and localhost-pinned authenticated projects
+- Two integration-closure phases (29, 30) resolved post-audit cross-phase drift: Timeline + CustomerOrdersTab hrefs repointed to `/demo/orders`, Header dead branches deleted, `checkRole` orphan removed, stale E2E specs cleaned, all REQ-IDs traceable via SUMMARY frontmatter
+
+**Tech debt at close:** 2 items (non-blocking) — pre-existing 14 ClerkProvider test failures in `settings/__tests__/page.test.tsx` (D-04 deferred); Phase 30 VALIDATION.md frontmatter promoted to nyquist_compliant during audit
+
+**Deferred items at close:** 0
+
+**Archive:** [v1.5-ROADMAP.md](./milestones/v1.5-ROADMAP.md), [v1.5-REQUIREMENTS.md](./milestones/v1.5-REQUIREMENTS.md), [v1.5-MILESTONE-AUDIT.md](./milestones/v1.5-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.4 Auth with Clerk (Shipped: 2026-05-10)
 
 **Phases completed:** 5 phases (20-24), 9 plans

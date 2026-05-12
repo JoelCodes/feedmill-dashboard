@@ -131,6 +131,59 @@
 
 ---
 
+## Milestone: v1.5 — Production Transition
+
+**Shipped:** 2026-05-12
+**Phases:** 6 (25-30) | **Plans:** 24 | **Timeline:** 3 days
+
+### What Was Built
+- `/demo/*` namespace migration: orders, customers, mill-production relocated with 404s on legacy paths
+- Coming Soon homepage at `/` rendered through the shared DashboardLayout
+- Role-based access control end-to-end: Clerk session JWT custom template, `CustomJwtSessionClaims`, middleware enforces `demo` role on `/demo/*`
+- Server-only `checkRole(role)` and `requireRole(role)` utilities reading session claims directly (no Clerk Backend API call), TDD-driven with 8-case Jest suite
+- Async RSC refactor of `/demo/orders`, `/demo/customers`, `/demo/mill-production` with extracted client list components
+- Context-aware Sidebar (demo vs production), `DashboardLayout` adopted across all pages including `/settings`
+- Playwright E2E expansion: parameterized role-asymmetric route-protection with Clerk auth fixtures and JWT template scenarios
+- `docs/security-patterns.md` and `docs/clerk-setup.md` runbooks
+- Two integration-closure phases (29, 30) resolving post-audit cross-phase drift
+
+### What Worked
+- **Session JWT custom template:** eliminates per-request Clerk Backend API calls in middleware and utilities, simpler and faster
+- **TypeScript role types up front:** `CustomJwtSessionClaims` compile-time safety killed an entire class of string-literal bugs
+- **Server-only role utilities with TDD:** 8 Jest cases documented contract before implementation, refactors were trivial
+- **Async RSC + extracted client list components:** kept sensitive logic off the client without inventing new patterns
+- **Clean-break 404 over redirect for legacy paths (D-01):** simpler middleware, no legacy URL contract to maintain
+- **Two integration-closure phases (29, 30):** milestone audit caught cross-phase drift; surgical closure phases were the right call versus carrying tech debt forward
+- **Re-audit loop:** Phase 29 closed the first audit's gaps; second audit found INT-07 (sibling-component miss); Phase 30 closed it; third audit verified clean. The audit's job is to keep looking until it can't find anything.
+
+### What Was Inefficient
+- **Sibling-component miss (INT-07):** Phase 29's INT-01 scope fixed `Timeline.tsx` href but missed the same stale `/orders?selected=` href in `CustomerOrdersTab.tsx`. A grep for the offending path string at planning time would have caught both in one phase instead of two
+- **SUMMARY frontmatter documentation lag:** four `requirements-completed:` declarations went unfilled during phase execution and only surfaced as tech debt at audit time; should be enforced earlier in the phase verify step
+- **SDK accomplishment extraction noisy:** `gsd-sdk milestone.complete` pulled "One-liner:" header text instead of actual one-liners for most plans — required manual rewrite of the MILESTONES.md entry. The SUMMARY templates' one-liner field is being filled inconsistently across plans
+
+### Patterns Established
+- Session JWT custom template + `CustomJwtSessionClaims` interface for type-safe role claims
+- Server-only role utilities reading session claims (not Clerk Backend API)
+- Async RSC + extracted client list component as the canonical "page needs auth + interactive list" pattern
+- DashboardLayout as the single page-wrapper component (no inline Sidebar+Header)
+- Context-aware Sidebar via route prefix matching (parallel to v1.0's usePathname() pattern)
+- Localhost-pinned Playwright authenticated projects to prevent env leak
+- Integration-closure phases as a first-class response to milestone-audit findings (vs. carrying tech debt)
+
+### Key Lessons
+1. **Grep for stale path strings before planning route-rename phases:** sibling components hold the same href and will be missed by phase scoping that names files individually. Phase 29 → 30 was an entire extra closure phase that wouldn't have happened with a `git grep "/orders?selected="`
+2. **Push session JWT templates over Backend API calls:** the v1.4 decision to call `clerkClient` for role checking was superseded in v1.5 — every Backend API call is a network hop and a Clerk rate-limit unit
+3. **Milestone audits are the integration test for phase planning:** a phase can ship green per its own VERIFICATION.md and still leave cross-phase drift. Audits catch this and re-audit loops keep going until clean
+4. **Requirements traceability via SUMMARY frontmatter must be enforced at phase-verify time, not at audit time** — by the time the audit catches it, you're back-filling four files instead of one
+5. **TDD pays off again for utilities:** the 8-case `checkRole`/`requireRole` suite made the Phase 27 → Phase 29 deletion of the `checkRole` orphan a one-line confidence move
+
+### Cost Observations
+- 6 phases / 24 plans in 3 days — comparable per-plan throughput to v1.3 and v1.4
+- Two integration-closure phases (29, 30) added ~30% phase count overhead vs. the original 4-phase plan, but closed all audit gaps in the same milestone (no tech debt rollover)
+- Re-audit loop ran 3 times; each loop was cheap (single audit agent) vs. shipping with known gaps
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -142,6 +195,7 @@
 | v1.2 | 6 | 15 | Customer management system, activity timeline |
 | v1.3 | 4 | 27 | Design system foundation, CVA components, WCAG compliance |
 | v1.4 | 5 | 9 | Auth integration, E2E testing, production deployment |
+| v1.5 | 6 | 24 | Role-based access control, demo/production split, integration-closure phases |
 
 ### Cumulative Quality
 
@@ -152,6 +206,7 @@
 | v1.2 | 104 | Services, components | Mock data services, timeline component |
 | v1.3 | 304 | CVA components | Design system, jest-axe, WCAG compliance |
 | v1.4 | 304 + 5 E2E | Auth, routes | Clerk SDK, Playwright infrastructure |
+| v1.5 | 304+ unit + parameterized E2E | Auth utilities, role guards, RSC pages | `checkRole`/`requireRole`, role middleware, RSC pattern |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -163,3 +218,6 @@
 6. CSS variable references enable theme auto-switching without manual sync
 7. Gap closure plans catch issues efficiently without derailing main execution
 8. Milestone audits before completion surface documentation debt early
+9. Re-audit loops keep finding gaps until clean — don't ship with known integration drift (v1.5)
+10. Grep for stale path strings before planning route-rename phases — sibling components will be missed (v1.5)
+11. Session JWT custom templates beat per-request Backend API calls for role claims (v1.5)
