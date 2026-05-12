@@ -1,6 +1,5 @@
-import { clerkClient, clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from 'next/server';
-import type { Role } from '@/types/clerk';
 
 /**
  * Routes that are publicly accessible without authentication.
@@ -27,17 +26,13 @@ export default clerkMiddleware(async (auth, request) => {
   // Users without demo role are redirected to root (D-01: 307 status)
   // No logging per D-02
   if (isDemoRoute(request)) {
-    const { userId } = await auth();
+    const { userId, sessionClaims } = await auth();
     if (!userId) {
       const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }
 
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const role = user.publicMetadata?.role as Role | undefined;
-
-    if (role !== 'demo') {
+    if (sessionClaims?.metadata?.role !== 'demo') {
       const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }
