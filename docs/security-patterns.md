@@ -18,6 +18,8 @@ Findings as of phase 28 completion (2026-05-11).
 
 **Note:** This table is a point-in-time snapshot. If a future refactor changes the after-state of any row, update this section in the same commit — readers of `docs/security-patterns.md` must be able to trust that the audit reflects the current code.
 
+**Post-refactor (260512-kfy):** The singular `role` field on `CustomJwtSessionClaims.metadata` was renamed to `roles: Role[]` (an array). All `requireRole` and middleware checks use `metadata.roles.includes(...)`. The audit rows above still describe the correct guard pattern; only the underlying claim shape changed.
+
 ## 2. The server-fetch pattern
 
 Every role-gated page follows the same shape: guard, then server-side fetch, then render a client child with data as a prop. The role check runs before any sensitive value is in scope; the client bundle never imports the service module; the prop boundary is the only path the data crosses into the browser.
@@ -81,7 +83,7 @@ Defense-in-depth lives across three tiers. Each helper does one thing well; usin
 | `await checkRole('demo')` | Server Component | Returns `boolean` — no redirect | Conditional render inside a Server Component (e.g., "show admin-only section only if `await checkRole('admin')`"). Not used in the Phase 28 codebase but documented as the third member of the family. Cite: JSDoc on `src/lib/auth.ts` `checkRole`. |
 | `<Protect role="...">` (from `@clerk/nextjs`) | Client | Hides DOM only | **UX only**, never as a data-access boundary. No live usage in the codebase (Phase 28 D-10). See §4. |
 
-Middleware is the outer gate; `requireRole` is the inner gate at the page entry; `checkRole` is for in-page boolean branches; `<Protect>` is for UX cues, not security. Both `requireRole` and `checkRole` read role state from `sessionClaims.metadata.role` via `auth()` from `@clerk/nextjs/server` — the JSDoc blocks on `src/lib/auth.ts` are the authoritative API reference and intentionally state "SERVER-ONLY: never import this module into a client component."
+Middleware is the outer gate; `requireRole` is the inner gate at the page entry; `checkRole` is for in-page boolean branches; `<Protect>` is for UX cues, not security. Both `requireRole` and `checkRole` read role state from `sessionClaims.metadata.roles` (a `Role[]` array) via `auth()` from `@clerk/nextjs/server`, using `Array.prototype.includes` for membership checks — the JSDoc blocks on `src/lib/auth.ts` are the authoritative API reference and intentionally state "SERVER-ONLY: never import this module into a client component."
 
 ## 4. `<Protect>` is UX, not security
 
