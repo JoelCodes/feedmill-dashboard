@@ -16,6 +16,9 @@
 /playwright-report/
 /playwright/.auth/
 
+# Playwright Clerk session storage state (generated at test time per Phase 27)
+playwright/.clerk/
+
 # next.js
 /.next/
 /out/
