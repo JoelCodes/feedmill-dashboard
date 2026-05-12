@@ -4,7 +4,7 @@ milestone: v2.0
 milestone_name: Mill Production MVP
 status: planning
 last_updated: "2026-05-12T21:21:19.533Z"
-last_activity: 2026-05-12
+last_activity: 2026-05-12 — Completed quick task 260512-kfy: Refactor user role to roles (Clerk Dashboard cutover pending)
 progress:
   total_phases: 0
   completed_phases: 0
@@ -60,6 +60,14 @@ _None._
 ### Implementation Notes
 
 _None pending — full decision log lives in PROJECT.md Key Decisions table._
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260512-kfy | Refactor user role to roles | 2026-05-12 | cd32cd4 | [260512-kfy-refactor-user-role-to-roles](./quick/260512-kfy-refactor-user-role-to-roles/) |
+
+**Manual cutover pending:** Clerk Dashboard JWT template + demo test user `publicMetadata` must be migrated to plural shape before sign-in works again. See `260512-kfy-01-SUMMARY.md` → "Manual cutover pending" for runbook steps.
 
 ## Session Continuity
 
