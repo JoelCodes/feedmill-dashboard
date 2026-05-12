@@ -212,11 +212,14 @@ export default function MillProductionUI({ orders }: MillProductionUIProps) {
     return orders.filter((order) => activeStates.has(order.state));
   }, [orders, activeStates]);
 
-  const ordersByMill: Record<MillLine, ProductionOrder[]> = {
-    Premix: filteredOrders.filter((o) => o.millLine === "Premix"),
-    Excel: filteredOrders.filter((o) => o.millLine === "Excel"),
-    CGM: filteredOrders.filter((o) => o.millLine === "CGM"),
-  };
+  const ordersByMill = useMemo<Record<MillLine, ProductionOrder[]>>(
+    () => ({
+      Premix: filteredOrders.filter((o) => o.millLine === "Premix"),
+      Excel: filteredOrders.filter((o) => o.millLine === "Excel"),
+      CGM: filteredOrders.filter((o) => o.millLine === "CGM"),
+    }),
+    [filteredOrders],
+  );
 
   return (
     <>
