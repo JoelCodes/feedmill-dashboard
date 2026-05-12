@@ -79,7 +79,7 @@ describe('Timeline', () => {
     const orderEvent = screen.getByRole('button', { name: 'Order Placed' });
     await user.click(orderEvent);
     const link = screen.getByRole('link', { name: /View Order Details/i });
-    expect(link).toHaveAttribute('href', '/orders?selected=order-1');
+    expect(link).toHaveAttribute('href', '/demo/orders?selected=order-1');
   });
 
   // TOKEN USAGE TESTS
