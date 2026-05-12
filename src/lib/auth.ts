@@ -15,32 +15,6 @@ import { redirect } from 'next/navigation';
 import type { Role } from '@/types/clerk';
 
 /**
- * Returns `true` iff the current session has the given role.
- *
- * Reads `auth().sessionClaims?.metadata?.role` (verified JWT claim) — does
- * NOT call the Clerk Backend API. Returns `false` for every missing-data
- * path: no session, no `sessionClaims`, no `metadata.role`, or mismatched
- * role. Never throws. Server-only (see module JSDoc).
- *
- * @param role - The {@link Role} to check against the current session.
- * @returns `Promise<boolean>` — `true` if the session role matches `role`;
- *   `false` otherwise.
- *
- * @example
- * // In a server component, conditionally render demo-only UI:
- * import { checkRole } from '@/lib/auth';
- *
- * export default async function Page() {
- *   const isDemo = await checkRole('demo');
- *   return <main>{isDemo ? <DemoBanner /> : <PublicBanner />}</main>;
- * }
- */
-export async function checkRole(role: Role): Promise<boolean> {
-  const { sessionClaims } = await auth();
-  return sessionClaims?.metadata?.role === role;
-}
-
-/**
  * Server-component guard: redirects unless the current session has `role`.
  *
  * Branches (in order):

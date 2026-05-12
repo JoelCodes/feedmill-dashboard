@@ -20,7 +20,7 @@ Requirements for Production Transition milestone. Each maps to roadmap phases.
 ### Access Control
 
 - [x] **ACCESS-01**: Middleware protects `/demo/*` routes, redirecting users without `demo` role to root
-- [x] **ACCESS-02**: Role utility functions (`checkRole()`, `requireRole()`) available for server components
+- [x] **ACCESS-02**: Role utility functions (`requireRole()`) available for server components
 
 ### Navigation
 
