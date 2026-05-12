@@ -36,28 +36,25 @@ beforeEach(() => {
 });
 
 describe('clerkAuth fixture', () => {
-  it('mockDemoSession resolves mockAuth with role demo', async () => {
+  it('mockDemoSession resolves mockAuth with roles containing demo', async () => {
     mockDemoSession();
-    await expect(mockAuth()).resolves.toEqual({
-      userId: 'u1',
-      sessionClaims: { metadata: { role: 'demo' } },
-    });
+    const result = await mockAuth();
+    expect(result.userId).toBe('u1');
+    expect(result.sessionClaims.metadata.roles).toContain('demo');
   });
 
-  it('mockNonDemoSession defaults to role user', async () => {
+  it('mockNonDemoSession defaults to roles containing user', async () => {
     mockNonDemoSession();
-    await expect(mockAuth()).resolves.toEqual({
-      userId: 'u1',
-      sessionClaims: { metadata: { role: 'user' } },
-    });
+    const result = await mockAuth();
+    expect(result.userId).toBe('u1');
+    expect(result.sessionClaims.metadata.roles).toContain('user');
   });
 
   it('mockNonDemoSession accepts an explicit non-demo role (admin)', async () => {
     mockNonDemoSession('admin');
-    await expect(mockAuth()).resolves.toEqual({
-      userId: 'u1',
-      sessionClaims: { metadata: { role: 'admin' } },
-    });
+    const result = await mockAuth();
+    expect(result.userId).toBe('u1');
+    expect(result.sessionClaims.metadata.roles).toContain('admin');
   });
 
   it('mockUnauthenticatedSession resolves with null userId and null claims', async () => {

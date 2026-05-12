@@ -32,7 +32,7 @@ export default clerkMiddleware(async (auth, request) => {
       return NextResponse.redirect(url);
     }
 
-    if (sessionClaims?.metadata?.role !== 'demo') {
+    if (!sessionClaims?.metadata?.roles?.includes('demo')) {
       const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }
