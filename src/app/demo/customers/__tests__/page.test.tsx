@@ -1,13 +1,20 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import CustomersPage from "../page";
+import {
+  clerkAuthMockFactory,
+  nextNavigationMockFactory,
+  mockAuth,
+  mockDemoSession,
+  mockNonDemoSession,
+  mockUnauthenticatedSession,
+} from "@/test/fixtures/clerkAuth";
 
-// Mock dependencies
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-  usePathname: jest.fn(() => "/demo/customers"),
-}));
+// Mock dependencies — jest.mock calls are hoisted above all imports (Pattern C
+// from src/lib/auth.test.ts). The 28-01 factory imports above are hoisted
+// alongside, so the references inside the factory arrows resolve correctly.
+jest.mock("@clerk/nextjs/server", () => clerkAuthMockFactory());
+jest.mock("next/navigation", () => nextNavigationMockFactory());
+
+import { render, screen } from "@testing-library/react";
+import CustomersPage from "../page";
 
 // Mock @clerk/nextjs components used by Header
 jest.mock("@clerk/nextjs", () => ({
@@ -73,43 +80,77 @@ const mockCustomers: CustomerWithStats[] = [
   },
 ];
 
-describe("CustomersPage - MIG-02 Design System Migration", () => {
+describe("CustomersPage - MIG-02 Design System Migration (RSC harness)", () => {
   beforeEach(() => {
+    mockAuth.mockReset();
+    mockDemoSession();
     jest.clearAllMocks();
     (getCustomers as jest.Mock).mockResolvedValue(mockCustomers);
   });
 
+  // ---------------------------------------------------------------------------
+  // Redirect-branch coverage (D-05 inner guard).
+  // Mirrors src/app/demo/customers/[id]/page.test.tsx pattern.
+  // ---------------------------------------------------------------------------
+
+  describe("requireRole('demo') guard", () => {
+    it("redirects to /sign-in when userId is missing (unauthenticated)", async () => {
+      mockUnauthenticatedSession();
+
+      await expect(CustomersPage()).rejects.toMatchObject({ url: "/sign-in" });
+    });
+
+    it("redirects to / when role is user (non-demo)", async () => {
+      mockNonDemoSession("user");
+
+      await expect(CustomersPage()).rejects.toMatchObject({ url: "/" });
+    });
+
+    it("redirects to / when role is admin (any non-demo role)", async () => {
+      mockNonDemoSession("admin");
+
+      await expect(CustomersPage()).rejects.toMatchObject({ url: "/" });
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Design-system token coverage. The rendered DOM (after `await CustomersPage()`)
+  // includes the CustomersList client child JSX, so design-token assertions
+  // continue to work against the same selectors used pre-Phase-28 — only the
+  // setup harness changed.
+  //
+  // NOTE: skeleton-related and error-state assertions are intentionally
+  // removed — Phase 28 dropped both branches (data is pre-resolved server-side;
+  // the mock service does not throw at the page layer).
+  // ---------------------------------------------------------------------------
+
   describe("Card component wrapper", () => {
     it("renders Card component for customer list container", async () => {
-      render(<CustomersPage />);
+      const element = await CustomersPage();
+      render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
-      // Card component should be present - verify by checking page renders correctly
-      // Multiple "Customers" elements exist (sidebar, header, page title)
+      // Multiple "Customers" elements exist (sidebar, header, page title).
       const customersElements = screen.getAllByText("Customers");
       expect(customersElements.length).toBeGreaterThan(0);
     });
 
     it("does not use hardcoded rounded-[15px]", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
-      const hardcodedRadius = container.querySelectorAll('.rounded-\\[15px\\]');
+      const hardcodedRadius = container.querySelectorAll(".rounded-\\[15px\\]");
       expect(hardcodedRadius.length).toBe(0);
     });
 
     it("does not use hardcoded shadow-[0_3.5px_5px_rgba...]", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const allElements = container.querySelectorAll("*");
       let hasHardcodedShadow = false;
@@ -128,44 +169,40 @@ describe("CustomersPage - MIG-02 Design System Migration", () => {
 
   describe("No hardcoded gray-* classes", () => {
     it("does not use hardcoded bg-gray-200", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const hardcodedBg = container.querySelectorAll(".bg-gray-200");
       expect(hardcodedBg.length).toBe(0);
     });
 
     it("does not use hardcoded text-gray-300", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const hardcodedText = container.querySelectorAll(".text-gray-300");
       expect(hardcodedText.length).toBe(0);
     });
 
     it("does not use hardcoded text-gray-400", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const hardcodedText = container.querySelectorAll(".text-gray-400");
       expect(hardcodedText.length).toBe(0);
     });
 
     it("does not use hardcoded hover:bg-gray-50", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const hardcodedHover = container.querySelectorAll(".hover\\:bg-gray-50");
       expect(hardcodedHover.length).toBe(0);
@@ -173,55 +210,41 @@ describe("CustomersPage - MIG-02 Design System Migration", () => {
   });
 
   describe("Design tokens usage", () => {
-    it("uses bg-[var(--divider)] for skeleton backgrounds", () => {
-      // Force loading state
-      (getCustomers as jest.Mock).mockImplementation(() => new Promise(() => {}));
-
-      const { container } = render(<CustomersPage />);
-
-      const tokenBg = container.querySelectorAll('.bg-\\[var\\(--divider\\)\\]');
-      expect(tokenBg.length).toBeGreaterThan(0);
-    });
-
     it("uses text-[var(--text-secondary)] for secondary text", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const tokenText = container.querySelectorAll('.text-\\[var\\(--text-secondary\\)\\]');
       expect(tokenText.length).toBeGreaterThan(0);
     });
 
     it("uses hover:bg-[var(--bg-page)] for row hover", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Greenfield Farms")).toBeInTheDocument();
 
       const tokenHover = container.querySelectorAll('.hover\\:bg-\\[var\\(--bg-page\\)\\]');
       expect(tokenHover.length).toBeGreaterThan(0);
     });
 
     it("uses border-[var(--divider)] for input border", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByPlaceholderText("Search customers by name...")).toBeInTheDocument();
-      });
+      expect(screen.getByPlaceholderText("Search customers by name...")).toBeInTheDocument();
 
       const tokenBorder = container.querySelectorAll('.border-\\[var\\(--divider\\)\\]');
       expect(tokenBorder.length).toBeGreaterThan(0);
     });
 
     it("uses focus:border-[var(--primary)] for input focus", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByPlaceholderText("Search customers by name...")).toBeInTheDocument();
-      });
+      expect(screen.getByPlaceholderText("Search customers by name...")).toBeInTheDocument();
 
       const tokenFocus = container.querySelectorAll('.focus\\:border-\\[var\\(--primary\\)\\]');
       expect(tokenFocus.length).toBeGreaterThan(0);
@@ -232,43 +255,26 @@ describe("CustomersPage - MIG-02 Design System Migration", () => {
     it("empty state icon uses text-[var(--text-secondary)]", async () => {
       (getCustomers as jest.Mock).mockResolvedValue([]);
 
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        // Multiple elements say "No customers found", find them all
-        const noCustomersElements = screen.getAllByText("No customers found");
-        expect(noCustomersElements.length).toBeGreaterThan(0);
-      });
+      // Multiple elements say "No customers found" (aria-live + visible EmptyState).
+      const noCustomersElements = screen.getAllByText("No customers found");
+      expect(noCustomersElements.length).toBeGreaterThan(0);
 
       const tokenText = container.querySelectorAll('.text-\\[var\\(--text-secondary\\)\\]');
       expect(tokenText.length).toBeGreaterThan(0);
     });
   });
 
-  describe("Error state uses design tokens", () => {
-    it("error icon uses text-[var(--error)]", async () => {
-      (getCustomers as jest.Mock).mockRejectedValue(new Error("Network error"));
-
-      const { container } = render(<CustomersPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Error loading customers")).toBeInTheDocument();
-      });
-
-      const tokenError = container.querySelectorAll('.text-\\[var\\(--error\\)\\]');
-      expect(tokenError.length).toBeGreaterThan(0);
-    });
-  });
-
   describe("Status indicators use design tokens", () => {
     it("hasChanges dot uses bg-error token", async () => {
-      const { container } = render(<CustomersPage />);
+      const element = await CustomersPage();
+      const { container } = render(element);
 
-      await waitFor(() => {
-        expect(screen.getByText("Valley Ranch")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Valley Ranch")).toBeInTheDocument();
 
-      // bg-error is a utility class, not a var() token
+      // bg-error is a utility class, not a var() token.
       const errorDot = container.querySelectorAll(".bg-error");
       expect(errorDot.length).toBeGreaterThan(0);
     });
