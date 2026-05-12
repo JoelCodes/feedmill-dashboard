@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import DashboardLayout from "@/components/DashboardLayout";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import {
   UserPreferences,
@@ -52,11 +51,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="bg-bg-page flex h-screen">
-      <Sidebar />
-      <main className="flex flex-1 flex-col gap-6 overflow-auto p-6 pr-8">
-        <Header />
-
+    <DashboardLayout>
         <div className="mx-auto w-full max-w-2xl">
           {/* Notification Preferences Section */}
           <section className="mb-6">
@@ -135,7 +130,6 @@ export default function SettingsPage() {
             Save Preferences
           </Button>
         </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }
