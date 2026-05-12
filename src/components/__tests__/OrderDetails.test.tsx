@@ -12,6 +12,7 @@ import { Order } from "@/types/order";
 
 const mockOrder: Order = {
   id: "ORD-001",
+  customerId: "CUST-001",
   documentNumber: "12345",
   customer: "Test Farm",
   textureType: "Coarse",

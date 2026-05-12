@@ -15,6 +15,7 @@ describe("sortCustomersByRecentActivity", () => {
       completedOrders: 0,
       hasChanges: false,
       binAlertLevel: "none",
+      activeBins: 0,
     },
   });
 
