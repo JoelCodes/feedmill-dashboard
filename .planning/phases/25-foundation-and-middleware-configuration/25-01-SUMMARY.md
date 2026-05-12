@@ -7,6 +7,9 @@ dependency_graph:
   requires: []
   provides: [Role-type, CustomJwtSessionClaims, DashboardLayout-component]
   affects: [middleware, dashboard-pages]
+requirements-completed:
+  - ROLE-02
+  - NAV-02
 tech_stack:
   added: []
   patterns: [module-augmentation, client-component, layout-composition]

@@ -10,6 +10,9 @@ dependencies:
   provides: [demo-routes, demo-orders, demo-customers, demo-mill-production]
   affects: [navigation, routing]
 
+requirements-completed:
+  - ROUTE-01
+
 tech_stack:
   added: []
   patterns: [DashboardLayout-wrapper, pathname-remapping]

@@ -13,6 +13,9 @@ dependency_graph:
   affects:
     - src/components/Sidebar.tsx
 
+requirements-completed:
+  - NAV-01
+
 tech_stack:
   added: []
   patterns:
