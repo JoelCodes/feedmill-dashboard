@@ -6,12 +6,14 @@ import { getCustomerById } from '@/services/customers';
 import { getActivityEvents } from '@/services/activity';
 import { getBinsByCustomerId } from '@/services/bins';
 import { getOrdersByCustomerId } from '@/services/orders';
+import { requireRole } from '@/lib/auth';
 
 export default async function CustomerDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
+  await requireRole('demo');
   // CRITICAL: await params (Next.js 16 requirement)
   const { id } = await params;
 
