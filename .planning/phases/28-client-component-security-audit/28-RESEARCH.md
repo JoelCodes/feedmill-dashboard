@@ -516,22 +516,22 @@ return <OrdersTable orders={orders} />;
 | A4 | The mill-production filter strip (`<FilterPill>` with `activeStates` Set) and orders status filters can be cleanly extracted into a client child accepting `orders` as a prop, without changes to FilterPill itself | Code Examples §B / "Don't Hand-Roll" | If the existing component's state shape (e.g., `Set<ProductionState>` initialization timing) interferes with hydration, the refactor needs a thin wrapper. **Mitigation:** D-02's heuristic explicitly allows the wrapper approach. [VERIFIED via reading existing component shape — single `useState` init, no SSR-only state] |
 | A5 | `next build` will produce a smaller client bundle for `/demo/orders` after the refactor (services no longer pulled into the page chunk) | Runtime State Inventory verification | If bundle size doesn't drop, it indicates the service module is still being transitively imported by a client component. **Mitigation:** explicit verification step in the plan. [ASSUMED based on standard Next.js code-splitting; no measurement done yet] |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the audit findings table list the Header notifications fetch as in-scope or out-of-scope?**
    - What we know: D-07 says "all `/demo/*` app data is server-fetched"; Header is not under `/demo/*` but renders on `/demo/*` pages.
    - What's unclear: whether the user reads D-07 as "all data rendered on `/demo/*` pages" or "all data fetched from `/demo/*` URLs."
-   - Recommendation: planner asks once during plan-check; default position is **out of scope** with a one-line audit-table note.
+   - **RESOLVED:** Out of scope for Phase 28. Documented as a one-line audit-table footnote in `docs/security-patterns.md` §1 per plan 28-06. Reasoning: D-07 phrasing scopes to `/demo/*` URLs, not "all data rendered on `/demo/*` pages." Header notifications follow-up captured for a future phase.
 
 2. **Loading-state strategy during server-fetch transition: `<Suspense>` vs `loading.tsx` vs none?**
    - What we know: orders page already has `<Suspense>` for the `useSearchParams` boundary; mock services return effectively-synchronously; CONTEXT.md leaves this to planning.
    - What's unclear: whether the user wants a visible loading state for the data fetch itself or considers the existing `<Suspense>` (which now only covers client hydration) sufficient.
-   - Recommendation: keep the existing `<Suspense>` boundary (it still does its `useSearchParams` job); do not add a separate `loading.tsx` for the data fetch — document the decision in `docs/security-patterns.md` §2.
+   - **RESOLVED:** Keep the existing `<Suspense>` boundary (it still does its `useSearchParams` job). Do not add a separate `loading.tsx` for the data fetch. Decision encoded in plans 28-03 (orders) and 28-05 (mill-production); documented in `docs/security-patterns.md` §2 per plan 28-06.
 
 3. **Should `OrdersTable` be renamed (e.g., `OrdersTableClient`) when its signature changes from fetcher to prop-receiver?**
    - What we know: D-02 says existing client components keep interactivity; doesn't mandate renames.
    - What's unclear: code-review preference on whether changing a component's contract warrants a rename for grep-ability.
-   - Recommendation: planner picks; lean toward **in-place modification with no rename** since `OrdersTable` is referenced in 3+ files and a rename multiplies the diff.
+   - **RESOLVED:** In-place modification, no rename. Plan 28-03 extracts an `OrdersTableContent` inner component for the `<Suspense>` boundary but keeps the exported `OrdersTable` name. Reasoning: `OrdersTable` is referenced in 3+ files; a rename multiplies the diff and breaks existing test imports without adding clarity.
 
 ## Environment Availability
 
