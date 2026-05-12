@@ -88,10 +88,15 @@ export default function CustomersList({ customers }: CustomersListProps) {
 
         {/* Screen reader announcement for search results.
             Loading branch removed: data arrives via prop, so there is no
-            "loading customers" state at the client boundary. */}
+            "loading customers" state at the client boundary.
+
+            IN-01: the live-region copy intentionally differs from the
+            visible <EmptyState> headline ("No customers found") so screen
+            readers hear two distinct phrases for two distinct UI concerns
+            (search-result count vs. permanent empty-state copy). */}
         <div aria-live="polite" className="sr-only">
           {filteredCustomers.length === 0
-            ? 'No customers found'
+            ? 'Search returned no results'
             : `${filteredCustomers.length} customer${filteredCustomers.length !== 1 ? 's' : ''} found`}
         </div>
 

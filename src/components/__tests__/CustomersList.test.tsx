@@ -77,7 +77,9 @@ describe('CustomersList', () => {
   it('renders empty state ("No customers found") when customers is an empty array', () => {
     render(<CustomersList customers={[]} />);
 
-    // Two "No customers found" elements: aria-live region + visible EmptyState.
+    // One "No customers found" element: the visible <EmptyState>. The
+    // sr-only aria-live region announces "Search returned no results"
+    // (IN-01: two distinct phrases for the two distinct UI concerns).
     const noCustomersElements = screen.getAllByText('No customers found');
     expect(noCustomersElements.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/Try adjusting your search/)).toBeInTheDocument();

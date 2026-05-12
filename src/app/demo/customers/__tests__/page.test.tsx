@@ -303,7 +303,8 @@ describe("CustomersPage - MIG-02 Design System Migration (RSC harness)", () => {
       const element = await CustomersPage();
       const { container } = render(element);
 
-      // Multiple elements say "No customers found" (aria-live + visible EmptyState).
+      // One element says "No customers found" (the visible <EmptyState>);
+      // the aria-live region uses a distinct phrasing per IN-01.
       const noCustomersElements = screen.getAllByText("No customers found");
       expect(noCustomersElements.length).toBeGreaterThan(0);
 
