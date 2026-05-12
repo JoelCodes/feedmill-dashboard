@@ -11,9 +11,9 @@ import { test, expect } from '@playwright/test';
  */
 
 const protectedRoutes = [
-  '/orders',
-  '/customers',
-  '/mill-production',
+  '/demo/orders',
+  '/demo/customers',
+  '/demo/mill-production',
   '/settings',
 ] as const;
 
@@ -33,7 +33,7 @@ test.describe('Route Protection', () => {
   test.describe('PROT-02: Return URL preservation (D-06)', () => {
     test('return URL is preserved after redirect from /orders', async ({ page }) => {
       // Navigate to protected route
-      await page.goto('/orders');
+      await page.goto('/demo/orders');
 
       // Wait for redirect to complete
       await expect(page).toHaveURL(/\/sign-in/);
@@ -43,8 +43,8 @@ test.describe('Route Protection', () => {
       const returnBackUrl = url.searchParams.get('redirect_url');
 
       // Clerk uses redirect_url parameter (not returnBackUrl)
-      // The URL-encoded path should contain /orders
-      expect(returnBackUrl).toContain('/orders');
+      // The URL-encoded path should contain /demo/orders
+      expect(returnBackUrl).toContain('/demo/orders');
     });
   });
 });
