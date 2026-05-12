@@ -73,6 +73,43 @@ export function clerkAuthMockFactory() {
 const NOT_FOUND_DIGEST = 'NEXT_HTTP_ERROR_FALLBACK;404';
 
 /**
+ * Per-test mock state for `useSearchParams().get(key)` (IN-03). Consumer
+ * tests call `setMockSearchParam('selected', 'ORD-001')` to exercise
+ * deep-link code paths; the default `null` mirrors a no-query URL.
+ *
+ * Stored in a module-scoped `Map` so a single shared backing store is
+ * reachable from BOTH the factory closure (which constructs the
+ * `searchParamsObj` returned by `useSearchParams`) AND the `setMockSearchParam`
+ * / `resetMockSearchParams` helpers exported below.
+ */
+const _mockSearchParamsState = new Map<string, string | null>();
+
+/**
+ * Override the value returned by `useSearchParams().get(key)` in tests
+ * that exercise URL-driven code paths. Pair with `resetMockSearchParams()`
+ * in `afterEach` to keep tests isolated.
+ *
+ * Example:
+ *
+ *   beforeEach(resetMockSearchParams);
+ *   it('selects the deep-linked order on mount', () => {
+ *     setMockSearchParam('selected', 'ORD-001');
+ *     // ...render and assert ORD-001 is the selected row
+ *   });
+ */
+export function setMockSearchParam(key: string, value: string | null): void {
+  _mockSearchParamsState.set(key, value);
+}
+
+/**
+ * Clear all per-test overrides registered via `setMockSearchParam`. Call
+ * in `afterEach` (or `beforeEach`) to isolate tests.
+ */
+export function resetMockSearchParams(): void {
+  _mockSearchParamsState.clear();
+}
+
+/**
  * Factory for `jest.mock('next/navigation', () => nextNavigationMockFactory())`.
  *
  * Returns:
@@ -86,8 +123,28 @@ const NOT_FOUND_DIGEST = 'NEXT_HTTP_ERROR_FALLBACK;404';
  *     with safe defaults so consumer tests that render client children
  *     (Header, DashboardLayout, OrdersTable's deep-link sub-component, etc.)
  *     don't trip on undefined navigation hooks.
+ *
+ * WR-05/IN-03: `searchParamsObj` and `routerObj` are constructed ONCE per
+ * factory invocation (i.e., once per `jest.mock` setup), not once per
+ * `useSearchParams()` / `useRouter()` call. This matches real Next.js
+ * navigation hooks (stable reference per navigation), letting consumer
+ * `useEffect([searchParams])` deps work correctly under the fixture.
+ * Previously each call returned a fresh `{ get: ... }` reference, causing
+ * the effect to re-run every render — benign while `get` returns null but
+ * primed for an infinite `setState` loop the moment a test overrode `get`.
  */
 export function nextNavigationMockFactory() {
+  const searchParamsObj = {
+    get: (key: string) => _mockSearchParamsState.get(key) ?? null,
+  };
+  const routerObj = {
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    prefetch: jest.fn(),
+  };
   return {
     redirect: (url: string) => {
       throw Object.assign(new Error('NEXT_REDIRECT'), { url });
@@ -98,17 +155,8 @@ export function nextNavigationMockFactory() {
       });
     },
     usePathname: jest.fn(() => '/'),
-    useRouter: jest.fn(() => ({
-      push: jest.fn(),
-      replace: jest.fn(),
-      back: jest.fn(),
-      forward: jest.fn(),
-      refresh: jest.fn(),
-      prefetch: jest.fn(),
-    })),
-    useSearchParams: jest.fn(() => ({
-      get: jest.fn(() => null),
-    })),
+    useRouter: jest.fn(() => routerObj),
+    useSearchParams: jest.fn(() => searchParamsObj),
   };
 }
 
