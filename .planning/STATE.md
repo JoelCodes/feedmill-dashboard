@@ -2,19 +2,20 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
-status: planning
-last_updated: "2026-05-12T21:21:19.533Z"
-last_activity: 2026-05-12 — Completed quick task 260512-kfy: Refactor user role to roles (Clerk Dashboard cutover pending)
+status: active
+last_updated: "2026-05-12"
+last_activity: 2026-05-12 — v2.0 roadmap created (Phases 31-35)
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
   percent: 0
 ---
 
-# Project State: Between Milestones
+# Project State: v2.0 Mill Production MVP
 
+**Milestone:** v2.0 Mill Production MVP
 **Last shipped:** v1.5 Production Transition (2026-05-12)
 **Last updated:** 2026-05-12
 
@@ -24,14 +25,21 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Planning next milestone — run `/gsd-new-milestone` to scope.
+**Current focus:** Phase 31 — Role Expansion and DB Infrastructure
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-12 — Milestone v2.0 started
+**Phase:** 31 — Role Expansion and DB Infrastructure
+**Plan:** —
+**Status:** Not started
+**Last activity:** 2026-05-12 — Roadmap created
+
+### Progress Bar
+
+```
+v2.0 Progress: [░░░░░░░░░░] 0/5 phases complete
+Phase 31 ░  Phase 32 ░  Phase 33 ░  Phase 34 ░  Phase 35 ░
+```
 
 ## Performance Metrics
 
@@ -43,23 +51,55 @@ Last activity: 2026-05-12 — Milestone v2.0 started
 - **Timeline:** 3 days (2026-05-10 → 2026-05-12)
 - **Audit:** passed (re-audit #3, all gaps closed)
 
-**Cumulative across milestones:** see `.planning/MILESTONES.md` and `.planning/RETROSPECTIVE.md`
+**Cumulative across milestones:** see `.planning/MILESTONES.md`
 
 ## Accumulated Context
 
 ### Open Blockers
 
-_None._
+**Manual Clerk Dashboard cutover pending (from quick task 260512-kfy):**
+
+The `roles[]` refactor is code-complete but the Clerk Dashboard JWT template and demo user `publicMetadata` have not been migrated yet. Until this is done, `/demo/*` redirects all users to `/` (including the demo user). This is a one-time operator action — not a phase requirement.
+
+**Runbook** (from `260512-kfy-01-SUMMARY.md`):
+1. `Sessions → Customize session token` → replace body: `{"metadata": {"roles": "{{user.public_metadata.roles}}"}}`
+2. Users → demo user → Edit publicMetadata → `{"roles": ["demo"]}`
+3. If admin user exists: `{"roles": ["admin"]}`
+4. Leave norole user untouched (no `publicMetadata.roles` field — do NOT write empty array)
+5. Sign out of active dev sessions. Sign back in as demo user.
+6. Navigate to `/demo/orders` — confirm page renders (no redirect)
+7. Decode `__session` cookie at `jwt.io` — confirm `"metadata": {"roles": ["demo"]}`
+8. Sign out, sign in as norole user, navigate to `/demo/orders` — confirm redirect to `/`
+
+**Resume signal:** Type "dashboard migrated" to confirm cutover complete.
 
 ### Carried Deferred Items
 
 - Production E2E automation requires custom domain to disable Clerk 2FA (carried from v1.4)
-- KPI Cards display computed values + click-to-filter (carried from v1.0)
+- KPI Cards display computed values + click-to-filter (carried from v1.0 — closes in Phase 35)
 - 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 deferred from Phase 27)
 
-### Implementation Notes
+### Key Implementation Notes (v2.0 decisions pre-loaded)
 
-_None pending — full decision log lives in PROJECT.md Key Decisions table._
+**Role shape:** `roles: Role[]` (plural array) is the canonical shape after quick task 260512-kfy. All v2.0 auth work uses `roles.includes('mill_operator')` — no singular `role` field.
+
+**DB driver:** Use `@neondatabase/serverless` with `drizzle-orm/neon-http`. `import 'server-only'` in `src/db/index.ts` is mandatory — prevents Edge-runtime contamination. `DATABASE_URL` = pooled endpoint; `DATABASE_URL_UNPOOLED` = direct (migrations only).
+
+**Migration discipline:** `drizzle-kit generate` + `drizzle-kit migrate` from day 1. `drizzle-kit push` is banned after initial schema is created.
+
+**Mutation invariant:** Every server action that mutates data must call `revalidateTag('production-orders')` before returning. This is a definition-of-done checklist item for every action in Phase 33.
+
+**Concurrency control:** `version INTEGER DEFAULT 1` must be in the initial `production_orders` schema. Adding it retroactively cascades into all action signatures.
+
+**URL state:** Use `nuqs` 2.8.9 with `createSearchParamsCache` for async `searchParams` unwrapping in RSC (required by Next.js 16 — `searchParams` is a Promise).
+
+**XLSX import library:** `read-excel-file` 9.0.9 only. `xlsx`/SheetJS npm version has unpatched CVE-2023-30533.
+
+**Polling:** 30-second interval via `setInterval(() => router.refresh(), 30_000)`. Named constant `REFRESH_INTERVAL_MS = 30_000`. No SSE or Pusher for v2.0.
+
+**Sidebar nav:** Production nav condition is `!pathname.startsWith('/demo/')` — not a `/production/` prefix check.
+
+**force-dynamic:** Apply `export const dynamic = 'force-dynamic'` only to live-data pages (`/`). Do not apply to settings or static pages.
 
 ### Quick Tasks Completed
 
@@ -67,20 +107,16 @@ _None pending — full decision log lives in PROJECT.md Key Decisions table._
 |---|-------------|------|--------|-----------|
 | 260512-kfy | Refactor user role to roles | 2026-05-12 | cd32cd4 | [260512-kfy-refactor-user-role-to-roles](./quick/260512-kfy-refactor-user-role-to-roles/) |
 
-**Manual cutover pending:** Clerk Dashboard JWT template + demo test user `publicMetadata` must be migrated to plural shape before sign-in works again. See `260512-kfy-01-SUMMARY.md` → "Manual cutover pending" for runbook steps.
-
 ## Session Continuity
 
 **Context for next session:**
 
-v1.5 milestone is shipped and archived. The demo namespace is established under `/demo/*` with role-based access control; `/` renders Coming Soon under the shared DashboardLayout. The codebase is integration-clean per the v1.5 audit.
+v2.0 roadmap is defined with 5 phases (31-35) following the dependency-layer build order from ARCHITECTURE.md: role infrastructure → schema → server actions/import → production UI → KPI sections. All 38 v2.0 requirements are mapped.
 
-**Next step:** Run `/gsd-new-milestone` to scope and plan the next milestone.
+The Clerk Dashboard manual cutover (quick task 260512-kfy Task 3) is still pending and must be completed before Phase 31 work can be fully validated.
+
+**Next step:** Run `/gsd-plan-phase 31` to plan Phase 31 (Role Expansion and DB Infrastructure).
 
 ---
-*State updated: 2026-05-12 after v1.5 milestone close*
+*State updated: 2026-05-12 — v2.0 roadmap created (Phases 31-35)*
 *Auto-updated by GSD workflow*
-
-## Operator Next Steps
-
-- Start the next milestone with `/gsd-new-milestone`

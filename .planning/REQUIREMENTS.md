@@ -122,16 +122,53 @@ Reasoning preserved so future milestones don't relitigate decisions.
 
 ## Traceability
 
-_Phase mapping filled in by the roadmapper after roadmap creation._
-
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DATA-01..08 | — | Pending |
-| AUTH-01..04 | — | Pending |
-| PROD-01..11 | — | Pending |
-| TRANS-01..07 | — | Pending |
-| IMPORT-01..07 | — | Pending |
-| KPI-01..08 | — | Pending |
+| AUTH-01 | Phase 31 | Pending |
+| AUTH-02 | Phase 31 | Pending |
+| AUTH-03 | Phase 31 | Pending |
+| AUTH-04 | Phase 31 | Pending |
+| DATA-01 | Phase 31 | Pending |
+| DATA-08 | Phase 31 | Pending |
+| DATA-02 | Phase 32 | Pending |
+| DATA-03 | Phase 32 | Pending |
+| DATA-04 | Phase 32 | Pending |
+| DATA-05 | Phase 32 | Pending |
+| DATA-06 | Phase 32 | Pending |
+| DATA-07 | Phase 32 | Pending |
+| TRANS-01 | Phase 33 | Pending |
+| TRANS-02 | Phase 33 | Pending |
+| TRANS-03 | Phase 33 | Pending |
+| TRANS-04 | Phase 33 | Pending |
+| TRANS-05 | Phase 33 | Pending |
+| TRANS-06 | Phase 33 | Pending |
+| TRANS-07 | Phase 33 | Pending |
+| IMPORT-01 | Phase 33 | Pending |
+| IMPORT-02 | Phase 33 | Pending |
+| IMPORT-03 | Phase 33 | Pending |
+| IMPORT-04 | Phase 33 | Pending |
+| IMPORT-05 | Phase 33 | Pending |
+| IMPORT-06 | Phase 33 | Pending |
+| IMPORT-07 | Phase 33 | Pending |
+| PROD-01 | Phase 34 | Pending |
+| PROD-02 | Phase 34 | Pending |
+| PROD-03 | Phase 34 | Pending |
+| PROD-04 | Phase 34 | Pending |
+| PROD-05 | Phase 34 | Pending |
+| PROD-06 | Phase 34 | Pending |
+| PROD-07 | Phase 34 | Pending |
+| PROD-08 | Phase 34 | Pending |
+| PROD-09 | Phase 34 | Pending |
+| PROD-10 | Phase 34 | Pending |
+| PROD-11 | Phase 34 | Pending |
+| KPI-01 | Phase 35 | Pending |
+| KPI-02 | Phase 35 | Pending |
+| KPI-03 | Phase 35 | Pending |
+| KPI-04 | Phase 35 | Pending |
+| KPI-05 | Phase 35 | Pending |
+| KPI-06 | Phase 35 | Pending |
+| KPI-07 | Phase 35 | Pending |
+| KPI-08 | Phase 35 | Pending |
 
 ---
 
@@ -147,4 +184,4 @@ _Phase mapping filled in by the roadmapper after roadmap creation._
 
 ---
 
-*Last updated: 2026-05-12 — initial v2.0 requirements*
+*Last updated: 2026-05-12 — traceability table filled in by roadmapper (Phases 31-35)*
