@@ -30,11 +30,6 @@ const getPageTitle = (path: string): string => {
   if (path === '/') return 'Coming Soon';
   if (path.startsWith('/settings')) return 'Settings';
 
-  // Legacy routes (404 fallback)
-  if (path.startsWith('/orders')) return 'Orders';
-  if (path.startsWith('/mill-production')) return 'Production';
-  if (path.startsWith('/customers')) return 'Customers';
-
   return 'Dashboard';
 };
 
