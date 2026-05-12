@@ -203,10 +203,17 @@ export default function OrdersTable({ orders, selectedOrderId, onSelectOrder, ex
     }
   }, [validSelectedId, filteredOrders, selectedOrderId, handleSelectOrder]);
 
-  // Scroll selected row into view when keyboard navigating
+  // Scroll selected row into view when keyboard navigating.
+  // `CSS.escape` is defensive: `Order.id` is internal (`ORD-001` shape), so
+  // no CSS-meta characters can reach this line today, but the `validSelectedId`
+  // gate is value-equality only — if `Order.id` ever widens to allow
+  // user-influenced strings (imported IDs, free-text supplied IDs), an
+  // unescaped interpolation would be a `querySelector` injection vector.
   useEffect(() => {
     if (validSelectedId && tableRef.current) {
-      const selectedRow = tableRef.current.querySelector(`[data-order-id="${validSelectedId}"]`);
+      const selectedRow = tableRef.current.querySelector(
+        `[data-order-id="${CSS.escape(validSelectedId)}"]`,
+      );
       if (selectedRow) {
         selectedRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
