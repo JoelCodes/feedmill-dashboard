@@ -73,6 +73,16 @@ const mockOrders: Order[] = [
   },
 ];
 
+// jsdom does not implement Element.prototype.scrollIntoView. Post-refactor,
+// OrdersTable receives orders synchronously via prop, so its auto-select
+// useEffect fires immediately after first render and triggers OrdersTable's
+// "scroll selected row into view" useEffect — which calls scrollIntoView.
+// Stub it before any render to avoid crashes. Equivalent to the
+// react-testing-library "jsdom misses element API X" canonical workaround.
+beforeAll(() => {
+  Element.prototype.scrollIntoView = jest.fn();
+});
+
 describe("OrdersPage - MIG-01 Design System Migration", () => {
   beforeEach(() => {
     mockAuth.mockReset();
