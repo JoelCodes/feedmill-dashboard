@@ -57,13 +57,13 @@ Plans:
   2. Users without demo role are redirected to root when attempting to access /demo/* pages
   3. Server components can check roles programmatically using utility functions
   4. All users regardless of role can access /settings page
-**Plans:** 5 plans
+**Plans:** 3/5 plans executed
 
 Plans:
 **Wave 1** *(parallelizable — file-disjoint)*
-- [ ] 27-01-PLAN.md — src/lib/auth.ts utilities (checkRole + requireRole) via TDD
-- [ ] 27-02-PLAN.md — src/middleware.ts migration to sessionClaims (TDD)
-- [ ] 27-03-PLAN.md — docs/clerk-setup.md runbook + .env.example E2E keys
+- [x] 27-01-PLAN.md — src/lib/auth.ts utilities (checkRole + requireRole) via TDD
+- [x] 27-02-PLAN.md — src/middleware.ts migration to sessionClaims (TDD)
+- [x] 27-03-PLAN.md — docs/clerk-setup.md runbook + .env.example E2E keys
 
 **Wave 2** *(blocked on 27-03; manual Clerk Dashboard work)*
 - [ ] 27-04-PLAN.md — Clerk Dashboard JWT template + test users (autonomous: false)
@@ -87,7 +87,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 25. Foundation and Middleware Configuration | 2/2 | Complete    | 2026-05-11 |
 | 26. Route Restructuring and Migration | 3/3 | Complete    | 2026-05-11 |
-| 27. Role Assignment and Testing | 0/5 | Planned | - |
+| 27. Role Assignment and Testing | 3/5 | In Progress|  |
 | 28. Client Component Security Audit | 0/? | Not started | - |
 
 ## Research Flags
