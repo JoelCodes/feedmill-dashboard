@@ -23,7 +23,7 @@ jest.mock('@clerk/nextjs/server', () => clerkAuthMockFactory());
 jest.mock('next/navigation', () => nextNavigationMockFactory());
 
 import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import {
   mockAuth,
   mockDemoSession,
@@ -88,6 +88,20 @@ describe('clerkAuth fixture', () => {
     }
     expect(caught).toBeInstanceOf(Error);
     expect(caught).toMatchObject({ url: '/' });
+  });
+
+  it('notFound mock throws an error whose digest matches real Next.js (;404 suffix)', () => {
+    let caught: unknown;
+    try {
+      notFound();
+    } catch (err) {
+      caught = err;
+    }
+    expect(caught).toBeInstanceOf(Error);
+    // Real Next.js 16 emits `digest: 'NEXT_HTTP_ERROR_FALLBACK;404'`; the
+    // fixture mirrors that shape so future error-boundary code paths that
+    // branch on `.digest` will be tested against the production shape.
+    expect(caught).toMatchObject({ digest: expect.stringContaining(';404') });
   });
 
   it('clerkAuthMockFactory.auth() invokes the exported mockAuth fn (closure proof)', async () => {

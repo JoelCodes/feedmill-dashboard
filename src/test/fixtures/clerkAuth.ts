@@ -60,14 +60,28 @@ export function clerkAuthMockFactory() {
 }
 
 /**
+ * Digest emitted by real Next.js `notFound()` (see
+ * `node_modules/next/dist/client/components/not-found.js` — the installed
+ * Next 16 throws an Error whose message AND `digest` property both equal
+ * `'NEXT_HTTP_ERROR_FALLBACK;404'`). Mirroring this in the fixture means
+ * consumer tests can assert against the real shape (`{ digest:
+ * expect.stringContaining(';404') }`), and a future error-boundary that
+ * distinguishes 404 throws via `error.digest?.startsWith(
+ * 'NEXT_HTTP_ERROR_FALLBACK;404')` will be tested against the same shape
+ * production sees.
+ */
+const NOT_FOUND_DIGEST = 'NEXT_HTTP_ERROR_FALLBACK;404';
+
+/**
  * Factory for `jest.mock('next/navigation', () => nextNavigationMockFactory())`.
  *
  * Returns:
  *   - `redirect(url)` — throws `Object.assign(new Error('NEXT_REDIRECT'), { url })`,
  *     mirroring real Next.js runtime so callers do not continue past the
  *     redirect call.
- *   - `notFound()` — throws `Object.assign(new Error('NEXT_NOT_FOUND'), {})`,
- *     same sentinel-throw shape so `customers/[id]` 404 tests work uniformly.
+ *   - `notFound()` — throws an Error whose message and `digest` property are
+ *     both `'NEXT_HTTP_ERROR_FALLBACK;404'`, matching the real Next.js 16
+ *     runtime so `customers/[id]` 404 tests assert against the production shape.
  *   - `usePathname`, `useRouter`, `useSearchParams` — `jest.fn()` placeholders
  *     with safe defaults so consumer tests that render client children
  *     (Header, DashboardLayout, OrdersTable's deep-link sub-component, etc.)
@@ -79,7 +93,9 @@ export function nextNavigationMockFactory() {
       throw Object.assign(new Error('NEXT_REDIRECT'), { url });
     },
     notFound: () => {
-      throw Object.assign(new Error('NEXT_NOT_FOUND'), {});
+      throw Object.assign(new Error(NOT_FOUND_DIGEST), {
+        digest: NOT_FOUND_DIGEST,
+      });
     },
     usePathname: jest.fn(() => '/'),
     useRouter: jest.fn(() => ({

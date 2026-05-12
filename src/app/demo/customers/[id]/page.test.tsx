@@ -106,13 +106,14 @@ describe('CustomerDetailPage', () => {
     (getActivityEvents as jest.Mock).mockResolvedValue([]);
 
     // The 28-01 nextNavigationMockFactory's `notFound` is a sentinel-throw
-    // (throws `Object.assign(new Error('NEXT_NOT_FOUND'), {})`) — it mirrors
-    // real Next.js runtime behavior, so we assert by catching the throw rather
-    // than spying on a jest.fn(). This is the canonical pattern for both
-    // redirect and notFound branches across all 28-02..28-05 page tests.
+    // whose `digest` property matches real Next.js 16
+    // (`'NEXT_HTTP_ERROR_FALLBACK;404'`). Assert the digest shape rather
+    // than the synthetic message — this keeps the test compatible with any
+    // future error-boundary that distinguishes 404s via
+    // `error.digest?.startsWith('NEXT_HTTP_ERROR_FALLBACK;404')`.
     await expect(
       CustomerDetailPage({ params: Promise.resolve({ id: 'INVALID-999' }) }),
-    ).rejects.toThrow('NEXT_NOT_FOUND');
+    ).rejects.toMatchObject({ digest: expect.stringContaining(';404') });
   });
 
   it('renders CustomerDetailHeader with customer stats', async () => {
