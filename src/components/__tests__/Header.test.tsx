@@ -136,4 +136,12 @@ describe("Header - UserButton Integration", () => {
     expect(skeleton).toHaveClass("rounded-full");
     expect(skeleton).toHaveClass("animate-pulse");
   });
+
+  it("renders 'Dashboard' title when pathname is the legacy /orders (dead branch removed)", () => {
+    render(<Header />);
+
+    // After D-11 dead branch deletion, /orders falls through to the default 'Dashboard' return.
+    // This test fails (RED) while the legacy startsWith('/orders') branch still exists in Header.tsx.
+    expect(screen.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
+  });
 });
