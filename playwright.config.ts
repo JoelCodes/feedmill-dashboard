@@ -19,6 +19,13 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      // Narrowed per Phase 27 Plan 05: chromium runs unauthenticated specs only.
+      // - global.setup.ts runs under its own 'global setup' project.
+      // - demo-route-protection.spec.ts (authenticated) runs under demo-user/norole-user.
+      // - demo-route-protection-unauth.spec.ts (unauthenticated PROT-03 regression)
+      //   MUST still run under chromium; the trailing `$` on the regex prevents
+      //   the testIgnore from matching the -unauth variant.
+      testIgnore: [/global\.setup\.ts/, /demo-route-protection\.spec\.ts$/],
       use: { ...devices['Desktop Chrome'] },
     },
     {
@@ -30,6 +37,28 @@ export default defineConfig({
       },
       retries: 0,
       timeout: 30000,
+    },
+    {
+      name: 'global setup',
+      testMatch: /global\.setup\.ts/,
+    },
+    {
+      name: 'demo-user',
+      testMatch: /demo-route-protection\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.clerk/demo.json',
+      },
+      dependencies: ['global setup'],
+    },
+    {
+      name: 'norole-user',
+      testMatch: /demo-route-protection\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.clerk/norole.json',
+      },
+      dependencies: ['global setup'],
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL

@@ -49,4 +49,29 @@ Same set of pre-existing tsc errors documented above — independently confirmed
 
 ---
 
+## From 27-05 (Playwright @clerk/testing wiring + D-11 scenarios)
+
+**Discovered:** 2026-05-12 during Task 5 (full Playwright suite run)
+
+Items 1, 2, 3 above reproduce identically at base commit `526f7d9` — verified by `git stash --include-untracked && git checkout 526f7d9 -- . && npm test -- --testPathIgnorePatterns="e2e/"` returning the same 14-test failure count (settings page test suite, drifted mocks). Item 1's spec-count rose from 3 to 4 because Plan 27-05 added `e2e/demo-route-protection-unauth.spec.ts`, but the underlying issue (Jest scanning `e2e/`) is the same.
+
+### 4. Tailwind v4 dev-server build cache: malformed `text-[var(--text-*)]` rule from `.planning/**/*.md`
+
+- **File:** `src/app/globals.css:4` (`@source not "../../.planning"`) — directive does not appear to recursively exclude `.planning/**/*.md`.
+- **Symptom:** A literal occurrence of `text-[var(--text-*)]` inside a Phase 18 UI review markdown (`.planning/milestones/v1.3-phases/18-page-migration/18-UI-REVIEW.md`) is picked up by Tailwind v4's content scanner and compiled into a malformed CSS rule `.text-[var(--text-*)] { color: var(--text-*); }`. LightningCSS rejects with `Unexpected token Delim('*')`. The Next.js dev server then reports `Build Error — Parsing CSS source code failed` and refuses to serve `/sign-in`. `clerk.signIn` times out at `page.waitForFunction(() => window.Clerk?.loaded)` because Clerk never hydrates on the build-error page.
+- **Trigger:** Plan 27-05 Task 5 hit this when Playwright started a fresh dev server during its first run. After killing the stale dev server, clearing `.next`, and starting a clean dev server (`PLAYWRIGHT_BASE_URL= npm run dev`), the build error did NOT recur — the suite went green (20 passed, 4 skipped per project-conditional skip).
+- **Workaround applied for this plan:** Killed stale dev servers, ran `rm -rf .next`, started fresh `npm run dev`, re-ran with `PLAYWRIGHT_BASE_URL=http://localhost:3000 npx playwright test ...` to override the `.env.local` production-URL leak.
+- **Suggested permanent fix:** Replace `@source not "../../.planning"` with a more aggressive glob, e.g. `@source not "../../.planning/**/*"; @source not "../../**/*.md";`. Out of scope for Phase 27.
+- **Pre-existence:** The offending markdown literal in `18-UI-REVIEW.md` predates Phase 27 (v1.3 Phase 18). The Tailwind v4 content-scanning behavior is pre-existing. The build-error trigger appears latent and cache-state dependent.
+
+### 5. `.env.local` contains `PLAYWRIGHT_BASE_URL` pointing at the production deployment
+
+- **File:** `.env.local` (gitignored, main-repo root) contains `PLAYWRIGHT_BASE_URL=https://feedmill-dashboard.vercel.app`.
+- **Symptom:** Without override, `playwright.config.ts` lines 16, 29, and 64 all default to `process.env.PLAYWRIGHT_BASE_URL`, which routes ALL Playwright projects (including the new `demo-user` and `norole-user` projects) to the production deployment. This skips the local `webServer` block and runs E2E against production middleware — which does NOT yet have Phase 27's `sessionClaims`-based role logic deployed.
+- **Workaround applied for this plan:** Run with explicit override `PLAYWRIGHT_BASE_URL=http://localhost:3000 npx playwright test ...` so the suite targets the local dev server (which has Plan 27-02's middleware changes).
+- **Suggested permanent fix:** Either (a) move `PLAYWRIGHT_BASE_URL` out of `.env.local` (production-smoke can set it explicitly via shell) or (b) namespace the production URL to a dedicated `PRODUCTION_BASE_URL` and update `production-smoke.spec.ts` accordingly. Out of scope for Phase 27.
+- **Pre-existence:** The env-var leak predates Phase 27 (production-smoke was the original consumer in v1.4). Phase 27 simply surfaced the conflict because it's the first phase whose E2E suite is meant to run against `localhost`.
+
+---
+
 **Audit trail:** All categories verified pre-existing by temporarily reverting the Phase 27 changes and re-running the failing commands — failures persist identically. None of these belong inside Phase 27 scope (role assignment); they should be addressed by a dedicated test-hygiene plan in a future milestone.
