@@ -120,7 +120,7 @@ function TimelineItem({ event, isExpanded, showConnector, onToggle }: TimelineIt
               Status: {event.orderStatus}
             </p>
             <Link
-              href={`/orders?selected=${event.orderId}`}
+              href={`/demo/orders?selected=${event.orderId}`}
               className="mt-1 inline-block leading-[1.5] font-normal text-[var(--fs-10)] text-[var(--primary)] underline"
             >
               View Order Details
