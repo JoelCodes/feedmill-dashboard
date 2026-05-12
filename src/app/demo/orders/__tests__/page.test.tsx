@@ -1,16 +1,21 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import OrdersPage from "../page";
+import {
+  clerkAuthMockFactory,
+  nextNavigationMockFactory,
+  mockAuth,
+  mockDemoSession,
+  mockNonDemoSession,
+  mockUnauthenticatedSession,
+} from "@/test/fixtures/clerkAuth";
 
-// Mock dependencies
-jest.mock("next/navigation", () => ({
-  useSearchParams: jest.fn(() => ({
-    get: jest.fn(() => null),
-  })),
-  useRouter: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-  usePathname: jest.fn(() => "/demo/orders"),
-}));
+// Mock dependencies — jest.mock calls are hoisted above all imports.
+// The 28-01 factory imports above are hoisted alongside, so the
+// references inside the factory arrows resolve correctly. Canonical
+// pattern consumed identically across 28-02..28-05.
+jest.mock("@clerk/nextjs/server", () => clerkAuthMockFactory());
+jest.mock("next/navigation", () => nextNavigationMockFactory());
+
+import { render, screen } from "@testing-library/react";
+import OrdersPage from "../page";
 
 // Mock @clerk/nextjs components used by Header
 jest.mock("@clerk/nextjs", () => ({
@@ -40,6 +45,7 @@ const mockOrders: Order[] = [
     id: "ORD-001",
     documentNumber: "12345",
     customer: "Test Farm",
+    customerId: "CUST-001",
     textureType: "Coarse",
     formulaType: "Grower",
     quantity: 10,
@@ -54,6 +60,7 @@ const mockOrders: Order[] = [
     id: "ORD-002",
     documentNumber: "12346",
     customer: "Test Ranch",
+    customerId: "CUST-002",
     textureType: "Fine",
     formulaType: "Starter",
     quantity: 5,
@@ -66,66 +73,110 @@ const mockOrders: Order[] = [
   },
 ];
 
+// jsdom does not implement Element.prototype.scrollIntoView. Post-refactor,
+// OrdersTable receives orders synchronously via prop, so its auto-select
+// useEffect fires immediately after first render and triggers OrdersTable's
+// "scroll selected row into view" useEffect — which calls scrollIntoView.
+// Stub it before any render to avoid crashes. Equivalent to the
+// react-testing-library "jsdom misses element API X" canonical workaround.
+beforeAll(() => {
+  Element.prototype.scrollIntoView = jest.fn();
+});
+
 describe("OrdersPage - MIG-01 Design System Migration", () => {
   beforeEach(() => {
+    mockAuth.mockReset();
+    mockDemoSession();
     jest.clearAllMocks();
     (getOrders as jest.Mock).mockResolvedValue(mockOrders);
   });
 
+  // ---------------------------------------------------------------------------
+  // Redirect-branch coverage (D-05 inner guard, defense-in-depth).
+  // Source pattern: src/lib/auth.test.ts lines 67-89 (redirect-sentinel-throw).
+  // ---------------------------------------------------------------------------
+
+  it("redirects to /sign-in when unauthenticated", async () => {
+    mockUnauthenticatedSession();
+
+    await expect(OrdersPage()).rejects.toMatchObject({ url: "/sign-in" });
+  });
+
+  it("redirects to / when role is user (non-demo)", async () => {
+    mockNonDemoSession("user");
+
+    await expect(OrdersPage()).rejects.toMatchObject({ url: "/" });
+  });
+
+  it("redirects to / when role is admin (any non-demo role)", async () => {
+    mockNonDemoSession("admin");
+
+    await expect(OrdersPage()).rejects.toMatchObject({ url: "/" });
+  });
+
   describe("Suspense skeleton uses design tokens", () => {
-    it("skeleton does not use hardcoded rounded-[15px]", () => {
-      // Make getOrders hang to force loading state
-      (getOrders as jest.Mock).mockImplementation(() => new Promise(() => {}));
+    // Suspense-fallback design-token coverage. Pre-refactor these tests
+    // forced a loading state by making getOrders() hang. Post-refactor
+    // the page is an async RSC that resolves data on the server; the
+    // <Suspense> fallback JSX is statically defined in the page return.
+    // We assert the page SOURCE includes the token classes — equivalent
+    // coverage without rendering a forced-hanging promise.
 
-      const { container } = render(<OrdersPage />);
+    it("page source does not use hardcoded rounded-[15px]", () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pageSource: string = require("fs").readFileSync(
+        require("path").resolve(__dirname, "../page.tsx"),
+        "utf8",
+      );
 
-      // Check for hardcoded rounded-[15px] pattern
-      const hardcodedRadius = container.querySelectorAll('.rounded-\\[15px\\]');
-      expect(hardcodedRadius.length).toBe(0);
+      expect(pageSource).not.toMatch(/rounded-\[15px\]/);
     });
 
-    it("skeleton does not use hardcoded bg-gray-100", () => {
-      // Make getOrders hang to force loading state
-      (getOrders as jest.Mock).mockImplementation(() => new Promise(() => {}));
+    it("page source does not use hardcoded bg-gray-100", () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pageSource: string = require("fs").readFileSync(
+        require("path").resolve(__dirname, "../page.tsx"),
+        "utf8",
+      );
 
-      const { container } = render(<OrdersPage />);
-
-      // Check for hardcoded bg-gray-100
-      const hardcodedBg = container.querySelectorAll('.bg-gray-100');
-      expect(hardcodedBg.length).toBe(0);
+      expect(pageSource).not.toMatch(/bg-gray-100/);
     });
 
-    it("skeleton uses token-based rounded-[var(--radius-xl)]", () => {
-      // Make getOrders hang to force loading state
-      (getOrders as jest.Mock).mockImplementation(() => new Promise(() => {}));
+    it("page source uses token-based rounded-[var(--radius-xl)]", () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pageSource: string = require("fs").readFileSync(
+        require("path").resolve(__dirname, "../page.tsx"),
+        "utf8",
+      );
 
-      const { container } = render(<OrdersPage />);
-
-      // Verify token-based radius is used
-      const tokenRadius = container.querySelectorAll('.rounded-\\[var\\(--radius-xl\\)\\]');
-      expect(tokenRadius.length).toBeGreaterThan(0);
+      expect(pageSource).toMatch(/rounded-\[var\(--radius-xl\)\]/);
     });
 
-    it("skeleton uses token-based bg-[var(--divider)]", () => {
-      // Make getOrders hang to force loading state
-      (getOrders as jest.Mock).mockImplementation(() => new Promise(() => {}));
+    it("page source uses token-based bg-[var(--divider)]", () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pageSource: string = require("fs").readFileSync(
+        require("path").resolve(__dirname, "../page.tsx"),
+        "utf8",
+      );
 
-      const { container } = render(<OrdersPage />);
-
-      // Verify token-based bg is used
-      const tokenBg = container.querySelectorAll('.bg-\\[var\\(--divider\\)\\]');
-      expect(tokenBg.length).toBeGreaterThan(0);
+      expect(pageSource).toMatch(/bg-\[var\(--divider\)\]/);
     });
   });
 
   describe("Page renders correctly", () => {
-    it("renders orders page with sidebar and header", async () => {
-      render(<OrdersPage />);
+    it("renders orders page with sidebar and header for demo users", async () => {
+      const element = await OrdersPage();
+      render(element);
 
-      await waitFor(() => {
-        // Header should be present
-        expect(screen.getByRole("main")).toBeInTheDocument();
-      });
+      // Header should be present
+      expect(screen.getByRole("main")).toBeInTheDocument();
+    });
+
+    it("fetches orders server-side once during render", async () => {
+      await OrdersPage();
+
+      // RSC calls getOrders() exactly once on the server.
+      expect(getOrders).toHaveBeenCalledTimes(1);
     });
   });
 });
