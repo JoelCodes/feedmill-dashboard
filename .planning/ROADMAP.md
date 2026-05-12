@@ -133,13 +133,19 @@ All phases use standard, well-documented patterns:
 
 ### Phase 29: Close gap: ROUTE-01 cleanup — Timeline.tsx href, Header.tsx dead branches, stale E2E specs, settings → DashboardLayout
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Close all v1.5-MILESTONE-AUDIT gaps (1 blocker INT-01/FLOW-01 + 5 warning-level integration items + Phase 27/28 test-pipeline tech debt). After this phase: Timeline links to /demo/orders, Header has no dead legacy branches, settings uses DashboardLayout, stale E2E specs are deleted or repointed to /demo/*, checkRole orphan is removed, and `npm test` / `npx tsc --noEmit` / Playwright authenticated runs / Tailwind dev-server all run clean.
+**Requirements**: ROUTE-01, NAV-02, ACCESS-02
 **Depends on:** Phase 28
-**Plans:** 0 plans
+**Plans:** 6 plans (all Wave 1 — file-disjoint, fully parallelizable)
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 29 to break down)
+**Wave 1** *(all plans parallel — zero file-modification overlap)*
+- [ ] 29-01-PLAN.md — Timeline.tsx href fix + Timeline.test.tsx assertion update (TDD: D-05, D-06) — closes INT-01 / FLOW-01 blocker
+- [ ] 29-02-PLAN.md — Header.tsx dead-branch deletion + Header.test.tsx assertion (TDD: D-11) — closes INT-06
+- [ ] 29-03-PLAN.md — settings/page.tsx wrap in DashboardLayout (D-07; settings tests deferred per D-08) — closes INT-02
+- [ ] 29-04-PLAN.md — Playwright cleanup: delete production-smoke spec + project entry (D-09/D-09b), repoint route-protection.spec.ts (D-10), pin authenticated projects to localhost (D-16) — closes INT-04 + INT-05 + env-leak tech debt
+- [ ] 29-05-PLAN.md — Delete checkRole + 5 unit tests (D-12); update REQUIREMENTS.md ACCESS-02 text (D-13) — closes INT-03
+- [ ] 29-06-PLAN.md — Jest e2e ignore (D-14), 12 tsc fixture errors (D-15), Tailwind @source verify (D-17) — closes test-pipeline tech debt
 
 ---
-*Last updated: 2026-05-11 after Phase 27 planning*
+*Last updated: 2026-05-12 after Phase 29 planning*
