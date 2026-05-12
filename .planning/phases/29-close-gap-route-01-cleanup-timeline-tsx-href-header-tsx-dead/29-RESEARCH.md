@@ -683,17 +683,19 @@ None — existing test infrastructure covers all phase requirements. No new fixt
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **D-17: Why does the current @source not not work recursively?**
    - What we know: Current directive `@source not "../../.planning"` points to correct directory. Tailwind v4 docs show bare directory paths as the standard syntax. Tailwind 4.2.1 is installed.
    - What's unclear: Whether the audit note about "doesn't recursively exclude" reflects a resolved dev-server cache issue or an actual syntax problem.
    - Recommendation: Verify in dev-server after the phase. If `.planning` content still appears to be scanned, switch to `@source not "../../.planning/**"` as the explicit recursive form.
+   - **RESOLVED:** Implemented as Plan 29-06 Task 5 — verify-first then conditional edit. Both post-states (current directive retained OR explicit `/**` glob form) are accepted by the task acceptance criteria.
 
 2. **D-10: Should PROT-02 test be updated or deleted?**
    - What we know: PROT-02 tests return-URL preservation from `/orders`. After D-10, `/orders` is no longer a primary test path; `/demo/orders` is.
    - What's unclear: Whether return-URL preservation via Clerk still works for `/demo/orders` the same way.
    - Recommendation: Update PROT-02 to use `/demo/orders` — this tests the same Clerk redirect_url behavior but for the live demo route.
+   - **RESOLVED:** Implemented as Plan 29-04 Task 2 — PROT-02 body hardcoded `/orders` references (×2) are part of the 5 substitutions in the route-protection.spec.ts update.
 
 ---
 

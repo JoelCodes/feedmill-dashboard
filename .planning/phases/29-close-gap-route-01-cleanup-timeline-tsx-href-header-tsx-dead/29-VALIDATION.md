@@ -1,10 +1,11 @@
 ---
 phase: 29
 slug: close-gap-route-01-cleanup-timeline-tsx-href-header-tsx-dead
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-05-12
+approved: 2026-05-12
 ---
 
 # Phase 29 — Validation Strategy
@@ -38,20 +39,23 @@ created: 2026-05-12
 
 ## Per-Task Verification Map
 
-| Task ID (planner) | Decision | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| TBD-tdd | D-06 → D-05 (Timeline href, TDD) | 1 | ROUTE-01 | component | `npm test -- --testPathPattern=Timeline` | ✅ | ⬜ pending |
-| TBD-tdd | D-11 (Header dead branches, TDD) | 1 | ROUTE-01 | component | `npm test -- --testPathPattern=Header` | ✅ | ⬜ pending |
-| TBD | D-07 + D-08 (settings → DashboardLayout) | 1 | NAV-02 | manual / dev-server | dev-server inspection | ✅ (existing tests deferred) | ⬜ pending |
-| TBD | D-09 (delete production-smoke.spec) | 1 | — | negative-existence | `[ ! -f e2e/production-smoke.spec.ts ]` | ✅ | ⬜ pending |
-| TBD | D-09b (playwright project entry cleanup) | 1 | — | config | `grep -c production-smoke playwright.config.ts` → 0 | ✅ | ⬜ pending |
-| TBD | D-10 (route-protection paths) | 1 | — | E2E | `npm run test:e2e -- --project=chromium route-protection` | ✅ | ⬜ pending |
-| TBD | D-12 (delete checkRole) | 2 | ACCESS-02 | unit + negative-existence | `npm test -- --testPathPattern=auth` + `grep checkRole src/lib/auth.ts` → 0 | ✅ | ⬜ pending |
-| TBD | D-13 (REQUIREMENTS ACCESS-02 edit) | 2 | ACCESS-02 | docs grep | `grep -c checkRole .planning/REQUIREMENTS.md` → 0 | ✅ | ⬜ pending |
-| TBD | D-14 (jest testPathIgnorePatterns) | 1 | — | config | `npm test -- --listTests \| grep e2e` → empty | ✅ | ⬜ pending |
-| TBD | D-15 (12 tsc fixture errors) | 1 | — | type-check | `npx tsc --noEmit` exit 0 | ✅ | ⬜ pending |
-| TBD | D-16 (Playwright env override) | 1 | — | config | `npm run test:e2e -- --project=demo-user` connects to localhost:3000 | ✅ | ⬜ pending |
-| TBD | D-17 (Tailwind @source exclude) | 1 | — | manual | dev-server startup; no Tailwind warnings for `.planning/**/*.md` | ✅ | ⬜ pending |
+| Task ID | Plan | Decision | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
+|---------|------|------|------|-------------|-----------|-------------------|-------------|--------|
+| 29-01-T1 (RED) | 29-01 | D-06 (Timeline href test) | 1 | ROUTE-01 | component | `npm test -- --testPathPattern=Timeline` | ✅ | ⬜ pending |
+| 29-01-T2 (GREEN) | 29-01 | D-05 (Timeline href fix) | 1 | ROUTE-01 | component | `npm test -- --testPathPattern=Timeline` | ✅ | ⬜ pending |
+| 29-02-T1 (RED) | 29-02 | D-11 (Header title test) | 1 | ROUTE-01 | component | `npm test -- --testPathPattern=Header` | ✅ | ⬜ pending |
+| 29-02-T2 (GREEN) | 29-02 | D-11 (Header dead-branch delete) | 1 | ROUTE-01 | component | `npm test -- --testPathPattern=Header` | ✅ | ⬜ pending |
+| 29-03-T1 | 29-03 | D-07 + D-08 (settings → DashboardLayout) | 1 | NAV-02 | tsc + manual / dev-server | `npx tsc --noEmit` clean for settings/page.tsx | ✅ | ⬜ pending |
+| 29-04-T1 | 29-04 | D-09 + D-09b (atomic spec + playwright project delete) | 1 | ROUTE-01 | negative-existence | `[ ! -f e2e/production-smoke.spec.ts ]` AND `grep -c production-smoke playwright.config.ts` → 0 | ✅ | ⬜ pending |
+| 29-04-T2 | 29-04 | D-10 (route-protection paths + PROT-02 body) | 1 | ROUTE-01 | E2E + negative-existence | `grep -cE "'/orders'\|'/customers'\|'/mill-production'" e2e/route-protection.spec.ts` → 0 | ✅ | ⬜ pending |
+| 29-04-T3 | 29-04 | D-16 (Playwright env override) | 1 | ROUTE-01 | config | `grep -c "baseURL: 'http://localhost:3000'" playwright.config.ts` ≥ 1 | ✅ | ⬜ pending |
+| 29-05-T1 | 29-05 | D-12 (delete checkRole + 5 tests) | 1 | ACCESS-02 | unit + negative-existence | `npm test -- --testPathPattern=auth` + `grep checkRole src/lib/auth.ts` → 0 | ✅ | ⬜ pending |
+| 29-05-T2 | 29-05 | D-13 (REQUIREMENTS ACCESS-02 edit) | 1 | ACCESS-02 | docs grep | `grep -c checkRole .planning/REQUIREMENTS.md` → 0 | ✅ | ⬜ pending |
+| 29-06-T1 | 29-06 | D-14 (jest testPathIgnorePatterns) | 1 | — | config | `npm test -- --listTests \| grep -c e2e/` → 0 | ✅ | ⬜ pending |
+| 29-06-T2 | 29-06 | D-15 (tokens.test.ts /s flag) | 1 | — | type-check | `npx tsc --noEmit 2>&1 \| grep tokens.test.ts \| wc -l` → 0 | ✅ | ⬜ pending |
+| 29-06-T3 | 29-06 | D-15 (theme.test.tsx null assertions) | 1 | — | type-check | `npx tsc --noEmit 2>&1 \| grep theme.test.tsx \| wc -l` → 0 | ✅ | ⬜ pending |
+| 29-06-T4 | 29-06 | D-15 (OrderDetails + customerSort fixtures) | 1 | — | type-check | `npx tsc --noEmit 2>&1 \| grep -E "(OrderDetails\|customerSort)" \| wc -l` → 0 | ✅ | ⬜ pending |
+| 29-06-T5 | 29-06 | D-17 (Tailwind @source exclude verify) | 1 | — | manual | `grep -E "@source not" src/app/globals.css` ≥ 1 | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -102,4 +106,4 @@ None. All test infrastructure exists. The only "new" test work is updating exist
 - [ ] Feedback latency < 2 min (E2E)
 - [ ] `nyquist_compliant: true` set in frontmatter once planner attaches task IDs
 
-**Approval:** pending — planner must attach concrete task IDs and re-sign.
+**Approval:** approved 2026-05-12 — task IDs attached, all `<verify>` blocks map to per-task rows, plan-checker PASS.
