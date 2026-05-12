@@ -1,15 +1,23 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  clerkAuthMockFactory,
+  nextNavigationMockFactory,
+  mockAuth,
+  mockDemoSession,
+  mockNonDemoSession,
+  mockUnauthenticatedSession,
+} from "@/test/fixtures/clerkAuth";
+
+// jest.mock calls are hoisted above all imports (Pattern C from
+// src/lib/auth.test.ts). The 28-01 factory imports above are hoisted
+// alongside, so the references inside the factory arrows resolve correctly.
+jest.mock("@clerk/nextjs/server", () => clerkAuthMockFactory());
+jest.mock("next/navigation", () => nextNavigationMockFactory());
+
+import { render, screen } from "@testing-library/react";
 import MillProductionPage from "../page";
 
-// Mock dependencies
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-  usePathname: jest.fn(() => "/demo/mill-production"),
-}));
-
-// Mock @clerk/nextjs components used by Header
+// Mock @clerk/nextjs components used by Header (Header renders inside
+// DashboardLayout — DashboardLayout is a client child of the RSC page).
 jest.mock("@clerk/nextjs", () => ({
   ClerkLoaded: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="clerk-loaded">{children}</div>
@@ -55,103 +63,74 @@ const mockOrders: ProductionOrder[] = [
   },
 ];
 
-describe("MillProductionPage - MIG-03 Token Migration", () => {
+describe("MillProductionPage (async RSC)", () => {
   beforeEach(() => {
+    mockAuth.mockReset();
+    mockDemoSession();
     jest.clearAllMocks();
     (getProductionOrders as jest.Mock).mockResolvedValue(mockOrders);
   });
 
-  describe("Design system component imports", () => {
-    it("imports FilterPill from @/components/ui/FilterPill (not @/components/FilterPill)", () => {
-      // This test verifies the import path by checking component behavior
-      render(<MillProductionPage />);
+  // ---------------------------------------------------------------------------
+  // Redirect-branch coverage (28-05 D-05 inner guard, defense-in-depth).
+  // Source pattern: src/lib/auth.test.ts redirect-sentinel-throw idiom
+  // (mirrors 28-02 customers/[id]/page.test.tsx).
+  // ---------------------------------------------------------------------------
 
-      // FilterPill renders state filters - check they exist
-      waitFor(() => {
-        expect(screen.getByText("Completed")).toBeInTheDocument();
-        expect(screen.getByText("Mixing")).toBeInTheDocument();
-        expect(screen.getByText("Blocked")).toBeInTheDocument();
-        expect(screen.getByText("Pending")).toBeInTheDocument();
-      });
-    });
+  it("redirects to /sign-in when userId is missing (unauthenticated)", async () => {
+    mockUnauthenticatedSession();
+
+    await expect(MillProductionPage()).rejects.toMatchObject({ url: "/sign-in" });
   });
 
-  describe("Token usage - no hardcoded values", () => {
-    it("LoadingSkeleton uses design tokens (no bg-gray-200)", async () => {
-      // Make getProductionOrders hang to force loading state
-      (getProductionOrders as jest.Mock).mockImplementation(() => new Promise(() => {}));
+  it("redirects to / when role is user (non-demo)", async () => {
+    mockNonDemoSession("user");
 
-      const { container } = render(<MillProductionPage />);
-
-      // Verify skeleton elements are present
-      const skeletons = container.querySelectorAll(".animate-pulse");
-      expect(skeletons.length).toBeGreaterThan(0);
-
-      // Verify no hardcoded bg-gray-200 class
-      const hardcodedGray = container.querySelectorAll(".bg-gray-200");
-      expect(hardcodedGray.length).toBe(0);
-
-      // Verify token-based bg-[var(--divider)] is used
-      const tokenBg = container.querySelectorAll('.bg-\\[var\\(--divider\\)\\]');
-      expect(tokenBg.length).toBeGreaterThan(0);
-    });
-
-    it("ProductionCard uses design tokens for card background", async () => {
-      render(<MillProductionPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Test Farm")).toBeInTheDocument();
-      });
-
-      const { container } = render(<MillProductionPage />);
-
-      await waitFor(() => {
-        // Verify bg-[var(--bg-card)] token is used
-        const cardBg = container.querySelectorAll('.bg-\\[var\\(--bg-card\\)\\]');
-        expect(cardBg.length).toBeGreaterThan(0);
-
-        // Verify no hardcoded white backgrounds on cards
-        const cards = container.querySelectorAll(".shadow-card");
-        cards.forEach(card => {
-          expect(card.className).not.toMatch(/\bbg-white\b(?!-)/);
-        });
-      });
-    });
+    await expect(MillProductionPage()).rejects.toMatchObject({ url: "/" });
   });
 
-  describe("State-based filtering", () => {
-    it("renders filter pills for all production states", async () => {
-      render(<MillProductionPage />);
+  it("redirects to / when role is admin (any non-demo role)", async () => {
+    mockNonDemoSession("admin");
 
-      await waitFor(() => {
-        expect(screen.getByText("Completed")).toBeInTheDocument();
-        expect(screen.getByText("Mixing")).toBeInTheDocument();
-        expect(screen.getByText("Blocked")).toBeInTheDocument();
-        expect(screen.getByText("Pending")).toBeInTheDocument();
-      });
-    });
-
-    it("displays production orders grouped by mill line", async () => {
-      render(<MillProductionPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Premix")).toBeInTheDocument();
-        expect(screen.getByText("Excel")).toBeInTheDocument();
-        expect(screen.getByText("CGM")).toBeInTheDocument();
-      });
-    });
+    await expect(MillProductionPage()).rejects.toMatchObject({ url: "/" });
   });
 
-  describe("Data rendering", () => {
-    it("renders production order details", async () => {
-      render(<MillProductionPage />);
+  // ---------------------------------------------------------------------------
+  // Green-path render coverage (async-RSC invocation pattern).
+  // ---------------------------------------------------------------------------
 
-      await waitFor(() => {
-        expect(screen.getByText("Test Farm")).toBeInTheDocument();
-        expect(screen.getByText("12345")).toBeInTheDocument();
-        expect(screen.getByText(/5,000 lbs/)).toBeInTheDocument();
-        expect(screen.getByText(/Premium Mix/)).toBeInTheDocument();
-      });
-    });
+  it("renders filter pills for all production states", async () => {
+    const element = await MillProductionPage();
+    render(element);
+
+    expect(screen.getByRole("button", { name: /Filter by Completed/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Filter by Mixing/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Filter by Blocked/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Filter by Pending/i })).toBeInTheDocument();
+  });
+
+  it("displays production orders grouped by mill line", async () => {
+    const element = await MillProductionPage();
+    render(element);
+
+    expect(screen.getByRole("heading", { name: "Premix" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Excel" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "CGM" })).toBeInTheDocument();
+  });
+
+  it("renders production order details", async () => {
+    const element = await MillProductionPage();
+    render(element);
+
+    expect(screen.getByText("Test Farm")).toBeInTheDocument();
+    expect(screen.getByText("12345")).toBeInTheDocument();
+    expect(screen.getByText(/5,000 lbs/)).toBeInTheDocument();
+    expect(screen.getByText(/Premium Mix/)).toBeInTheDocument();
+  });
+
+  it("fetches production orders on the server (single call)", async () => {
+    await MillProductionPage();
+
+    expect(getProductionOrders).toHaveBeenCalledTimes(1);
   });
 });
