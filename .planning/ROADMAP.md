@@ -131,5 +131,15 @@ All phases use standard, well-documented patterns:
 
 **UI phases**: Phase 26 involves Coming Soon homepage creation and sidebar navigation
 
+### Phase 29: Close gap: ROUTE-01 cleanup — Timeline.tsx href, Header.tsx dead branches, stale E2E specs, settings → DashboardLayout
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 28
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 29 to break down)
+
 ---
 *Last updated: 2026-05-11 after Phase 27 planning*

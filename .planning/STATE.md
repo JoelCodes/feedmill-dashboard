@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
-status: milestone_complete
-last_updated: "2026-05-12T05:22:38.668Z"
+status: completed
+last_updated: "2026-05-12T17:52:06.600Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
   total_plans: 16
-  completed_plans: 10
+  completed_plans: 16
   percent: 100
 ---
 
@@ -26,18 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: 28 (client-component-security-audit) — EXECUTING
-Plan: 1 of 6
-**Phase:** 28
+Phase: 29 (close-gap-route-01-cleanup) — CONTEXT GATHERED
+**Phase:** 29
 **Plan:** Not started
-**Status:** Milestone complete
-**Progress:** `[ ---------- ]` 0% (0/4 phases)
+**Status:** Context captured, ready for planning
+**Resume file:** `.planning/phases/29-close-gap-route-01-cleanup-timeline-tsx-href-header-tsx-dead/29-CONTEXT.md`
 
 **Next actions:**
 
-1. Run `/gsd-plan-phase 25` to create execution plan
-2. Execute Phase 25 plans
-3. Transition to Phase 26
+1. Run `/gsd-plan-phase 29` to create execution plan
+2. Execute Phase 29 plans (closes v1.5 milestone audit gaps)
+3. Re-run `/gsd-audit-milestone v1.5` to confirm `status: gaps_resolved`
 
 ## Performance Metrics
 
@@ -57,6 +56,10 @@ Plan: 1 of 6
 - **Quality:** 304 tests passing, 5 E2E tests, 0 ESLint errors
 
 ## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 29 added: Close gap: ROUTE-01 cleanup — Timeline.tsx href, Header.tsx dead branches, stale E2E specs, settings → DashboardLayout
 
 ### Decisions Made
 
