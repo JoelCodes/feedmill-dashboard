@@ -35,7 +35,7 @@ describe("ThemeProvider Configuration", () => {
     );
 
     expect(capturedProps).toBeTruthy();
-    expect(capturedProps.attribute).toBe("class");
+    expect(capturedProps!.attribute).toBe("class");
   });
 
   it("sets defaultTheme to system to respect OS preference", () => {
@@ -45,7 +45,7 @@ describe("ThemeProvider Configuration", () => {
       </ThemeProvider>
     );
 
-    expect(capturedProps.defaultTheme).toBe("system");
+    expect(capturedProps!.defaultTheme).toBe("system");
   });
 
   it("enables system theme detection", () => {
@@ -55,7 +55,7 @@ describe("ThemeProvider Configuration", () => {
       </ThemeProvider>
     );
 
-    expect(capturedProps.enableSystem).toBe(true);
+    expect(capturedProps!.enableSystem).toBe(true);
   });
 
   it("configures project-specific localStorage key for theme persistence", () => {
@@ -65,7 +65,7 @@ describe("ThemeProvider Configuration", () => {
       </ThemeProvider>
     );
 
-    expect(capturedProps.storageKey).toBe("cgm-dashboard-theme");
+    expect(capturedProps!.storageKey).toBe("cgm-dashboard-theme");
   });
 
   it("restricts themes to light, dark, and system only", () => {
@@ -75,7 +75,7 @@ describe("ThemeProvider Configuration", () => {
       </ThemeProvider>
     );
 
-    expect(capturedProps.themes).toEqual(["light", "dark", "system"]);
+    expect(capturedProps!.themes).toEqual(["light", "dark", "system"]);
   });
 
   it("allows theme transitions for smooth UX", () => {
@@ -85,7 +85,7 @@ describe("ThemeProvider Configuration", () => {
       </ThemeProvider>
     );
 
-    expect(capturedProps.disableTransitionOnChange).toBe(false);
+    expect(capturedProps!.disableTransitionOnChange).toBe(false);
   });
 
   it("passes children through to next-themes provider", () => {
@@ -106,6 +106,6 @@ describe("ThemeProvider Configuration", () => {
     );
 
     // Props can be overridden - spread operator is after static config
-    expect(capturedProps.defaultTheme).toBe("dark");
+    expect(capturedProps!.defaultTheme).toBe("dark");
   });
 });
