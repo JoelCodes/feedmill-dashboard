@@ -107,18 +107,24 @@ describe("CustomersPage - MIG-02 Design System Migration (RSC harness)", () => {
       mockUnauthenticatedSession();
 
       await expect(CustomersPage()).rejects.toMatchObject({ url: "/sign-in" });
+      // D-04 fetch-after-guard invariant: data fetch MUST NOT run when the
+      // role guard rejects. Catches a regression where `await getCustomers()`
+      // is reordered above `await requireRole('demo')`.
+      expect(getCustomers).not.toHaveBeenCalled();
     });
 
     it("redirects to / when role is user (non-demo)", async () => {
       mockNonDemoSession("user");
 
       await expect(CustomersPage()).rejects.toMatchObject({ url: "/" });
+      expect(getCustomers).not.toHaveBeenCalled();
     });
 
     it("redirects to / when role is admin (any non-demo role)", async () => {
       mockNonDemoSession("admin");
 
       await expect(CustomersPage()).rejects.toMatchObject({ url: "/" });
+      expect(getCustomers).not.toHaveBeenCalled();
     });
   });
 

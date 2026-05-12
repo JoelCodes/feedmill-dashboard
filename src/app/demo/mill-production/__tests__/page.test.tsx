@@ -81,18 +81,24 @@ describe("MillProductionPage (async RSC)", () => {
     mockUnauthenticatedSession();
 
     await expect(MillProductionPage()).rejects.toMatchObject({ url: "/sign-in" });
+    // D-04 fetch-after-guard invariant: data fetch MUST NOT run when the
+    // role guard rejects. Catches a regression where `await getProductionOrders()`
+    // is reordered above `await requireRole('demo')`.
+    expect(getProductionOrders).not.toHaveBeenCalled();
   });
 
   it("redirects to / when role is user (non-demo)", async () => {
     mockNonDemoSession("user");
 
     await expect(MillProductionPage()).rejects.toMatchObject({ url: "/" });
+    expect(getProductionOrders).not.toHaveBeenCalled();
   });
 
   it("redirects to / when role is admin (any non-demo role)", async () => {
     mockNonDemoSession("admin");
 
     await expect(MillProductionPage()).rejects.toMatchObject({ url: "/" });
+    expect(getProductionOrders).not.toHaveBeenCalled();
   });
 
   // ---------------------------------------------------------------------------

@@ -100,18 +100,25 @@ describe("OrdersPage - MIG-01 Design System Migration", () => {
     mockUnauthenticatedSession();
 
     await expect(OrdersPage()).rejects.toMatchObject({ url: "/sign-in" });
+    // D-04 fetch-after-guard invariant: data fetch MUST NOT run when the
+    // role guard rejects. A regression that reorders `await getOrders()`
+    // before `await requireRole('demo')` would still pass the rejects
+    // assertion above; only this assertion catches the reorder.
+    expect(getOrders).not.toHaveBeenCalled();
   });
 
   it("redirects to / when role is user (non-demo)", async () => {
     mockNonDemoSession("user");
 
     await expect(OrdersPage()).rejects.toMatchObject({ url: "/" });
+    expect(getOrders).not.toHaveBeenCalled();
   });
 
   it("redirects to / when role is admin (any non-demo role)", async () => {
     mockNonDemoSession("admin");
 
     await expect(OrdersPage()).rejects.toMatchObject({ url: "/" });
+    expect(getOrders).not.toHaveBeenCalled();
   });
 
   describe("Suspense skeleton uses design tokens", () => {

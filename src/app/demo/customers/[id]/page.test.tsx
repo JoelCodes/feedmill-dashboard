@@ -141,6 +141,14 @@ describe('CustomerDetailPage', () => {
     await expect(
       CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
     ).rejects.toMatchObject({ url: '/sign-in' });
+    // D-04 fetch-after-guard invariant: NONE of the four parallel-fetch
+    // services may run when the role guard rejects. The `Promise.all([...])`
+    // shape means a regression that moves the fetches above the guard would
+    // invoke all four — these assertions catch every reorder.
+    expect(getCustomerById).not.toHaveBeenCalled();
+    expect(getActivityEvents).not.toHaveBeenCalled();
+    expect(getBinsByCustomerId).not.toHaveBeenCalled();
+    expect(getOrdersByCustomerId).not.toHaveBeenCalled();
   });
 
   it('redirects to / when role is user (non-demo)', async () => {
@@ -149,6 +157,10 @@ describe('CustomerDetailPage', () => {
     await expect(
       CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
     ).rejects.toMatchObject({ url: '/' });
+    expect(getCustomerById).not.toHaveBeenCalled();
+    expect(getActivityEvents).not.toHaveBeenCalled();
+    expect(getBinsByCustomerId).not.toHaveBeenCalled();
+    expect(getOrdersByCustomerId).not.toHaveBeenCalled();
   });
 
   it('redirects to / when role is admin (any non-demo role)', async () => {
@@ -157,6 +169,10 @@ describe('CustomerDetailPage', () => {
     await expect(
       CustomerDetailPage({ params: Promise.resolve({ id: 'CUST-001' }) }),
     ).rejects.toMatchObject({ url: '/' });
+    expect(getCustomerById).not.toHaveBeenCalled();
+    expect(getActivityEvents).not.toHaveBeenCalled();
+    expect(getBinsByCustomerId).not.toHaveBeenCalled();
+    expect(getOrdersByCustomerId).not.toHaveBeenCalled();
   });
 
   describe('partial failure handling', () => {
