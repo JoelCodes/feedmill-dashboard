@@ -137,17 +137,26 @@ describe("middleware", () => {
       expect(middlewareContent).toContain('/demo(.*)');
     });
 
-    it("checks role for demo routes via publicMetadata", async () => {
+    it("checks role for demo routes via sessionClaims", async () => {
       const fs = await import("fs/promises");
       const path = await import("path");
 
       const middlewarePath = path.join(__dirname, "middleware.ts");
       const middlewareContent = await fs.readFile(middlewarePath, "utf-8");
 
-      // Per ACCESS-01: Check user.publicMetadata.role via clerkClient
-      expect(middlewareContent).toContain("clerkClient");
-      expect(middlewareContent).toContain("publicMetadata");
+      // Per D-04: Read role from sessionClaims.metadata.role (no network call)
+      expect(middlewareContent).toContain("sessionClaims");
+      expect(middlewareContent).toContain("metadata");
       expect(middlewareContent).toContain("role");
+      expect(middlewareContent).not.toContain("clerkClient");
+      expect(middlewareContent).not.toContain("publicMetadata");
+
+      // Success Criterion #4 protection: demo matcher must remain narrow.
+      // The literal '/demo(.*)' matcher must be present; isDemoRoute MUST NOT
+      // be widened to include /settings (Phase 26 D-07: settings stays
+      // accessible to all authenticated users regardless of role).
+      expect(middlewareContent).toContain("'/demo(.*)'");
+      expect(middlewareContent).not.toMatch(/isDemoRoute[\s\S]*settings/i);
     });
 
     it("redirects to root when role check fails", async () => {
