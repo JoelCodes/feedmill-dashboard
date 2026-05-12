@@ -10,6 +10,8 @@
 - [x] **Phase 26: Route Restructuring and Migration** - Move existing pages to /demo/* namespace with navigation (completed 2026-05-11)
 - [x] **Phase 27: Role Assignment and Testing** - Assign roles and verify end-to-end access control (completed 2026-05-12)
 - [x] **Phase 28: Client Component Security Audit** - Audit client components for security compliance (completed 2026-05-12)
+- [x] **Phase 29: Close gap: ROUTE-01 cleanup** - Timeline.tsx href + Header.tsx dead branches + stale E2E specs + settings DashboardLayout (completed 2026-05-12)
+- [ ] **Phase 30: Close gap: INT-07 CustomerOrdersTab href + SUMMARY frontmatter backfill** - Second-pass closure of ROUTE-01 sibling-component miss
 
 ## Phase Details
 
@@ -104,6 +106,8 @@ Plans:
 | 26. Route Restructuring and Migration | 3/3 | Complete    | 2026-05-11 |
 | 27. Role Assignment and Testing | 5/5 | Complete   | 2026-05-12 |
 | 28. Client Component Security Audit | 6/6 | Complete    | 2026-05-12 |
+| 29. Close gap: ROUTE-01 cleanup | 6/6 | Complete | 2026-05-12 |
+| 30. Close gap: INT-07 + SUMMARY backfill | 0/2 | Planned | - |
 
 ## Research Flags
 
@@ -147,5 +151,26 @@ Plans:
 - [x] 29-05-PLAN.md — Delete checkRole + 5 unit tests (D-12); update REQUIREMENTS.md ACCESS-02 text (D-13) — closes INT-03
 - [x] 29-06-PLAN.md — Jest e2e ignore (D-14), 12 tsc fixture errors (D-15), Tailwind @source verify (D-17) — closes test-pipeline tech debt
 
+### Phase 30: Close gap: INT-07 CustomerOrdersTab href + SUMMARY frontmatter backfill
+
+**Goal:** Close the remaining v1.5 audit gap (INT-07 blocker) so all 7 E2E flows wire end-to-end and ROUTE-01 is fully satisfied. Fix the stale `/orders?selected=…` href in `src/components/CustomerOrdersTab.tsx:159` (sibling-component miss not covered by Phase 29's INT-01 scope), add a mirroring Jest assertion per the D-06 pattern, and backfill four `requirements-completed` SUMMARY frontmatters (ROUTE-01 in 26-03, ROLE-02 in 25-01, NAV-01 in 26-01, NAV-02 in 25-01) to close the documentation-lag tech debt.
+**Requirements**: ROUTE-01 (also touches doc-hygiene for ROLE-02, NAV-01, NAV-02)
+**Depends on:** Phase 29
+**Plans:** 2 plans
+
+Plans:
+**Wave 0** *(both plans parallel — zero file-modification overlap)*
+- [ ] 30-01-PLAN.md — CustomerOrdersTab.tsx href fix + new CustomerOrdersTab.test.tsx regression assertion (TDD: D-05, D-06) — closes INT-07 / FLOW-07 blocker
+- [ ] 30-02-PLAN.md — SUMMARY frontmatter backfill: ROUTE-01 → 26-03, ROLE-02 + NAV-02 → 25-01, NAV-01 → 26-01 (D-10) — closes milestone-level documentation-lag tech debt
+
+Source of truth for scope:
+- `.planning/v1.5-MILESTONE-AUDIT.md` (re-audit #2, 2026-05-12T23:00:00Z)
+- `.planning/v1.5-INTEGRATION-CHECK.md` (INT-07 evidence, FLOW-07 break, fix specification)
+
+Expected scope (single-line fix + Jest assertion mirrors Phase 29 D-05/D-06):
+- 1 source edit at `src/components/CustomerOrdersTab.tsx:159` → `/demo/orders?selected=${order.id}`
+- 1 Jest assertion in `CustomerOrdersTab` test verifying rendered `<a>` href shape
+- 4 single-line YAML frontmatter edits across existing SUMMARY.md files (no behavior change)
+
 ---
-*Last updated: 2026-05-12 after Phase 29 planning*
+*Last updated: 2026-05-12 after /gsd-plan-phase 30 (2 plans, wave 0)*
