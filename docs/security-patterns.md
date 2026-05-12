@@ -79,13 +79,13 @@ Defense-in-depth lives across three tiers. Each helper does one thing well; usin
 | `clerkMiddleware` route matcher (`isDemoRoute` in `src/middleware.ts`) | Edge (middleware.ts) | `NextResponse.redirect('/')` | Route-level coarse gate. Runs first, before any rendering. Already in place — do not modify (Phase 25 ACCESS-01 / Phase 28 D-04). |
 | `await requireRole('demo')` | Server Component (page entry) | `redirect('/sign-in')` for missing session, `redirect('/')` for wrong role | Page-level inner guard before data fetch. Defense-in-depth: if the middleware matcher ever drifts, the page still refuses to render the wrong audience. **The Phase 28 pattern.** Cite: JSDoc on `src/lib/auth.ts` `requireRole`. |
 | `await checkRole('demo')` | Server Component | Returns `boolean` — no redirect | Conditional render inside a Server Component (e.g., "show admin-only section only if `await checkRole('admin')`"). Not used in the Phase 28 codebase but documented as the third member of the family. Cite: JSDoc on `src/lib/auth.ts` `checkRole`. |
-| `<Protect role="...">` / `<Show when=...>` | Client | Hides DOM only | **UX only**, never as a data-access boundary. No live usage in the codebase (Phase 28 D-10). See §4. |
+| `<Protect role="...">` (from `@clerk/nextjs`) | Client | Hides DOM only | **UX only**, never as a data-access boundary. No live usage in the codebase (Phase 28 D-10). See §4. |
 
 Middleware is the outer gate; `requireRole` is the inner gate at the page entry; `checkRole` is for in-page boolean branches; `<Protect>` is for UX cues, not security. Both `requireRole` and `checkRole` read role state from `sessionClaims.metadata.role` via `auth()` from `@clerk/nextjs/server` — the JSDoc blocks on `src/lib/auth.ts` are the authoritative API reference and intentionally state "SERVER-ONLY: never import this module into a client component."
 
 ## 4. `<Protect>` is UX, not security
 
-`<Protect>` and `<Show>` are Clerk control components that **visually hide** their children when the user fails a role or permission check. They do not gate data fetching, they do not strip data from the client bundle, and they do not prevent any value held by the parent from appearing in the browser's source view. Treat them as presentational helpers only.
+`<Protect>` is a Clerk control component that **visually hides** its children when the user fails a role or permission check. It does not gate data fetching, it does not strip data from the client bundle, and it does not prevent any value held by the parent from appearing in the browser's source view. Treat it as a presentational helper only.
 
 ```typescript
 // docs example — DO NOT add to code this phase (D-10)
@@ -107,11 +107,7 @@ return <OrdersTable orders={orders} />;
 </Protect>
 ```
 
-The Clerk documentation states the same rule verbatim:
-
-> The `<Show />` component only visually hides its children; the contents remain accessible via the browser's source code even if the user fails authentication or authorization checks. For truly sensitive data that should be completely inaccessible to unauthorized users, perform authorization checks on the server before sending data to the client.
-
-*Source: `clerk-docs/reference/components/control/show.mdx` — the same caveat applies to `<Protect>`.*
+Clerk's own documentation for its control components states the same rule: visually-hidden children remain accessible via the browser's source code even if the user fails authentication or authorization checks. For truly sensitive data that should be completely inaccessible to unauthorized users, perform authorization checks on the server before sending data to the client.
 
 **Note:** `<Protect>` has no live usage in `src/` at the close of Phase 28 (D-10). The first real adoption is deferred to a future phase that has a genuine role-conditional UI need (e.g., an admin-only badge or a demo-mode banner with role-specific copy). When that phase lands, the snippets above are the reference shape — gate the data fetch server-side, then use `<Protect>` only for the cosmetic role-cued slot.
 
