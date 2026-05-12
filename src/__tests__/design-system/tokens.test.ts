@@ -90,19 +90,19 @@ describe("Design System Tokens", () => {
 
   describe("Dark mode overrides", () => {
     it("defines dark mode class with primary color override", () => {
-      const darkBlock = globalsCss.match(/\.dark\s*\{[^}]+\}/s);
+      const darkBlock = globalsCss.match(/\.dark\s*\{[\s\S]+?\}/);
       expect(darkBlock).toBeTruthy();
       expect(darkBlock![0]).toMatch(/--primary:\s*#63b3ed/);
     });
 
     it("defines dark mode background overrides", () => {
-      const darkBlock = globalsCss.match(/\.dark\s*\{[^}]+\}/s);
+      const darkBlock = globalsCss.match(/\.dark\s*\{[\s\S]+?\}/);
       expect(darkBlock![0]).toMatch(/--bg-page:\s*#1a202c/);
       expect(darkBlock![0]).toMatch(/--bg-card:\s*#2d3748/);
     });
 
     it("defines dark mode text color overrides", () => {
-      const darkBlock = globalsCss.match(/\.dark\s*\{[^}]+\}/s);
+      const darkBlock = globalsCss.match(/\.dark\s*\{[\s\S]+?\}/);
       expect(darkBlock![0]).toMatch(/--text-primary:\s*#e2e8f0/);
       expect(darkBlock![0]).toMatch(/--text-secondary:\s*#a0aec0/);
     });
