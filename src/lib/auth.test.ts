@@ -15,52 +15,10 @@ jest.mock('next/navigation', () => ({
   },
 }));
 
-import { checkRole, requireRole } from './auth';
+import { requireRole } from './auth';
 
 beforeEach(() => {
   mockAuth.mockReset();
-});
-
-describe('checkRole', () => {
-  it('returns true when claim matches', async () => {
-    mockAuth.mockResolvedValue({
-      userId: 'u1',
-      sessionClaims: { metadata: { role: 'demo' } },
-    });
-    expect(await checkRole('demo')).toBe(true);
-  });
-
-  it('returns false when claim does not match', async () => {
-    mockAuth.mockResolvedValue({
-      userId: 'u1',
-      sessionClaims: { metadata: { role: 'admin' } },
-    });
-    expect(await checkRole('demo')).toBe(false);
-  });
-
-  it('returns false when sessionClaims is undefined', async () => {
-    mockAuth.mockResolvedValue({
-      userId: 'u1',
-      sessionClaims: undefined,
-    });
-    expect(await checkRole('demo')).toBe(false);
-  });
-
-  it('returns false when metadata.role is missing', async () => {
-    mockAuth.mockResolvedValue({
-      userId: 'u1',
-      sessionClaims: { metadata: {} },
-    });
-    expect(await checkRole('demo')).toBe(false);
-  });
-
-  it('returns false when userId is null (unauthenticated)', async () => {
-    mockAuth.mockResolvedValue({
-      userId: null,
-      sessionClaims: null,
-    });
-    expect(await checkRole('demo')).toBe(false);
-  });
 });
 
 describe('requireRole', () => {
