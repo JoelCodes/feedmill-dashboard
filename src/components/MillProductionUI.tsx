@@ -141,12 +141,20 @@ function MillColumn({
     .reduce((sum, o) => sum + o.weightLbs, 0);
   const totalWeight = orders.reduce((sum, o) => sum + o.weightLbs, 0);
 
+  // WR-05 fix: initialize every key explicitly so a future change that
+  // shrinks STATE_ORDER does not silently leave keys undefined at the
+  // ordersByState[state] read sites below.
   const ordersByState = STATE_ORDER.reduce(
     (acc, state) => {
       acc[state] = orders.filter((o) => o.state === state);
       return acc;
     },
-    {} as Record<ProductionState, DemoOrder[]>
+    {
+      Completed: [],
+      Mixing: [],
+      Blocked: [],
+      Pending: [],
+    } as Record<ProductionState, DemoOrder[]>
   );
 
   return (
@@ -198,12 +206,19 @@ export default function MillProductionUI({ orders }: MillProductionUIProps) {
   };
 
   const stateCounts = useMemo(() => {
+    // WR-05 fix: initialize every key explicitly so STATE_ORDER changes
+    // do not silently leave keys undefined at the read sites below.
     return STATE_ORDER.reduce(
       (acc, state) => {
         acc[state] = orders.filter((o) => o.state === state).length;
         return acc;
       },
-      {} as Record<ProductionState, number>
+      {
+        Completed: 0,
+        Mixing: 0,
+        Blocked: 0,
+        Pending: 0,
+      } as Record<ProductionState, number>
     );
   }, [orders]);
 
