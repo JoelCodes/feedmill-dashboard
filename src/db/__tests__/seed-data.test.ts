@@ -41,12 +41,19 @@ describe('src/db/seed-data.json shape', () => {
     expect(seedData).toHaveLength(33);
   });
 
-  it('every row has required NOT NULL fields', () => {
+  it('every row has all required NOT NULL fields as non-empty values', () => {
+    // WR-07 fix: `toHaveProperty` returns true even when the value is
+    // undefined (it only checks key presence). Drop the dead first
+    // assertion and reject empty-string sentinels which would slip past
+    // NOT NULL but break downstream code that expects meaningful values.
     for (const row of seedData) {
       for (const field of REQUIRED_FIELDS) {
-        expect(row).toHaveProperty(field);
-        expect((row as Record<string, unknown>)[field]).not.toBeNull();
-        expect((row as Record<string, unknown>)[field]).not.toBeUndefined();
+        const val = (row as Record<string, unknown>)[field];
+        expect(val).toBeDefined();
+        expect(val).not.toBeNull();
+        if (typeof val === 'string') {
+          expect(val.length).toBeGreaterThan(0);
+        }
       }
     }
   });
