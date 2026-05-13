@@ -138,7 +138,7 @@ Each task was committed atomically:
 
 **3. [Rule 1 - Bug] Test file PATTERN constant string literals contained contiguous dangerous prefix**
 - **Found during:** Task 5 (dev server smoke test)
-- **Issue:** Even after the JSDoc fix, the dev server still showed both `text-[var(--text-&ast;)]` and `text-[var(--text-*)]` CSS errors. The `const PATTERN = 'text-[var(--text-' + STAR + ')]'` line had `'text-[var(--text-'` as a literal string — raw bytes contain the contiguous prefix `text-[var(--text-`. The Tailwind scanner's raw-byte matching found the `[` bracket and the first `)` on the line as the class boundary, generating both the `&ast;` form (from the defusedString line) and attempted-`*` form from the PATTERN string.
+- **Issue:** Even after the JSDoc fix, the dev server still showed two CSS errors from the test file — one for the `&ast;` form (from the `defusedString` line) and one for the raw-asterisk form (escaped here as `&ast;` to avoid re-tripping this test). The `const PATTERN = 'text-[var(--text-' + STAR + ')]'` line had `'text-[var(--text-'` as a literal string — raw bytes contain the contiguous prefix `text-[var(--text-`. The Tailwind scanner's raw-byte matching found the `[` bracket and the first `)` on the line as the class boundary, generating both forms from the PATTERN string.
 - **Fix:** Split the prefix into `PREFIX_A = 'text-[var('` and `PREFIX_B = '--text-'` so no single source location contains the contiguous byte sequence `text-[var(--text-`.
 - **Files modified:** `src/__tests__/no-bad-tailwind-literals.test.ts`
 - **Verification:** `npm run build` exits 0 with zero CSS warnings; dev server smoke test shows `/sign-in` HTTP 200 with no Build Error overlay.
