@@ -55,5 +55,32 @@ export const productionOrders = pgTable(
 );
 
 // D-03: co-located inferred types — canonical project-wide ProductionOrder (D-04)
+//
+// CR-01 boundary contract:
+// ------------------------
+// `weightLbs` is typed as `string` because Drizzle infers `numeric(10, 2)`
+// as a string to preserve decimal precision across the JS Number boundary
+// (Number.MAX_SAFE_INTEGER cannot losslessly represent every
+// `numeric(p, s)` value Postgres can store). This is by design and the
+// column type must NOT be downgraded to `integer` or `bigint` — weight in
+// a financial/inventory context needs exact decimal arithmetic.
+//
+// The legacy UI shape `DemoOrder.weightLbs: number` (in
+// src/types/millProduction.ts) is the consumer shape, NOT the DB shape.
+// When Phase 33 wires real DB queries into the UI, a service-boundary
+// adapter MUST parse this string with `parseFloat` / `Number()` before
+// handing rows to `MillProductionUI`. The adapter belongs in
+// `src/services/millProduction.ts` (or a successor module), NOT in the
+// schema or the component.
+//
+// Concretely:
+//   - DB → service:  rows: ProductionOrder[]                  (weightLbs: string)
+//   - service → UI:  rows.map(r => ({...r, weightLbs: Number(r.weightLbs)}))
+//   - UI consumers:  DemoOrder[]                              (weightLbs: number)
+//
+// Failing to apply this adapter will produce silent string-concatenation
+// bugs in `MillProductionUI` (e.g. `0 + "6000" + "9000" → "060009000"`)
+// rather than a compile-time error, because the consumer signature still
+// types weightLbs as number.
 export type ProductionOrder = typeof productionOrders.$inferSelect;
 export type NewProductionOrder = typeof productionOrders.$inferInsert;
