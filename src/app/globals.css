@@ -1,8 +1,8 @@
 @import "tailwindcss" source(none);
 
-/* Tailwind v4: disable auto-detection (which would scan .planning/**/*.md and trigger
-   recurrence of the text-[var(--text-&ast;)] parse bug) and whitelist only the project
-   source tree. See .planning/debug/css-text-var-text-star-parse-fail.md for history.
+/* Tailwind v4: disable auto-detection (which would scan .planning/ markdown files and
+   trigger the recurring CSS parse bug — see .planning/debug/css-text-var-text-star-parse-fail.md)
+   and whitelist only the project source tree.
    Enforced by src/__tests__/no-bad-tailwind-literals.test.ts. */
 @source "../../src";
 

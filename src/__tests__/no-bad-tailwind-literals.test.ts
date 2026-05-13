@@ -5,10 +5,12 @@
  *
  * Background:
  *   Tailwind v4's Oxide scanner reads raw bytes from scanned files. When it finds
- *   the literal `text-[var(--text-*)]` (with a literal asterisk), it generates a
- *   malformed CSS rule `.text-[var(--text-*)] { color: var(--text-*); }` that
- *   LightningCSS rejects with `Unexpected token Delim('*')`, producing a Build Error
- *   overlay on every page. This bug surfaced in Phase 27, Phase 31-05, and Phase 32.
+ *   an arbitrary Tailwind class containing a literal asterisk inside the brackets,
+ *   it generates a malformed CSS rule that LightningCSS rejects with
+ *   `Unexpected token Delim('*')`, producing a Build Error overlay on every page.
+ *   The specific token that triggered this bug in Phases 27/31/32 is described in
+ *   .planning/debug/css-text-var-text-star-parse-fail.md (token name uses &ast; entity
+ *   there to prevent this very scanner from picking it up).
  *
  *   Layer 1 (this plan) defused all known occurrences. Layer 2 changed globals.css to
  *   `source(none)` + explicit positive `@source "../../src"`, which scopes scanning
@@ -172,7 +174,9 @@ describe('no-bad-tailwind-literals', () => {
     expect(dangerousString.includes(PATTERN)).toBe(true);
 
     // The scanner must NOT detect the pattern in the defused form
-    const defusedString = 'text-[var(--text-&ast;)]';
+    // (defused form uses &ast; entity — built from parts to avoid this file itself
+    // generating a Tailwind CSS candidate via the scanner reading this source file)
+    const defusedString = 'text-[var(--text-' + '&ast;' + ')]';
     expect(defusedString.includes(PATTERN)).toBe(false);
 
     // Verify the PATTERN itself is correctly constructed
