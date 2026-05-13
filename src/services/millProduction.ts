@@ -1,6 +1,6 @@
-import { ProductionOrder, MillLine } from "@/types/millProduction";
+import { DemoOrder, MillLine } from "@/types/millProduction";
 
-const mockOrders: ProductionOrder[] = [
+export const mockOrders: DemoOrder[] = [
   // === PREMIX ORDERS (11) ===
   // Premix Completed (5)
   {
@@ -420,14 +420,14 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function getProductionOrders(): Promise<ProductionOrder[]> {
+export async function getProductionOrders(): Promise<DemoOrder[]> {
   await delay(200 + Math.random() * 100);
   return mockOrders;
 }
 
 export async function getOrdersByMillLine(
   millLine: MillLine
-): Promise<ProductionOrder[]> {
+): Promise<DemoOrder[]> {
   await delay(200 + Math.random() * 100);
   return mockOrders.filter((order) => order.millLine === millLine);
 }
