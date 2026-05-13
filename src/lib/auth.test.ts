@@ -67,4 +67,33 @@ describe('requireRole', () => {
     });
     await expect(requireRole('demo')).rejects.toMatchObject({ url: '/' });
   });
+
+  // Phase 31 (AUTH-01) — mill_operator role coverage.
+  // These cases exercise the Role-union extension locked in CONTEXT.md D-01
+  // and verified by the v2.0 milestone. They use the canonical
+  // `mockAuth.mockResolvedValue({ ... })` pattern established above.
+
+  it("requireRole('mill_operator') resolves when session has roles: ['mill_operator']", async () => {
+    mockAuth.mockResolvedValue({
+      userId: 'u1',
+      sessionClaims: { metadata: { roles: ['mill_operator'] } },
+    });
+    await expect(requireRole('mill_operator')).resolves.toBeUndefined();
+  });
+
+  it("requireRole('mill_operator') redirects to / when role missing", async () => {
+    mockAuth.mockResolvedValue({
+      userId: 'u1',
+      sessionClaims: { metadata: { roles: ['user'] } },
+    });
+    await expect(requireRole('mill_operator')).rejects.toMatchObject({ url: '/' });
+  });
+
+  it("requireRole('mill_operator') resolves when session has roles: ['demo','mill_operator']", async () => {
+    mockAuth.mockResolvedValue({
+      userId: 'u1',
+      sessionClaims: { metadata: { roles: ['demo', 'mill_operator'] } },
+    });
+    await expect(requireRole('mill_operator')).resolves.toBeUndefined();
+  });
 });
