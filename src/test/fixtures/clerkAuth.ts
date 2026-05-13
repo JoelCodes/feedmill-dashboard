@@ -196,6 +196,11 @@ export function mockUnauthenticatedSession(): void {
   });
 }
 
+/**
+ * Seed `mockAuth` to resolve with a session whose roles array contains
+ * `'mill_operator'`. Use in tests that exercise the edit-mode branch of
+ * `src/app/page.tsx` (Phase 31, D-03) — i.e., `canEdit === true`.
+ */
 export function mockMillOperatorSession(): void {
   mockAuth.mockResolvedValue({
     userId: 'u1',
@@ -203,6 +208,20 @@ export function mockMillOperatorSession(): void {
   });
 }
 
+/**
+ * Seed `mockAuth` to resolve with a session whose roles array contains
+ * BOTH `'demo'` and `'mill_operator'` — the canonical multi-role coverage
+ * path (CONTEXT.md D-13).
+ *
+ * Verifies that `Array.prototype.includes` membership semantics work for
+ * users with more than one role, which is the runtime shape the demo user
+ * (`e2e-demo+clerk_test`) takes after the Plan 31-05 operator updates the
+ * Clerk Dashboard publicMetadata to `{ roles: ['demo', 'mill_operator'] }`.
+ *
+ * Pair with `await checkRole('mill_operator')` returning `true` AND
+ * `await checkRole('demo')` returning `true` from the same session — both
+ * are exercised by `src/app/page.test.tsx` (Plan 31-04).
+ */
 export function mockDualRoleSession(): void {
   mockAuth.mockResolvedValue({
     userId: 'u1',
