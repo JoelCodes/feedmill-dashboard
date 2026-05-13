@@ -86,7 +86,7 @@ Wired `@clerk/testing` into Playwright via a serial global-setup project that si
 **2. [Rule 3 — Blocking issue] Cleared stale `.next` and started a fresh dev server before E2E run**
 
 - **Found during:** Task 5 first attempt.
-- **Issue:** A long-running dev server had cached a build error from a Tailwind v4 content-scanner false positive — the literal `text-[var(--text-*)]` from `.planning/milestones/v1.3-phases/18-page-migration/18-UI-REVIEW.md` was compiled into a malformed CSS rule, and the dev server stayed in the error state across page requests. `clerk.signIn` timed out at `page.waitForFunction(() => window.Clerk?.loaded)` because the Build Error overlay prevented Clerk from hydrating.
+- **Issue:** A long-running dev server had cached a build error from a Tailwind v4 content-scanner false positive — the literal `text-[var(--text-&ast;)]` from `.planning/milestones/v1.3-phases/18-page-migration/18-UI-REVIEW.md` was compiled into a malformed CSS rule, and the dev server stayed in the error state across page requests. `clerk.signIn` timed out at `page.waitForFunction(() => window.Clerk?.loaded)` because the Build Error overlay prevented Clerk from hydrating.
 - **Fix:** Killed all running dev-server processes on port 3000, `rm -rf .next`, ran a fresh `npm run dev` (background). The first compile after the cache clear produced clean output and `/sign-in` returned HTTP 200 with the Clerk login UI.
 - **Files modified:** None (purely an environmental reset).
 - **Note:** The underlying Tailwind cache-state behavior is pre-existing — logged as item 4 in `deferred-items.md` for a future hygiene plan.

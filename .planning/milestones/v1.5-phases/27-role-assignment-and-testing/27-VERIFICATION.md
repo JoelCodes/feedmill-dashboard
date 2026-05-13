@@ -134,7 +134,7 @@ Per `deferred-items.md`, the following were verified pre-existing on baseline `a
 1. Jest scans `e2e/` directory (no `testPathIgnorePatterns` in jest.config.ts) — 14+ Playwright spec failures when running plain `npm test`. Recommended fix: add `testPathIgnorePatterns: ['<rootDir>/e2e/']`.
 2. `src/app/settings/__tests__/page.test.tsx` fails with "ClerkLoading can only be used within the <ClerkProvider />" — test renderer missing ClerkProvider wrapper. 14 failing tests.
 3. 21 `tsc` errors in test fixtures (drifted mock data: `customerId`, `activeBins`; regex es2018 flag). Zero errors in any Phase 27 file.
-4. Tailwind v4 dev-server cache: `@source not "../../.planning"` doesn't recursively exclude `.planning/**/*.md`, picking up the literal `text-[var(--text-*)]` from `18-UI-REVIEW.md` into a malformed CSS rule. Cache-state dependent.
+4. Tailwind v4 dev-server cache: `@source not "../../.planning"` doesn't recursively exclude `.planning/**/*.md`, picking up the literal `text-[var(--text-&ast;)]` from `18-UI-REVIEW.md` into a malformed CSS rule. Cache-state dependent.
 5. `.env.local` (operator) contains `PLAYWRIGHT_BASE_URL=https://feedmill-dashboard.vercel.app` from v1.4 production-smoke. Caused first E2E run to target production until shell-overridden.
 
 All five are tracked for a future test-hygiene plan. They do not block Phase 27's goal.
