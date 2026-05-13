@@ -2,8 +2,8 @@
 phase: 32-schema-migrations-and-seed-data
 plan: "04"
 subsystem: database/migrations
-status: checkpoint-pending
-checkpoint_task: "Task 2: operator SQL review + Task 3: drizzle-kit migrate"
+status: complete
+checkpoint_resolved: "Task 3 (drizzle-kit migrate) applied to Neon dev DB on 2026-05-13 — schema introspection confirms 4 tables + 2 enums + 4 indexes + 1 FK with ON DELETE CASCADE; no FK on clerk_user_id columns; SC#2 invariants verified live"
 tags: [drizzle-kit, migration, generate, migrate, blocking, DATA-06]
 dependency_graph:
   requires: [32-01, 32-03]
