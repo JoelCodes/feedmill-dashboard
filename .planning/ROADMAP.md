@@ -103,7 +103,13 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   3. SQL migration files exist under `drizzle/migrations/` and `drizzle-kit migrate` can be re-run from scratch against an empty DB to reproduce the same schema
   4. Running the seed script populates the database with the 33 Book1.xlsx example orders, matching the row count and field values from the existing mock service
   5. `drizzle-kit push` is not used; the migration discipline (generate + migrate) is in place
-**Plans**: TBD
+**Plans**: 6 plans
+- [ ] 32-01-PLAN.md — Four Drizzle pgTable modules (orders, events, imports, users) + barrel + Wave-0 schema tests (DATA-02..05)
+- [ ] 32-02-PLAN.md — D-04 type rewrite: rename ProductionOrder → DemoOrder, export mockOrders, update all demo consumers
+- [ ] 32-03-PLAN.md — Update drizzle.config.ts schema path to barrel + delete src/db/schema.ts placeholder
+- [ ] 32-04-PLAN.md — drizzle-kit generate + operator review + drizzle-kit migrate against Neon dev DB (DATA-06, BLOCKING)
+- [ ] 32-05-PLAN.md — scripts/export-seed.ts + src/db/seed-data.json (33-row JSON snapshot, TDD)
+- [ ] 32-06-PLAN.md — tsx devDep + db:seed script + src/db/seed.ts runtime with TRUNCATE protecting users (DATA-07)
 
 ---
 
@@ -162,7 +168,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 29. Close gap: ROUTE-01 cleanup | v1.5 | 6/6 | Complete | 2026-05-12 |
 | 30. Close gap: INT-07 + SUMMARY backfill | v1.5 | 2/2 | Complete | 2026-05-12 |
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
-| 32. Schema, Migrations, and Seed Data | v2.0 | 0/? | Not started | - |
+| 32. Schema, Migrations, and Seed Data | v2.0 | 0/6 | Not started | - |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 0/? | Not started | - |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 0/? | Not started | - |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
