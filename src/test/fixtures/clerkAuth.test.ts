@@ -29,6 +29,8 @@ import {
   mockDemoSession,
   mockNonDemoSession,
   mockUnauthenticatedSession,
+  mockMillOperatorSession,
+  mockDualRoleSession,
 } from './clerkAuth';
 
 beforeEach(() => {
@@ -104,5 +106,25 @@ describe('clerkAuth fixture', () => {
   it('clerkAuthMockFactory.auth() invokes the exported mockAuth fn (closure proof)', async () => {
     mockAuth.mockResolvedValue({ marker: true });
     await expect(auth()).resolves.toEqual({ marker: true });
+  });
+
+  // Phase 31 (Plan 01, Task 3) — multi-role fixture factories.
+  // These factories unblock Plan 31-04's src/app/page.test.tsx by giving
+  // it canonical seed shapes for the read-only-vs-edit branches and the
+  // dual-role coverage path (CONTEXT.md D-12, D-13).
+
+  it('mockMillOperatorSession resolves mockAuth with roles containing mill_operator', async () => {
+    mockMillOperatorSession();
+    const result = await mockAuth();
+    expect(result.userId).toBe('u1');
+    expect(result.sessionClaims.metadata.roles).toContain('mill_operator');
+  });
+
+  it('mockDualRoleSession resolves mockAuth with roles containing both demo and mill_operator', async () => {
+    mockDualRoleSession();
+    const result = await mockAuth();
+    expect(result.userId).toBe('u1');
+    expect(result.sessionClaims.metadata.roles).toContain('demo');
+    expect(result.sessionClaims.metadata.roles).toContain('mill_operator');
   });
 });
