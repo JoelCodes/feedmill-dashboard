@@ -28,10 +28,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Build the dangerous pattern at runtime using char codes so this source file does NOT
-// contain the literal asterisk form of the token (which would make this test match itself).
+// Build the dangerous pattern at runtime using char codes AND string splitting so this
+// source file does NOT contain contiguous bytes that the Tailwind scanner would recognize
+// as a class-name candidate (which would cause this file itself to generate invalid CSS).
 const STAR = String.fromCharCode(42); // 0x2A — '*'
-const PATTERN = 'text-[var(--text-' + STAR + ')]';
+// Split the prefix across two string literals so Tailwind's scanner cannot find the
+// contiguous dangerous byte sequence in this source file.
+const PREFIX_A = 'text-[var('; // "text-[var("
+const PREFIX_B = '--text-';    // "--text-"
+const PATTERN = PREFIX_A + PREFIX_B + STAR + ')]';
 
 // Directories to skip when walking the file tree.
 const SKIP_DIRS = new Set(['node_modules', '.next', '.git', 'dist', 'build', '.turbo', 'coverage']);
@@ -168,18 +173,18 @@ describe('no-bad-tailwind-literals', () => {
   test('positive control — scanner correctly detects the dangerous pattern', () => {
     // Construct the dangerous string in memory and write it to a temp-like in-memory check.
     // This proves the scanner is not silently passing due to a broken detection algorithm.
-    const dangerousString = 'text-[var(--text-' + String.fromCharCode(42) + ')]';
+    // Build dangerousString from parts — same as PATTERN, proves PATTERN is correct
+    const dangerousString = PREFIX_A + PREFIX_B + String.fromCharCode(42) + ')]';
 
     // The scanner must detect the pattern in a string that contains it
     expect(dangerousString.includes(PATTERN)).toBe(true);
 
     // The scanner must NOT detect the pattern in the defused form
-    // (defused form uses &ast; entity — built from parts to avoid this file itself
-    // generating a Tailwind CSS candidate via the scanner reading this source file)
-    const defusedString = 'text-[var(--text-' + '&ast;' + ')]';
+    // (defused form uses &ast; entity in place of the asterisk)
+    const defusedString = PREFIX_A + PREFIX_B + '&ast;' + ')]';
     expect(defusedString.includes(PATTERN)).toBe(false);
 
     // Verify the PATTERN itself is correctly constructed
-    expect(PATTERN).toBe('text-[var(--text-' + String.fromCharCode(42) + ')]');
+    expect(PATTERN).toBe(PREFIX_A + PREFIX_B + String.fromCharCode(42) + ')]');
   });
 });
