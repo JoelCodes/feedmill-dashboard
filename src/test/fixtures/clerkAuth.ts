@@ -195,3 +195,17 @@ export function mockUnauthenticatedSession(): void {
     sessionClaims: null,
   });
 }
+
+export function mockMillOperatorSession(): void {
+  mockAuth.mockResolvedValue({
+    userId: 'u1',
+    sessionClaims: { metadata: { roles: ['mill_operator'] } },
+  });
+}
+
+export function mockDualRoleSession(): void {
+  mockAuth.mockResolvedValue({
+    userId: 'u1',
+    sessionClaims: { metadata: { roles: ['demo', 'mill_operator'] } },
+  });
+}
