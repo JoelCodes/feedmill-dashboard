@@ -721,27 +721,33 @@ export function mockDualRoleSession(): void {
 
 **User confirmation needed before lock:** None of these assumptions block Phase 31 planning. A1 and A4 have low-cost verification steps that should be encoded as plan acceptance criteria (run `drizzle-kit generate` once; decode mill-operator JWT after sign-in).
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+All four open questions were absorbed into the Phase 31 plans during planning. Resolution links below; the recommendations in each item map 1:1 to the plan tasks that implement them.
 
 1. **Does `<MillReadOnlyStub>` need a Jest unit test?**
    - What we know: The stub is a 10-line presentational component; the existing `src/app/page.test.tsx` covers DashboardLayout wrapper assertions, which the planner can adapt to cover the canEdit prop branches.
    - What's unclear: Whether to TDD a new `MillReadOnlyStub.test.tsx` or fold the canEdit-mode-toggle assertion into the rewritten `src/app/page.test.tsx`.
    - Recommendation: Fold into `src/app/page.test.tsx` (RSC tests pattern from Phase 28 fixtures). One test for `canEdit=true` (heading "Edit mode") and one for `canEdit=false` (heading "Read-only mode") covers the boolean branch. Keep `<MillReadOnlyStub>` itself untested at the unit level — its content is trivially derived from the prop and would only add maintenance burden.
+   - **RESOLVED:** 31-04-PLAN.md Task 1 (RED) writes 4 canEdit branches into `src/app/page.test.tsx` (unauth-redirect, read-only, edit, dual-role-edit). No standalone `MillReadOnlyStub.test.tsx` is created. Matches the recommendation.
 
 2. **Should Phase 31 add a `auth-mill-operator` spec file or reuse the existing `demo-route-protection.spec.ts`?**
    - What we know: CONTEXT.md Claude's Discretion explicitly leaves this open: "Whether to update the existing E2E test matrix (`auth-demo` project) to cover the new dual-role behavior, or only add `auth-mill-operator` tests in Phase 31 and broaden the demo coverage when transitions land in Phase 33."
    - What's unclear: What "mill-operator-specific" behavior is observable in Phase 31 if the page is read-only-or-edit-banner with no functional difference for non-operators yet.
    - Recommendation: Add a minimal `e2e/mill-operator-smoke.spec.ts` (project: `auth-mill-operator`) that signs in, navigates to `/`, and asserts the `data-mode="edit"` attribute on the stub's mode indicator. Mirror under `auth-demo` (after D-13 metadata update propagates) to verify dual-role users see edit mode. This is the cheapest end-to-end proof that D-12 + D-13 wiring works.
+   - **RESOLVED:** 31-03-PLAN.md Task 2 creates `e2e/mill-operator-smoke.spec.ts` with the `data-mode='edit'` assertion. Demo-user dual-role broadening is deferred to Phase 33 per Claude's Discretion (planner accepted the simpler path).
 
 3. **Verify a `+clerk_test` user's `publicMetadata` propagation latency.**
    - What we know: Clerk JWT template changes do NOT propagate until sign-out + sign-in. publicMetadata edits MAY propagate immediately to *new* sessions but stale for *active* sessions.
    - What's unclear: Whether the dev/test instance behaves identically to docs description.
    - Recommendation: The plan should include a manual verification step after the Clerk Dashboard cutover — decode the dual-role demo user's JWT at jwt.io and confirm `metadata.roles: ['demo','mill_operator']` is present.
+   - **RESOLVED:** 31-05-PLAN.md Task 2 Step 8 (operator runbook checkpoint) requires JWT decode at jwt.io and confirms `metadata.roles: ['demo','mill_operator']`. Marked `autonomous: false` because dashboard cutover is operator action.
 
 4. **Is there a CI workflow file that needs updating?**
    - What we know: No `.github/workflows/` directory was inspected; STATE.md does not mention CI/CD configuration.
    - What's unclear: Whether Phase 31 must update any CI secrets / env-var manifests.
    - Recommendation: Plan task should include "verify no CI workflow files exist" as a discovery step. If they do exist, add `E2E_MILL_OPERATOR_USER_EMAIL` / `E2E_MILL_OPERATOR_USER_PASSWORD` to the secrets list. If not, defer.
+   - **RESOLVED:** 31-05-PLAN.md Task 3 is the CI-secrets decision checkpoint — `ls .github/workflows/` informs the call; either `gh secret set` is run, or the deferral is recorded with rationale. Marked `autonomous: false`.
 
 ## Environment Availability
 
