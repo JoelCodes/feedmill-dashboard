@@ -88,7 +88,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [x] 31-01-PLAN.md — Role union + `checkRole` helper + test fixtures + REQUIREMENTS/ROADMAP edits (per D-15/D-16/D-17)
 - [x] 31-02-PLAN.md — Drizzle/Neon install + `drizzle.config.ts` + `src/db/{index,schema}.ts` + `.env.example`
 - [x] 31-03-PLAN.md — Playwright auth-mill-operator project + smoke spec + `docs/clerk-setup.md` runbook
-- [ ] 31-04-PLAN.md — `src/app/page.tsx` async RSC rewrite + `<MillReadOnlyStub>` + page tests
+- [x] 31-04-PLAN.md — `src/app/page.tsx` async RSC rewrite + `<MillReadOnlyStub>` + page tests
 - [ ] 31-05-PLAN.md — Operator runbook execution (Neon + Clerk Dashboard) + canonical verification gate
 
 ---
@@ -161,7 +161,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 28. Client Component Security Audit | v1.5 | 6/6 | Complete | 2026-05-12 |
 | 29. Close gap: ROUTE-01 cleanup | v1.5 | 6/6 | Complete | 2026-05-12 |
 | 30. Close gap: INT-07 + SUMMARY backfill | v1.5 | 2/2 | Complete | 2026-05-12 |
-| 31. Role Expansion and DB Infrastructure | v2.0 | 3/5 | In Progress|  |
+| 31. Role Expansion and DB Infrastructure | v2.0 | 4/5 | In Progress|  |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 0/? | Not started | - |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 0/? | Not started | - |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 0/? | Not started | - |
