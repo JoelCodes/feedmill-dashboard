@@ -665,7 +665,7 @@ SC#5 ("drizzle-kit push not used") is verified by:
 
 ---
 
-## 7. Validation Architecture
+## Validation Architecture
 
 ### Test Framework
 
