@@ -34,9 +34,36 @@ async function seed() {
   );
 
   // Bulk-insert all 33 seed rows from the static JSON snapshot (D-15).
-  // The `as any` cast is acceptable: seed-data.json shape was validated in Plan 05.
-  console.log(`Inserting ${(seedData as unknown[]).length} seed rows...`);
-  await db.insert(productionOrders).values(seedData as any);
+  // The JSON uses snake_case DB column names (Plan 05 transform contract); Drizzle's
+  // .values() takes the schema's camelCase TS property names. Map per row at insert time.
+  type SnakeRow = {
+    order_number: string;
+    customer: string;
+    product: string;
+    weight_lbs: string;
+    delivery_time: string;
+    state: 'Pending' | 'Mixing' | 'Completed' | 'Blocked';
+    mill_line: 'Premix' | 'Excel' | 'CGM';
+    texture_type: string | null;
+    line_code: string | null;
+    created_by: string;
+    version: number;
+  };
+  const rows = (seedData as SnakeRow[]).map((r) => ({
+    orderNumber: r.order_number,
+    customer: r.customer,
+    product: r.product,
+    weightLbs: r.weight_lbs,
+    deliveryTime: r.delivery_time,
+    state: r.state,
+    millLine: r.mill_line,
+    textureType: r.texture_type,
+    lineCode: r.line_code,
+    createdBy: r.created_by,
+    version: r.version,
+  }));
+  console.log(`Inserting ${rows.length} seed rows...`);
+  await db.insert(productionOrders).values(rows);
 
   console.log('Seed complete.');
   process.exit(0);

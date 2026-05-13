@@ -1,8 +1,11 @@
 ---
 phase: 32-schema-migrations-and-seed-data
 plan: "06"
+status: complete
 subsystem: database
 tags: [seed, runtime, tsx, truncate, insert, data]
+deviation: "Inline fix to src/db/seed.ts on operator-gate run — Plan 05's snake_case JSON shape vs Drizzle's camelCase TS-property contract was not caught at plan time; added per-row mapper at insert site, re-ran seed twice (idempotent), 33 rows seeded with mill_line distribution 11/11/11"
+checkpoint_resolved: "Task 3 (npm run db:seed) executed against Neon dev DB on 2026-05-13; 33 rows confirmed; D-17 (users untouched) live-verified; idempotent across two runs"
 dependency_graph:
   requires: [32-04, 32-05]
   provides: [seed-runtime, db-seed-script]
