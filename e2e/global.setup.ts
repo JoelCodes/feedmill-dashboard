@@ -33,7 +33,7 @@ type RoleFixture = {
   file: string;
 };
 
-const roles: Record<'demo' | 'norole' | 'admin', RoleFixture> = {
+const roles: Record<'demo' | 'norole' | 'admin' | 'mill-operator', RoleFixture> = {
   demo: {
     envEmail: 'E2E_DEMO_USER_EMAIL',
     envPassword: 'E2E_DEMO_USER_PASSWORD',
@@ -48,6 +48,11 @@ const roles: Record<'demo' | 'norole' | 'admin', RoleFixture> = {
     envEmail: 'E2E_ADMIN_USER_EMAIL',
     envPassword: 'E2E_ADMIN_USER_PASSWORD',
     file: 'playwright/.clerk/admin.json',
+  },
+  'mill-operator': {
+    envEmail: 'E2E_MILL_OPERATOR_USER_EMAIL',
+    envPassword: 'E2E_MILL_OPERATOR_USER_PASSWORD',
+    file: 'playwright/.clerk/mill-operator.json',
   },
 };
 
