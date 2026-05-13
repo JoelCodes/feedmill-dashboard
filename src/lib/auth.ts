@@ -48,6 +48,38 @@ export async function requireRole(role: Role): Promise<void> {
   }
 }
 
+/**
+ * Returns whether the current session has `role`. Server-only.
+ *
+ * Use when a page needs to branch on role membership without a redirect —
+ * e.g., to compute a `canEdit` prop for a client component that hides or
+ * shows edit affordances based on role (CONTEXT.md D-03, Phase 31).
+ *
+ * This is the read-only counterpart to {@link requireRole}: same JWT-claim
+ * read path (`sessionClaims.metadata.roles.includes(role)`), but it returns
+ * a boolean instead of calling `redirect()`. Both are server-only — `auth()`
+ * from `@clerk/nextjs/server` is server-only and will throw when invoked
+ * from the client. Role checks done in the browser are not a security
+ * boundary; the enforcement points are middleware + server actions
+ * (`requireRole` inside the action body).
+ *
+ * Branches (in order):
+ *   1. No `sessionClaims` or no `metadata` or no `roles` → returns `false`.
+ *   2. `roles` array does not contain `role` → returns `false`.
+ *   3. `roles` array contains `role` → returns `true`.
+ *
+ * @param role - The {@link Role} to check for membership.
+ * @returns `Promise<boolean>` — `true` iff the session has `role`.
+ *
+ * @example
+ * // src/app/page.tsx — Phase 31 read-only / edit split (D-03)
+ * import { checkRole } from '@/lib/auth';
+ *
+ * export default async function HomePage() {
+ *   const canEdit = await checkRole('mill_operator');
+ *   return <MillReadOnlyStub canEdit={canEdit} />;
+ * }
+ */
 export async function checkRole(role: Role): Promise<boolean> {
   const { sessionClaims } = await auth();
   return sessionClaims?.metadata?.roles?.includes(role) ?? false;
