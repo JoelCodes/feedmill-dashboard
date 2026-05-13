@@ -1,5 +1,5 @@
 ---
-status: diagnosed
+status: resolved
 phase: 32-schema-migrations-and-seed-data
 source:
   - 32-01-SUMMARY.md
@@ -8,8 +8,10 @@ source:
   - 32-04-SUMMARY.md
   - 32-05-SUMMARY.md
   - 32-06-SUMMARY.md
+  - 32-07-SUMMARY.md
 started: 2026-05-13T16:20:01Z
-updated: 2026-05-13T16:27:00Z
+updated: 2026-05-13T17:30:00Z
+resolved_by: 32-07-PLAN.md
 ---
 
 ## Current Test
@@ -59,7 +61,10 @@ skipped: 0
 ## Gaps
 
 - truth: "Loading /demo/mill-production should render without CSS parse errors in globals.css"
-  status: failed
+  status: resolved
+  resolved_by: 32-07-PLAN.md
+  resolved_at: 2026-05-13T17:30:00Z
+  resolution: "Plan 32-07 three-layer fix: (1) defused dangerous literal in 7 .planning/**/*.md files using `&ast;` escape, (2) replaced broken `@source not` glob in src/app/globals.css with `@import \"tailwindcss\" source(none);` + `@source \"../../src\";`, (3) added Jest enforcement gate `src/__tests__/no-bad-tailwind-literals.test.ts` so future recurrence fails CI. Verified: `npm run build` exit 0, zero CSS warnings; 3/3 enforcement tests pass; dev server smoke test on /sign-in returns HTTP 200 with no Build Error overlay."
   reason: "User reported: CSS parse error in src/app/globals.css line 1794 — `.text-\\[var\\(--text-\\*\\)\\] { color: var(--text-*); }` — Unexpected token Delim('*'). Import trace: globals.css → layout.tsx."
   severity: major
   test: 5
