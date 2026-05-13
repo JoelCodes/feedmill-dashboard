@@ -81,7 +81,7 @@
 ### Pillar 4: Typography (3/4)
 
 **Evidence:**
-- Font sizes detected: xs, sm, base, lg, xl, 2xl, plus `text-[var(--text-*)]` token references
+- Font sizes detected: xs, sm, base, lg, xl, 2xl, plus token references of the form `text-[var(--text-N)]` (N is a numeric token id like 10, 11, 13, 22)
 - Font weights: bold (dominant), semibold (4 instances), medium (3 instances), normal (implicit)
 - UI-SPEC declares 4 sizes: 11px (labels), 14px (body), 15px (card titles), 18px (headings)
 
