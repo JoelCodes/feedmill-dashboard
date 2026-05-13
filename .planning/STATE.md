@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
-status: active
-last_updated: "2026-05-12"
-last_activity: 2026-05-12 — v2.0 roadmap created (Phases 31-35)
+status: executing
+last_updated: "2026-05-13T00:57:01.511Z"
+last_activity: 2026-05-13
 progress:
-  total_phases: 5
+  total_phases: 1
   completed_phases: 0
-  total_plans: 0
+  total_plans: 5
   completed_plans: 0
   percent: 0
 ---
@@ -31,8 +31,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Phase:** 31 — Role Expansion and DB Infrastructure
 **Plan:** —
-**Status:** Not started
-**Last activity:** 2026-05-12 — Roadmap created
+**Status:** Ready to execute
+**Last activity:** 2026-05-13
 
 ### Progress Bar
 
@@ -62,6 +62,7 @@ Phase 31 ░  Phase 32 ░  Phase 33 ░  Phase 34 ░  Phase 35 ░
 The `roles[]` refactor is code-complete but the Clerk Dashboard JWT template and demo user `publicMetadata` have not been migrated yet. Until this is done, `/demo/*` redirects all users to `/` (including the demo user). This is a one-time operator action — not a phase requirement.
 
 **Runbook** (from `260512-kfy-01-SUMMARY.md`):
+
 1. `Sessions → Customize session token` → replace body: `{"metadata": {"roles": "{{user.public_metadata.roles}}"}}`
 2. Users → demo user → Edit publicMetadata → `{"roles": ["demo"]}`
 3. If admin user exists: `{"roles": ["admin"]}`
