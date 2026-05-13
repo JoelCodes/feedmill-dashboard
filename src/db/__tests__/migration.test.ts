@@ -85,9 +85,10 @@ describe('drizzle migration file contract', () => {
     expect(sqlContent).toContain('CREATE TYPE "public"."mill_line" AS ENUM');
   });
 
-  // Assertion 10: ON DELETE CASCADE on order_events.order_id FK (D-10)
-  it('SQL contains ON DELETE CASCADE (order_events → production_orders FK)', () => {
-    expect(sqlContent).toContain('ON DELETE CASCADE');
+  // Assertion 10: ON DELETE cascade on order_events.order_id FK (D-10)
+  // drizzle-kit generates lowercase "cascade" — match the actual output
+  it('SQL contains ON DELETE cascade (order_events → production_orders FK)', () => {
+    expect(sqlContent).toContain('ON DELETE cascade');
   });
 
   // Assertion 11: DEFAULT 1 on version column (D-11 / SC#2)
