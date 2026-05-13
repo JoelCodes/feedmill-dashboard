@@ -3,7 +3,12 @@ import path from 'path';
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { sql } from 'drizzle-orm';
-import { productionOrders } from './schema/index';
+import {
+  productionOrders,
+  productionStateEnum,
+  millLineEnum,
+} from './schema/index';
+import type { MillLine, ProductionState } from './schema/orders';
 import seedData from './seed-data.json';
 
 // seed.ts is at src/db/ — two directories deep from repo root.
@@ -24,7 +29,53 @@ if (!process.env.DATABASE_URL_UNPOOLED) {
 const client = neon(process.env.DATABASE_URL_UNPOOLED!);
 const db = drizzle({ client });
 
+/**
+ * Production guard (WR-01 / partial CR-02).
+ *
+ * The TRUNCATE + INSERT pair below is NOT transactional over Neon's HTTP
+ * driver — each call is an independent HTTP POST that auto-commits. If
+ * INSERT fails after TRUNCATE has succeeded, the database is left empty
+ * with no rollback path. This guard prevents the script from running
+ * against any host whose URL contains `prod` (case-insensitive) or when
+ * `NODE_ENV === 'production'`, both of which would risk wiping production
+ * data.
+ *
+ * Full transactional fix (switching to `@neondatabase/serverless` Pool +
+ * `db.transaction(...)`) is deferred to a follow-up phase because it
+ * changes the runtime driver choice for the seed script.
+ */
+function assertSafeToSeed(rawUrl: string): void {
+  let host: string;
+  try {
+    host = new URL(rawUrl).hostname;
+  } catch (err) {
+    throw new Error(
+      `Could not parse DATABASE_URL_UNPOOLED as a URL: ${(err as Error).message}`
+    );
+  }
+
+  const FORBIDDEN_HOST_PATTERNS = [/prod/i, /production/i];
+  if (FORBIDDEN_HOST_PATTERNS.some((rx) => rx.test(host))) {
+    throw new Error(
+      `Refusing to seed against host "${host}" — hostname matches a production-like pattern. ` +
+        'Point DATABASE_URL_UNPOOLED at a development or staging Neon endpoint.'
+    );
+  }
+
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.ALLOW_SEED_IN_PRODUCTION !== '1'
+  ) {
+    throw new Error(
+      'Refusing to seed when NODE_ENV=production. ' +
+        'Set ALLOW_SEED_IN_PRODUCTION=1 to override (you almost certainly should not).'
+    );
+  }
+}
+
 async function seed() {
+  assertSafeToSeed(process.env.DATABASE_URL_UNPOOLED!);
+
   // D-17: TRUNCATE the three transactional tables with CASCADE for idempotency.
   // NEVER include the `users` table — it would orphan real Clerk-mapped rows
   // once Phase 33 lazy-sync ships (D-17 / threat T-32-05).
@@ -36,19 +87,44 @@ async function seed() {
   // Bulk-insert all 33 seed rows from the static JSON snapshot (D-15).
   // The JSON uses snake_case DB column names (Plan 05 transform contract); Drizzle's
   // .values() takes the schema's camelCase TS property names. Map per row at insert time.
+  //
+  // WR-03 fix: state and mill_line draw from schema-derived union types so a new
+  // enum value added to schema/orders.ts is automatically picked up here.
   type SnakeRow = {
     order_number: string;
     customer: string;
     product: string;
     weight_lbs: string;
     delivery_time: string;
-    state: 'Pending' | 'Mixing' | 'Completed' | 'Blocked';
-    mill_line: 'Premix' | 'Excel' | 'CGM';
+    state: ProductionState;
+    mill_line: MillLine;
     texture_type: string | null;
     line_code: string | null;
     created_by: string;
     version: number;
   };
+
+  // WR-04 fix: runtime shape validation. The `as SnakeRow[]` cast is a
+  // TypeScript-only assertion; hand-edited seed JSON could still slip past
+  // typing and produce confusing "invalid input value for enum ..." errors
+  // from Postgres deep inside the bulk INSERT. Validate up front instead.
+  const validStates = new Set<string>(productionStateEnum.enumValues);
+  const validMillLines = new Set<string>(millLineEnum.enumValues);
+  for (const [i, r] of (seedData as SnakeRow[]).entries()) {
+    if (!validStates.has(r.state)) {
+      throw new Error(
+        `Seed row ${i} (order_number=${r.order_number}): invalid state "${r.state}". ` +
+          `Valid values: ${[...validStates].join(', ')}.`
+      );
+    }
+    if (!validMillLines.has(r.mill_line)) {
+      throw new Error(
+        `Seed row ${i} (order_number=${r.order_number}): invalid mill_line "${r.mill_line}". ` +
+          `Valid values: ${[...validMillLines].join(', ')}.`
+      );
+    }
+  }
+
   const rows = (seedData as SnakeRow[]).map((r) => ({
     orderNumber: r.order_number,
     customer: r.customer,
@@ -66,10 +142,14 @@ async function seed() {
   await db.insert(productionOrders).values(rows);
 
   console.log('Seed complete.');
-  process.exit(0);
 }
 
-seed().catch((err) => {
-  console.error('Seed failed:', err);
-  process.exit(1);
-});
+// WR-02 fix: move process.exit() out of seed() so any future awaited
+// cleanup (e.g. closing a Pool added by the CR-02 transactional fix) can
+// run on both the success and failure paths.
+seed()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('Seed failed:', err);
+    process.exit(1);
+  });
