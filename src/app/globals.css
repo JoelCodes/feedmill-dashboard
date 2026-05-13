@@ -1,7 +1,10 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
-/* Exclude planning docs from Tailwind content scanning (recursive glob form). */
-@source not "../../.planning/**/*";
+/* Tailwind v4: disable auto-detection (which would scan .planning/**/*.md and trigger
+   recurrence of the text-[var(--text-&ast;)] parse bug) and whitelist only the project
+   source tree. See .planning/debug/css-text-var-text-star-parse-fail.md for history.
+   Enforced by src/__tests__/no-bad-tailwind-literals.test.ts. */
+@source "../../src";
 
 :root {
   /* Primary Colors */
