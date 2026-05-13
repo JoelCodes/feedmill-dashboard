@@ -15,7 +15,7 @@ if (!process.env.DATABASE_URL_UNPOOLED) {
 }
 
 export default defineConfig({
-  schema: './src/db/schema.ts',     // D-09: single file in Phase 31
+  schema: './src/db/schema/index.ts',  // D-02: barrel path for Phase 32 split
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
