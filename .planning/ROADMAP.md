@@ -80,9 +80,9 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 **Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, DATA-01, DATA-08
 **Success Criteria** (what must be TRUE):
   1. `'mill_operator'` is a member of the `Role` union; TypeScript compiles clean with `tsc --noEmit`
-  2. An authenticated user without `mill_operator` in their `roles` array is redirected away from `/` at both the middleware and page level
+  2. An authenticated user without `mill_operator` sees `/` in read-only mode (edit affordances hidden); mutating server actions (Phase 33) reject without `mill_operator`.
   3. `src/db/index.ts` exists with `import 'server-only'` as line 1; `next build` completes with no Edge-bundle errors
-  4. `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) are set in Vercel env; `drizzle.config.ts` references `DATABASE_URL_UNPOOLED` for migrations
+  4. `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) set in `.env.local`; `drizzle.config.ts` references `DATABASE_URL_UNPOOLED` for migrations. Vercel env-var provisioning deferred to Phase 34 first deploy.
   5. `docs/clerk-setup.md` runbook updated with `mill_operator` test user assignment and JWT template verification
 **Plans**: 5 plans
 - [ ] 31-01-PLAN.md — Role union + `checkRole` helper + test fixtures + REQUIREMENTS/ROADMAP edits (per D-15/D-16/D-17)

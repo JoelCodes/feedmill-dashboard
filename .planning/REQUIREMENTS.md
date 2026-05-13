@@ -23,8 +23,8 @@
 ### AUTH — Role Expansion for Production Access
 
 - [ ] **AUTH-01**: `mill_operator` role string added to the `Role` union in `src/types/clerk.d.ts`.
-- [ ] **AUTH-02**: `requireRole('mill_operator')` enforced at the page level in `src/app/page.tsx` (canonical server-side guard).
-- [ ] **AUTH-03**: Middleware coarse-gate added for `/` as defense-in-depth, mirroring the `/demo/*` pattern from v1.5.
+- [ ] **AUTH-02**: Mutating server actions (Phase 33: transitions, bulk import) enforce `await requireRole('mill_operator')` as the canonical server-side guard for v2.0 write operations. `/` page-level enforcement is NOT used — any authenticated user may view `/` in read-only mode.
+- [ ] **AUTH-03**: Middleware adds `/` to the `auth.protect()` flow only (already covered by the existing `!isPublicRoute(request)` branch). NO `mill_operator` coarse-gate matcher mirroring `/demo/*`.
 - [ ] **AUTH-04**: `docs/clerk-setup.md` runbook updated with `mill_operator` test user assignment and JWT template verification step.
 
 ### PROD — Production Dashboard UI (replaces Coming Soon)
