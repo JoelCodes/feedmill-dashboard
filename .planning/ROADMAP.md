@@ -84,7 +84,12 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   3. `src/db/index.ts` exists with `import 'server-only'` as line 1; `next build` completes with no Edge-bundle errors
   4. `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) are set in Vercel env; `drizzle.config.ts` references `DATABASE_URL_UNPOOLED` for migrations
   5. `docs/clerk-setup.md` runbook updated with `mill_operator` test user assignment and JWT template verification
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 31-01-PLAN.md — Role union + `checkRole` helper + test fixtures + REQUIREMENTS/ROADMAP edits (per D-15/D-16/D-17)
+- [ ] 31-02-PLAN.md — Drizzle/Neon install + `drizzle.config.ts` + `src/db/{index,schema}.ts` + `.env.example`
+- [ ] 31-03-PLAN.md — Playwright auth-mill-operator project + smoke spec + `docs/clerk-setup.md` runbook
+- [ ] 31-04-PLAN.md — `src/app/page.tsx` async RSC rewrite + `<MillReadOnlyStub>` + page tests
+- [ ] 31-05-PLAN.md — Operator runbook execution (Neon + Clerk Dashboard) + canonical verification gate
 
 ---
 
