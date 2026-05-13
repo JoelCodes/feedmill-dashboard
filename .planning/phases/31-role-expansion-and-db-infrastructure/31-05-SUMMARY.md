@@ -74,7 +74,7 @@ completed: 2026-05-12
 
 ### 1. Tailwind v4 `@source not` non-recursive glob — fixed in 3fb044b
 
-The dev server hit a `Build Error — Parsing CSS source code failed` from a literal `text-[var(--text-*)]` in `.planning/milestones/v1.3-phases/18-page-migration/18-UI-REVIEW.md` being picked up by Tailwind v4's content scanner. The existing `@source not "../../.planning"` directive was matching only the directory itself, not descendants. **Fix:** glob form `@source not "../../.planning/**/*"`. Closes the recurrence of Phase 27 deferred-items.md item 4.
+The dev server hit a `Build Error — Parsing CSS source code failed` from a literal `text-[var(--text-&ast;)]` in `.planning/milestones/v1.3-phases/18-page-migration/18-UI-REVIEW.md` being picked up by Tailwind v4's content scanner. The existing `@source not "../../.planning"` directive was matching only the directory itself, not descendants. **Fix:** glob form `@source not "../../.planning/**/*"`. Closes the recurrence of Phase 27 deferred-items.md item 4.
 
 ### 2. `.env.local` `PLAYWRIGHT_BASE_URL` pointed at production — corrected
 
