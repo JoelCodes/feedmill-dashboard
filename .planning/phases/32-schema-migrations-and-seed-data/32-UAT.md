@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 32-schema-migrations-and-seed-data
 source:
   - 32-01-SUMMARY.md
@@ -63,8 +63,24 @@ skipped: 0
   reason: "User reported: CSS parse error in src/app/globals.css line 1794 — `.text-\\[var\\(--text-\\*\\)\\] { color: var(--text-*); }` — Unexpected token Delim('*'). Import trace: globals.css → layout.tsx."
   severity: major
   test: 5
+  root_cause: "Tailwind v4's `@source not` directive only accepts a directory path, not a file-level glob. The Phase 31-05 fix at `src/app/globals.css:4` (`@source not \"../../.planning/**/*\"`) uses an unsupported glob form and is silently a no-op. Tailwind's Oxide scanner then walks every non-gitignored file (`.planning/` is not in `.gitignore`), finds the literal `text-[var(--text-*)]` in five `.planning/**/*.md` files, and emits a malformed CSS rule that LightningCSS rejects. Phase 31-05 went green by coincidence — scrubbing `18-UI-REVIEW.md` did the work; the glob change actually broke the directive."
   artifacts:
-    - src/app/globals.css
-    - src/app/layout.tsx
-  missing: []
-  notes: "Pre-existing — Phase 32 did not modify globals.css. Surfaced during demo UI regression UAT but originates outside Phase 32 scope (likely from an earlier MIG / design-system phase that introduced .text-[var(--text-*)] Tailwind classes)."
+    - path: "src/app/globals.css:4"
+      issue: "Broken `@source not` directive using unsupported file-level glob form"
+    - path: ".planning/milestones/v1.5-phases/27-role-assignment-and-testing/deferred-items.md"
+      issue: "Contains literal text-[var(--text-*)] (lines 58, 61)"
+    - path: ".planning/milestones/v1.5-phases/27-role-assignment-and-testing/27-05-SUMMARY.md"
+      issue: "Contains literal text-[var(--text-*)] (line 89)"
+    - path: ".planning/milestones/v1.5-phases/27-role-assignment-and-testing/27-VERIFICATION.md"
+      issue: "Contains literal text-[var(--text-*)] (line 137)"
+    - path: ".planning/phases/31-role-expansion-and-db-infrastructure/31-05-SUMMARY.md"
+      issue: "Contains literal text-[var(--text-*)] (line 77)"
+    - path: ".planning/phases/32-schema-migrations-and-seed-data/32-UAT.md"
+      issue: "Contains literal text-[var(--text-*)] (gap-notes — quoting the bug)"
+    - path: ".gitignore"
+      issue: "Missing .planning/ entry — Oxide auto-includes by default"
+  missing:
+    - "Defuse literal `text-[var(--text-*)]` in all five .planning/**/*.md files (replace `*` with `&ast;` inside inline code, or rewrite as plain prose). This is the durable layer — survives any future Tailwind config drift."
+    - "Replace the broken `@source not \"../../.planning/**/*\"` in src/app/globals.css with a working exclusion: either directory form `@source not \"../../.planning\"`, OR `source(none)` + explicit positive `@source` for `src/`. Defense-in-depth layer."
+  debug_session: .planning/debug/css-text-var-text-star-parse-fail.md
+  notes: "Recurrence of Phase 27 deferred-items #4 and Phase 31-05 incident. This is the THIRD time this bug has surfaced. The fix must eliminate the latent literal in .md files AND repair the @source not directive — fixing only one layer leaves a landmine. Phase 32 itself did NOT introduce the bug, but Phase 32 markdown writing (e.g. SUMMARYs that quote past incidents) can trigger it just as Phase 18 UI review did originally."
