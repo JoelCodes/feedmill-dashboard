@@ -220,6 +220,14 @@ None — this plan makes no external service changes. All fixes are code-only.
 - All pre-existing gates remain green (modulo the 14 pre-existing D-04 ClerkProvider deferred failures).
 - Phase 32 gap-closure complete; Phase 33 (server actions / import) can proceed.
 
+## Self-Check: PASSED
+
+- src/__tests__/no-bad-tailwind-literals.test.ts: FOUND
+- src/app/globals.css: FOUND
+- .planning/phases/32-schema-migrations-and-seed-data/32-07-SUMMARY.md: FOUND
+- .claude/worktrees/agent-a3690773d1b688bc2: CONFIRMED REMOVED
+- Commits 4e44af8, 7e4f208, 6795469, 298c799, 5c7f35c, 98539c7, 3dd055c: ALL FOUND
+
 ---
 *Phase: 32-schema-migrations-and-seed-data*
 *Completed: 2026-05-13*
