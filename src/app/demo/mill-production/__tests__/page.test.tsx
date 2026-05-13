@@ -38,9 +38,9 @@ jest.mock("@/services/notifications", () => ({
 
 // Import mocks after jest.mock
 import { getProductionOrders } from "@/services/millProduction";
-import { ProductionOrder } from "@/types/millProduction";
+import { DemoOrder } from "@/types/millProduction";
 
-const mockOrders: ProductionOrder[] = [
+const mockOrders: DemoOrder[] = [
   {
     id: "ORD-001",
     orderNumber: "12345",

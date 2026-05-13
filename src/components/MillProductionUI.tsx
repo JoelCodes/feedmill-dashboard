@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import {
-  ProductionOrder,
+  DemoOrder,
   ProductionState,
   MillLine,
 } from "@/types/millProduction";
@@ -71,7 +71,7 @@ function formatWeight(lbs: number): string {
   return lbs.toLocaleString();
 }
 
-function ProductionCard({ order }: { order: ProductionOrder }) {
+function ProductionCard({ order }: { order: DemoOrder }) {
   const borderColor = STATE_COLORS[order.state].border;
 
   return (
@@ -103,7 +103,7 @@ function StateSection({
   orders,
 }: {
   state: ProductionState;
-  orders: ProductionOrder[];
+  orders: DemoOrder[];
 }) {
   const headerColor = STATE_COLORS[state].header;
   const totalWeight = orders.reduce((sum, o) => sum + o.weightLbs, 0);
@@ -134,7 +134,7 @@ function MillColumn({
   orders,
 }: {
   millLine: MillLine;
-  orders: ProductionOrder[];
+  orders: DemoOrder[];
 }) {
   const completedWeight = orders
     .filter((o) => o.state === "Completed")
@@ -146,7 +146,7 @@ function MillColumn({
       acc[state] = orders.filter((o) => o.state === state);
       return acc;
     },
-    {} as Record<ProductionState, ProductionOrder[]>
+    {} as Record<ProductionState, DemoOrder[]>
   );
 
   return (
@@ -171,7 +171,7 @@ function MillColumn({
 }
 
 export interface MillProductionUIProps {
-  orders: ProductionOrder[];
+  orders: DemoOrder[];
 }
 
 /**
@@ -212,7 +212,7 @@ export default function MillProductionUI({ orders }: MillProductionUIProps) {
     return orders.filter((order) => activeStates.has(order.state));
   }, [orders, activeStates]);
 
-  const ordersByMill = useMemo<Record<MillLine, ProductionOrder[]>>(
+  const ordersByMill = useMemo<Record<MillLine, DemoOrder[]>>(
     () => ({
       Premix: filteredOrders.filter((o) => o.millLine === "Premix"),
       Excel: filteredOrders.filter((o) => o.millLine === "Excel"),
