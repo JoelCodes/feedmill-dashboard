@@ -56,6 +56,8 @@ function walkFiles(rootDir: string): string[] {
     }
 
     for (const entry of entries) {
+      // Skip symlinks to avoid infinite recursion on symlink loops (WR-09)
+      if (entry.isSymbolicLink()) continue;
       if (entry.isDirectory()) {
         if (!SKIP_DIRS.has(entry.name)) {
           walk(path.join(dir, entry.name));
@@ -124,12 +126,6 @@ describe('no-bad-tailwind-literals', () => {
       }
     }
 
-    expect(violations).toEqual(
-      /* eslint-disable-next-line jest/no-conditional-expect */
-      expect.arrayContaining([]),
-      // Produce a useful failure message if violations exist
-    );
-
     if (violations.length > 0) {
       throw new Error(
         `Found ${violations.length} dangerous Tailwind literal(s) in .planning/**/*.md:` +
@@ -139,6 +135,8 @@ describe('no-bad-tailwind-literals', () => {
           'See .planning/debug/css-text-var-text-star-parse-fail.md for context.',
       );
     }
+
+    expect(violations).toHaveLength(0);
   });
 
   test('no dangerous-form token in src/**/*', () => {
