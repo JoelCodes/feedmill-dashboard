@@ -1,8 +1,10 @@
-export type MillLine = "Premix" | "Excel" | "CGM";
+// MillLine and ProductionState are now canonical from src/db/schema/orders.ts (D-04).
+// Re-exported here for backward compat during transition.
+export type { MillLine, ProductionState } from '@/db/schema/orders';
 
-export type ProductionState = "Completed" | "Mixing" | "Blocked" | "Pending";
+import type { MillLine, ProductionState } from '@/db/schema/orders';
 
-export interface ProductionOrder {
+export interface DemoOrder {
   id: string;
   orderNumber: string;
   customer: string;

@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MillProductionUI from "../MillProductionUI";
-import { ProductionOrder } from "@/types/millProduction";
+import { DemoOrder } from "@/types/millProduction";
 
 // Distribute orders across all four states and all three mill lines so the
 // state-count assertions are meaningful and column-rendering can be observed.
-const mockOrders: ProductionOrder[] = [
+const mockOrders: DemoOrder[] = [
   // Premix
   {
     id: "P1",
