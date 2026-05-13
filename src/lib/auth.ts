@@ -47,3 +47,8 @@ export async function requireRole(role: Role): Promise<void> {
     redirect('/');
   }
 }
+
+export async function checkRole(role: Role): Promise<boolean> {
+  const { sessionClaims } = await auth();
+  return sessionClaims?.metadata?.roles?.includes(role) ?? false;
+}
