@@ -25,7 +25,11 @@ export default defineConfig({
       // - demo-route-protection-unauth.spec.ts (unauthenticated PROT-03 regression)
       //   MUST still run under chromium; the trailing `$` on the regex prevents
       //   the testIgnore from matching the -unauth variant.
-      testIgnore: [/global\.setup\.ts/, /demo-route-protection\.spec\.ts$/],
+      testIgnore: [
+        /global\.setup\.ts/,
+        /demo-route-protection\.spec\.ts$/,
+        /mill-operator-smoke\.spec\.ts$/,
+      ],
       use: { ...devices['Desktop Chrome'] },
     },
     {
@@ -48,6 +52,16 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.clerk/norole.json',
+        baseURL: 'http://localhost:3000',
+      },
+      dependencies: ['global setup'],
+    },
+    {
+      name: 'auth-mill-operator',
+      testMatch: /mill-operator-smoke\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.clerk/mill-operator.json',
         baseURL: 'http://localhost:3000',
       },
       dependencies: ['global setup'],
