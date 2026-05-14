@@ -149,8 +149,8 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   4. The dashboard auto-refreshes every 30 seconds; a last-updated timestamp and manual refresh control are visible in the header strip; loading skeletons appear while data is fetching
   5. The sidebar shows production navigation (not "Coming Soon") when the current route is `/`; the demo namespace at `/demo/*` is unchanged
 **Plans**: 7 plans
-- [ ] 34-01-PLAN.md — Foundation: install nuqs+Radix Dialog, NuqsAdapter wiring, search-params lib, StatusBadge extension, Sidebar/Header production nav, D-21 commitImportAction patch, MillReadOnlyStub deletion + transitional page.tsx (PROD-01, PROD-03..06)
-- [ ] 34-02-PLAN.md — useProductionPolling hook (TDD red/green 30s + cleanup, exports REFRESH_INTERVAL_MS) — PROD-09
+- [x] 34-01-PLAN.md — Foundation: install nuqs+Radix Dialog, NuqsAdapter wiring, search-params lib, StatusBadge extension, Sidebar/Header production nav, D-21 commitImportAction patch, MillReadOnlyStub deletion + transitional page.tsx (PROD-01, PROD-03..06)
+- [x] 34-02-PLAN.md — useProductionPolling hook (TDD red/green 30s + cleanup, exports REFRESH_INTERVAL_MS) — PROD-09
 - [ ] 34-03-PLAN.md — getImportBatches cached query + ColumnSkeleton + DrawerSkeleton + LastUpdatedChip + BlockedAlertBand (PROD-06, PROD-10, PROD-11)
 - [ ] 34-04-PLAN.md — production-derivations pure helpers (TDD) + ProductionCard + MillColumn (PROD-02, PROD-07, PROD-08)
 - [ ] 34-05-PLAN.md — ProductionDashboard client wrapper composing filters/search/polling/blocked band/columns (PROD-02, PROD-03, PROD-04, PROD-06, PROD-09, PROD-10, PROD-11)
@@ -188,7 +188,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
-| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 0/7 | Planned | - |
+| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 2/7 | In Progress|  |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._

@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
 status: executing
-last_updated: "2026-05-14T19:07:52.884Z"
+last_updated: "2026-05-14T19:12:00.825Z"
 last_activity: 2026-05-14
 progress:
   total_phases: 4
@@ -25,15 +25,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Phase 33 — server-actions-queries-and-bulk-import
+**Current focus:** Phase 34 — production-dashboard-ui-and-homepage-promotion
 
 ## Current Position
 
-Phase: 33 (server-actions-queries-and-bulk-import) — EXECUTING
-Plan: 1 of 11
+Phase: 34 (production-dashboard-ui-and-homepage-promotion) — EXECUTING
+Plan: 1 of 7
 **Phase:** 33
 **Plan:** Not started
-**Status:** Ready to execute
+**Status:** Executing Phase 34
 **Last activity:** 2026-05-14
 
 ### Progress Bar
