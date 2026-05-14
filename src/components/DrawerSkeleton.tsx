@@ -12,7 +12,9 @@
  *
  * Analog: src/components/ui/skeletons/DetailsSkeleton.tsx
  */
-export default function DrawerSkeleton(): JSX.Element {
+import React from 'react';
+
+export default function DrawerSkeleton(): React.JSX.Element {
   return (
     <div className="w-[480px] flex flex-col gap-4 p-6">
       {/* Header block */}

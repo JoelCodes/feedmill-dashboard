@@ -11,7 +11,9 @@
  *
  * Analog: src/components/ui/skeletons/DetailsSkeleton.tsx
  */
-export default function ColumnSkeleton(): JSX.Element {
+import React from 'react';
+
+export default function ColumnSkeleton(): React.JSX.Element {
   return (
     <div className="flex flex-1 flex-col gap-5">
       {/* Header skeleton */}
