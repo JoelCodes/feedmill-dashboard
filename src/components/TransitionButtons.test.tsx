@@ -335,3 +335,153 @@ describe('TransitionButtons Pending → Blocked path (D-11 amended, gap T10a)', 
     expect(screen.queryByRole('button', { name: /block order/i })).toBeNull();
   });
 });
+
+describe('TransitionButtons router.refresh on success (T12 gap closure)', () => {
+  beforeEach(() => {
+    mockRefresh.mockClear();
+    mockOnBlockClick.mockClear();
+    // Default: actions resolve with { ok: true }
+    (transitionToMixing as jest.Mock).mockResolvedValue({ ok: true });
+    (completeOrder as jest.Mock).mockResolvedValue({ ok: true });
+    (resumeFromBlocked as jest.Mock).mockResolvedValue({ ok: true });
+  });
+
+  it('StartMixingButton calls router.refresh on success', async () => {
+    const user = userEvent.setup();
+    (transitionToMixing as jest.Mock).mockResolvedValueOnce({ ok: true });
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /start mixing/i }));
+
+    await waitFor(() => {
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('CompleteOrderButton calls router.refresh on success', async () => {
+    const user = userEvent.setup();
+    (completeOrder as jest.Mock).mockResolvedValueOnce({ ok: true });
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Mixing' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /complete order/i }));
+
+    await waitFor(() => {
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('ResumeButton (toState=Mixing) calls router.refresh on success', async () => {
+    const user = userEvent.setup();
+    (resumeFromBlocked as jest.Mock).mockResolvedValueOnce({ ok: true });
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Blocked' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /resume to mixing/i }));
+
+    await waitFor(() => {
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('ResumeButton (toState=Pending) calls router.refresh on success', async () => {
+    const user = userEvent.setup();
+    (resumeFromBlocked as jest.Mock).mockResolvedValueOnce({ ok: true });
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Blocked' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /resume to pending/i }));
+
+    await waitFor(() => {
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('conflict path still calls router.refresh (D-14 regression)', async () => {
+    const user = userEvent.setup();
+    (transitionToMixing as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      code: 'conflict',
+      message: 'Order was modified by another user. Please refresh.',
+    });
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /start mixing/i }));
+
+    await waitFor(() => {
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('validation failure does NOT call router.refresh (regression)', async () => {
+    const user = userEvent.setup();
+    (transitionToMixing as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      code: 'validation',
+      message: 'Invalid transition',
+    });
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /start mixing/i }));
+
+    // Give the action time to resolve, then assert no refresh.
+    await waitFor(() => {
+      // Wait for the action to have been called.
+      expect(transitionToMixing).toHaveBeenCalled();
+    });
+
+    expect(mockRefresh).not.toHaveBeenCalled();
+  });
+
+  it('BlockOrderTrigger on Pending (post-34-10) does NOT call router.refresh directly', async () => {
+    // 34-10 added BlockOrderTrigger to the Pending case. Confirm THIS plan does
+    // not accidentally couple router.refresh to that trigger — refresh belongs
+    // to the BlockReasonModal success path (Task 2), not the trigger.
+    const user = userEvent.setup();
+
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /block order/i }));
+
+    expect(mockOnBlockClick).toHaveBeenCalledTimes(1);
+    expect(mockRefresh).not.toHaveBeenCalled();
+  });
+});
