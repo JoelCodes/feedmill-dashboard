@@ -1,0 +1,105 @@
+/**
+ * RTL tests for BlockedAlertBand component.
+ *
+ * TDD RED phase: tests written before implementation.
+ *
+ * PROD-06 / D-22:
+ * - Returns null when no blocked orders (no band shown)
+ * - Renders chip per blocked order: "BLOCKED: ORD-001 (Premix)"
+ * - Click chip sets ?order=<id> via nuqs
+ * - Container has sticky + bg-error-light classes
+ */
+import { render, screen, fireEvent } from '@testing-library/react';
+import type { ProductionOrder } from '@/db/schema/orders';
+
+// Mock nuqs
+const mockSetQuery = jest.fn();
+jest.mock('nuqs', () => ({
+  useQueryStates: jest.fn(() => [null, mockSetQuery]),
+  parseAsString: {
+    withDefault: jest.fn(() => ({})),
+  },
+}));
+
+import BlockedAlertBand from './BlockedAlertBand';
+
+// Minimal ProductionOrder factory
+function makeOrder(overrides: Partial<ProductionOrder>): ProductionOrder {
+  return {
+    id: 'ord_default',
+    orderNumber: 'ORD-000',
+    customer: 'Customer',
+    product: 'Product',
+    weightLbs: '1000',
+    deliveryTime: '2026-01-01',
+    state: 'Pending',
+    millLine: 'Premix',
+    textureType: null,
+    lineCode: null,
+    version: 1,
+    createdBy: 'user-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+describe('BlockedAlertBand', () => {
+  beforeEach(() => {
+    mockSetQuery.mockClear();
+  });
+
+  it('Test 7: with no orders, component returns null (container.firstChild is null)', () => {
+    const { container } = render(<BlockedAlertBand orders={[]} />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('Test 8: with one Blocked order, renders exactly 1 chip with "BLOCKED: ORD-001 (Premix)"', () => {
+    const orders = [
+      makeOrder({ id: 'ord_1', orderNumber: 'ORD-001', millLine: 'Premix', state: 'Blocked' }),
+      makeOrder({ id: 'ord_2', orderNumber: 'ORD-002', millLine: 'Excel', state: 'Pending' }),
+    ];
+    render(<BlockedAlertBand orders={orders} />);
+
+    const chip = screen.getByText('BLOCKED: ORD-001 (Premix)');
+    expect(chip).toBeInTheDocument();
+
+    // Non-blocked order should NOT appear
+    expect(screen.queryByText(/ORD-002/)).not.toBeInTheDocument();
+  });
+
+  it('Test 9: with three Blocked orders, renders all three chips in document order', () => {
+    const orders = [
+      makeOrder({ id: 'ord_a', orderNumber: 'ORD-A01', millLine: 'Premix', state: 'Blocked' }),
+      makeOrder({ id: 'ord_b', orderNumber: 'ORD-B01', millLine: 'Excel', state: 'Blocked' }),
+      makeOrder({ id: 'ord_c', orderNumber: 'ORD-C01', millLine: 'CGM', state: 'Blocked' }),
+    ];
+    render(<BlockedAlertBand orders={orders} />);
+
+    expect(screen.getByText('BLOCKED: ORD-A01 (Premix)')).toBeInTheDocument();
+    expect(screen.getByText('BLOCKED: ORD-B01 (Excel)')).toBeInTheDocument();
+    expect(screen.getByText('BLOCKED: ORD-C01 (CGM)')).toBeInTheDocument();
+  });
+
+  it('Test 10: clicking a chip calls the nuqs setter with { order: orderId }', () => {
+    const orders = [
+      makeOrder({ id: 'ord_1', orderNumber: 'ORD-001', millLine: 'Premix', state: 'Blocked' }),
+    ];
+    render(<BlockedAlertBand orders={orders} />);
+
+    const chip = screen.getByText('BLOCKED: ORD-001 (Premix)');
+    fireEvent.click(chip);
+
+    expect(mockSetQuery).toHaveBeenCalledWith({ order: 'ord_1' });
+  });
+
+  it('Test 11: container has "sticky" and "bg-error-light" classes per UI-SPEC §2', () => {
+    const orders = [
+      makeOrder({ id: 'ord_1', orderNumber: 'ORD-001', millLine: 'Premix', state: 'Blocked' }),
+    ];
+    const { container } = render(<BlockedAlertBand orders={orders} />);
+    const band = container.firstElementChild;
+    expect(band?.className).toContain('sticky');
+    expect(band?.className).toContain('bg-error-light');
+  });
+});
