@@ -192,6 +192,33 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
     });
   }
 
+  // WR-06: surface parser errors for rows that read-excel-file did NOT emit in
+  // `rawRows`. If the parser fails to materialize a row (e.g. fully unparseable),
+  // it still emits an entry in the `errors` array keyed on the 1-based row
+  // number, but the row never enters the main loop above. Without this pass the
+  // operator sees errorCount: 0 / validCount: rowCount even though the file had
+  // bad rows. Append a synthetic PreviewRow carrying just the parser errors so
+  // the preview UI surfaces them like any other error row.
+  const consumedRowIndices = new Set(result.map((r) => r.rowIndex));
+  for (const [rowIdx, errs] of parserErrorsByRow.entries()) {
+    if (!consumedRowIndices.has(rowIdx)) {
+      result.push({
+        rowIndex: rowIdx,
+        orderNumber: '',
+        customer: '',
+        product: '',
+        weightLbs: 0,
+        deliveryTime: '',
+        formulaType: '',
+        millLine: 'Premix',
+        textureType: null,
+        lineCode: null,
+        isDuplicate: false,
+        errors: errs,
+      });
+    }
+  }
+
   return result;
 }
 
@@ -227,26 +254,48 @@ function detectIntraFileDuplicates(rows: PreviewRow[]): PreviewRow[] {
 }
 
 /**
+ * Maximum number of orderNumbers to include in a single `inArray()` query.
+ *
+ * WR-09: a 2 MB XLSX could plausibly hold ~10k+ rows. A single
+ * `WHERE order_number IN ($1, ..., $N)` with 10k 32-char parameters approaches
+ * 300 KB of bind payload, which can exceed Neon's HTTP request size limit and
+ * fail with a 400/413 before the per-row commit loop even runs. Splitting the
+ * query into chunks of at most this many parameters keeps each round-trip well
+ * under the HTTP limit while still using the parameterized `inArray()` form
+ * (no SQL injection vector — T-33-Input).
+ */
+const DB_DUPLICATE_CHUNK_SIZE = 1000;
+
+/**
  * Returns the set of orderNumbers from `orderNumbers` that already exist in
  * the `production_orders` table — used to flag file-vs-DB duplicates.
  *
- * Single batch SELECT: Drizzle parameterizes the inArray() call, so there is
- * no SQL injection vector even for operator-supplied values (T-33-Input).
+ * Drizzle parameterizes the inArray() call, so there is no SQL injection
+ * vector even for operator-supplied values (T-33-Input).
  *
  * Short-circuit: `inArray(col, [])` is a Drizzle quirk that generates invalid
  * SQL (`col IN ()`). We guard against it explicitly by returning an empty Set
  * when the input array is empty — avoids a runtime error and an unnecessary
  * round-trip to the DB.
+ *
+ * WR-09: chunk the query in groups of `DB_DUPLICATE_CHUNK_SIZE` so a large
+ * valid-file import cannot exceed Neon's HTTP request size limit with a single
+ * unbounded IN-list. Each chunk is still a single round-trip; results are
+ * accumulated into one Set returned to the caller.
  */
 async function detectDbDuplicates(orderNumbers: string[]): Promise<Set<string>> {
   if (orderNumbers.length === 0) return new Set();
 
-  const existing = await db
-    .select({ orderNumber: productionOrders.orderNumber })
-    .from(productionOrders)
-    .where(inArray(productionOrders.orderNumber, orderNumbers));
-
-  return new Set(existing.map((r) => r.orderNumber));
+  const found = new Set<string>();
+  for (let i = 0; i < orderNumbers.length; i += DB_DUPLICATE_CHUNK_SIZE) {
+    const slice = orderNumbers.slice(i, i + DB_DUPLICATE_CHUNK_SIZE);
+    const existing = await db
+      .select({ orderNumber: productionOrders.orderNumber })
+      .from(productionOrders)
+      .where(inArray(productionOrders.orderNumber, slice));
+    for (const r of existing) found.add(r.orderNumber);
+  }
+  return found;
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -274,23 +323,25 @@ export async function previewImportAction(formData: FormData): Promise<PreviewRe
   try {
     // Extract file from FormData
     const file = formData.get('file');
-    // FormData.get returns a string when the entry was set as a string, or a File/Blob.
-    // We accept any non-string, non-null value (Blob/File) from FormData.
-    if (!file || typeof file === 'string') {
+    // WR-08: validate that the FormData entry is actually a Blob (or File, which
+    // is a Blob subclass). The previous `!file || typeof file === 'string'` check
+    // accepted any non-string non-nullish value — including primitives or plain
+    // objects — even though Next.js FormData deserialization is expected to yield
+    // only strings or Blobs. `instanceof Blob` narrows the type without the
+    // unsafe `as` cast below.
+    if (!(file instanceof Blob)) {
       return { ok: false, code: 'validation', message: 'No file provided.' };
     }
-    const fileObj = file as { size: number; arrayBuffer: () => Promise<ArrayBuffer> };
 
     // T-33-DoS layer 2: server-side size guard
-    if (fileObj.size > MAX_IMPORT_BYTES) {
+    if (file.size > MAX_IMPORT_BYTES) {
       return { ok: false, code: 'validation', message: 'File exceeds 2MB limit.' };
     }
 
     // Convert File/Blob to Buffer for read-excel-file.
     // Note: jsdom (used in tests) does not implement Blob.prototype.arrayBuffer();
     // in production Next.js server runtime, Blob/File always has arrayBuffer().
-    // The cast covers both environments.
-    const rawArrayBuffer = await (fileObj.arrayBuffer as (() => Promise<ArrayBuffer>) | undefined)?.();
+    const rawArrayBuffer = await (file.arrayBuffer as (() => Promise<ArrayBuffer>) | undefined)?.();
     const buffer = Buffer.from(rawArrayBuffer ?? new ArrayBuffer(0));
 
     // Parse + validate all rows (no DB access here — pure parse)
@@ -334,7 +385,13 @@ export async function previewImportAction(formData: FormData): Promise<PreviewRe
     };
 
     return { ok: true, summary, rows };
-  } catch {
+  } catch (err) {
+    // WR-05: log error context so production failures can be correlated with
+    // operator reports. The generic message returned to the caller is preserved
+    // (no internal-error leakage), but the server logs now show the underlying
+    // exception class and stack — including typed errors from read-excel-file
+    // (malformed XLSX, password-protected, wrong sheet, etc.).
+    console.error('[previewImportAction] failed:', err);
     return { ok: false, code: 'server', message: 'Failed to parse XLSX file.' };
   }
 }
