@@ -213,7 +213,7 @@ export default function ProductionDrawer({
           />
           <FieldRow label="Delivery" value={order.deliveryTime} />
           <FieldRow label="Mill Line" value={order.millLine} />
-          <FieldRow label="Formula Type" value={order.textureType ?? '—'} />
+          <FieldRow label="Texture Type" value={order.textureType ?? '—'} />
           {order.state === 'Blocked' && blockerNote && (
             <FieldRow label="Blocker Note" value={blockerNote} />
           )}
