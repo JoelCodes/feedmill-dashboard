@@ -312,6 +312,21 @@ deferred: 0
 | T11  | needs_retest | n/a | `e2e-demo` is dual-role per Phase 31 D-13; code is correct, fixture was wrong |
 | T12  | pass   | minor    | Polls (~15s); router.refresh enhancement opportunity |
 
+## Routing Decisions (2026-05-14)
+
+Captured before /gsd-plan-phase 34 --gaps:
+
+| Gap | Decision | Rationale |
+|-----|----------|-----------|
+| T3 (search divergence) | Plan code fix | Two-input UX bug — remove dead Header search OR wire it to URL state |
+| T9a (history no refresh) | Plan code fix | One-line `router.refresh()` add |
+| T9b (RangeError Date) | Plan code fix | Hydrate `importedAt` in ImportFlow before passing down + regression test |
+| T10a (Pending → Blocked) | **Plan code fix (D-11 amendment)** | User wants Block from Pending; amend design contract |
+| T10b (drawer slow) | Plan code fix | Split nuqs `order` key with `shallow: false` + startTransition |
+| T11 (RBAC leak) | **Re-test only, no code change** | Not a bug — fixture mis-specified; re-run with `e2e-norole` after T9b lands |
+| T12 (router.refresh enhancement) | Plan code fix | Same pattern as T9a; brings latency from 15s → ~1s |
+| T3 build error | Already resolved inline | `serverExternalPackages` added to next.config.ts |
+
 ## Gaps
 
 <!-- Populated if any test fails — format: gap per failing test -->
@@ -376,16 +391,26 @@ deferred: 0
   debug_session: .planning/debug/t9b-rangeerror-date-serialization.md
 
 - truth: "Operator can transition a Pending order directly to Blocked."
-  status: failed
-  reason: "Current state machine (`TransitionButtons.tsx:188-191`, D-11) only exposes 'Start Mixing' for Pending orders. Block is gated on first transitioning to Mixing. User reports this as a missing capability. Resolution requires an ADR-level decision: amend the state machine to allow Pending → Blocked, or document why the current design (block-only-from-mixing) is intentional. If amending: add a Block button to the Pending case in `TransitionButtons.tsx`, extend `transitionToBlocked()` to accept fromState ∈ ['Pending','Mixing'], and update server-side validation in `src/actions/transitions.ts` plus the `BlockReasonModal` reason-required gate."
+  status: diagnosed
+  reason: "Current state machine (`TransitionButtons.tsx:188-191`, D-11) only exposes 'Start Mixing' for Pending orders. User wants this capability."
   severity: major
   test: 10
+  root_cause: "Deliberate design choice in D-11 ('Pending → Start Mixing only'). User decision (2026-05-14): amend D-11 to allow Block directly from Pending."
   artifacts:
-    - src/components/TransitionButtons.tsx
-    - src/actions/transitions.ts
-    - src/components/BlockReasonModal.tsx
+    - path: src/components/TransitionButtons.tsx
+      issue: "Pending case (lines 188-191) renders only 'Start Mixing' — needs Block button added."
+    - path: src/actions/transitions.ts
+      issue: "Verify `transitionToBlocked` accepts fromState='Pending'. If not, extend the allowed-fromState list."
+    - path: src/components/BlockReasonModal.tsx
+      issue: "Modal already accepts a reason; reusable from the Pending entrypoint."
+    - path: .planning/phases/34-production-dashboard-ui-and-homepage-promotion/34-PATTERNS.md
+      issue: "D-11 design contract needs amendment to 'Pending → Start Mixing OR Block Order'."
   missing:
-    - ADR or D-NN decision on Pending → Blocked semantics
+    - "Add Block button to Pending case in TransitionButtons.tsx (mirror Mixing-case wiring)"
+    - "Verify/extend server-side validation in transitions.ts to allow Pending → Blocked"
+    - "Update D-11 in PATTERNS.md (or wherever the design contract lives)"
+    - "Test coverage: TransitionButtons.test.tsx must assert Block button visible on Pending"
+  routing_decision: "User chose to plan as code fix on 2026-05-14"
 
 - truth: "Drawer opens responsively when a card is clicked (target: <500ms perceived load)."
   status: diagnosed
@@ -422,11 +447,15 @@ deferred: 0
   debug_session: .planning/debug/t11-rbac-drawer-button-leak.md
 
 - truth: "Cross-tab state updates land near-instantly (router.refresh on action onSuccess)."
-  status: partial
-  reason: "T12 passed within the 30s polling bound (~15s observed), so the test is technically green. However, 15s indicates the update is arriving via the 30s polling interval alone — `router.refresh()` is not wired into the transition action's `onSuccess` (or `revalidateTag` is not re-rendering the page within the same request cycle). Per the test guidance, recommended behavior is ~1s if router.refresh is wired. Enhancement opportunity rather than a blocker. Could be deferred to a follow-up if scope is tight."
+  status: diagnosed
+  reason: "T12 passes (~15s within 30s polling bound) but updates arrive via polling alone."
   severity: minor
   test: 12
+  root_cause: "Transition action handlers in `TransitionButtons.tsx` do not call `router.refresh()` after success; updates rely on the 30s polling tick. Same root cause pattern as T9a — every mutating client component needs `router.refresh()` after the server action returns."
   artifacts:
-    - src/components/TransitionButtons.tsx
-    - src/actions/transitions.ts
-  missing: []
+    - path: src/components/TransitionButtons.tsx
+      issue: "useActionState handlers at lines 62-74, 95-108, 142-156 don't call router.refresh on success."
+  missing:
+    - "Add useRouter + router.refresh() to onSuccess paths of all four transition button handlers"
+    - "Brings cross-tab latency from ~15s to ~1s; same pattern as T9a fix"
+  routing_decision: "User chose to include in plan on 2026-05-14"
