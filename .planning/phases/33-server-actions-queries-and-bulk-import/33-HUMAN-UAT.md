@@ -1,5 +1,5 @@
 ---
-status: partial
+status: gaps_flagged
 phase: 33-server-actions-queries-and-bulk-import
 source: [33-VERIFICATION.md]
 started: 2026-05-14T01:30:00Z

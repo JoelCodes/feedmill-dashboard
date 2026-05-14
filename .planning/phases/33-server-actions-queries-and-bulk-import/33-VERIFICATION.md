@@ -1,9 +1,23 @@
 ---
 phase: 33-server-actions-queries-and-bulk-import
 verified: 2026-05-13T00:00:00Z
-status: human_needed
-score: 5/5 must-haves verified
+status: gaps_found
+score: 5/5 must-haves verified (3 gaps escalated from human_needed at operator request)
 overrides_applied: 0
+gaps:
+  - id: GAP-01
+    truth: "Concurrent transition race (SC#2) — exact-once locked message"
+    why_gap: "Operator escalated from human_needed; live concurrent race not exercised by unit-test mocks. Mock-level conflict tests pass, but no integration-level test asserts the actual DB-level race outcome against the version column."
+    fix_hint: "Add an integration test (or scripted dev-DB harness) that spawns two concurrent transitionToMixing requests for the same order/version and asserts exactly one returns ok:true and the other returns code:'conflict' with the locked message."
+  - id: GAP-02
+    truth: "revalidateTag cache invalidation observable end-to-end"
+    why_gap: "Operator escalated from human_needed; cache-tag wiring is asserted by unit tests only. No integration test confirms unstable_cache(production-orders) is actually busted by revalidateTag('production-orders', 'max') in a running Next.js process."
+    fix_hint: "Either (a) integration test that warms getProductionOrders cache, triggers a transition, and asserts cached result invalidated, or (b) explicit deferral note tying this to Phase 34 dashboard UAT with a concrete test step."
+  - id: GAP-03
+    truth: "End-to-end XLSX import against live Neon dev DB"
+    why_gap: "Operator escalated from human_needed; no live-DB smoke harness. Unit tests mock @/db.insert/select; the real Neon HTTP driver behavior (per-row auto-commit, unique-constraint violation surface) is not exercised."
+    fix_hint: "Add a scripted dev-DB harness (e.g. scripts/test-xlsx-import.ts) that drops/recreates a sandbox row, runs previewImportAction + commitImportAction against Book1.xlsx, and asserts production_orders row count + one import_batches row written."
+human_verification:
 deferred:
   - truth: "Files above 2 MB are rejected client-side with a clear error message"
     addressed_in: "Phase 34"
@@ -24,7 +38,15 @@ human_verification:
 
 **Phase Goal:** All data mutations and reads are implemented as typed server functions; status transitions are enforced by the directed state machine with optimistic concurrency; bulk XLSX import parses, validates, and persists data with row-level error reporting.
 **Verified:** 2026-05-13T00:00:00Z
-**Status:** human_needed
+**Status:** gaps_found (3 gaps escalated from human_needed at operator request)
+
+## Gaps
+
+| ID | Truth | Why gap | Fix hint |
+|----|-------|---------|----------|
+| GAP-01 | Concurrent transition race (SC#2) — exact-once locked message | Live race not exercised by unit-test mocks; only mock-level conflict tested | Integration test with two concurrent requests against live Neon dev DB asserting exactly-one ok + locked message |
+| GAP-02 | revalidateTag cache invalidation observable end-to-end | Cache-tag wiring asserted by unit tests only; no integration-level confirmation that unstable_cache is busted in a running Next.js process | Integration test warming getProductionOrders cache, triggering transition, asserting invalidation — or explicit Phase-34 deferral with concrete test step |
+| GAP-03 | End-to-end XLSX import against live Neon dev DB | Unit tests mock @/db; real Neon HTTP driver behavior (per-row auto-commit, unique-constraint surface) not exercised | scripts/test-xlsx-import.ts dev-DB harness running preview + commit against Book1.xlsx and asserting row counts |
 **Re-verification:** No — initial verification
 
 ---
