@@ -544,8 +544,13 @@ export async function commitImportAction(
   }
   const safeDecisions = parsedDecisions.data;
 
+  // WR-02: validate userId once after requireRole so a null userId surfaces
+  // as a clean 'unauthorized' response rather than crashing with userId! inside
+  // per-row try/catch and burying the auth failure as "row insert failed".
+  const { userId } = await auth();
+  if (!userId) return { ok: false, code: 'unauthorized', message: 'Not signed in.' };
+
   try {
-    const { userId } = await auth();
 
     // Extract file from FormData (same validation as previewImportAction — D-05 re-parse)
     const file = formData.get('file');
@@ -703,7 +708,7 @@ export async function commitImportAction(
             orderId: existing.id,
             fromState: existing.state,
             toState: existing.state,
-            changedBy: userId!,
+            changedBy: userId,
             note: `[OVERWRITE] batch_id=${batchId}`,
           });
 
@@ -731,7 +736,7 @@ export async function commitImportAction(
               lineCode: row.lineCode ?? null,
               state: 'Pending' as const,            // D-13: all imports start as Pending
               version: 1,
-              createdBy: userId!,
+              createdBy: userId,
             })
             .returning({ id: productionOrders.id });
 
@@ -742,7 +747,7 @@ export async function commitImportAction(
             orderId: inserted.id,
             fromState: null,
             toState: 'Pending',
-            changedBy: userId!,
+            changedBy: userId,
             note: 'Imported from XLSX',
           });
 
@@ -782,7 +787,7 @@ export async function commitImportAction(
           id: batchId,
           fileName, // WR-04: validated/normalized at action entry
           rowCount: committedCount,
-          importedBy: userId!,
+          importedBy: userId,
         })
         .returning({ id: importBatches.id });
     } catch (err) {
