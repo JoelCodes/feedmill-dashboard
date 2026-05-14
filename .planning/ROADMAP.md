@@ -123,7 +123,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   3. An operator can mark any active order Blocked (with a required free-text reason) and resume it to Mixing or Pending
   4. Every server action that mutates data calls `revalidateTag('production-orders')` before returning; the UI reflects the new state without a manual hard refresh
   5. An operator can upload a Book1.xlsx-format file; the preview screen shows row count, total weight, and any duplicates before commit; confirmed imports appear in the `import_batches` log; files above 2 MB are rejected client-side with a clear error message
-**Plans**: 10 plans (6 in-scope + 4 gap-closure)
+**Plans**: 11 plans (6 in-scope + 5 gap-closure)
 - [x] 33-01-PLAN.md — Install read-excel-file@9.0.9 + lock zod in dependencies + add experimental.serverActions.bodySizeLimit (IMPORT-07)
 - [x] 33-02-PLAN.md — src/db/queries/{orders,events}.ts with unstable_cache wrappers tagged production-orders (read-layer for transitions + Phase 34)
 - [x] 33-03-PLAN.md — productionOrderImportSchema (Zod) covering D-14/D-15/D-16 row contract (IMPORT-02 validator surface)
@@ -134,6 +134,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [ ] 33-08-PLAN.md — Gap closure: concurrent-transition race harness asserting exactly-one-winner + locked conflict message (closes GAP-01)
 - [ ] 33-09-PLAN.md — Gap closure: GAP-02 deferred to Phase 34 with concrete inherited UAT step + 34-INHERITED-UAT.md hand-off file
 - [ ] 33-10-PLAN.md — Gap closure: guard parserErrors iteration in parseAndValidate when read-excel-file v9.0.9 returns errors:undefined (closes GAP-04)
+- [ ] 33-11-PLAN.md — Gap closure: migrate readXlsxFile→readSheet to match read-excel-file v9.0.9 schema-aware API; closes GAP-05 and unblocks GAP-03 Task 3
 
 ---
 
