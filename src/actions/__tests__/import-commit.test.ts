@@ -957,6 +957,81 @@ it('Test 21: skipRows takes precedence over overwriteRows for the same rowIndex'
   expect(mockUpdate).not.toHaveBeenCalled();
 });
 
+// Test 21a (CR-03): un-decided DB-duplicate rows default to skipped (no INSERT attempt)
+it('Test 21a (CR-03): un-decided DB-duplicate row is auto-skipped and no INSERT is attempted', async () => {
+  jest.mocked(readXlsxFile).mockResolvedValue({
+    rows: [
+      makeRawRow({ orderNumber: 'ORD-FRESH' }),    // not in DB
+      makeRawRow({ orderNumber: 'ORD-EXISTING' }), // already in DB; operator decides nothing
+    ],
+    errors: [],
+  } as never);
+
+  // detectDbDuplicates returns ORD-EXISTING. The row is in neither skipRows nor
+  // overwriteRows — pre-CR-03 the action would fall through to INSERT and hit
+  // the order_number UNIQUE constraint.
+  mockSelectWhere.mockResolvedValueOnce([{ orderNumber: 'ORD-EXISTING' }]);
+
+  let callN = 0;
+  mockInsert.mockImplementation((_table: unknown) => {
+    const idx = callN++;
+    mockInsertCalls.push({ callN: idx, table: _table });
+    // ORD-FRESH only: orders, events, then batches
+    if (idx === 0) return { values: mockInsertOrdersValues };
+    if (idx === 1) return { values: mockInsertEventsValues };
+    return { values: mockInsertBatchesValues };
+  });
+
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, noDecisions);
+
+  expect(result).toMatchObject({ ok: true, committedCount: 1, failedCount: 0 });
+  if (result.ok) {
+    const dupRow = result.results.find((r) => r.rowIndex === 2);
+    expect(dupRow).toMatchObject({ rowIndex: 2, ok: true, action: 'skipped' });
+    const freshRow = result.results.find((r) => r.rowIndex === 1);
+    expect(freshRow).toMatchObject({ rowIndex: 1, ok: true, action: 'inserted' });
+  }
+  // Only one productionOrders INSERT attempt — the duplicate must NOT have
+  // reached the insert path.
+  expect(mockInsertOrdersValues).toHaveBeenCalledTimes(1);
+  expect(mockUpdate).not.toHaveBeenCalled();
+});
+
+// Test 21b (CR-03): overwrite-listed DB-duplicate still uses the overwrite path
+it('Test 21b (CR-03): DB-duplicate in overwriteRows takes the overwrite path, not auto-skip', async () => {
+  jest.mocked(readXlsxFile).mockResolvedValue({
+    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: [],
+  } as never);
+
+  // 1st = detectDbDuplicates returns the row; 2nd = overwrite existing-row lookup
+  mockSelectWhere
+    .mockResolvedValueOnce([{ orderNumber: 'ORD-EXISTING' }])
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Pending', version: 1 }]);
+
+  let callN = 0;
+  mockInsert.mockImplementation((_table: unknown) => {
+    const idx = callN++;
+    mockInsertCalls.push({ callN: idx, table: _table });
+    if (idx === 0) return { values: mockInsertEventsValues };
+    return { values: mockInsertBatchesValues };
+  });
+
+  const decisions: ImportDecisions = { skipRows: [], overwriteRows: [1] };
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, decisions);
+
+  expect(result).toMatchObject({ ok: true, committedCount: 1 });
+  if (result.ok) {
+    expect(result.results[0]).toMatchObject({ rowIndex: 1, ok: true, action: 'overwritten' });
+  }
+  expect(mockUpdate).toHaveBeenCalledTimes(1);
+  expect(mockInsertOrdersValues).not.toHaveBeenCalled();
+});
+
 // Test 22: source-assert — revalidateTag('production-orders', ...) is in the implementation
 it('Test 22: src/actions/import.ts contains revalidateTag call with production-orders tag', () => {
   const importPath = path.resolve(__dirname, '../import.ts');

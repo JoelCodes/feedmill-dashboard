@@ -524,7 +524,28 @@ export async function commitImportAction(
 
       // Rows with Zod/parser errors are excluded from commits
       if (row.errors && row.errors.length > 0) {
-        results.push({ rowIndex, ok: false, action: 'insert', error: row.errors[0].message });
+        // WR-02: report the action the operator intended, not always 'insert'.
+        // An overwrite-listed row that fails validation should surface as an
+        // overwrite failure so the audit/result trail reflects intent.
+        const intendedAction = decisions.overwriteRows.includes(rowIndex) ? 'overwrite' : 'insert';
+        results.push({ rowIndex, ok: false, action: intendedAction, error: row.errors[0].message });
+        continue;
+      }
+
+      // CR-03: un-decided duplicates (either intra-file or DB) default to skipped.
+      // The preview already flagged isDuplicate=true for intra-file dupes and
+      // detectDbDuplicates above gives us the DB-side set. Without this guard a
+      // row that the preview marked as a DB-duplicate — and which the operator
+      // neither explicitly skipped nor explicitly chose to overwrite — would
+      // fall through to the INSERT path and hit the order_number UNIQUE
+      // constraint at the DB layer, surfacing as a generic 'insert' error.
+      // Defaulting un-decided duplicates to 'skipped' mirrors D-12 (Skip is the
+      // default per-row UI selection — safer than silently inserting).
+      const isUndecidedDuplicate =
+        (row.isDuplicate || dbDuplicates.has(row.orderNumber)) &&
+        !decisions.overwriteRows.includes(rowIndex);
+      if (isUndecidedDuplicate) {
+        results.push({ rowIndex, ok: true, action: 'skipped' });
         continue;
       }
 
