@@ -2,7 +2,7 @@
 phase: 33-server-actions-queries-and-bulk-import
 verified: 2026-05-13T00:00:00Z
 status: gaps_found
-score: 5/5 must-haves verified (3 gaps escalated from human_needed at operator request)
+score: 5/5 must-haves verified (3 initial gaps + 1 follow-up bug surfaced by GAP-03 harness run on 2026-05-14)
 overrides_applied: 0
 gaps:
   - id: GAP-01
@@ -17,6 +17,10 @@ gaps:
     truth: "End-to-end XLSX import against live Neon dev DB"
     why_gap: "Operator escalated from human_needed; no live-DB smoke harness. Unit tests mock @/db.insert/select; the real Neon HTTP driver behavior (per-row auto-commit, unique-constraint violation surface) is not exercised."
     fix_hint: "Add a scripted dev-DB harness (e.g. scripts/test-xlsx-import.ts) that drops/recreates a sandbox row, runs previewImportAction + commitImportAction against Book1.xlsx, and asserts production_orders row count + one import_batches row written."
+  - id: GAP-04
+    truth: "previewImportAction and commitImportAction handle clean files (zero parser errors) without crashing"
+    why_gap: "Surfaced 2026-05-14 by the GAP-03 harness (33-07) on its first live-DB run. src/actions/import.ts destructures `errors: parserErrors` from readXlsxFile and iterates with `for (const pe of parserErrors)` at line 136 (previewImportAction) and again in commitImportAction's re-parse path. read-excel-file v9.0.9 returns `errors: undefined` (not `[]`) when there are zero parser errors per node_modules/read-excel-file/types/parseSheetData/parseSheetData.d.ts. for…of on undefined throws TypeError. Unit tests at src/actions/__tests__/import-preview.test.ts and import-commit.test.ts always mock the return with `errors: []`, so this code path was never exercised. Production impact: any clean Book1.xlsx upload crashes before reaching Zod validation."
+    fix_hint: "Guard both parser-error iterations in src/actions/import.ts (previewImportAction line 136 + commitImportAction re-parse path) so they tolerate `parserErrors === undefined` — e.g. `for (const pe of parserErrors ?? [])`. Update the XlsxFn type cast to mark `errors` as possibly undefined. Add one unit test per action that mocks readXlsxFile with `{ rows: [...], errors: undefined }` (the clean-file shape) and asserts no throw. Re-run the 33-07 harness afterward to close GAP-03 Task 3."
 human_verification:
 deferred:
   - truth: "Files above 2 MB are rejected client-side with a clear error message"
@@ -37,8 +41,8 @@ human_verification:
 # Phase 33: Server Actions, Queries, and Bulk Import — Verification Report
 
 **Phase Goal:** All data mutations and reads are implemented as typed server functions; status transitions are enforced by the directed state machine with optimistic concurrency; bulk XLSX import parses, validates, and persists data with row-level error reporting.
-**Verified:** 2026-05-13T00:00:00Z
-**Status:** gaps_found (3 gaps escalated from human_needed at operator request)
+**Verified:** 2026-05-13T00:00:00Z (initial); 2026-05-14T05:00:00Z (GAP-04 appended after 33-07 harness run)
+**Status:** gaps_found (3 initial gaps + 1 follow-up code bug surfaced by GAP-03 harness)
 
 ## Gaps
 
@@ -47,7 +51,8 @@ human_verification:
 | GAP-01 | Concurrent transition race (SC#2) — exact-once locked message | Live race not exercised by unit-test mocks; only mock-level conflict tested | Integration test with two concurrent requests against live Neon dev DB asserting exactly-one ok + locked message |
 | GAP-02 | revalidateTag cache invalidation observable end-to-end | Cache-tag wiring asserted by unit tests only; no integration-level confirmation that unstable_cache is busted in a running Next.js process | Integration test warming getProductionOrders cache, triggering transition, asserting invalidation — or explicit Phase-34 deferral with concrete test step |
 | GAP-03 | End-to-end XLSX import against live Neon dev DB | Unit tests mock @/db; real Neon HTTP driver behavior (per-row auto-commit, unique-constraint surface) not exercised | scripts/test-xlsx-import.ts dev-DB harness running preview + commit against Book1.xlsx and asserting row counts |
-**Re-verification:** No — initial verification
+| GAP-04 | previewImportAction and commitImportAction handle clean files (zero parser errors) without crashing | Surfaced by GAP-03 harness 2026-05-14. `for (const pe of parserErrors)` throws when read-excel-file v9.0.9 returns `errors: undefined` for clean files (per its .d.ts). Unit tests always mock `errors: []`, hiding the bug. Production impact: any clean Book1.xlsx upload crashes preview/commit. | Guard both `for (const pe of …)` loops in src/actions/import.ts with `?? []` + update XlsxFn return type to `errors?: …` + add unit tests per action mocking `{ rows, errors: undefined }`. Then re-run 33-07 harness to close GAP-03 Task 3. |
+**Re-verification:** Partial — GAP-04 appended after live harness run uncovered code bug
 
 ---
 
