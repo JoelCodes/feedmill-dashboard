@@ -52,8 +52,8 @@ export default function BlockReasonModal({
     async () => {
       const result = await blockOrder(orderId, version, reason);
       if (result.ok) {
+        setReason('');   // clear local state before notifying parent (WR-04)
         onClose();
-        setReason('');
       }
       return result;
     },
