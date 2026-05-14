@@ -2,8 +2,9 @@
 phase: 34-production-dashboard-ui-and-homepage-promotion
 type: human-uat
 created: 2026-05-14
-status: pending
+status: complete
 inherited_from: 33-server-actions-queries-and-bulk-import (GAP-02)
+updated: 2026-05-14
 ---
 
 # Phase 34 Human UAT Contract
@@ -31,7 +32,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Page loads or shows any production data without authentication.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -49,7 +50,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Page shows a placeholder, blank state without orders, or build/render error.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -68,7 +69,11 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** State resets on reload (nuqs URL sync broken).
 
-**Observed result:** `[pending]`
+**Observed result:** `issue`
+**Severity:** `major`
+**Reported:** Filter pill works (URL updates to `?status=…` and survives reload). Search input does NOT write `?q=…` to the URL when typing — debounce → `setQuery({ q })` path at `src/components/ProductionDashboard.tsx:150-155` is not landing in dev despite unit test (Test 7 in `ProductionDashboard.test.tsx:246`) being green. Reload behavior for search is moot until the URL writes.
+
+**Note:** A prior blocker on this test — Turbopack build error `Module not found: '@aws-sdk/client-s3'` (in `unzipper/lib/Open/index.js:98`, pulled transitively via `read-excel-file`) — was resolved inline by adding `serverExternalPackages: ['unzipper', 'read-excel-file']` to `next.config.ts`. Recorded as gap #2 below for traceability.
 
 ---
 
@@ -88,7 +93,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Drawer does not open; fields missing; close doesn't clear URL.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -108,7 +113,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Band always visible; band not clickable; badges missing.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -129,7 +134,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Chip stuck at "Updated 0s ago"; no polling; manual refresh broken.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -143,7 +148,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** No skeleton shown; immediate re-render with no loading state.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -160,7 +165,7 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Sidebar shows old nav items ("Coming Soon"); active state wrong.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
 
 ---
 
@@ -183,7 +188,11 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Size guard missing; preview doesn't appear; commit fails; history doesn't update.
 
-**Observed result:** `[pending]`
+**Observed result:** `issue`
+**Severity:** `blocker`
+**Reported:** Two failures on T9:
+1. **History table did not update after commit** — `ImportHistoryTable` still shows the prior state. Likely `revalidateTag` is not firing for the import-batches cache, or the page's `getImportBatches()` call isn't tagged with the same key.
+2. **`RangeError: Invalid time value` at `ImportHistoryTable.tsx:27` after page refresh** — `ImportFlow` is `'use client'` (`src/components/ImportFlow.tsx:1`), so the `batches` prop crosses the RSC → client boundary and `Date` is serialized to an ISO string. `formatBatchDate` receives a string at runtime despite the `Date` type annotation, and `Intl.DateTimeFormat.format(string)` throws.
 
 ---
 
@@ -204,7 +213,11 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Transitions don't update the board; buttons missing; block modal broken.
 
-**Observed result:** `[pending]`
+**Observed result:** `issue`
+**Severity:** `blocker`
+**Reported:** Two issues on T10:
+1. **Missing transition: Pending → Blocked is not possible.** `TransitionButtons.tsx:188-191` only renders "Start Mixing" for `state: 'Pending'`. The block path requires going through Mixing first, per D-11. User wants Block available directly from Pending. Spec gap — not a code bug per the current design contract. Needs an ADR-level decision before changing the state machine.
+2. **Drawer load is painful (>5s, sometimes feels stuck).** Mixing → Block → Resume → Complete itself worked correctly, but the drawer fetch on card click is too slow for an operator's flow. Likely root cause: drawer fetches order detail + event timeline server-side without parallelization, or the timeline query lacks an index, or the RSC suspense boundary isn't streaming. Needs profiling.
 
 ---
 
@@ -224,7 +237,11 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Non-operators see transition buttons or can access the upload flow.
 
-**Observed result:** `[pending]`
+**Observed result:** `issue`
+**Severity:** `blocker`
+**Reported:** Two failures on T11:
+1. **RBAC leak on the drawer:** transition buttons (`Start Mixing` / `Block Order` / `Resume to Mixing` / etc.) ARE visible to non-mill_operator users. D-25 (and the read-only-mode contract) says read-only users should see the dashboard + drawer but NO edit affordances. The `canEdit` gate is either missing or not wired into `TransitionButtons` when rendered inside the drawer for a non-operator. Security-relevant — a demo user could attempt transitions even if the server action rejects them.
+2. `/import` portion (steps 6–8) is blocked by the same `RangeError: Invalid time value` already logged on T9 (`src/components/ImportHistoryTable.tsx:27`). The read-only notice and history-table-visible-but-no-uploader requirements could not be verified because the page crashes for all users before render completes. Fixing the T9 Date-serialization gap unblocks this test.
 
 ---
 
@@ -259,20 +276,122 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 - Confirm `export const dynamic = 'force-dynamic'` is on the page (PROD-01) so the RSC re-renders on each request.
 - Confirm `revalidateTag('production-orders', 'max')` (two-arg form for Next.js 16.1.6) is called in EVERY mutating action path.
 
-**Observed result:** `[pending]`
+**Observed result:** `pass`
+**Observation:** Tab A updated without a manual hard refresh, within the ≤30s polling bound (~15s observed). Test passes per spec. Note: the 15s latency indicates the update is arriving via polling rather than `router.refresh()` — see gap on T12 for enhancement opportunity.
 
 ---
 
 ## Summary
 
 total: 12
-passed: 0
-issues: 0
-pending: 12
+passed: 7
+issues: 5
+pending: 0
 skipped: 0
 blocked: 0
 deferred: 0
 
+### Pass / Issue Breakdown
+
+| Test | Result | Severity | Notes |
+|------|--------|----------|-------|
+| T1   | pass   | —        | Auth gate on `/` works |
+| T2   | pass   | —        | Three-column dashboard renders |
+| T3   | issue  | major    | Filter pill works; search input does not write `?q=` to URL |
+| T4   | pass   | —        | Drawer open + 3 close methods clear URL |
+| T5   | pass   | —        | Blocked band + next-up + in-progress badges |
+| T6   | pass   | —        | 30s polling + last-updated chip + manual refresh |
+| T7   | pass   | —        | Loading skeletons per column |
+| T8   | pass   | —        | Sidebar nav + active state |
+| T9   | issue  | blocker  | History didn't update after commit + `RangeError` on refresh |
+| T10  | issue  | blocker  | Pending → Blocked not allowed + drawer load >5s |
+| T11  | issue  | blocker  | Transition buttons leak to non-operators + `/import` crashes (same as T9) |
+| T12  | pass   | minor    | Polls (~15s); router.refresh not wired (enhancement) |
+
 ## Gaps
 
 <!-- Populated if any test fails — format: gap per failing test -->
+
+- truth: "Search input writes `?q=…` to URL when typing (PROD-04 / D-05)."
+  status: failed
+  reason: "Filter pill works but search does not. Debounce → `setQuery({ q })` at `src/components/ProductionDashboard.tsx:150-155` is not landing in dev despite Test 7 in `ProductionDashboard.test.tsx:246` being green. Need to diagnose divergence between RTL/NuqsTestingAdapter and Next/NuqsAdapter."
+  severity: major
+  test: 3
+  artifacts:
+    - src/components/ProductionDashboard.tsx
+    - src/components/ProductionDashboard.test.tsx
+  missing: []
+
+- truth: "Dev server boots without module-resolution errors when dashboard graph is loaded."
+  status: resolved
+  reason: "Turbopack failed to resolve `@aws-sdk/client-s3` (conditional require inside `unzipper/lib/Open/index.js:98`, pulled in via `src/actions/import.ts` → `read-excel-file` → `unzipper`). Fixed inline by adding `serverExternalPackages: ['unzipper', 'read-excel-file']` to `next.config.ts:13`. Recorded for traceability — no further action required."
+  severity: blocker
+  test: 3
+  artifacts:
+    - next.config.ts
+  missing: []
+
+- truth: "`ImportHistoryTable` refreshes after a successful bulk-import commit."
+  status: failed
+  reason: "After `Commit Import` succeeds and the 'Import complete!' confirmation renders, the history table at the bottom of `/import` still shows the prior state. Either `revalidateTag` is not being called from `src/actions/import.ts` on commit, or `getImportBatches()` is not wrapped in `unstable_cache` with the matching tag, or the import page is not configured to re-render on tag invalidation."
+  severity: major
+  test: 9
+  artifacts:
+    - src/actions/import.ts
+    - src/app/import/page.tsx
+    - src/db/queries/imports.ts
+  missing: []
+
+- truth: "Bulk-import history page renders without runtime errors after refresh."
+  status: failed
+  reason: "`Intl.DateTimeFormat.format(d)` at `src/components/ImportHistoryTable.tsx:27` throws `RangeError: Invalid time value`. Root cause: `ImportFlow` is a client component (`'use client'` at line 1) which receives `batches: ImportBatch[]` from the page RSC. Next.js JSON-serializes `Date` to an ISO string across the RSC→client boundary, so `batch.importedAt` is a string at runtime despite the `Date` type annotation. Fix options: (a) hydrate `importedAt` to `Date` in the client (`new Date(batch.importedAt)` before formatting), (b) coerce inside `formatBatchDate` (`format(new Date(d))`), or (c) move `ImportHistoryTable` rendering above the RSC boundary so it stays server-only."
+  severity: blocker
+  test: 9
+  artifacts:
+    - src/components/ImportHistoryTable.tsx
+    - src/components/ImportFlow.tsx
+  missing: []
+
+- truth: "Operator can transition a Pending order directly to Blocked."
+  status: failed
+  reason: "Current state machine (`TransitionButtons.tsx:188-191`, D-11) only exposes 'Start Mixing' for Pending orders. Block is gated on first transitioning to Mixing. User reports this as a missing capability. Resolution requires an ADR-level decision: amend the state machine to allow Pending → Blocked, or document why the current design (block-only-from-mixing) is intentional. If amending: add a Block button to the Pending case in `TransitionButtons.tsx`, extend `transitionToBlocked()` to accept fromState ∈ ['Pending','Mixing'], and update server-side validation in `src/actions/transitions.ts` plus the `BlockReasonModal` reason-required gate."
+  severity: major
+  test: 10
+  artifacts:
+    - src/components/TransitionButtons.tsx
+    - src/actions/transitions.ts
+    - src/components/BlockReasonModal.tsx
+  missing:
+    - ADR or D-NN decision on Pending → Blocked semantics
+
+- truth: "Drawer opens responsively when a card is clicked (target: <500ms perceived load)."
+  status: failed
+  reason: "Drawer load exceeds 5 seconds and sometimes feels stuck. Mixing → Block → Resume → Complete transitions themselves work, but the drawer's initial fetch is the slow path. Likely causes (to be confirmed by profiling): (a) drawer fetches order detail + event timeline serially rather than in parallel, (b) event timeline query (`getOrderEvents` or similar) is missing an index on `order_id`, (c) no suspense streaming boundary so the drawer blocks on the full payload, (d) Clerk role check on every drawer render. Needs Server Timing headers or DB EXPLAIN to localize."
+  severity: blocker
+  test: 10
+  artifacts:
+    - src/components/ProductionDrawer.tsx
+    - src/db/queries/orders.ts
+    - src/db/queries/events.ts
+  missing: []
+
+- truth: "Non-mill_operator users do not see transition affordances in the order drawer (D-25)."
+  status: failed
+  reason: "Transition buttons (Start Mixing / Block Order / Resume to Mixing / Resume to Pending / Complete Order) are visible to demo users who lack the `mill_operator` role. The drawer is rendering `TransitionButtons` unconditionally instead of gating on `canEdit`. Server actions will still reject the requests (defence-in-depth via the action's role check), but the UI affordance leak violates D-25 and lets non-operators attempt mutations. Fix: pass `canEdit` from the page RSC down through `ProductionDrawer` → `TransitionButtons` and skip rendering buttons when `canEdit === false`. Pattern already exists for `/import` (D-25), needs to be applied to the drawer."
+  severity: blocker
+  test: 11
+  artifacts:
+    - src/components/ProductionDrawer.tsx
+    - src/components/TransitionButtons.tsx
+    - src/app/page.tsx
+  missing: []
+
+- truth: "Cross-tab state updates land near-instantly (router.refresh on action onSuccess)."
+  status: partial
+  reason: "T12 passed within the 30s polling bound (~15s observed), so the test is technically green. However, 15s indicates the update is arriving via the 30s polling interval alone — `router.refresh()` is not wired into the transition action's `onSuccess` (or `revalidateTag` is not re-rendering the page within the same request cycle). Per the test guidance, recommended behavior is ~1s if router.refresh is wired. Enhancement opportunity rather than a blocker. Could be deferred to a follow-up if scope is tight."
+  severity: minor
+  test: 12
+  artifacts:
+    - src/components/TransitionButtons.tsx
+    - src/actions/transitions.ts
+  missing: []
