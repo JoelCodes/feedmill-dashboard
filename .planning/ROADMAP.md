@@ -129,7 +129,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [x] 33-03-PLAN.md — productionOrderImportSchema (Zod) covering D-14/D-15/D-16 row contract (IMPORT-02 validator surface)
 - [x] 33-04-PLAN.md — Four transition server actions (transitionToMixing/completeOrder/blockOrder/resumeFromBlocked) with optimistic-concurrency + audit-trail + revalidateTag (TRANS-01..07)
 - [x] 33-05-PLAN.md — previewImportAction with 3-layer file-size guard + read-excel-file/node parse + Zod validate + intra-file + DB duplicate detection (IMPORT-01, 02, 03, 07)
-- [ ] 33-06-PLAN.md — commitImportAction with re-parse + per-row insert/overwrite loop + [OVERWRITE] event note + import_batches row on success (IMPORT-04, 05, 06)
+- [x] 33-06-PLAN.md — commitImportAction with re-parse + per-row insert/overwrite loop + [OVERWRITE] event note + import_batches row on success (IMPORT-04, 05, 06)
 
 ---
 
@@ -175,7 +175,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 30. Close gap: INT-07 + SUMMARY backfill | v1.5 | 2/2 | Complete | 2026-05-12 |
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
-| 33. Server Actions, Queries, and Bulk Import | v2.0 | 5/6 | In Progress|  |
+| 33. Server Actions, Queries, and Bulk Import | v2.0 | 6/6 | Complete   | 2026-05-14 |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 0/? | Not started | - |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
 
