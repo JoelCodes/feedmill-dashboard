@@ -123,13 +123,16 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   3. An operator can mark any active order Blocked (with a required free-text reason) and resume it to Mixing or Pending
   4. Every server action that mutates data calls `revalidateTag('production-orders')` before returning; the UI reflects the new state without a manual hard refresh
   5. An operator can upload a Book1.xlsx-format file; the preview screen shows row count, total weight, and any duplicates before commit; confirmed imports appear in the `import_batches` log; files above 2 MB are rejected client-side with a clear error message
-**Plans**: 6 plans
+**Plans**: 9 plans (6 in-scope + 3 gap-closure)
 - [x] 33-01-PLAN.md — Install read-excel-file@9.0.9 + lock zod in dependencies + add experimental.serverActions.bodySizeLimit (IMPORT-07)
 - [x] 33-02-PLAN.md — src/db/queries/{orders,events}.ts with unstable_cache wrappers tagged production-orders (read-layer for transitions + Phase 34)
 - [x] 33-03-PLAN.md — productionOrderImportSchema (Zod) covering D-14/D-15/D-16 row contract (IMPORT-02 validator surface)
 - [x] 33-04-PLAN.md — Four transition server actions (transitionToMixing/completeOrder/blockOrder/resumeFromBlocked) with optimistic-concurrency + audit-trail + revalidateTag (TRANS-01..07)
 - [x] 33-05-PLAN.md — previewImportAction with 3-layer file-size guard + read-excel-file/node parse + Zod validate + intra-file + DB duplicate detection (IMPORT-01, 02, 03, 07)
 - [x] 33-06-PLAN.md — commitImportAction with re-parse + per-row insert/overwrite loop + [OVERWRITE] event note + import_batches row on success (IMPORT-04, 05, 06)
+- [ ] 33-07-PLAN.md — Gap closure: live-DB XLSX import harness against Book1.xlsx + npm script test:xlsx-import (closes GAP-03)
+- [ ] 33-08-PLAN.md — Gap closure: concurrent-transition race harness asserting exactly-one-winner + locked conflict message (closes GAP-01)
+- [ ] 33-09-PLAN.md — Gap closure: GAP-02 deferred to Phase 34 with concrete inherited UAT step + 34-INHERITED-UAT.md hand-off file
 
 ---
 
