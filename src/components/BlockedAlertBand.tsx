@@ -17,6 +17,7 @@
  * T-34-03-02: parseAsString accepts any string; getOrderById (plan 07) uses
  * parameterised Drizzle — no SQL injection surface from the URL param.
  */
+import { startTransition } from 'react';
 import { useQueryStates, parseAsString } from 'nuqs';
 import type { ProductionOrder } from '@/db/schema/orders';
 
@@ -25,7 +26,12 @@ interface BlockedAlertBandProps {
 }
 
 export default function BlockedAlertBand({ orders }: BlockedAlertBandProps) {
-  const [, setQuery] = useQueryStates({ order: parseAsString.withDefault('') });
+  // Order is NON-SHALLOW: setting ?order=<id> must re-run the page RSC (T10b gap closure).
+  // history: 'push' enables browser-back to close the drawer.
+  const [, setQuery] = useQueryStates(
+    { order: parseAsString.withDefault('') },
+    { shallow: false, history: 'push' }
+  );
 
   const blocked = orders.filter((o) => o.state === 'Blocked');
 
@@ -37,7 +43,7 @@ export default function BlockedAlertBand({ orders }: BlockedAlertBandProps) {
       {blocked.map((order) => (
         <button
           key={order.id}
-          onClick={() => setQuery({ order: order.id })}
+          onClick={() => startTransition(() => setQuery({ order: order.id }))}
           className="rounded px-2 py-1 text-xs text-[var(--error-dark)] hover:underline"
         >
           BLOCKED: {order.orderNumber} ({order.millLine})

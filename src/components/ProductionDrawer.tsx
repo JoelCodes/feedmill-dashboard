@@ -20,7 +20,7 @@
  *            instead of crashing.
  */
 
-import React, { useState } from 'react';
+import React, { useState, startTransition } from 'react';
 import { useQueryStates, parseAsString } from 'nuqs';
 import { X } from 'lucide-react';
 
@@ -122,11 +122,19 @@ export default function ProductionDrawer({
   canEdit,
 }: DrawerProps): React.JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
-  const [, setQuery] = useQueryStates({
-    order: parseAsString.withDefault(''),
-  });
+  // Order is NON-SHALLOW: closing the drawer (?order= cleared) must re-run the page RSC
+  // so the drawer cleanly unmounts when drawerOrder becomes null (T10b gap closure).
+  // history: 'push' enables browser-back to reopen the drawer (deep-link parity).
+  const [, setQuery] = useQueryStates(
+    { order: parseAsString.withDefault('') },
+    { shallow: false, history: 'push' }
+  );
 
-  const handleClose = () => setQuery({ order: '' });
+  const handleClose = () => {
+    startTransition(() => {
+      setQuery({ order: '' });
+    });
+  };
 
   // ─── Backdrop (shared) ─────────────────────────────────────────────────────
   const backdrop = (

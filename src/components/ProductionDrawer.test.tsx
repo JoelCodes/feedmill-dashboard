@@ -11,7 +11,7 @@
 const mockSetQuery = jest.fn();
 
 jest.mock('nuqs', () => ({
-  useQueryStates: () => [{ order: 'ord-001' }, mockSetQuery],
+  useQueryStates: jest.fn(() => [{ order: 'ord-001' }, mockSetQuery]),
   parseAsString: { withDefault: () => ({ withDefault: () => ({}) }) },
 }));
 
@@ -217,5 +217,23 @@ describe('ProductionDrawer', () => {
 
     const backdrop = container.querySelector('[class*="bg-black\\/30"]');
     expect(backdrop).toBeTruthy();
+  });
+
+  // ── T10b gap closure: useQueryStates called with shallow: false + history: push ──
+
+  test('T10b: useQueryStates is called with { shallow: false, history: "push" } options (close triggers RSC fetch)', () => {
+    // Access the mocked useQueryStates to assert options
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { useQueryStates: mockUseQueryStates } = require('nuqs') as {
+      useQueryStates: jest.Mock;
+    };
+
+    renderDrawer({ order: makeOrder() });
+
+    // Assert that useQueryStates was called with shallow: false + history: push as second arg
+    expect(mockUseQueryStates).toHaveBeenCalledWith(
+      expect.any(Object), // first arg: parsers object
+      expect.objectContaining({ shallow: false, history: 'push' })
+    );
   });
 });
