@@ -2,7 +2,7 @@
 phase: 34-production-dashboard-ui-and-homepage-promotion
 type: human-uat
 created: 2026-05-14
-status: complete
+status: diagnosed
 inherited_from: 33-server-actions-queries-and-bulk-import (GAP-02)
 updated: 2026-05-14
 ---
@@ -237,11 +237,13 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Non-operators see transition buttons or can access the upload flow.
 
-**Observed result:** `issue`
-**Severity:** `blocker`
-**Reported:** Two failures on T11:
-1. **RBAC leak on the drawer:** transition buttons (`Start Mixing` / `Block Order` / `Resume to Mixing` / etc.) ARE visible to non-mill_operator users. D-25 (and the read-only-mode contract) says read-only users should see the dashboard + drawer but NO edit affordances. The `canEdit` gate is either missing or not wired into `TransitionButtons` when rendered inside the drawer for a non-operator. Security-relevant — a demo user could attempt transitions even if the server action rejects them.
-2. `/import` portion (steps 6–8) is blocked by the same `RangeError: Invalid time value` already logged on T9 (`src/components/ImportHistoryTable.tsx:27`). The read-only notice and history-table-visible-but-no-uploader requirements could not be verified because the page crashes for all users before render completes. Fixing the T9 Date-serialization gap unblocks this test.
+**Observed result:** `needs_retest`
+**Severity:** `n/a (procedural)` + `blocker` (inherited /import crash)
+**Reported (initial):** Transition buttons visible for `e2e-demo` user; `/import` crashed with the T9b RangeError.
+
+**Diagnosis (post-debug):** The fixture choice was wrong, not the code. `e2e-demo+clerk_test@example.com` is **dual-role** (`['demo', 'mill_operator']`) per Phase 31 D-13 (`docs/clerk-setup.md:37,54-58`) — the buttons rendered legitimately. The `canEdit` chain is fully intact and unit-tested. To validate D-25, T11 must be re-run with `e2e-norole+clerk_test@example.com`. The `/import` crash IS a real bug but is identical to the T9b RangeError already tracked — no separate gap needed.
+
+**Action:** T11 will be re-run after the T9b fix lands, using the no-role fixture. Tracked as a UAT-procedure gap, not a code gap.
 
 ---
 
@@ -285,42 +287,52 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 total: 12
 passed: 7
-issues: 5
-pending: 0
+issues: 4 (code-level) + 1 (UAT-procedure)
+pending: 1 (T11 re-test with correct fixture)
 skipped: 0
 blocked: 0
 deferred: 0
 
-### Pass / Issue Breakdown
+### Pass / Issue Breakdown (post-diagnosis)
 
-| Test | Result | Severity | Notes |
-|------|--------|----------|-------|
+| Test | Result | Severity | Root Cause |
+|------|--------|----------|------------|
 | T1   | pass   | —        | Auth gate on `/` works |
 | T2   | pass   | —        | Three-column dashboard renders |
-| T3   | issue  | major    | Filter pill works; search input does not write `?q=` to URL |
+| T3   | diagnosed | major | Two search inputs on `/`; user typed in Header's dead decorative one (onSearch never wired) |
 | T4   | pass   | —        | Drawer open + 3 close methods clear URL |
 | T5   | pass   | —        | Blocked band + next-up + in-progress badges |
 | T6   | pass   | —        | 30s polling + last-updated chip + manual refresh |
 | T7   | pass   | —        | Loading skeletons per column |
 | T8   | pass   | —        | Sidebar nav + active state |
-| T9   | issue  | blocker  | History didn't update after commit + `RangeError` on refresh |
-| T10  | issue  | blocker  | Pending → Blocked not allowed + drawer load >5s |
-| T11  | issue  | blocker  | Transition buttons leak to non-operators + `/import` crashes (same as T9) |
-| T12  | pass   | minor    | Polls (~15s); router.refresh not wired (enhancement) |
+| T9a  | diagnosed | major | `ImportFlow.handleCommit` missing `router.refresh()` after commit |
+| T9b  | diagnosed | blocker | Date serialized to string across RSC→client boundary in ImportFlow |
+| T10a | needs_decision | major | Pending → Blocked transition is a spec/ADR question, not a code bug |
+| T10b | diagnosed | blocker | `setQuery({ order })` uses nuqs `shallow: true` default → no RSC fetch → drawer waits for 30s poll |
+| T11  | needs_retest | n/a | `e2e-demo` is dual-role per Phase 31 D-13; code is correct, fixture was wrong |
+| T12  | pass   | minor    | Polls (~15s); router.refresh enhancement opportunity |
 
 ## Gaps
 
 <!-- Populated if any test fails — format: gap per failing test -->
 
 - truth: "Search input writes `?q=…` to URL when typing (PROD-04 / D-05)."
-  status: failed
-  reason: "Filter pill works but search does not. Debounce → `setQuery({ q })` at `src/components/ProductionDashboard.tsx:150-155` is not landing in dev despite Test 7 in `ProductionDashboard.test.tsx:246` being green. Need to diagnose divergence between RTL/NuqsTestingAdapter and Next/NuqsAdapter."
+  status: diagnosed
+  reason: "Filter pill works but search does not."
   severity: major
   test: 3
+  root_cause: "TWO search inputs render on `/`. `DashboardLayout.tsx:25` mounts `<Header />` unconditionally, and `Header.tsx:107-114` defines its OWN search input (placeholder `Type here...`, lucide `<Search />` icon, top-right `site search` position) whose `onChange` writes to local state and invokes `onSearch?.(...)` — but NO caller passes `onSearch` to `<Header />` in the entire codebase. That input is a permanently-dead decorative control. The actually URL-synced search input is `ProductionDashboard.tsx:217-223` (placeholder `Search orders...`, type `search`) and is wired correctly. The user typed in the dead one. Test 7 passes legitimately because the test renders `<ProductionDashboard>` standalone — no `<DashboardLayout>`, no `<Header>` — so only the functional input is in the test DOM."
   artifacts:
-    - src/components/ProductionDashboard.tsx
-    - src/components/ProductionDashboard.test.tsx
-  missing: []
+    - path: src/components/DashboardLayout.tsx
+      issue: "Mounts `<Header />` unconditionally without `onSearch` prop, surfacing the dead control on `/`."
+    - path: src/components/Header.tsx
+      issue: "Defines a search input + `onSearch?` callback never wired by any caller (lines 14, 61-65, 107-114)."
+    - path: src/components/ProductionDashboard.test.tsx
+      issue: "Test 7 renders ProductionDashboard standalone, so the duplicate-input UX bug is invisible to the suite."
+  missing:
+    - "Decision: remove dead search from Header OR wire it to the same URL state"
+    - "Regression test: full /-route render asserts exactly one URL-syncing search input"
+  debug_session: .planning/debug/t3-search-not-url-syncing.md
 
 - truth: "Dev server boots without module-resolution errors when dashboard graph is loaded."
   status: resolved
@@ -332,25 +344,36 @@ deferred: 0
   missing: []
 
 - truth: "`ImportHistoryTable` refreshes after a successful bulk-import commit."
-  status: failed
-  reason: "After `Commit Import` succeeds and the 'Import complete!' confirmation renders, the history table at the bottom of `/import` still shows the prior state. Either `revalidateTag` is not being called from `src/actions/import.ts` on commit, or `getImportBatches()` is not wrapped in `unstable_cache` with the matching tag, or the import page is not configured to re-render on tag invalidation."
+  status: diagnosed
+  reason: "After `Commit Import` succeeds the history table stays stale."
   severity: major
   test: 9
+  root_cause: "`ImportFlow.handleCommit` (`src/components/ImportFlow.tsx:115-142`) never calls `router.refresh()` after `commitImportAction` returns. The server-side cache contract is fully wired: `src/actions/import.ts:799,815` correctly call `revalidateTag('import-batches', 'max')`, `src/db/queries/imports.ts:21-31` wraps `getImportBatches` in `unstable_cache(..., ['import-batches'], { tags: ['import-batches'] })`, and `src/app/import/page.tsx:8` is `force-dynamic`. The gap is that a plain `await commitImportAction(...)` from a client handler does not auto-refetch the route in Next.js 16 — the client component keeps rendering its captured `batches` prop. `TransitionButtons.tsx:69,102,149` already follows the correct pattern; `ImportFlow` is the only mutating client component missing it."
   artifacts:
-    - src/actions/import.ts
-    - src/app/import/page.tsx
-    - src/db/queries/imports.ts
-  missing: []
+    - path: src/components/ImportFlow.tsx
+      issue: "`handleCommit` lines 115-142 missing `router.refresh()` after the successful await."
+  missing:
+    - "Import `useRouter` and call `router.refresh()` immediately after successful commit; mirror TransitionButtons.tsx:69"
+    - "Must land alongside T9b fix (batches will still arrive as ISO strings post-refresh)"
+  debug_session: .planning/debug/t9a-import-history-no-refresh.md
 
 - truth: "Bulk-import history page renders without runtime errors after refresh."
-  status: failed
-  reason: "`Intl.DateTimeFormat.format(d)` at `src/components/ImportHistoryTable.tsx:27` throws `RangeError: Invalid time value`. Root cause: `ImportFlow` is a client component (`'use client'` at line 1) which receives `batches: ImportBatch[]` from the page RSC. Next.js JSON-serializes `Date` to an ISO string across the RSC→client boundary, so `batch.importedAt` is a string at runtime despite the `Date` type annotation. Fix options: (a) hydrate `importedAt` to `Date` in the client (`new Date(batch.importedAt)` before formatting), (b) coerce inside `formatBatchDate` (`format(new Date(d))`), or (c) move `ImportHistoryTable` rendering above the RSC boundary so it stays server-only."
+  status: diagnosed
+  reason: "`RangeError: Invalid time value` thrown at `ImportHistoryTable.tsx:27`."
   severity: blocker
   test: 9
+  root_cause: "`ImportFlow` is a client component (`'use client'` at `src/components/ImportFlow.tsx:1`). `src/app/import/page.tsx:32` passes `batches: ImportBatch[]` (with genuine `Date` instances on the server) into `ImportFlow`; Next.js serializes the prop across the RSC→client boundary and `Date` becomes an ISO string. `ImportFlow` forwards `batches` to `ImportHistoryTable.tsx:74`, where `formatBatchDate(batch.importedAt)` calls `Intl.DateTimeFormat.format()` with a string — that API does not coerce strings, so it throws. The TS type `ImportBatch.importedAt: Date` (inferred by drizzle `$inferSelect`) is honest at the DB return point but lies on the client side. `ImportHistoryTable`'s 'Server component' docstring describes intent but is contradicted by being rendered inside a client tree. `ImportHistoryTable.test.tsx` only ever passes hand-constructed `Date` instances, so the existing suite cannot reproduce this."
   artifacts:
-    - src/components/ImportHistoryTable.tsx
-    - src/components/ImportFlow.tsx
-  missing: []
+    - path: src/components/ImportFlow.tsx
+      issue: "Client component receiving serialized batches; needs to hydrate `importedAt` back to Date before rendering ImportHistoryTable."
+    - path: src/components/ImportHistoryTable.tsx
+      issue: "`formatBatchDate(d: Date)` lies about runtime shape in the current architecture."
+    - path: src/components/ImportHistoryTable.test.tsx
+      issue: "Test gap — no fixture exercises the serialized-string post-RSC shape."
+  missing:
+    - "Hydrate batches in ImportFlow (Option B from debug session — lowest blast radius)"
+    - "Regression test that passes string `importedAt` OR renders /import end-to-end with serialized props"
+  debug_session: .planning/debug/t9b-rangeerror-date-serialization.md
 
 - truth: "Operator can transition a Pending order directly to Blocked."
   status: failed
@@ -365,26 +388,38 @@ deferred: 0
     - ADR or D-NN decision on Pending → Blocked semantics
 
 - truth: "Drawer opens responsively when a card is clicked (target: <500ms perceived load)."
-  status: failed
-  reason: "Drawer load exceeds 5 seconds and sometimes feels stuck. Mixing → Block → Resume → Complete transitions themselves work, but the drawer's initial fetch is the slow path. Likely causes (to be confirmed by profiling): (a) drawer fetches order detail + event timeline serially rather than in parallel, (b) event timeline query (`getOrderEvents` or similar) is missing an index on `order_id`, (c) no suspense streaming boundary so the drawer blocks on the full payload, (d) Clerk role check on every drawer render. Needs Server Timing headers or DB EXPLAIN to localize."
+  status: diagnosed
+  reason: "Drawer load exceeds 5 seconds and sometimes feels stuck."
   severity: blocker
   test: 10
+  root_cause: "`setQuery({ order: id })` in `ProductionDashboard.tsx:140-144,248,257,266` (and `BlockedAlertBand.tsx:28,40`) uses nuqs default `shallow: true`. Shallow updates only patch `history.replaceState` and do NOT trigger an App Router RSC re-fetch (confirmed in `nuqs/dist/impl.app-HXOL9k0k.js:45-55` — `router.replace` only fires when `!options.shallow`). The page RSC (`src/app/page.tsx:39-43`) is the only place `getOrderById` + `getOrderEvents` are called, so when it doesn't re-render the drawer props stay `null` / `[]` and the drawer renders the `order === null` 'Order not found' branch. Real drawer data only materializes when `useProductionPolling` (`src/hooks/useProductionPolling.ts:30-36`) fires `router.refresh()` on its 30s interval → wait time after a click is 0–30s, averaging ~15s. Notably: fetches are already parallel (`Promise.all`), the events table HAS the correct composite index, queries ARE cached — none of the original hypotheses applied. The bug is in URL-state propagation, not the data layer."
   artifacts:
-    - src/components/ProductionDrawer.tsx
-    - src/db/queries/orders.ts
-    - src/db/queries/events.ts
-  missing: []
+    - path: src/components/ProductionDashboard.tsx
+      issue: "useQueryStates batches `order` with `status`/`q` and inherits shallow=true; card-click handler `onOrderClick={(id) => setQuery({ order: id })}` doesn't pass `{ shallow: false }`."
+    - path: src/components/BlockedAlertBand.tsx
+      issue: "Same shallow-default issue when clicking a blocked-alert entry to open the drawer."
+    - path: src/components/ProductionDrawer.tsx
+      issue: "No loading skeleton when transitioning from `order === null` to populated; perceptually feels stuck."
+  missing:
+    - "Split `order` key into its own `useQueryStates` with `{ shallow: false, history: 'push' }`; wrap setter in React.startTransition so the existing Suspense fallback can render a DrawerSkeleton"
+    - "Keep `status` and `q` shallow to avoid needless RSC fetches on pill/search interactions"
+  debug_session: .planning/debug/t10b-drawer-slow-load.md
 
 - truth: "Non-mill_operator users do not see transition affordances in the order drawer (D-25)."
-  status: failed
-  reason: "Transition buttons (Start Mixing / Block Order / Resume to Mixing / Resume to Pending / Complete Order) are visible to demo users who lack the `mill_operator` role. The drawer is rendering `TransitionButtons` unconditionally instead of gating on `canEdit`. Server actions will still reject the requests (defence-in-depth via the action's role check), but the UI affordance leak violates D-25 and lets non-operators attempt mutations. Fix: pass `canEdit` from the page RSC down through `ProductionDrawer` → `TransitionButtons` and skip rendering buttons when `canEdit === false`. Pattern already exists for `/import` (D-25), needs to be applied to the drawer."
-  severity: blocker
+  status: not_a_bug_test_misconfigured
+  reason: "Initially reported as RBAC leak — debug agent investigation found the `canEdit` chain is fully intact and correct."
+  severity: major
   test: 11
+  root_cause: "The fixture user signed in for T11 (`e2e-demo+clerk_test@example.com`) was provisioned with `publicMetadata.roles: ['demo', 'mill_operator']` in Phase 31 D-13 — it is the canonical dual-role coverage user. So `checkRole('mill_operator')` correctly returns `true` and `canEdit=true` for that user; the drawer correctly renders the buttons; the server actions correctly accept the transitions. The `canEdit` prop chain `src/app/page.tsx:31,49` → `ProductionDashboard.tsx:125,132,279` → `ProductionDrawer.tsx:38-42,122,246` is intact and verified by three unit tests (`ProductionDrawer.test.tsx:196-201` Test 10 D-25, `page.test.tsx:149-160` Test 3, plus TransitionButtons coverage). The UAT step 1 framing of `e2e-demo` as a 'non-operator' is incorrect per `docs/clerk-setup.md:37,54-58`. No code change required."
   artifacts:
-    - src/components/ProductionDrawer.tsx
-    - src/components/TransitionButtons.tsx
-    - src/app/page.tsx
-  missing: []
+    - path: .planning/phases/34-production-dashboard-ui-and-homepage-promotion/34-HUMAN-UAT.md
+      issue: "T11 step 1 names `e2e-demo` as a non-operator; the fixture is actually dual-role per Phase 31 D-13."
+    - path: docs/clerk-setup.md
+      issue: "Load-bearing context — defines dual-role demo user; T11 should reference this."
+  missing:
+    - "Re-run T11 with `e2e-norole+clerk_test@example.com` (the genuine no-role fixture from clerk-setup.md:38,72)"
+    - "OR rewrite T11 as T11a (no-role: e2e-norole, asserts NO buttons) + T11b (dual-role: e2e-demo, asserts buttons present) for positive coverage of Phase 31 D-13"
+  debug_session: .planning/debug/t11-rbac-drawer-button-leak.md
 
 - truth: "Cross-tab state updates land near-instantly (router.refresh on action onSuccess)."
   status: partial
