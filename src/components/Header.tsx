@@ -26,8 +26,9 @@ const getPageTitle = (path: string): string => {
   if (path.startsWith('/demo/customers')) return 'Customers';
   if (path.startsWith('/demo/mill-production')) return 'Mill Production';
 
-  // Production routes
-  if (path === '/') return 'Coming Soon';
+  // Production routes (UI-SPEC sidebar update contract)
+  if (path === '/') return 'Dashboard';             // exact match — was 'Coming Soon'
+  if (path.startsWith('/import')) return 'Import';  // NEW: /import route
   if (path.startsWith('/settings')) return 'Settings';
 
   return 'Dashboard';

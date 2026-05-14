@@ -53,10 +53,10 @@ describe("Sidebar", () => {
 
       render(<Sidebar />);
 
-      // Should show "Coming Soon" placeholder
-      const comingSoonLink = screen.getByRole("link", { name: /coming soon/i });
-      expect(comingSoonLink).toBeInTheDocument();
-      expect(comingSoonLink).toHaveAttribute("href", "/");
+      // Phase 34: "Coming Soon" is replaced with Dashboard + Import (D-24)
+      const dashboardLink = screen.getByRole("link", { name: /dashboard/i });
+      expect(dashboardLink).toBeInTheDocument();
+      expect(dashboardLink).toHaveAttribute("href", "/");
 
       // Should NOT show demo navigation
       expect(screen.queryByRole("link", { name: /orders/i })).not.toBeInTheDocument();
