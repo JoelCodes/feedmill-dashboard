@@ -29,7 +29,6 @@ jest.mock("@/services/notifications", () => ({
 
 describe("Header getPageTitle", () => {
   const cases: Array<[string, string]> = [
-    ["/", "Coming Soon"],
     ["/demo/orders", "Orders"],
     ["/demo/customers", "Customers"],
     ["/demo/customers/CUST-001", "Customers"],
@@ -46,5 +45,45 @@ describe("Header getPageTitle", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       expected,
     );
+  });
+
+  /**
+   * Task 2 TDD RED tests: Header production title updates (Tests 8-11)
+   */
+  // Test 8: '/' → 'Dashboard' (was 'Coming Soon')
+  it("shows 'Dashboard' title for '/' route (Task 2 TDD)", () => {
+    mockUsePathname.mockReturnValue("/");
+
+    render(<Header />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Dashboard");
+  });
+
+  // Test 9: '/import' → 'Import'
+  it("shows 'Import' title for '/import' route", () => {
+    mockUsePathname.mockReturnValue("/import");
+
+    render(<Header />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Import");
+  });
+
+  // Test 10: '/import?foo=bar' — usePathname returns '/import' (no query in pathname)
+  it("shows 'Import' title for '/import' even with query in actual URL", () => {
+    // next/navigation's usePathname returns pathname without query
+    mockUsePathname.mockReturnValue("/import");
+
+    render(<Header />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Import");
+  });
+
+  // Test 11 (regression): existing '/demo/orders' returns 'Orders'
+  it("still shows 'Orders' for '/demo/orders' (regression)", () => {
+    mockUsePathname.mockReturnValue("/demo/orders");
+
+    render(<Header />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Orders");
   });
 });
