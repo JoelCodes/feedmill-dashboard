@@ -33,12 +33,17 @@ const mockFrom = jest.fn().mockReturnValue({ where: mockWhere });
 const mockSelect = jest.fn().mockReturnValue({ from: mockFrom });
 const mockInsert = jest.fn(); // preview must NOT call this
 
+// Wrap mock references in arrow functions to avoid TDZ errors from SWC jest
+// transform hoisting (const declarations stay in place, jest.mock factory runs
+// early — direct references hit the temporal dead zone). Wrapper functions
+// close over the variables by reference and resolve them at call time, after
+// const declarations have been evaluated.
 jest.mock('@/db', () => ({
   db: {
-    select: mockSelect,
-    from: mockFrom,
-    where: mockWhere,
-    insert: mockInsert,
+    select: (...args: unknown[]) => mockSelect(...args),
+    from: (...args: unknown[]) => mockFrom(...args),
+    where: (...args: unknown[]) => mockWhere(...args),
+    insert: (...args: unknown[]) => mockInsert(...args),
   },
 }));
 
@@ -67,16 +72,24 @@ import {
 /**
  * Build a minimal stub File object for tests.
  * `read-excel-file/node` mock ignores the buffer content.
+ *
+ * Uses a real Blob with `size` zero-bytes of content so that:
+ * 1. jsdom's FormData.set() stores it as a Blob (not "[object Object]")
+ * 2. The Blob's natural .size property equals the requested size
+ *    (needed for Test 1: server-side size guard check).
+ *
+ * NOTE: For size > MAX_IMPORT_BYTES tests (Test 1), this creates a ~2MB
+ * Uint8Array of zeros. The readXlsxFile mock ignores the buffer content.
  */
 function makeFile(
   options: Partial<{ size: number; name: string }> = {}
 ): File {
   const { size = 100, name = 'orders.xlsx' } = options;
-  return {
-    size,
-    name,
-    arrayBuffer: () => Promise.resolve(Buffer.from('').buffer),
-  } as unknown as File;
+  // Create a real Blob with `size` bytes so .size property is accurate
+  const blob = new Blob([new Uint8Array(size)], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  return blob as unknown as File;
 }
 
 /**
