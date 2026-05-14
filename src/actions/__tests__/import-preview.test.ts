@@ -457,15 +457,22 @@ it('Test 14: src/actions/import.ts starts with use server directive (Pitfall 2)'
   expect(firstLine).toBe("'use server';");
 });
 
-// Test 15: source assert — no revalidateTag in file (preview is mutation-free)
-it('Test 15: src/actions/import.ts does not contain revalidateTag call (preview is mutation-free)', () => {
-  const importPath = path.resolve(__dirname, '../import.ts');
-  const source = fs.readFileSync(importPath, 'utf8');
-  // revalidateTag may be present but should not be called in preview path
-  // Behavioral assertion: Test 8 is the stronger guarantee;
-  // this test verifies the import.ts file at this plan-stage has no revalidateTag at all
-  // (plan 33-06 adds it for commitImportAction)
-  expect(source).not.toMatch(/revalidateTag\(/);
+// Test 15: behavioral assert — revalidateTag NOT called during previewImportAction (preview is mutation-free)
+// NOTE: plan 33-06 added revalidateTag to import.ts for commitImportAction — the source-assert
+// that the file contains no revalidateTag was removed. Behavioral coverage (Test 8) is the
+// stronger guarantee: mockInsert and revalidateTag must not be called by previewImportAction.
+it('Test 15: previewImportAction does not call revalidateTag (mutation-free behavioral check)', async () => {
+  const file = makeFile();
+  const formData = makeFormData(file);
+
+  jest.mocked(readXlsxFile).mockResolvedValueOnce({
+    rows: [makeRawRow()],
+    errors: [],
+  } as never);
+
+  await previewImportAction(formData);
+
+  expect(jest.mocked(revalidateTag)).not.toHaveBeenCalled();
 });
 
 // Test 16: source assert — imports from read-excel-file/node (Pitfall 3)
