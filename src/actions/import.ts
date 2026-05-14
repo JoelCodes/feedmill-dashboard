@@ -123,7 +123,7 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
   type XlsxFn = (
     input: Buffer,
     options: { schema: Record<string, unknown> }
-  ) => Promise<{ rows: Record<string, unknown>[]; errors: Array<{ row: number; column: string; error: string; value: unknown }> }>;
+  ) => Promise<{ rows: Record<string, unknown>[]; errors: Array<{ row: number; column: string; error: string; value: unknown }> | undefined }>;
   const { rows: rawRows, errors: parserErrors } = await (readXlsxFile as unknown as XlsxFn)(buffer, {
     schema: xlsxSchema,
   });
@@ -133,7 +133,7 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
     number,
     Array<{ path: string; message: string }>
   >();
-  for (const pe of parserErrors) {
+  for (const pe of parserErrors ?? []) {
     const rowIdx = pe.row; // 1-based
     if (!parserErrorsByRow.has(rowIdx)) {
       parserErrorsByRow.set(rowIdx, []);
