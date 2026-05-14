@@ -129,12 +129,21 @@ import {
 
 function makeFile(options: { size?: number; name?: string } = {}): File {
   const { size = 100, name = 'orders.xlsx' } = options;
-  const blob = new Blob([new Uint8Array(size)], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  });
-  // Give the blob a name property like a File would have
-  Object.defineProperty(blob, 'name', { value: name, writable: false });
-  return blob as unknown as File;
+  // Use a real File so FormData preserves the name property.
+  // jsdom's Blob.name defaults to "blob" when stored via FormData.set(),
+  // but File preserves the name passed to its constructor.
+  try {
+    return new File([new Uint8Array(size)], name, {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+  } catch {
+    // Fallback for environments without File constructor
+    const blob = new Blob([new Uint8Array(size)], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    Object.defineProperty(blob, 'name', { value: name, writable: false, configurable: true });
+    return blob as unknown as File;
+  }
 }
 
 function makeFormData(file: File | null = null): FormData {
@@ -350,8 +359,12 @@ it('Test 4: overwrite path calls db.update (not db.insert for orders) and writes
     errors: [],
   } as never);
 
-  // Existing row returned by select
-  mockSelectWhere.mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
+  // The db.select chain is called TWICE:
+  // 1st call = detectDbDuplicates (returns [] by default — ORD-EXISTING flagged via overwriteRows anyway)
+  // 2nd call = overwrite path existing-row lookup (returns existing row)
+  mockSelectWhere
+    .mockResolvedValueOnce([])                               // detectDbDuplicates
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]); // overwrite lookup
 
   // overwrite: event insert, then batches insert
   let callN = 0;
@@ -384,8 +397,10 @@ it('Test 5: overwrite event row has fromState === toState === existing state (D-
     errors: [],
   } as never);
 
-  // Existing row with state 'Mixing'
-  mockSelectWhere.mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
+  // 1st call = detectDbDuplicates, 2nd call = overwrite lookup
+  mockSelectWhere
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
 
   let callN = 0;
   mockInsert.mockImplementation((_table: unknown) => {
@@ -415,7 +430,10 @@ it('Test 6: overwrite UPDATE set payload includes version as sql`version + 1` (n
     errors: [],
   } as never);
 
-  mockSelectWhere.mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
+  // 1st call = detectDbDuplicates, 2nd call = overwrite lookup
+  mockSelectWhere
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
 
   let callN = 0;
   mockInsert.mockImplementation((_table: unknown) => {
@@ -591,7 +609,8 @@ it('Test 11: revalidateTag(production-orders) called on successful commit', asyn
   const formData = makeFormData(file);
   await commitImportAction(formData, noDecisions);
 
-  expect(jest.mocked(revalidateTag)).toHaveBeenCalledWith('production-orders');
+  // Project convention from transitions.ts: revalidateTag called with 'max' as second arg
+  expect(jest.mocked(revalidateTag)).toHaveBeenCalledWith('production-orders', 'max');
 });
 
 // Test 12: revalidateTag NOT called when committedCount=0
@@ -859,11 +878,12 @@ it('Test 21: skipRows takes precedence over overwriteRows for the same rowIndex'
   expect(mockUpdate).not.toHaveBeenCalled();
 });
 
-// Test 22: source-assert — revalidateTag('production-orders') is in the implementation
-it('Test 22: src/actions/import.ts contains revalidateTag(production-orders) call', () => {
+// Test 22: source-assert — revalidateTag('production-orders', ...) is in the implementation
+it('Test 22: src/actions/import.ts contains revalidateTag call with production-orders tag', () => {
   const importPath = path.resolve(__dirname, '../import.ts');
   const source = fs.readFileSync(importPath, 'utf8');
-  expect(source).toContain("revalidateTag('production-orders')");
+  // Matches both revalidateTag('production-orders') and revalidateTag('production-orders', 'max')
+  expect(source).toMatch(/revalidateTag\('production-orders'/);
 });
 
 // Test 23: source-assert — [OVERWRITE] batch_id= is in the implementation (D-11 canonical marker)

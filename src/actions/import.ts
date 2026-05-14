@@ -3,8 +3,12 @@
 import readXlsxFile from 'read-excel-file/node';
 import { db } from '@/db';
 import { productionOrders } from '@/db/schema/orders';
-import { inArray } from 'drizzle-orm';
+import { orderEvents } from '@/db/schema/events';
+import { importBatches } from '@/db/schema/imports';
+import { inArray, sql, eq } from 'drizzle-orm';
 import { requireRole } from '@/lib/auth';
+import { auth } from '@clerk/nextjs/server';
+import { revalidateTag } from 'next/cache';
 import { productionOrderImportSchema } from '@/actions/import-schema';
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -333,5 +337,262 @@ export async function previewImportAction(formData: FormData): Promise<PreviewRe
     return { ok: true, summary, rows };
   } catch {
     return { ok: false, code: 'server', message: 'Failed to parse XLSX file.' };
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Types: commitImportAction decision/result shapes
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Operator decisions from the preview step — which rows to skip (default safe)
+ * and which rows to UPDATE an existing DB record (overwrite).
+ *
+ * Decision precedence: if a rowIndex appears in BOTH skipRows AND overwriteRows,
+ * skipRows wins (Test 21). This is the safer default — the operator must
+ * explicitly remove a row from skipRows to allow the overwrite to proceed.
+ */
+export type ImportDecisions = {
+  skipRows: number[];       // rowIndex values to skip (from preview)
+  overwriteRows: number[];  // rowIndex values to UPDATE existing DB row
+};
+
+export type CommitRowResult =
+  | { rowIndex: number; ok: true; action: 'inserted' | 'overwritten' | 'skipped'; orderId?: string }
+  | { rowIndex: number; ok: false; action: 'insert' | 'overwrite'; error: string };
+
+export type CommitResult =
+  | { ok: true; batchId: string; committedCount: number; failedCount: number; results: CommitRowResult[] }
+  | { ok: false; code: 'unauthorized' | 'validation' | 'server'; message: string };
+
+// ────────────────────────────────────────────────────────────────────────────
+// Server Action: commitImportAction
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Commits an XLSX import, writing per-row DB mutations and one `import_batches` audit row.
+ *
+ * ## Re-parse contract (D-05 — stateless server)
+ * The server holds NO state between preview and commit. Every call re-parses the
+ * uploaded file via `parseAndValidate` and re-runs duplicate detection. This means:
+ * - Abandoned previews leave zero server-side trace.
+ * - A fabricated commit call with no prior preview is indistinguishable from a
+ *   normal commit — the validation pipeline runs in both cases.
+ *
+ * ## Per-row sequential insert (D-08 — Neon HTTP no-transactions)
+ * Each row is its own auto-committed HTTP call to Neon. There is NO multi-statement
+ * transaction wrapper (CR-02 carryover from Phase 32: the neon-http driver does not
+ * support multi-statement transactions). Partial-import is the contracted behavior
+ * (IMPORT-04): valid rows commit even when sibling rows fail.
+ *
+ * ## No-transaction residual risk (RESEARCH.md §1 line 259, Phase 32 CR-02)
+ * If a `productionOrders` INSERT succeeds but the paired `orderEvents` INSERT fails,
+ * the production order row exists without its initial audit trail. This is accepted
+ * residual risk for v2.0: the `orderEvents` insert is a simple append with no unique
+ * constraints, so runtime failures are rare (transient Neon HTTP errors only). A
+ * future v2.1 option: use Neon's connection-pooler in "session" mode which supports
+ * `BEGIN/COMMIT`. See also `src/db/seed.ts` for the same accepted-risk pattern.
+ *
+ * ## import_batches row (D-07 — success-only)
+ * One `import_batches` row is written ONLY if `committedCount > 0`. If every row
+ * fails or is skipped, no batch row is written. Abandoned previews never write a
+ * batch row (they never call commitImportAction at all).
+ *
+ * ## Decision precedence (Test 21)
+ * If a rowIndex appears in both `decisions.skipRows` AND `decisions.overwriteRows`,
+ * skipRows wins. The conditional check order enforces this: skip is tested first.
+ *
+ * ## [OVERWRITE] batch_id= marker (D-11)
+ * The overwrite event note uses the literal prefix `[OVERWRITE] batch_id=` followed
+ * by the batch UUID. Phase 34's timeline UI uses this prefix to distinguish overwrite
+ * events (same fromState → toState, changed data) from state-transition events
+ * (fromState !== toState). Do NOT change this prefix without updating Phase 34.
+ *
+ * AUTH-02: `requireRole('mill_operator')` is the first call in the body.
+ */
+export async function commitImportAction(
+  formData: FormData,
+  decisions: ImportDecisions
+): Promise<CommitResult> {
+  // AUTH-02: requireRole must be the first call in the body.
+  await requireRole('mill_operator');
+
+  try {
+    const { userId } = await auth();
+
+    // Extract file from FormData (same validation as previewImportAction — D-05 re-parse)
+    const file = formData.get('file');
+    if (!file || typeof file === 'string') {
+      return { ok: false, code: 'validation', message: 'No file provided.' };
+    }
+    const fileObj = file as { size: number; name: string; arrayBuffer: () => Promise<ArrayBuffer> };
+
+    // T-33-DoS layer 2: server-side size guard (re-checked on commit — separate upload)
+    if (fileObj.size > MAX_IMPORT_BYTES) {
+      return { ok: false, code: 'validation', message: 'File exceeds 2MB limit.' };
+    }
+
+    // Convert to Buffer for read-excel-file (D-05 — re-parse from uploaded file)
+    const rawArrayBuffer = await (fileObj.arrayBuffer as (() => Promise<ArrayBuffer>) | undefined)?.();
+    const buffer = Buffer.from(rawArrayBuffer ?? new ArrayBuffer(0));
+
+    // Step 4: Re-parse + validate (D-05 stateless server — identical pipeline to preview)
+    const rows = await parseAndValidate(buffer);
+
+    // Step 5: Re-run intra-file duplicate detection (Pitfall 7)
+    const deduplicatedRows = detectIntraFileDuplicates(rows);
+
+    // Step 6: Re-run DB duplicate detection for valid rows
+    const validOrderNumbers = deduplicatedRows
+      .filter((r) => !r.errors?.length && !r.isDuplicate)
+      .map((r) => r.orderNumber)
+      .filter(Boolean);
+    const dbDuplicates = await detectDbDuplicates(validOrderNumbers);
+
+    // Pre-generate the batch UUID so the [OVERWRITE] event note has a stable reference (D-11)
+    // The same batchId is used both in overwrite event notes and in the import_batches insert.
+    const batchId = crypto.randomUUID();
+
+    // Step 8: Initialize per-row results accumulator
+    const results: CommitRowResult[] = [];
+
+    // Step 9: Process each parsed row
+    for (const row of deduplicatedRows) {
+      const rowIndex = row.rowIndex;
+
+      // Decision precedence: skip wins over overwrite (Test 21 — safer default)
+      if (decisions.skipRows.includes(rowIndex)) {
+        results.push({ rowIndex, ok: true, action: 'skipped' });
+        continue;
+      }
+
+      // Rows with Zod/parser errors are excluded from commits
+      if (row.errors && row.errors.length > 0) {
+        results.push({ rowIndex, ok: false, action: 'insert', error: row.errors[0].message });
+        continue;
+      }
+
+      if (decisions.overwriteRows.includes(rowIndex)) {
+        // ── Overwrite path (D-10 + D-11 + D-13) ──────────────────────────
+        try {
+          // Load existing order to capture current state for the audit event
+          const [existing] = await db
+            .select({ id: productionOrders.id, state: productionOrders.state })
+            .from(productionOrders)
+            .where(eq(productionOrders.orderNumber, row.orderNumber));
+
+          if (!existing) {
+            results.push({ rowIndex, ok: false, action: 'overwrite', error: 'Order to overwrite not found' });
+            continue;
+          }
+
+          // UPDATE the existing row — state intentionally absent (D-13 preserves state)
+          // version bumped via sql`version + 1` to support optimistic concurrency (D-10 + T-33-Stale)
+          // updatedAt omitted — auto-set via $onUpdate (Pitfall 5)
+          // formulaType omitted — not in productionOrders schema (schema has no formula_type column)
+          await db
+            .update(productionOrders)
+            .set({
+              customer: row.customer,
+              product: row.product,
+              weightLbs: row.weightLbs.toString(), // CR-01: numeric column expects string
+              deliveryTime: row.deliveryTime,
+              textureType: row.textureType ?? null,
+              lineCode: row.lineCode ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              version: sql`version + 1` as any,
+              // state intentionally absent — D-13: overwrite does NOT change state
+            })
+            .where(eq(productionOrders.orderNumber, row.orderNumber))
+            .returning({ id: productionOrders.id });
+
+          // Audit row for overwrite: fromState === toState (same state, data changed)
+          // [OVERWRITE] batch_id= is the D-11 canonical marker for Phase 34 timeline UI
+          await db.insert(orderEvents).values({
+            orderId: existing.id,
+            fromState: existing.state,
+            toState: existing.state,
+            changedBy: userId!,
+            note: `[OVERWRITE] batch_id=${batchId}`,
+          });
+
+          results.push({ rowIndex, ok: true, action: 'overwritten', orderId: existing.id });
+        } catch (err) {
+          results.push({ rowIndex, ok: false, action: 'overwrite', error: String(err) });
+        }
+      } else {
+        // ── New insert path ───────────────────────────────────────────────
+        try {
+          // INSERT productionOrders — CR-01: weightLbs must be string for numeric column
+          // D-16: millLine defaults to 'Premix' (Book1.xlsx has no Mill Line column)
+          // D-13: state defaults to 'Pending' for all new imports
+          // formulaType omitted — not in productionOrders schema (schema has no formula_type column)
+          const [inserted] = await db
+            .insert(productionOrders)
+            .values({
+              orderNumber: row.orderNumber,
+              customer: row.customer,
+              product: row.product,
+              weightLbs: row.weightLbs.toString(), // CR-01: numeric column expects string
+              deliveryTime: row.deliveryTime,
+              millLine: 'Premix' as const,         // D-16: no Mill Line column in Book1.xlsx
+              textureType: row.textureType ?? null,
+              lineCode: row.lineCode ?? null,
+              state: 'Pending' as const,            // D-13: all imports start as Pending
+              version: 1,
+              createdBy: userId!,
+            })
+            .returning({ id: productionOrders.id });
+
+          // Audit row: initial-insert event (RESEARCH.md Open Question 2 — recommended YES)
+          // fromState: null (no prior state — row is being created)
+          // toState: 'Pending' (the initial state assigned above)
+          await db.insert(orderEvents).values({
+            orderId: inserted.id,
+            fromState: null,
+            toState: 'Pending',
+            changedBy: userId!,
+            note: 'Imported from XLSX',
+          });
+
+          results.push({ rowIndex, ok: true, action: 'inserted', orderId: inserted.id });
+        } catch (err) {
+          results.push({ rowIndex, ok: false, action: 'insert', error: String(err) });
+        }
+      }
+    }
+
+    // Step 10: Count committed vs failed
+    const committedCount = results.filter(
+      (r) => r.ok && (r.action === 'inserted' || r.action === 'overwritten')
+    ).length;
+    const failedCount = results.filter((r) => !r.ok).length;
+
+    // Step 11: If no rows committed, skip batch row + revalidateTag (Test 10 + Test 12)
+    if (committedCount === 0) {
+      return { ok: true, batchId, committedCount: 0, failedCount, results };
+    }
+
+    // Step 12: Write import_batches row (D-07 — one row per successful commit)
+    // rowCount = committedCount (NOT total rows — D-07 exact wording)
+    // importedAt defaults via defaultNow() — omitted here
+    await db
+      .insert(importBatches)
+      .values({
+        id: batchId,
+        fileName: fileObj.name,
+        rowCount: committedCount,
+        importedBy: userId!,
+      })
+      .returning({ id: importBatches.id });
+
+    // Step 13: Revalidate cache tag (TRANS-07 + STATE.md mutation invariant)
+    // 'max' is the revalidateTag type parameter — matches project convention from transitions.ts
+    revalidateTag('production-orders', 'max');
+
+    // Step 14: Return success
+    return { ok: true, batchId, committedCount, failedCount, results };
+  } catch {
+    return { ok: false, code: 'server', message: 'Failed to commit import.' };
   }
 }
