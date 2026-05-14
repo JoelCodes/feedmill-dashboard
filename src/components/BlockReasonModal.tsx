@@ -24,6 +24,7 @@
  */
 
 import React, { useActionState, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
 import { blockOrder, type TransitionResult } from '@/actions/transitions';
 import Textarea from '@/components/ui/Textarea';
@@ -47,11 +48,16 @@ export default function BlockReasonModal({
   onClose,
 }: BlockReasonModalProps): React.JSX.Element {
   const [reason, setReason] = useState('');
+  const router = useRouter();
 
   const [state, formAction, isPending] = useActionState<TransitionResult | null, FormData>(
     async () => {
       const result = await blockOrder(orderId, version, reason);
       if (result.ok) {
+        // T12 fix (2026-05-14): kick off RSC re-fetch before closing the modal
+        // so the drawer's next paint shows the freshly-fetched Blocked state.
+        // router.refresh() returns synchronously (kicks off the RSC fetch async).
+        router.refresh();
         setReason('');   // clear local state before notifying parent (WR-04)
         onClose();
       }
