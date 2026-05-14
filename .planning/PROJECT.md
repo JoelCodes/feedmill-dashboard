@@ -11,9 +11,11 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 ## Current State
 
 **Shipped:** v1.5 Production Transition (2026-05-12)
+**In progress:** v2.0 Mill Production MVP — Phases 31, 32, 33 complete (Phase 34 next: production dashboard UI)
 **Codebase:** ~11,650 LOC TypeScript
-**Tech stack:** Next.js 15, React 19, Tailwind CSS 4, Clerk v7
+**Tech stack:** Next.js 15, React 19, Tailwind CSS 4, Clerk v7, Drizzle ORM, Neon (Postgres)
 **Tests:** Unit + E2E suite green | **ESLint:** 0 errors | **Milestone audit:** passed
+**Phase 33 (2026-05-14):** Server actions, queries, and bulk XLSX import landed. All TRANS-01..07 + IMPORT-01..07 satisfied. Live-DB harnesses for the version-column race (GAP-01) and Book1.xlsx end-to-end (GAP-03) confirmed against Neon dev DB. GAP-02 (revalidateTag end-to-end) deferred to Phase 34 via 34-INHERITED-UAT.md.
 
 **What's working:**
 - **Demo namespace** — orders, customers, mill-production live under `/demo/*` with 404s on legacy paths
@@ -275,4 +277,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-12 — v2.0 Mill Production MVP started*
+*Last updated: 2026-05-14 — Phase 33 (server actions + bulk import) complete; Phase 34 next*
