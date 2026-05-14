@@ -884,21 +884,20 @@ For conflict test: override `returning` to `mockResolvedValue([])` (empty = conf
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`relations()` in Phase 33 or defer?**
-   - What we know: Plain `db.select().from(orderEvents).where(eq(orderId, ...))` works without `relations()`. The `db.query` relational API requires both `relations()` AND schema registration in `drizzle({ client, schema })`.
-   - What's unclear: Phase 34 may want `db.query.productionOrders.findFirst({ with: { events: true } })` for efficiency.
-   - Recommendation: Defer `relations()` to Phase 34. Phase 33's `getOrderEvents(orderId)` uses plain SELECT. Avoid modifying `src/db/index.ts` in Phase 33. If Phase 34 needs it, it adds `relations()` + updates `index.ts` in the same wave.
+   - **RESOLVED:** DEFER to Phase 34. Encoded in plan `33-02` (queries use plain `db.select()`; `src/db/index.ts` is NOT modified in Phase 33).
+   - What we knew: Plain `db.select().from(orderEvents).where(eq(orderId, ...))` works without `relations()`. The `db.query` relational API requires both `relations()` AND schema registration in `drizzle({ client, schema })`.
+   - Rationale: Phase 33's `getOrderEvents(orderId)` does not need the relational API; deferring keeps `src/db/index.ts` untouched. If Phase 34 wants `db.query.productionOrders.findFirst({ with: { events: true } })`, it adds `relations()` + updates `index.ts` in the same wave.
 
 2. **Initial event row for bulk-imported orders (`from_state: null → to_state: 'Pending'`)?**
-   - What we know: Phase 32 D-18 explicitly rejected synthetic events for the seed. CONTEXT.md Claude's Discretion recommends YES for imports (not seed).
-   - What's unclear: The planner must decide and document in PLAN.md.
-   - Recommendation: YES — insert a `{ fromState: null, toState: 'Pending', note: 'Imported from XLSX' }` event for each new (non-overwrite) insert. This gives timeline continuity. Omit for seed data.
+   - **RESOLVED:** YES — Phase 33 emits one `{ fromState: null, toState: 'Pending', note: 'Imported from XLSX (batch_id=<id>)' }` event per new (non-overwrite) insert. Encoded in plan `33-06` (`commitImportAction` per-row insert path).
+   - Rationale: Phase 32 D-18 rejected synthetic events for the seed (system-origin rows). For imports, the operator-initiated upload is a real timeline event — recording it gives downstream timeline UI continuity. Distinguished from seed by `changed_by !== 'system-seed'`.
 
 3. **`users` table lazy-sync (DATA-05)?**
-   - What we know: `changed_by` in `order_events` is the Clerk user ID — no display name needed for Phase 33 functionality.
-   - Recommendation: Defer to Phase 34 when display names are first rendered. Phase 33 does not touch `users`.
+   - **RESOLVED:** DEFER to Phase 34. Phase 33 does NOT touch `src/db/schema/users.ts` or write to the `users` table.
+   - Rationale: `changed_by` in `order_events` is the Clerk user ID — no display name needed for Phase 33 functionality. Phase 34 picks this up when display names are first rendered for the timeline panel.
 
 ---
 
