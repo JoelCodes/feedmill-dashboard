@@ -2,8 +2,16 @@
 phase: 34-production-dashboard-ui-and-homepage-promotion
 type: human-uat-retest-plan
 created: 2026-05-14
-status: pending-gap-closure-completion
+updated: 2026-05-14
+status: ready
 companion_to: 34-HUMAN-UAT.md
+notes: |
+  Gap-closure plans 34-08..34-12 shipped (commits 770a577..7c7bd51). The verifier
+  flagged a disputed BlockReasonModal stale-closure gap (CR-02) which the orchestrator
+  overrode on test evidence — BlockReasonModal.test.tsx Test 6 passes with the typed
+  reason reaching blockOrder. T10 retest is the conclusive empirical check: confirm
+  the typed reason appears in the order event timeline note. If the reason field is
+  blank in production, CR-02 is real and must be revisited via /gsd-plan-phase 34 --gaps.
 ---
 
 # Phase 34 Human UAT — Retest Plan (post gap closure)

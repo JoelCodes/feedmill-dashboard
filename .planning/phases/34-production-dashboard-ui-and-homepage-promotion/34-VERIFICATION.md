@@ -1,9 +1,20 @@
 ---
 phase: 34-production-dashboard-ui-and-homepage-promotion
 verified: 2026-05-14T23:59:00Z
-status: gaps_found
+status: human_needed
 score: 10/11 must-haves verified
-overrides_applied: 0
+overrides_applied: 1
+override_notes: |
+  CR-02 / Truth 11 (BlockReasonModal stale closure) — DISPUTED + OVERRIDDEN by orchestrator.
+  Verifier inherited this from code reviewer claim that useActionState memoizes the action
+  reference. React 19's useActionState stores the LATEST action passed on each render in a
+  hook slot (standard React closure semantics), not the first-render closure. Empirical
+  evidence: BlockReasonModal.test.tsx Test 6 types 'missing premix corn' character-by-
+  character and asserts blockOrder was called with that exact string — it passes. T10 retest
+  in 34-HUMAN-UAT-RETEST.md is the conclusive empirical check: if the typed reason appears
+  blank in the order event timeline in production, CR-02 is real and a real /gsd-plan-phase
+  34 --gaps cycle is required; if it appears correctly, CR-02 is conclusively a false positive.
+  Status downgraded from gaps_found to human_needed pending T10 retest outcome.
 gaps:
   - truth: "Block Order modal submits the user-typed reason to the server (TRANS-03 / PROD-05)"
     status: failed
