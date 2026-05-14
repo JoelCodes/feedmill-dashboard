@@ -102,4 +102,25 @@ describe('BlockedAlertBand', () => {
     expect(band?.className).toContain('sticky');
     expect(band?.className).toContain('bg-error-light');
   });
+
+  // ── T10b gap closure: useQueryStates called with shallow: false + history: push ──
+
+  it('T10b: useQueryStates is called with { shallow: false, history: "push" } options (blocked-chip triggers RSC fetch)', () => {
+    // Access the mocked useQueryStates to assert it was called with the correct options
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { useQueryStates: mockUseQueryStates } = require('nuqs') as {
+      useQueryStates: jest.Mock;
+    };
+
+    const orders = [
+      makeOrder({ id: 'ord_1', orderNumber: 'ORD-001', millLine: 'Premix', state: 'Blocked' }),
+    ];
+    render(<BlockedAlertBand orders={orders} />);
+
+    // Assert that useQueryStates was called with the options object as second arg
+    expect(mockUseQueryStates).toHaveBeenCalledWith(
+      expect.any(Object), // first arg: parsers object
+      expect.objectContaining({ shallow: false, history: 'push' })
+    );
+  });
 });
