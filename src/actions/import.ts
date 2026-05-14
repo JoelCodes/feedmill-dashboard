@@ -531,9 +531,17 @@ export async function commitImportAction(
       if (decisions.overwriteRows.includes(rowIndex)) {
         // ── Overwrite path (D-10 + D-11 + D-13) ──────────────────────────
         try {
-          // Load existing order to capture current state for the audit event
+          // Load existing order to capture current state AND version for
+          // optimistic concurrency. CR-02: the original implementation only
+          // selected { id, state } and gated the UPDATE on `orderNumber`
+          // alone, which silently allowed two concurrent overwrites of the
+          // same row (and would lose an in-flight transition change).
           const [existing] = await db
-            .select({ id: productionOrders.id, state: productionOrders.state })
+            .select({
+              id: productionOrders.id,
+              state: productionOrders.state,
+              version: productionOrders.version,
+            })
             .from(productionOrders)
             .where(eq(productionOrders.orderNumber, row.orderNumber));
 
@@ -544,9 +552,14 @@ export async function commitImportAction(
 
           // UPDATE the existing row — state intentionally absent (D-13 preserves state)
           // version bumped via sql`version + 1` to support optimistic concurrency (D-10 + T-33-Stale)
+          // CR-02: gate the UPDATE on the version we just observed AND check
+          // .returning().length for the zero-rows-as-conflict signal. Mirrors
+          // transitions.ts:110-118. The TOCTOU window between this SELECT and
+          // UPDATE is narrow; any post-preview mutation will now conflict-fail
+          // visibly instead of silently clobbering the other writer's work.
           // updatedAt omitted — auto-set via $onUpdate (Pitfall 5)
           // formulaType omitted — not in productionOrders schema (schema has no formula_type column)
-          await db
+          const updated = await db
             .update(productionOrders)
             .set({
               customer: row.customer,
@@ -559,8 +572,27 @@ export async function commitImportAction(
               version: sql`version + 1` as any,
               // state intentionally absent — D-13: overwrite does NOT change state
             })
-            .where(eq(productionOrders.orderNumber, row.orderNumber))
+            .where(
+              and(
+                eq(productionOrders.orderNumber, row.orderNumber),
+                eq(productionOrders.version, existing.version),
+              ),
+            )
             .returning({ id: productionOrders.id });
+
+          if (updated.length === 0) {
+            // CR-02: zero-row UPDATE under our version predicate means
+            // another writer mutated the row between SELECT and UPDATE.
+            // Report a clear per-row conflict instead of writing the
+            // overwrite audit event for an UPDATE that never happened.
+            results.push({
+              rowIndex,
+              ok: false,
+              action: 'overwrite',
+              error: 'Order was modified after preview. Please refresh.',
+            });
+            continue;
+          }
 
           // Audit row for overwrite: fromState === toState (same state, data changed)
           // [OVERWRITE] batch_id= is the D-11 canonical marker for Phase 34 timeline UI

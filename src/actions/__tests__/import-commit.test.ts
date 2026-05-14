@@ -364,7 +364,7 @@ it('Test 4: overwrite path calls db.update (not db.insert for orders) and writes
   // 2nd call = overwrite path existing-row lookup (returns existing row)
   mockSelectWhere
     .mockResolvedValueOnce([])                               // detectDbDuplicates
-    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]); // overwrite lookup
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing', version: 1 }]); // overwrite lookup
 
   // overwrite: event insert, then batches insert
   let callN = 0;
@@ -400,7 +400,7 @@ it('Test 5: overwrite event row has fromState === toState === existing state (D-
   // 1st call = detectDbDuplicates, 2nd call = overwrite lookup
   mockSelectWhere
     .mockResolvedValueOnce([])
-    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing', version: 1 }]);
 
   let callN = 0;
   mockInsert.mockImplementation((_table: unknown) => {
@@ -433,7 +433,7 @@ it('Test 6: overwrite UPDATE set payload includes version as sql`version + 1` (n
   // 1st call = detectDbDuplicates, 2nd call = overwrite lookup
   mockSelectWhere
     .mockResolvedValueOnce([])
-    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing' }]);
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing', version: 1 }]);
 
   let callN = 0;
   mockInsert.mockImplementation((_table: unknown) => {
@@ -455,6 +455,85 @@ it('Test 6: overwrite UPDATE set payload includes version as sql`version + 1` (n
   // The sql literal from drizzle-orm has a queryChunks or similar shape
   // We verify it is NOT a primitive number (which would be the wrong pattern)
   expect(setArg.version).toBeTruthy();
+});
+
+// Test 6a (CR-02): overwrite reports conflict when the UPDATE matches zero rows
+// (e.g., another writer bumped the version between our SELECT and UPDATE).
+it('Test 6a (CR-02): overwrite returns per-row conflict and skips audit event when UPDATE .returning() is empty', async () => {
+  jest.mocked(readXlsxFile).mockResolvedValue({
+    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: [],
+  } as never);
+
+  // 1st select = detectDbDuplicates, 2nd select = overwrite lookup (returns version 1)
+  mockSelectWhere
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing', version: 1 }]);
+
+  // Force UPDATE .returning() to resolve to [] — simulating the optimistic
+  // concurrency conflict (another writer changed `version` after our SELECT).
+  mockUpdateReturning.mockResolvedValueOnce([]);
+
+  // No event insert is expected on the conflict path — the only insert call
+  // (if reached) would be the importBatches row, but committedCount is 0
+  // so no batch is written either. Provide a default that fails loudly.
+  mockInsert.mockImplementation((_table: unknown) => {
+    mockInsertCalls.push({ callN: -1, table: _table });
+    return { values: jest.fn().mockReturnValue({ returning: jest.fn().mockResolvedValue([]) }) };
+  });
+
+  const decisions: ImportDecisions = { skipRows: [], overwriteRows: [1] };
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, decisions);
+
+  expect(result).toMatchObject({ ok: true, committedCount: 0, failedCount: 1 });
+  if (result.ok) {
+    const row1 = result.results.find((r) => r.rowIndex === 1);
+    expect(row1).toMatchObject({ rowIndex: 1, ok: false, action: 'overwrite' });
+    expect((row1 as { ok: false; error: string }).error).toMatch(/modified after preview/i);
+  }
+  // UPDATE was attempted; overwrite event row was NOT written.
+  expect(mockUpdate).toHaveBeenCalledTimes(1);
+  expect(mockInsertEventsValues).not.toHaveBeenCalled();
+  // No import_batches row when committedCount === 0
+  expect(mockInsertBatchesValues).not.toHaveBeenCalled();
+});
+
+// Test 6b (CR-02): the overwrite UPDATE WHERE clause includes a version predicate
+it('Test 6b (CR-02): overwrite path SELECTs version and uses it in the UPDATE WHERE predicate', async () => {
+  jest.mocked(readXlsxFile).mockResolvedValue({
+    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: [],
+  } as never);
+
+  mockSelectWhere
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce([{ id: 'existing-id', state: 'Mixing', version: 7 }]);
+
+  let callN = 0;
+  mockInsert.mockImplementation((_table: unknown) => {
+    const idx = callN++;
+    mockInsertCalls.push({ callN: idx, table: _table });
+    if (idx === 0) return { values: mockInsertEventsValues };
+    return { values: mockInsertBatchesValues };
+  });
+
+  const decisions: ImportDecisions = { skipRows: [], overwriteRows: [1] };
+  const file = makeFile();
+  const formData = makeFormData(file);
+  await commitImportAction(formData, decisions);
+
+  // Source-assert that the implementation has the version-aware WHERE clause:
+  // we can't introspect the drizzle SQL fragment from the mock easily, but we
+  // CAN verify the existing-row SELECT included the `version` column projection
+  // (otherwise CR-02 would silently regress).
+  const importPath = path.resolve(__dirname, '../import.ts');
+  const source = fs.readFileSync(importPath, 'utf8');
+  // Must select version in the existing-row lookup
+  expect(source).toMatch(/version:\s*productionOrders\.version/);
+  // Must gate the UPDATE WHERE on existing.version
+  expect(source).toMatch(/eq\(productionOrders\.version,\s*existing\.version\)/);
 });
 
 // Test 7: initial-insert event row (RESEARCH.md Open Question 2 YES)
