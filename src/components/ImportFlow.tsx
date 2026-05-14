@@ -18,7 +18,8 @@
  *   T-34-07-CSRF: Next.js 16 server actions enforce same-origin at framework level.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   previewImportAction,
   commitImportAction,
@@ -42,6 +43,7 @@ type Props = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Element {
+  const router = useRouter();
   const [phase, setPhase] = useState<Phase>('entry');
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ summary: PreviewSummary; rows: PreviewRow[] } | null>(null);
@@ -51,6 +53,18 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
   const [isPending, setIsPending] = useState(false);
   // Store the file for commit re-submission (server must re-parse — D-05 stateless)
   const [currentFile, setCurrentFile] = useState<File | null>(null);
+
+  // T9b fix: hydrate batches.importedAt from string|Date → Date at the prop boundary.
+  // RSC serialization turns Date into an ISO string; ImportHistoryTable's formatBatchDate
+  // strictly requires Date input. We hydrate ONCE here so the rest of the tree stays
+  // honest about the type.
+  const hydratedBatches = useMemo(
+    () => batches.map((b) => ({
+      ...b,
+      importedAt: b.importedAt instanceof Date ? b.importedAt : new Date(b.importedAt as unknown as string),
+    })),
+    [batches]
+  );
 
   // ── File handler — validates size, calls previewImportAction ──────────────
 
@@ -137,6 +151,14 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
       setError(result.message);
       return;
     }
+
+    // T9a fix: trigger the parent RSC to re-fetch so ImportHistoryTable
+    // receives the new batch from the freshly invalidated cache.
+    // Mirror of TransitionButtons.tsx pattern (router.refresh after action success).
+    // Note: server-side revalidateTag is already wired in src/actions/import.ts:793,808
+    // (Phase 33 D-21). router.refresh() is the client-side counterpart that picks up
+    // the invalidated cache on the next RSC pass.
+    router.refresh();
 
     setPhase('committed');
   }
@@ -358,7 +380,7 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
 
       {/* ── Import history — always visible below the active phase ────── */}
       <hr className="my-6 border-[var(--divider)]" />
-      <ImportHistoryTable batches={batches} />
+      <ImportHistoryTable batches={hydratedBatches} />
     </div>
   );
 }

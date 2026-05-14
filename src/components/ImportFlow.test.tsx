@@ -14,6 +14,10 @@
  * Test 16 (ImportDecisions shape match):
  *   - Type-level assertion ensures decisions passed to commitImportAction
  *     match the ImportDecisions type from src/actions/import.ts.
+ *
+ * Tests T9a + T9b (plan 34-09):
+ *   - T9a: router.refresh() called once on commit success; NOT called on failure
+ *   - T9b: renders without throwing when batches.importedAt is a string (hydration fix)
  */
 import React from "react";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
@@ -32,10 +36,15 @@ import { MAX_IMPORT_BYTES } from "@/lib/import-constants";
 
 const mockPreviewImportAction = jest.fn();
 const mockCommitImportAction = jest.fn();
+const mockRefresh = jest.fn();
 
 jest.mock("@/actions/import", () => ({
   previewImportAction: (...args: unknown[]) => mockPreviewImportAction(...args),
   commitImportAction: (...args: unknown[]) => mockCommitImportAction(...args),
+}));
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: mockRefresh }),
 }));
 
 import ImportFlow from "./ImportFlow";
@@ -99,6 +108,7 @@ const VALID_PREVIEW = {
 beforeEach(() => {
   mockPreviewImportAction.mockReset();
   mockCommitImportAction.mockReset();
+  mockRefresh.mockClear();
 });
 
 describe("ImportFlow", () => {
@@ -308,5 +318,85 @@ describe("ImportFlow", () => {
 
     // Should NOT have transitioned to committed phase
     expect(screen.queryByText(/import complete/i)).toBeNull();
+  });
+
+  // ── T9a regression: router.refresh() wired on commit success ─────────────
+
+  it("T9a: calls router.refresh() exactly once on successful commit", async () => {
+    mockPreviewImportAction.mockResolvedValue(VALID_PREVIEW);
+    mockCommitImportAction.mockResolvedValue({
+      ok: true,
+      batchId: 'batch_t9a',
+      committedCount: 2,
+      failedCount: 0,
+      results: [],
+    });
+
+    render(<ImportFlow batches={EMPTY_BATCHES} canEdit={true} />);
+
+    const validFile = new File(["xlsx"], "Book1.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+    });
+
+    await waitFor(() => expect(screen.getByRole("button", { name: /commit/i })).toBeInTheDocument());
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /commit/i }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/import complete/i)).toBeInTheDocument();
+    });
+
+    expect(mockRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("T9a negative: does NOT call router.refresh() on commit failure", async () => {
+    mockPreviewImportAction.mockResolvedValue(VALID_PREVIEW);
+    mockCommitImportAction.mockResolvedValue({
+      ok: false,
+      code: 'validation',
+      message: 'Server error',
+    });
+
+    render(<ImportFlow batches={EMPTY_BATCHES} canEdit={true} />);
+
+    const validFile = new File(["xlsx"], "Book1.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [validFile] } });
+    });
+
+    await waitFor(() => expect(screen.getByRole("button", { name: /commit/i })).toBeInTheDocument());
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /commit/i }));
+    });
+
+    await waitFor(() => {
+      expect(mockCommitImportAction).toHaveBeenCalled();
+    });
+
+    expect(mockRefresh).not.toHaveBeenCalled();
+  });
+
+  // ── T9b regression: hydration of string importedAt ───────────────────────
+
+  it("T9b: renders without throwing when batches.importedAt is a string (hydration fix)", () => {
+    const stringBatches = [
+      {
+        id: 'b1',
+        fileName: 'Book1.xlsx',
+        rowCount: 33,
+        importedBy: 'user_abc',
+        importedAt: '2026-05-14T19:00:00.000Z',
+      },
+    ] as unknown as ImportBatch[];
+
+    expect(() => render(<ImportFlow batches={stringBatches} canEdit={true} />)).not.toThrow();
+    // Date is now hydrated; the table renders the formatted date without RangeError.
+    expect(screen.getByText('Book1.xlsx')).toBeInTheDocument();
   });
 });
