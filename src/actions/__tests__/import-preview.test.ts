@@ -60,10 +60,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // Import AFTER mocks are established (hoisted by Jest transform)
-import {
-  previewImportAction,
-  MAX_IMPORT_BYTES,
-} from '../import';
+import { previewImportAction } from '../import';
+// MAX_IMPORT_BYTES lives in @/lib/import-constants per CR-01 (Next.js 16 forbids
+// non-async-function exports from a 'use server' file).
+import { MAX_IMPORT_BYTES } from '@/lib/import-constants';
 
 // ────────────────────────────────────────────────────────────────────────────
 // Helpers

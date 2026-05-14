@@ -5,24 +5,23 @@ import { db } from '@/db';
 import { productionOrders } from '@/db/schema/orders';
 import { orderEvents } from '@/db/schema/events';
 import { importBatches } from '@/db/schema/imports';
-import { inArray, sql, eq } from 'drizzle-orm';
+import { inArray, sql, eq, and } from 'drizzle-orm';
 import { requireRole } from '@/lib/auth';
 import { auth } from '@clerk/nextjs/server';
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
 import { productionOrderImportSchema } from '@/actions/import-schema';
+import { MAX_IMPORT_BYTES } from '@/lib/import-constants';
 
 // ────────────────────────────────────────────────────────────────────────────
 // Constants & Types
 // ────────────────────────────────────────────────────────────────────────────
 
-/**
- * Maximum accepted upload size in bytes (2 MB).
- * Layer 2 server-side DoS guard (T-33-DoS).
- * Layer 1 = Phase 34 client-side <input> check using this constant.
- * Layer 3 = Next.js framework body-size limit (plan 33-01).
- * Exported for Phase 34 upload form to import and use as client-side guard.
- */
-export const MAX_IMPORT_BYTES = 2 * 1024 * 1024;
+// MAX_IMPORT_BYTES is imported from '@/lib/import-constants' (CR-01).
+// Next.js 16's server-boundary rule forbids non-async-function exports from a
+// 'use server' file; the constant therefore lives in a regular (non-'use server')
+// module so that both the server action below and the Phase 34 client upload
+// form can import it for the 3-layer DoS guard (T-33-DoS).
 
 export type PreviewRow = {
   rowIndex: number;
