@@ -293,6 +293,24 @@ export async function getOrderEvents(orderId: string) {
 
 [VERIFIED: npm view read-excel-file exports]
 
+> **CORRECTION 2026-05-14 (GAP-05):** The original §3 below described the v8.x
+> API (`readXlsxFile(input, { schema }) → { rows, errors }`). This is NOT the
+> v9.0.9 API. In v9.x the schema parameter was REMOVED from the default export
+> `readXlsxFile` (which now returns `Promise<Sheet[]>` — a raw 2D cell array)
+> and re-added to a new named export `readSheet`, whose schema-aware overload
+> returns the `ParseSheetDataResult` discriminated union:
+> - Success: `{ objects: Object[]; errors: undefined }`
+> - Error:   `{ objects: undefined; errors: Error[] }`
+>
+> Source of truth:
+> - `node_modules/read-excel-file/node/index.d.ts` lines 73-97 (the four exported overloads).
+> - `node_modules/read-excel-file/types/parseSheetData/parseSheetData.d.ts` lines 3-13 (the discriminated union).
+>
+> The implementation in `src/actions/import.ts` migrated from the (wrong) v8.x
+> pattern to the (correct) v9.x pattern in commit history under plan 33-11
+> (see VERIFICATION.md GAP-05 + 33-11-SUMMARY.md). The §3 code examples below
+> have been updated inline to match v9.x.
+
 The package has four named export paths:
 - `read-excel-file/node` — Node.js server (Buffer, stream, filepath)
 - `read-excel-file/browser` — browser File object
@@ -301,39 +319,39 @@ The package has four named export paths:
 
 **Correct import for server actions:**
 ```typescript
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 ```
 
 **Schema-based parsing (preferred for typed output):**
 ```typescript
-import readXlsxFile, { Schema } from 'read-excel-file/node';
+import { readSheet, Schema } from 'read-excel-file/node';
 
 const schema: Schema = {
-  'Document Number': {
-    prop: 'orderNumber',
+  orderNumber: {
+    column: 'Document Number',
     type: String,
-    required: true,
+    // NOTE: do NOT set required:true here — readSheet returns the error branch
+    // (objects: undefined) for ALL rows when any required field is missing,
+    // losing all valid rows. Zod handles required-field validation instead.
   },
-  'Customer': {
-    prop: 'customer',
+  customer: {
+    column: 'Customer Name',
     type: String,
-    required: true,
   },
-  'Weight': {
-    prop: 'weightLbs',
+  weightLbs: {
+    column: 'Ordered Quantity',
     type: Number,  // read-excel-file parses as number; Zod then coerces to string for DB
-    required: true,
   },
-  'Early Delivery Date': {
-    prop: 'deliveryDate',
+  deliveryDate: {
+    column: 'Early Delivery Date',
     type: Date,    // Date cells returned as JS Date objects
   },
   // ... etc
 };
 
-const { rows, errors } = await readXlsxFile(buffer, { schema });
-// rows: Array<{ orderNumber: string, customer: string, weightLbs: number, deliveryDate: Date, ... }>
-// errors: Array<{ row, column, error, value }>
+const { objects, errors } = await readSheet(buffer, { schema });
+// objects: Array<{ orderNumber: string, customer: string, weightLbs: number, deliveryDate: Date, ... }> | undefined  (undefined on error branch)
+// errors: Array<{ row, column, error, value }> | undefined  (undefined on success branch)
 ```
 
 **Receiving the File in a server action:**
@@ -342,14 +360,14 @@ In a React 19 server action receiving FormData, the file is a `File` object (Web
 
 ```typescript
 'use server';
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 
 export async function previewImportAction(formData: FormData) {
   const file = formData.get('file') as File;
   // Convert Web API File → Node.js Buffer
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
-  const { rows, errors } = await readXlsxFile(buffer, { schema });
+  const { objects, errors } = await readSheet(buffer, { schema });
 }
 ```
 
@@ -653,23 +671,29 @@ export const getProductionOrders = unstable_cache(
 
 ### XLSX Import — File → Buffer Conversion
 
+> **CORRECTION 2026-05-14 (GAP-05):** The code example below has been updated to the
+> v9.x API (`readSheet` named export, `{ objects, errors }` destructure, v9.x schema format).
+> The original example used `readXlsxFile` (default export, v8.x API) which silently
+> drops the schema option and returns `Promise<Sheet[]>` instead.
+
 ```typescript
-// src/actions/import.ts (partial)
+// src/actions/import.ts (partial) — v9.x API (corrected 2026-05-14)
 'use server';
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 import { requireRole } from '@/lib/auth';
-import type { Schema } from 'read-excel-file/node';
 
 export const MAX_IMPORT_BYTES = 2 * 1024 * 1024; // 2MB
 
-const xlsxSchema: Schema = {
-  'Document Number': { prop: 'orderNumber', type: String, required: true },
-  'Customer': { prop: 'customer', type: String, required: true },
-  'Weight': { prop: 'weightLbs', type: Number, required: true },
-  'Early Delivery Date': { prop: 'deliveryDate', type: Date },
-  'Formula Type': { prop: 'formulaType', type: String, required: true },
-  'Texture Type': { prop: 'textureType', type: String },
-  'Line Code': { prop: 'lineCode', type: String },
+// NOTE: no `required: true` — v9.x returns objects: undefined for ALL rows
+// when any required field is missing; Zod handles required validation instead.
+const xlsxSchema = {
+  orderNumber:  { column: 'Document Number',    type: String },
+  customer:     { column: 'Customer Name',       type: String },
+  weightLbs:    { column: 'Ordered Quantity',    type: Number },
+  deliveryDate: { column: 'Early Delivery Date', type: Date },
+  formulaType:  { column: 'Formula Type',        type: String },
+  textureType:  { column: 'Texture Type',        type: String },
+  lineCode:     { column: 'Line Code',           type: String },
   // Mill Line NOT in Book1.xlsx — defaults to 'Premix' in action logic (D-16)
 };
 
@@ -681,7 +705,7 @@ export async function previewImportAction(formData: FormData) {
     return { ok: false, code: 'validation' as const, message: 'File exceeds 2MB limit.' };
   }
   const buffer = Buffer.from(await file.arrayBuffer());
-  const { rows, errors } = await readXlsxFile(buffer, { schema: xlsxSchema });
+  const { objects, errors } = await readSheet(buffer, { schema: xlsxSchema });
   // ... parse, Zod validate, duplicate detect, return preview payload
 }
 ```

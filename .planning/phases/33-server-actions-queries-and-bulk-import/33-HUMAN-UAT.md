@@ -3,7 +3,7 @@ status: gaps_flagged
 phase: 33-server-actions-queries-and-bulk-import
 source: [33-VERIFICATION.md]
 started: 2026-05-14T01:30:00Z
-updated: 2026-05-14T01:30:00Z
+updated: 2026-05-14T08:00:00Z
 ---
 
 ## Current Test
@@ -41,14 +41,14 @@ deferred_test_step: |
 
 ### 3. End-to-end XLSX import against live Neon dev DB
 expected: Uploading Book1.xlsx creates rows in production_orders; one import_batches row is created; preview shows correct row count + total weight + duplicate flags
-result: [pending]
+result: passed (harness, 2026-05-14) — closed by plan 33-11 (GAP-05). scripts/test-xlsx-import.ts re-ran end-to-end against live Neon dev DB after readSheet API migration.
 
 ## Summary
 
 total: 3
-passed: 0
+passed: 1
 issues: 0
-pending: 2
+pending: 1
 skipped: 0
 blocked: 0
 deferred: 1

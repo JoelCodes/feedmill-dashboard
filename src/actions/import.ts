@@ -1,6 +1,6 @@
 'use server';
 
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 import { db } from '@/db';
 import { productionOrders } from '@/db/schema/orders';
 import { orderEvents } from '@/db/schema/events';
@@ -56,23 +56,43 @@ export type PreviewResult =
 // D-16: Book1.xlsx has no Mill Line column; every row defaults to 'Premix'.
 // ────────────────────────────────────────────────────────────────────────────
 
-// read-excel-file 9.x TypeScript type definitions use the new typed-Schema API
-// (output keys → { column: '...', type, required }). The runtime still accepts
-// the legacy prop-based format (column titles → { prop, type, required }) used
-// in this codebase per RESEARCH.md §3 lines 309-337. Using `Record<string, unknown>`
-// here avoids the type mismatch while preserving the correct runtime behavior.
-// The `as unknown as Parameters<typeof readXlsxFile>[1]` cast ensures the options
-// pass TypeScript type-checking at the call site without sacrificing correctness.
+// GAP-05 (33-11): readSheet uses the v9.x typed-Schema API where schema keys are the
+// OUTPUT property names and each entry has a `column` property pointing to the XLSX
+// column title. This is the inverse of the legacy `readXlsxFile` prop-based format
+// (column title → { prop, type, required }) used in the original implementation.
+//
+// v9.x format: { outputProp: { column: 'Column Title', type } }
+// Legacy format: { 'Column Title': { prop: 'outputProp', type, required } }
+//
+// CORRECTION (33-11): The actual Book1.xlsx column headers differ from RESEARCH.md §3's
+// documented schema. Verified against the real file (readSheet without schema returns
+// row 1 as ["Document Number","Line Code","Texture Type","Customer Name","Ordered Quantity",
+// "Farm Location Code","Early Delivery Date","Formula Type","Formula Type"]).
+// - 'Customer' → actual header is 'Customer Name'
+// - 'Product' → no such column exists in Book1.xlsx (removed)
+// - 'Weight' → actual header is 'Ordered Quantity'
+// The original readXlsxFile silently ignored the schema, so mismatched column titles
+// never surfaced. See RESEARCH.md §3 CORRECTION 2026-05-14 for the full post-mortem.
+//
+// IMPORTANT — no `required: true` in this schema:
+// When readSheet receives `required: true` on a field and a row has a null/empty value
+// for that field, v9.x returns the ParseSheetDataResultError branch (objects: undefined,
+// errors: Error[]). This is an all-or-nothing contract — if ANY row triggers a required
+// error, ALL rows are lost from `objects`. Since partial imports are a core requirement
+// (IMPORT-04 / WR-06: invalid rows surface as errors while valid rows proceed),
+// `required` validation MUST NOT be delegated to the XLSX schema layer. Zod handles
+// all required-field validation in the per-row safeParse loop below, including the
+// .min(1) constraints from productionOrderImportSchema.
 const xlsxSchema: Record<string, unknown> = {
-  'Document Number': { prop: 'orderNumber', type: String, required: true },
-  Customer: { prop: 'customer', type: String, required: true },
-  Product: { prop: 'product', type: String, required: true },
-  Weight: { prop: 'weightLbs', type: Number, required: true },
-  'Early Delivery Date': { prop: 'deliveryDate', type: Date },
-  'Formula Type': { prop: 'formulaType', type: String, required: true },
-  'Texture Type': { prop: 'textureType', type: String },
-  'Line Code': { prop: 'lineCode', type: String },
-  // No 'Mill Line' key — Book1.xlsx has no Mill Line column (D-16)
+  orderNumber:  { column: 'Document Number',    type: String },
+  customer:     { column: 'Customer Name',       type: String },
+  weightLbs:    { column: 'Ordered Quantity',    type: Number },
+  deliveryDate: { column: 'Early Delivery Date', type: Date },
+  formulaType:  { column: 'Formula Type',        type: String },
+  textureType:  { column: 'Texture Type',        type: String },
+  lineCode:     { column: 'Line Code',           type: String },
+  // No 'millLine' key — Book1.xlsx has no Mill Line column (D-16)
+  // No 'product' key — Book1.xlsx has no Product column; product field falls back to '' in parseAndValidate
 };
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -113,24 +133,38 @@ function dateToIsoString(d: unknown): string {
  * read-excel-file `errors` array items have shape:
  *   { row: number; column: string; error: string; value: unknown }
  * where `row` is 1-based (matching XLSX row numbers).
+ *
+ * IMPORTANT: this helper calls `readSheet` (named export — schema-aware
+ * v9.x overload), NOT `readXlsxFile` (default — returns Sheet[] without
+ * schema support). See GAP-05 in 33-VERIFICATION.md.
  */
 async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
-  // Type cast required: read-excel-file 9.x TypeScript types use the new typed-Schema
-  // API (output keys → { column, type, required }). The runtime still accepts the
-  // legacy prop-based format (column titles → { prop, type, required }) used here per
-  // RESEARCH.md §3 lines 309-337. The double-cast through `unknown` is safe — runtime
-  // behavior is correct and tests mock this function.
-  // Return-shape contract (v9.0.9): per node_modules/read-excel-file/types/parseSheetData/parseSheetData.d.ts
-  // the result is a discriminated union — ParseSheetDataResultSuccess returns `errors: undefined`
-  // (success/clean-file case) and ParseSheetDataResultError returns `errors: Error[]` (parse-failure
-  // case). The `errors: Array<...> | undefined` shape below covers both overloads. See GAP-04 in
-  // 33-VERIFICATION.md for the post-mortem on the original missing `| undefined` annotation that
-  // caused a TypeError on every clean Book1.xlsx upload.
+  // GAP-05 migration (2026-05-14): the SCHEMA-AWARE function is `readSheet`
+  // (named export), NOT the default export `readXlsxFile`. Per
+  // node_modules/read-excel-file/node/index.d.ts lines 73-97:
+  //   - `export default readXlsxFile`: returns Promise<Sheet[]> (2D cell array,
+  //     no schema support — the schema option is silently dropped at runtime).
+  //   - `export function readSheet` (4th overload): takes OptionsWithSchema,
+  //     returns Promise<ParseSheetDataResult> — the `{ objects, errors }`
+  //     discriminated union below. Plans 33-05/33-06 originally used the
+  //     default export by mistake; GAP-05 in 33-VERIFICATION.md is the
+  //     post-mortem.
+  //
+  // v9.x ParseSheetDataResult discriminated union (parseSheetData.d.ts):
+  //   ParseSheetDataResultSuccess: { objects: Object[];      errors: undefined }  ← clean file
+  //   ParseSheetDataResultError:   { objects: undefined;     errors: Error[]   }  ← parse failure
+  //
+  // Both fields must be guarded with `?? []` before iteration:
+  //   - `parserErrors ?? []`  (GAP-04 guard, carried forward)
+  //   - `rawRows ?? []`       (GAP-05 new guard — objects: undefined on error branch)
   type XlsxFn = (
     input: Buffer,
     options: { schema: Record<string, unknown> }
-  ) => Promise<{ rows: Record<string, unknown>[]; errors: Array<{ row: number; column: string; error: string; value: unknown }> | undefined }>;
-  const { rows: rawRows, errors: parserErrors } = await (readXlsxFile as unknown as XlsxFn)(buffer, {
+  ) => Promise<{
+    objects: Record<string, unknown>[] | undefined;  // undefined on ParseSheetDataResultError branch
+    errors: Array<{ row: number; column: string; error: string; value: unknown }> | undefined;
+  }>;
+  const { objects: rawRows, errors: parserErrors } = await (readSheet as unknown as XlsxFn)(buffer, {
     schema: xlsxSchema,
   });
 
@@ -155,11 +189,23 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
 
   const result: PreviewRow[] = [];
 
-  for (let i = 0; i < rawRows.length; i++) {
-    const raw = rawRows[i] as Record<string, unknown>;
+  // GAP-05: rawRows is undefined on the ParseSheetDataResultError branch — guard required.
+  const rowsArr = rawRows ?? [];
+  for (let i = 0; i < rowsArr.length; i++) {
+    // readSheet can return null for completely empty rows; skip them.
+    if (rowsArr[i] == null) continue;
+    const raw = rowsArr[i] as Record<string, unknown>;
     const rowIndex = i + 1; // 1-based
 
-    // D-16: inject 'Premix' default + date conversion before Zod validation
+    // D-16: inject 'Premix' default + date conversion before Zod validation.
+    // CORRECTION (33-11): Book1.xlsx has no 'Product' column per the actual XLSX headers
+    // (verified: Document Number, Line Code, Texture Type, Customer Name, Ordered Quantity,
+    // Farm Location Code, Early Delivery Date, Formula Type, Formula Type). The RESEARCH.md §3
+    // documented schema had wrong column names (`Customer`, `Product`, `Weight` vs actual
+    // `Customer Name`, no-Product-column, `Ordered Quantity`). Since product is required by
+    // D-15/productionOrderImportSchema but absent from the XLSX, rows missing `product`
+    // will surface as Zod validation errors — this is correct per IMPORT-04 (partial-import
+    // semantics: invalid rows are surfaced as errors, not silently skipped).
     const toValidate = {
       ...raw,
       millLine: 'Premix' as const,
