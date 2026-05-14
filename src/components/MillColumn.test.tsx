@@ -55,9 +55,11 @@ describe('MillColumn', () => {
       />
     );
     // completed = 2000 + 1500 = 3500; total = 500+750+1000+2000+1500+800 = 6550
-    // formatWeight(3500) = "3,500"; formatWeight(6550) = "6,550"
-    // The sub-label should contain "3,500" and "6,550" and "lbs"
-    const subLabel = screen.getByText(/lbs/);
+    // The sub-label contains "3,500 / 6,550 lbs" — it's the <p> that follows the <h2>
+    // Use getAllByText to get the sub-label specifically (it contains "/" and "lbs")
+    const subLabels = screen.getAllByText(/\/ .+ lbs/);
+    expect(subLabels.length).toBeGreaterThanOrEqual(1);
+    const subLabel = subLabels[0];
     expect(subLabel.textContent).toContain('3,500');
     expect(subLabel.textContent).toContain('6,550');
     expect(subLabel.textContent).toContain('lbs');
@@ -149,7 +151,7 @@ describe('MillColumn', () => {
     expect(screen.getByText('Premix')).toBeInTheDocument();
 
     // Weight sub-label shows 0 / 0 lbs
-    const subLabel = screen.getByText(/lbs/);
+    const subLabel = screen.getByText(/\/ .* lbs/);
     expect(subLabel.textContent).toContain('0');
     expect(subLabel.textContent).toContain('lbs');
 
