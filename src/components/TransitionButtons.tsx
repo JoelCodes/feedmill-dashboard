@@ -65,7 +65,12 @@ export function StartMixingButton({
   );
 
   useEffect(() => {
-    if (state?.ok === false && state.code === 'conflict') {
+    if (state?.ok === true) {
+      // T12 fix (2026-05-14): cross-tab latency 15s polling → ~1s router.refresh.
+      // Server already calls revalidateTag('production-orders', 'max'); this is
+      // the client-side counterpart that picks up the invalidated cache.
+      router.refresh();
+    } else if (state?.ok === false && state.code === 'conflict') {
       router.refresh(); // D-14: auto-refresh on conflict
     }
   }, [state, router]);
@@ -98,7 +103,10 @@ export function CompleteOrderButton({
   );
 
   useEffect(() => {
-    if (state?.ok === false && state.code === 'conflict') {
+    if (state?.ok === true) {
+      // T12 fix (2026-05-14): cross-tab latency 15s polling → ~1s router.refresh.
+      router.refresh();
+    } else if (state?.ok === false && state.code === 'conflict') {
       router.refresh(); // D-14: auto-refresh on conflict
     }
   }, [state, router]);
@@ -145,7 +153,10 @@ export function ResumeButton({
   );
 
   useEffect(() => {
-    if (state?.ok === false && state.code === 'conflict') {
+    if (state?.ok === true) {
+      // T12 fix (2026-05-14): cross-tab latency 15s polling → ~1s router.refresh.
+      router.refresh();
+    } else if (state?.ok === false && state.code === 'conflict') {
       router.refresh(); // D-14: auto-refresh on conflict
     }
   }, [state, router]);
