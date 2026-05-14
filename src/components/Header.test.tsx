@@ -87,3 +87,17 @@ describe("Header getPageTitle", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Orders");
   });
 });
+
+describe("Header search removal (T3 gap closure)", () => {
+  it("does not render a searchbox role (T3 gap closure)", () => {
+    mockUsePathname.mockReturnValue("/");
+    render(<Header />);
+    expect(screen.queryByRole("searchbox")).toBeNull();
+  });
+
+  it("does not render the legacy 'Type here...' placeholder (T3 gap closure)", () => {
+    mockUsePathname.mockReturnValue("/");
+    render(<Header />);
+    expect(screen.queryByPlaceholderText("Type here...")).toBeNull();
+  });
+});

@@ -1,19 +1,14 @@
 'use client';
 
-import { Search, Bell, Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useDebounce } from '@/hooks/useDebounce';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { getNotifications } from '@/services/notifications';
 import { Notification } from '@/types/notification';
 import NotificationDropdown from './NotificationDropdown';
 import { UserButton, ClerkLoaded, ClerkLoading } from '@clerk/nextjs';
 import { clerkAppearance } from '@/lib/clerk-theme';
-
-interface HeaderProps {
-  onSearch?: (query: string) => void;
-}
 
 // Skeleton component for UserButton - matches 32px avatar per D-04
 const UserButtonSkeleton = () => (
@@ -34,13 +29,11 @@ const getPageTitle = (path: string): string => {
   return 'Dashboard';
 };
 
-export default function Header({ onSearch }: HeaderProps) {
+export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const title = getPageTitle(pathname);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [readNotificationIds, setReadNotificationIds] = useLocalStorage<string[]>(
@@ -56,13 +49,6 @@ export default function Header({ onSearch }: HeaderProps) {
         console.error('Failed to load notifications:', error);
       });
   }, []);
-
-  // Search callback (debounced)
-  useEffect(() => {
-    if (onSearch) {
-      onSearch(debouncedSearchTerm);
-    }
-  }, [debouncedSearchTerm, onSearch]);
 
   // Compute unread count
   const unreadCount = useMemo(() => {
@@ -101,18 +87,6 @@ export default function Header({ onSearch }: HeaderProps) {
 
       {/* Right Side - Actions */}
       <div className="flex items-center gap-4">
-        {/* Search */}
-        <div className="flex items-center gap-2 rounded-lg bg-[var(--bg-card)] px-3 py-2 shadow-[var(--shadow-sm)]">
-          <Search className="text-text-secondary h-4 w-4" />
-          <input
-            type="text"
-            placeholder="Type here..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="placeholder:text-text-secondary w-32 bg-transparent text-xs outline-none"
-          />
-        </div>
-
         {/* Icons */}
         <button
           onClick={() => router.push('/settings')}
