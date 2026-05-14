@@ -822,22 +822,25 @@ export function useProductionPolling(): void {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`useActionState` form binding vs `useTransition` direct call** — should transition buttons use `useActionState` + `<form action>` (idiomatic) or `useTransition` + onClick (more direct for non-form actions)?
    - What we know: Phase 33's `TransitionResult` returns a discriminated union; `useActionState` handles pending + result state.
    - What's unclear: Whether `useActionState` cleanly binds to a Promise-returning action that takes no FormData. UI-SPEC examples and code patterns suggest yes via the closure wrapper (Pattern 3 / Pitfall 10).
    - Recommendation: Use `useActionState` with a closure wrapper. If issues surface during Wave 3, fall back to `useTransition` + onClick + manual error state.
+   - **RESOLVED:** Use `useActionState<TransitionResult | null, FormData>` with the closure-wrapping pattern (Pitfall 10). **No fallback** is planned in Phase 34. If the pattern surfaces issues during Wave 3, the regression is filed as a follow-up `GAP-` item and addressed in a gap-closure plan rather than mid-wave fallback.
 
 2. **Polling pause on hidden tab** — should the polling hook respect `document.visibilityState === 'hidden'` and pause / resume on focus, or accept browser throttling?
    - What we know: Browsers throttle background timers; operators may see stale data on tab-switch.
    - What's unclear: Whether mill operators run the dashboard backgrounded enough to warrant the extra code.
    - Recommendation: Accept default browser behavior in v2.0. Add `visibilitychange` listener in v2.1 if operator feedback requests it.
+   - **RESOLVED:** Accept default browser behavior — `setInterval` continues running when the tab is hidden (subject to browser throttling). Visibility-API gating is deferred to a future phase and recorded as a backlog item, not in Phase 34.
 
 3. **`unstable_cache` warning in Next.js 16** — Next.js 16 stabilized many APIs; check whether `unstable_cache` is renamed or replaced.
    - What we know: Phase 33 uses `unstable_cache` extensively and `revalidateTag(tag, 'max')` (two-arg form).
    - What's unclear: Whether the API is fully stable in 16.1.6 or emits deprecation warnings.
    - Recommendation: Run `next build` after Wave 0 and search the build log for `unstable_cache` warnings. Surface in the plan; do not block Phase 34 on rename — Phase 33 already shipped against this API.
+   - **RESOLVED:** Use `unstable_cache` for Phase 34 (matches Phase 33's API surface; no migration in scope). If `next build` emits the documented deprecation warning, two options apply in a follow-up phase: (a) suppress via the Next.js-documented workaround, or (b) migrate to the new `'use cache'` directive. Neither is in Phase 34 scope. The 34-07 verification step records any warnings observed in `34-07-SUMMARY.md`.
 
 ---
 
