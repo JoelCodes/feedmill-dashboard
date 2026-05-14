@@ -88,10 +88,10 @@ import { importBatches } from '@/db/schema/imports';
 import { productionOrderImportSchema } from '@/actions/import-schema';
 import { MAX_IMPORT_BYTES } from '@/lib/import-constants';
 
-// read-excel-file 9.x requires a module-level import; tsx handles ESM interop.
-// The type cast pattern used here matches src/actions/import.ts exactly
-// (lines 123-128) to keep the two parse pipelines aligned.
-import readXlsxFile from 'read-excel-file/node';
+// read-excel-file 9.x: readSheet is the schema-aware named export — matches src/actions/import.ts
+// (GAP-05 migration, plan 33-11). The default export readXlsxFile returns a 2D Sheet array
+// with no schema support; readSheet returns ParseSheetDataResult { objects, errors }.
+import { readSheet } from 'read-excel-file/node';
 
 import { eq, sql } from 'drizzle-orm';
 
@@ -117,20 +117,37 @@ const HARNESS_CREATED_BY = 'harness-xlsx-test';
 const FIXTURE_PATH = path.resolve(__dirname, '../example-data/Book1.xlsx');
 
 // ── XLSX Schema ──────────────────────────────────────────────────────────────
-// MUST match src/actions/import.ts xlsxSchema verbatim (lines 66-76).
+// MUST match src/actions/import.ts xlsxSchema verbatim (GAP-05 migration, plan 33-11).
+// v9.x readSheet schema format: output property name → { column: 'XLSX Column Title', type }
+// This is the INVERSE of the legacy prop-based format used with readXlsxFile.
+//
+// CORRECTION (33-11): The actual Book1.xlsx column headers differ from RESEARCH.md §3.
+// Verified via readSheet(buf) without schema — row 1 is:
+//   ["Document Number","Line Code","Texture Type","Customer Name","Ordered Quantity",
+//    "Farm Location Code","Early Delivery Date","Formula Type","Formula Type"]
+// - 'Customer' → actual header is 'Customer Name'
+// - 'Weight' → actual header is 'Ordered Quantity'
+// - 'Product' → no such column exists; harness injects a default sentinel below
+//
+// IMPORTANT — no `required: true` in this schema (mirrors src/actions/import.ts):
+// v9.x readSheet returns ParseSheetDataResultError (objects: undefined) when ANY row
+// triggers a `required` error. Since partial imports require valid rows to proceed
+// even when some rows fail, `required` validation is handled by Zod (productionOrderImportSchema),
+// NOT by the readSheet schema. See src/actions/import.ts xlsxSchema comment for full detail.
+//
 // If the column mapping changes in the action, update this copy and add a
 // comment referencing the action commit that changed it.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const xlsxSchema: Record<string, any> = {
-  'Document Number': { prop: 'orderNumber', type: String, required: true },
-  Customer:          { prop: 'customer', type: String, required: true },
-  Product:           { prop: 'product', type: String, required: true },
-  Weight:            { prop: 'weightLbs', type: Number, required: true },
-  'Early Delivery Date': { prop: 'deliveryDate', type: Date },
-  'Formula Type':    { prop: 'formulaType', type: String, required: true },
-  'Texture Type':    { prop: 'textureType', type: String },
-  'Line Code':       { prop: 'lineCode', type: String },
-  // No 'Mill Line' key — Book1.xlsx has no Mill Line column (D-16)
+  orderNumber:  { column: 'Document Number',    type: String },
+  customer:     { column: 'Customer Name',       type: String },
+  weightLbs:    { column: 'Ordered Quantity',    type: Number },
+  deliveryDate: { column: 'Early Delivery Date', type: Date },
+  formulaType:  { column: 'Formula Type',        type: String },
+  textureType:  { column: 'Texture Type',        type: String },
+  lineCode:     { column: 'Line Code',           type: String },
+  // No 'millLine' key — Book1.xlsx has no Mill Line column (D-16)
+  // No 'product' key — Book1.xlsx has no Product column; harness injects sentinel default
 };
 
 // ── Type definitions ─────────────────────────────────────────────────────────
@@ -182,36 +199,57 @@ function loadFixture(): Buffer {
 async function parse(buffer: Buffer): Promise<ParsedRow[]> {
   console.log('step 2: parse ...');
 
-  // Type cast mirrors src/actions/import.ts lines 123-128 exactly.
+  // GAP-05 migration (plan 33-11): mirrors src/actions/import.ts parseAndValidate exactly.
+  // readSheet is the schema-aware named export from read-excel-file v9.x.
+  // ParseSheetDataResult discriminated union:
+  //   Success: { objects: Object[]; errors: undefined }
+  //   Error:   { objects: undefined; errors: Error[] }
+  // Both fields require ?? [] guards before iteration.
   type XlsxFn = (
     input: Buffer,
     options: { schema: Record<string, unknown> }
   ) => Promise<{
-    rows: Record<string, unknown>[];
-    errors: Array<{ row: number; column: string; error: string; value: unknown }>;
+    objects: Record<string, unknown>[] | undefined;
+    errors: Array<{ row: number; column: string; error: string; value: unknown }> | undefined;
   }>;
 
-  const { rows: rawRows, errors: parserErrors } = await (readXlsxFile as unknown as XlsxFn)(
+  const { objects: rawRows, errors: parserErrors } = await (readSheet as unknown as XlsxFn)(
     buffer,
     { schema: xlsxSchema }
   );
 
-  if (parserErrors.length > 0) {
-    console.warn(`  parse: ${parserErrors.length} parser error(s) in fixture:`);
-    for (const pe of parserErrors) {
+  if ((parserErrors ?? []).length > 0) {
+    console.warn(`  parse: ${(parserErrors ?? []).length} parser error(s) in fixture:`);
+    for (const pe of parserErrors ?? []) {
       console.warn(`    row ${pe.row} col "${pe.column}": ${pe.error} (value: ${String(pe.value)})`);
     }
   }
 
   const validRows: ParsedRow[] = [];
 
-  for (let i = 0; i < rawRows.length; i++) {
-    const raw = rawRows[i];
-    // D-16: inject 'Premix' + date conversion before Zod validation
+  // GAP-05: rawRows is undefined on ParseSheetDataResultError branch — guard required.
+  const rowsToProcess = rawRows ?? [];
+  for (let i = 0; i < rowsToProcess.length; i++) {
+    const raw = rowsToProcess[i];
+    // Guard: readSheet can return null for completely empty rows.
+    // Skip null rows — they have no data to validate or commit.
+    if (raw == null) {
+      continue;
+    }
+    // D-16: inject 'Premix' + date conversion before Zod validation.
+    // CORRECTION (33-11): Book1.xlsx has no 'Product' column. The xlsxSchema only maps
+    // columns that exist in the actual file. The `product` field is required by
+    // productionOrderImportSchema (D-15), but since it's absent from Book1.xlsx, we inject
+    // a sentinel value ('unknown') so the harness can test the DB driver path regardless.
+    // This is a harness-only accommodation — in the production action, rows missing
+    // `product` correctly surface as Zod validation errors per IMPORT-04 semantics.
     const toValidate = {
       ...raw,
       millLine: 'Premix' as const,
       deliveryTime: dateToIsoString(raw.deliveryDate),
+      // Harness sentinel: inject a default product since Book1.xlsx has no Product column.
+      // Without this, all rows fail Zod and the harness cannot test the DB commit path.
+      product: (raw.product as string | undefined) ?? 'unknown',
     };
 
     const parsed = productionOrderImportSchema.safeParse(toValidate);
@@ -233,7 +271,7 @@ async function parse(buffer: Buffer): Promise<ParsedRow[]> {
     });
   }
 
-  console.log(`step 2: parse - OK (${validRows.length} valid rows from ${rawRows.length} raw rows)`);
+  console.log(`step 2: parse - OK (${validRows.length} valid rows from ${rowsToProcess.length} raw rows)`);
   return validRows;
 }
 
