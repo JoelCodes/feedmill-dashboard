@@ -1,385 +1,582 @@
 ---
 phase: 33-server-actions-queries-and-bulk-import
-reviewed: 2026-05-13T00:00:00Z
+reviewed: 2026-05-14T00:00:00Z
 depth: standard
-files_reviewed: 14
+files_reviewed: 5
 files_reviewed_list:
-  - docs/security-patterns.md
-  - next.config.ts
-  - package.json
-  - src/actions/import-schema.ts
-  - src/actions/import.ts
-  - src/actions/transitions.ts
-  - src/db/queries/events.ts
-  - src/db/queries/orders.ts
+  - scripts/test-concurrent-transition.ts
+  - scripts/test-xlsx-import.ts
   - src/actions/__tests__/import-commit.test.ts
   - src/actions/__tests__/import-preview.test.ts
-  - src/actions/__tests__/import-schema.test.ts
-  - src/actions/__tests__/transitions.test.ts
-  - src/db/queries/__tests__/events.test.ts
-  - src/db/queries/__tests__/orders.test.ts
+  - src/actions/import.ts
 findings:
-  critical: 4
+  critical: 2
   warning: 9
-  info: 4
+  info: 6
   total: 17
 status: issues_found
 ---
 
-# Phase 33: Code Review Report
+# Phase 33: Code Review Report (Re-Review — Gap-Closure Wave)
 
-**Reviewed:** 2026-05-13T00:00:00Z
+**Reviewed:** 2026-05-14
 **Depth:** standard
-**Files Reviewed:** 14
+**Files Reviewed:** 5
 **Status:** issues_found
+
+## Scope Note
+
+This re-review covers only the narrowed gap-closure wave (plans 33-07 through
+33-11): the two live-DB harness scripts (33-07/33-08), the XLSX action patches
+for `parserErrors` undefined-guard (33-10) and the `readXlsxFile → readSheet`
+migration (33-11), and the corresponding action tests. The prior `33-REVIEW.md`
+findings on `transitions.ts`, `import-schema.ts`, and the queries module are out
+of scope here; no code changes for those files since the prior review.
 
 ## Summary
 
-Phase 33 ships the server actions and queries layer for the mill production dashboard. The implementation generally adheres to the documented contracts: AUTH-02 inner-guard is present in every server action, optimistic concurrency in `transitions.ts` correctly uses `.returning().length === 0` rather than `.rowCount`, the cache-revalidation contract is wired uniformly, and the 3-layer DoS guard for imports is present.
+The gap-closure wave correctly migrates to `read-excel-file` v9.x `readSheet`,
+adds discriminated-union guards (`objects ?? []`, `errors ?? []`, null-row
+skip), and gates the overwrite UPDATE on `version` (CR-02). Tests have been
+extended for the v9.x shape and CR-02/CR-03/CR-04 invariants.
 
-However, four critical defects undermine the security/correctness claims for the bulk-import path:
+Two **BLOCKER** issues were found in the live-DB harness scripts: the cleanup
+`finally` block is bypassed on the success path because `process.exit(0)` is
+called inside the `try`, so committed harness rows persist in the dev DB after
+a successful run. This defeats the entire sentinel-cleanup design — the
+"self-cleaning" contract in both harness headers is false on the happy path
+and only works incidentally on the next run via `preDeleteSentinelRows()`.
 
-1. **`MAX_IMPORT_BYTES` is exported from a `'use server'` file.** Next.js 16 explicitly forbids non-async-function exports from server-action files; the documented client-side use of the constant for the layer-1 DoS guard will not work.
-2. **The overwrite path in `commitImportAction` does NOT actually implement optimistic concurrency**, despite a JSDoc that claims it does. The UPDATE has no `version = N` guard in the WHERE clause and no `.returning().length === 0` check.
-3. **`commitImportAction` computes `dbDuplicates` then never uses it.** A row that was flagged as a DB duplicate in preview but not added to `decisions.skipRows` or `decisions.overwriteRows` is attempted as a fresh INSERT, hitting the unique-index error at the DB layer.
-4. **Outer-catch error path silently strands successful per-row inserts.** Any exception thrown by the `import_batches` insert or `revalidateTag` after the per-row loop returns `{ ok: false, code: 'server' }` and discards `results[]`, so committed rows have no batch record and the cache is not invalidated.
-
-Warnings include missing runtime validation on `decisions`, the import overwrite `action: 'insert'` mislabel for error rows in the overwrite list, the empty-string-as-reason hole in `blockOrder`, and several robustness/safety issues at the data-marshalling boundary.
+A second cluster of warnings centers on the v9.x mock typing in
+`import-commit.test.ts` (mutable module-scope state with dead code paths),
+weak negative-branch assertions in the `GAP-04/GAP-05` tests (they accept
+either success or any of two error codes — a regressed implementation could
+crash with `TypeError` surfacing as `code: 'server'` and the test would still
+pass), and one harness-only schema correctness gap (Book1.xlsx has no
+`Product` column; the harness injects `'unknown'` while the production action
+reports a Zod validation error — divergent paths).
 
 ## Critical Issues
 
-### CR-01: `MAX_IMPORT_BYTES` exported from a `'use server'` file is forbidden by Next.js 16
+### CR-01: `process.exit(0)` inside try block bypasses `finally` cleanup — orphans harness rows on success
 
-**File:** `src/actions/import.ts:25`
-**Issue:** The file starts with `'use server';`, then exports `export const MAX_IMPORT_BYTES = 2 * 1024 * 1024;`. Next.js 16's server-boundary TypeScript rule (verified in `node_modules/next/dist/esm/server/typescript/rules/server-boundary.js` line 54-55, 76-77) emits an error: `The "use server" file can only export async functions.` The JSDoc comment promises that Phase 34's client upload form will import this constant for the layer-1 client-side DoS guard, but that client import will either fail to bundle, throw at runtime, or silently break the layer-1 guard. The 3-layer DoS mitigation reduces to 2 layers (server action + framework body-size).
-**Fix:** Move the constant to a non-`'use server'` module so it can be imported safely by both server and client code:
-```typescript
-// src/lib/import-constants.ts (new file — no 'use server' directive)
-export const MAX_IMPORT_BYTES = 2 * 1024 * 1024;
-```
-Then in `src/actions/import.ts`:
-```typescript
-import { MAX_IMPORT_BYTES } from '@/lib/import-constants';
-// remove the local `export const MAX_IMPORT_BYTES` declaration
-```
-Update Phase 34 client imports to point at `@/lib/import-constants`. Re-export from `import.ts` is not a fix — the same TS rule applies to re-exports of non-async-function values.
+**File:** `scripts/test-xlsx-import.ts:531-542`, `scripts/test-concurrent-transition.ts:391-402`
+**Issue:** Both harness scripts use the pattern
 
-### CR-02: Overwrite path in `commitImportAction` lacks optimistic-concurrency enforcement
-
-**File:** `src/actions/import.ts:489-507`
-**Issue:** The JSDoc on lines 488-490 claims `version bumped via sql\`version + 1\` to support optimistic concurrency (D-10 + T-33-Stale)`, and Test 6 only asserts that `setArg.version` is a `sql` literal, not that conflicting concurrent overwrites are rejected. But the UPDATE is:
-```typescript
-.update(productionOrders)
-.set({ ..., version: sql`version + 1` as any })
-.where(eq(productionOrders.orderNumber, row.orderNumber))
-.returning({ id: productionOrders.id });
-```
-There is NO `version = <expected>` predicate in the WHERE clause, and the `.returning()` result is never inspected for a zero-row length. Two concurrent overwrites of the same `orderNumber` will both succeed, with the second silently clobbering the first; an in-flight transition state change running concurrently with an overwrite will also be lost. This is the exact pattern that `transitions.ts:113` correctly implements and that this overwrite block claims to mirror. Contrast with `transitions.ts:110-118`, which uses `and(eq(id, ...), eq(version, version))` and checks `updated.length === 0` for the conflict.
-**Fix:** The preview duplicate detection loaded the existing row's `version`; the operator's overwrite decision is implicitly against that version. Either (a) thread the version through `ImportDecisions` and check it, or (b) drop the optimistic-concurrency claim from the JSDoc and accept that overwrite is last-write-wins (D-13 may already permit this — confirm against decision record). For (a):
-```typescript
-// load existing with version
-const [existing] = await db
-  .select({ id: productionOrders.id, state: productionOrders.state, version: productionOrders.version })
-  .from(productionOrders)
-  .where(eq(productionOrders.orderNumber, row.orderNumber));
-
-// gate the UPDATE on the version we just observed (TOCTOU is still wide, but at least
-// concurrent post-preview mutations will conflict-fail visibly)
-const updated = await db
-  .update(productionOrders)
-  .set({ ...payload, version: sql`version + 1` as any })
-  .where(and(
-    eq(productionOrders.orderNumber, row.orderNumber),
-    eq(productionOrders.version, existing.version),
-  ))
-  .returning({ id: productionOrders.id });
-
-if (updated.length === 0) {
-  results.push({ rowIndex, ok: false, action: 'overwrite', error: 'Order was modified after preview. Please refresh.' });
-  continue;
-}
-```
-Also extend Test 6 / add a new test that asserts an overwrite returns the conflict outcome when the row's version moves between the existing-row SELECT and the UPDATE.
-
-### CR-03: `commitImportAction` computes `dbDuplicates` then ignores it; un-decided DB-duplicate rows hit the unique-index error path
-
-**File:** `src/actions/import.ts:446-450`
-**Issue:** After parsing and intra-file duplicate detection, the action computes:
-```typescript
-const validOrderNumbers = deduplicatedRows
-  .filter((r) => !r.errors?.length && !r.isDuplicate)
-  .map((r) => r.orderNumber)
-  .filter(Boolean);
-const dbDuplicates = await detectDbDuplicates(validOrderNumbers);
-```
-`dbDuplicates` is never referenced after this line — verified via `grep -n "dbDuplicates" src/actions/import.ts` (two hits in `previewImportAction`, one in `commitImportAction` and no further use). A row that the preview UI flagged as a DB-duplicate and that the operator does not explicitly skip or overwrite (e.g., closes the dialog without making a per-row decision, or the UI defaults to "include all" for valid rows) reaches the new-insert path, and the `productionOrders.orderNumber` unique index throws a constraint violation that surfaces as a generic `'insert' error` in the per-row result. The dead code strongly suggests the developer intended to default-skip un-decided DB-duplicates (the safer behavior consistent with `isDuplicate` being marked in preview), and forgot to wire it up. Combined with the round-trip cost of the now-pointless duplicate query, this is both a correctness gap and wasted work.
-**Fix:** Use the `dbDuplicates` set as the un-decided-duplicate guard, mirroring the safer default that `skipRows` already implements:
-```typescript
-const dbDuplicates = await detectDbDuplicates(validOrderNumbers);
-
-for (const row of deduplicatedRows) {
-  const rowIndex = row.rowIndex;
-  if (decisions.skipRows.includes(rowIndex)) {
-    results.push({ rowIndex, ok: true, action: 'skipped' });
-    continue;
+```ts
+(async () => {
+  try {
+    await main();
+    console.log('PASS: ...');
+    process.exit(0);             // <-- terminates here; finally never runs
+  } catch (err) {
+    console.error('FAIL:', err);
+    process.exitCode = 1;
+  } finally {
+    await cleanup();             // <-- only runs on the failure path
   }
-  if (row.errors && row.errors.length > 0) { /* unchanged */ continue; }
-
-  // NEW: un-decided duplicates (intra-file OR DB) default to skipped, NOT to insert-attempt
-  const isUndecidedDup =
-    (row.isDuplicate || dbDuplicates.has(row.orderNumber)) &&
-    !decisions.overwriteRows.includes(rowIndex);
-  if (isUndecidedDup) {
-    results.push({ rowIndex, ok: true, action: 'skipped' });
-    continue;
-  }
-
-  if (decisions.overwriteRows.includes(rowIndex)) { /* overwrite path */ }
-  else { /* insert path */ }
-}
+})();
 ```
-Add a test: a row is in `validOrderNumbers`, the DB lookup returns its orderNumber, and the row is in NEITHER `skipRows` NOR `overwriteRows` — assert the result is `action: 'skipped'` and that no INSERT was attempted for it.
 
-### CR-04: Outer-catch in `commitImportAction` strands committed rows when a post-loop step fails
+`process.exit(0)` synchronously terminates the Node process. The pending
+`finally` block contains an `await db.delete(...)` — that awaited promise
+cannot resolve before the process exits, so `cleanup()` does not run on the
+success path. On a passing run, every row inserted by the harness
+(`production_orders`, `order_events`, and `import_batches` for
+`test-xlsx-import`; `production_orders` for `test-concurrent-transition`)
+remains in the dev DB under its sentinel.
 
-**File:** `src/actions/import.ts:579-597`
-**Issue:** The per-row loop accumulates `results[]` and writes `productionOrders` + `orderEvents` per row inside an inner try/catch. After the loop, the action writes the `import_batches` audit row (line 579-587) and calls `revalidateTag('production-orders', 'max')` (line 591). Both calls are INSIDE the outer `try` (line 420) whose catch returns `{ ok: false, code: 'server', message: 'Failed to commit import.' }` and discards `results[]`. If `import_batches.insert` throws (Neon transient error, schema drift, NOT NULL violation on a coerced `fileObj.name`, etc.) or if `revalidateTag` throws, the caller sees a generic server error and has no way to know that N production orders were already persisted. Cache is also not invalidated, so the dashboard will show stale state. The per-row partial-failure invariant (IMPORT-04) protects in-loop failures; the outer catch defeats that invariant for post-loop failures.
-**Fix:** Move the `import_batches` insert and the `revalidateTag` call out of the broad try/catch, OR catch their failures locally and still return the per-row results:
-```typescript
-// after the per-row loop, OUTSIDE the outer try:
-if (committedCount === 0) {
-  return { ok: true, batchId, committedCount: 0, failedCount, results };
-}
+Both file headers advertise a self-cleaning contract — "every successful (and
+failed) run leaves zero residue" (`test-concurrent-transition.ts:52-56`) and
+"the finally block re-runs the same deletes so every successful (and failed)
+run leaves zero residue" (`test-xlsx-import.ts:46-49`). **This contract is
+false on the happy path.** Cleanup only works on the failure path (where
+`process.exit()` is not called) and incidentally via the next run's
+`preDeleteSentinelRows`. Running the harness once and then querying the dev DB
+will show residue.
 
-// import_batches insert — if this fails, we still succeeded at the per-row level;
-// surface a degraded-success rather than discarding results.
+Secondary risk: the `test-xlsx-import` `import_batches` row that is left
+behind on success is a real audit row pointing at `fileName: 'Book1.xlsx'`
+with `importedBy: 'harness-xlsx-test'`. If a code path later filters batches
+by `fileName` rather than `importedBy`, the leaked rows pollute the view.
+
+**Fix:** Drop the early `process.exit(0)` and let `finally` run before the
+implicit exit. Set `process.exitCode = 0` if you want to be explicit:
+
+```ts
+(async () => {
+  try {
+    await main();
+    console.log('PASS: ...');
+    process.exitCode = 0;
+  } catch (err) {
+    console.error('FAIL:', err);
+    process.exitCode = 1;
+  } finally {
+    await cleanup();
+  }
+  // implicit process.exit(process.exitCode) once event loop drains
+})();
+```
+
+If a hard exit is required (e.g., to defeat lingering Neon HTTP keepalives),
+move `process.exit(process.exitCode)` to AFTER an explicit `await cleanup()`
+inside the `try` block, OR move cleanup ahead of the `process.exit` call:
+
+```ts
 try {
-  await db.insert(importBatches).values({
-    id: batchId,
-    fileName: fileObj.name,
-    rowCount: committedCount,
-    importedBy: userId!,
-  });
-} catch (err) {
-  // batch row missing is an audit failure, not a row-commit failure.
-  // Still revalidate (the data DID change), still return results so the operator sees them.
-  revalidateTag('production-orders', 'max');
-  return {
-    ok: true,
-    batchId,
-    committedCount,
-    failedCount,
-    results,
-    // optionally extend CommitResult with a `warnings` field for "batch audit row missing"
-  };
-}
-
-revalidateTag('production-orders', 'max');
-return { ok: true, batchId, committedCount, failedCount, results };
-```
-Add an integration test: configure the `importBatches` insert mock to reject after one successful row insert, and assert the action still returns `ok: true` with `committedCount: 1` and that `revalidateTag` was called.
-
-## Warnings
-
-### WR-01: `commitImportAction` does not validate the `decisions` parameter shape
-
-**File:** `src/actions/import.ts:413-418, 463-465, 475`
-**Issue:** `decisions.skipRows.includes(rowIndex)` and `decisions.overwriteRows.includes(rowIndex)` are called directly on the parameter without any guard. The TS signature `decisions: ImportDecisions` is enforced at compile time, but server actions are network endpoints — a malformed client payload (e.g., `{ skipRows: null, overwriteRows: null }`) crashes with TypeError, gets caught by the outer try/catch (CR-04), and surfaces as a generic `'Failed to commit import.'` with no diagnostic value, OR worse, gets coerced silently if the deserializer is permissive. Server actions should validate inputs at the boundary the same way they validate FormData.
-**Fix:** Use Zod (already a dependency) to validate `decisions` immediately after `requireRole`:
-```typescript
-const decisionsSchema = z.object({
-  skipRows: z.array(z.number().int().nonnegative()),
-  overwriteRows: z.array(z.number().int().nonnegative()),
-});
-
-const parsed = decisionsSchema.safeParse(decisions);
-if (!parsed.success) {
-  return { ok: false, code: 'validation', message: 'Invalid decisions payload.' };
-}
-const safeDecisions = parsed.data;
-```
-Then use `safeDecisions.skipRows` / `safeDecisions.overwriteRows` everywhere below.
-
-### WR-02: Error-row in `overwriteRows` is reported with `action: 'insert'`
-
-**File:** `src/actions/import.ts:470-473`
-**Issue:** When a row has Zod/parser errors AND the operator listed its `rowIndex` in `decisions.overwriteRows`, the error-bail block runs BEFORE the overwrite-vs-insert split and unconditionally reports `action: 'insert'`. The operator wanted to overwrite, not insert, so the result row's `action` field misrepresents the intended action. Minor UI defect; the audit/result trail is wrong.
-**Fix:** Compute the intended action from the decisions, then report it on the error path:
-```typescript
-if (row.errors && row.errors.length > 0) {
-  const intendedAction = decisions.overwriteRows.includes(rowIndex) ? 'overwrite' : 'insert';
-  results.push({ rowIndex, ok: false, action: intendedAction, error: row.errors[0].message });
-  continue;
-}
-```
-
-### WR-03: `blockOrder` accepts empty-string `reason`, defeating the TS-enforced "reason required" contract
-
-**File:** `src/actions/transitions.ts:215-219`
-**Issue:** TRANS-03 + D-04 require a non-empty blocking reason. The TypeScript signature `reason: string` (no `?`) prevents callers from omitting the parameter, but `''` (empty string) is a valid string. The action passes `note: reason` to the audit insert; the DB column is nullable text, so empty strings are stored. An empty-reason block event is indistinguishable from a missing-reason scenario in the timeline UI. The contract's intent is "operator must explain the block"; the code only enforces "operator must call the function with a string."
-**Fix:** Reject empty/whitespace-only reasons at the action body:
-```typescript
-if (reason.trim().length === 0) {
-  return {
-    ok: false,
-    code: 'validation' as const,
-    message: 'A non-empty reason is required to block an order.',
-  };
-}
-```
-Add a test: `blockOrder('order-1', 1, '')` and `blockOrder('order-1', 1, '   ')` both return `code: 'validation'` and no DB writes occur.
-
-### WR-04: `commitImportAction` writes `fileName: fileObj.name` with no name validation
-
-**File:** `src/actions/import.ts:428, 583`
-**Issue:** The cast `fileObj = file as { size: number; name: string; arrayBuffer: ... }` is a TS-only assertion; at runtime a `Blob` (not `File`) lacks `.name` (or has the default `"blob"`). `import_batches.file_name` is `notNull` — if `fileObj.name` is `undefined`, the insert fails at the NOT NULL constraint, which is then caught by the outer try/catch and discards the per-row `results` (CR-04 amplifies this). Also: the file name is operator-supplied input persisted to the audit table. No length cap, no sanitization (filenames can contain newlines, control characters, etc.).
-**Fix:** Validate and normalize the name explicitly:
-```typescript
-const rawName = (fileObj as { name?: unknown }).name;
-const fileName = typeof rawName === 'string' && rawName.trim().length > 0
-  ? rawName.slice(0, 255)
-  : 'unknown.xlsx';
-// ... then use `fileName` in the importBatches insert
-```
-
-### WR-05: `previewImportAction` and `commitImportAction` `catch {}` swallow all error context
-
-**File:** `src/actions/import.ts:338-340, 595-597`
-**Issue:** Both top-level catch blocks bind no error and return a generic `'Failed to parse XLSX file.'` / `'Failed to commit import.'`. No logging, no error class differentiation. In production, when an operator reports "import doesn't work", there is no server-side trace to correlate. read-excel-file emits typed errors (e.g., for malformed XLSX vs. password-protected vs. wrong sheet); all are flattened to one message.
-**Fix:** Bind the error and log it server-side (using a logger if one exists, otherwise `console.error` is acceptable in a server action — it routes to the Next.js server logs):
-```typescript
-} catch (err) {
-  console.error('[previewImportAction] failed:', err);
-  return { ok: false, code: 'server', message: 'Failed to parse XLSX file.' };
-}
-```
-Apply to both action bodies.
-
-### WR-06: `parseAndValidate` silently drops parser errors for rows that read-excel-file omitted from `rows`
-
-**File:** `src/actions/import.ts:118-197`
-**Issue:** `parserErrorsByRow` is keyed by `pe.row`, but the main loop iterates `rawRows` and computes `rowIndex = i + 1`. If read-excel-file detects a row so malformed that it does not emit a row in `rawRows` at all (e.g., a fully unparseable row), the corresponding parser-error entry has no matching `rowIndex` in the result and is silently lost. The operator sees `errorCount: 0` and `validCount: rowCount`, but the file actually had bad rows that never made it to the result.
-**Fix:** After the main per-row loop, append synthetic result rows for any `parserErrorsByRow` keys that were not consumed:
-```typescript
-const consumedRowIndices = new Set(result.map((r) => r.rowIndex));
-for (const [row, errs] of parserErrorsByRow.entries()) {
-  if (!consumedRowIndices.has(row)) {
-    result.push({
-      rowIndex: row,
-      orderNumber: '',
-      customer: '',
-      product: '',
-      weightLbs: 0,
-      deliveryTime: '',
-      formulaType: '',
-      millLine: 'Premix',
-      textureType: null,
-      lineCode: null,
-      isDuplicate: false,
-      errors: errs,
-    });
-  }
-}
-```
-Add a test: configure the `readXlsxFile` mock to return `rows: [oneValidRow]` and `errors: [{ row: 99, column: 'Weight', ... }]`, assert that the preview result includes a row with `rowIndex: 99` carrying the parser error.
-
-### WR-07: `import-schema.ts` accepts unbounded `weightLbs` values that overflow `numeric(10, 2)`
-
-**File:** `src/actions/import-schema.ts:38`
-**Issue:** `weightLbs: z.number().positive('Weight must be positive')` — no upper bound. The DB column is `numeric(10, 2)` (max value `99_999_999.99`). A row with `weightLbs: 1e10` passes Zod, then fails at the DB layer with a generic "numeric field overflow" caught as `error: String(err)` in the per-row result. Operator sees a cryptic Postgres error in the UI rather than a clear validation message.
-**Fix:** Cap at the numeric(10,2) maximum at the schema layer:
-```typescript
-weightLbs: z.number()
-  .positive('Weight must be positive')
-  .max(99_999_999.99, 'Weight exceeds maximum (99,999,999.99 lbs).'),
-```
-
-### WR-08: `import.ts` cast `file as { size: number; arrayBuffer: ... }` does not validate that the FormData entry is actually a Blob/File
-
-**File:** `src/actions/import.ts:280-283, 425-428`
-**Issue:** The check is `if (!file || typeof file === 'string')`. Anything not a string and not nullish passes — including primitives, plain objects, etc. (`typeof` other than `'string'` includes `'number'`, `'boolean'`, `'object'`). In practice Next.js deserialization of FormData yields only string-or-Blob entries, but the action's robustness against malformed input depends on the framework. A stricter check is cheap and removes the cast:
-```typescript
-if (!(file instanceof Blob)) {
-  return { ok: false, code: 'validation', message: 'No file provided.' };
-}
-// `file` is now narrowed to Blob — no cast needed
-```
-
-### WR-09: `detectDbDuplicates` issues a single unbounded `IN` clause; large valid-file imports may exceed Neon HTTP request size limits
-
-**File:** `src/actions/import.ts:242-251`
-**Issue:** Within the 2MB file size limit, an XLSX could plausibly contain tens of thousands of rows. `inArray(productionOrders.orderNumber, orderNumbers)` produces a single `WHERE order_number IN ($1, $2, ..., $N)` query that grows linearly with input. Neon's HTTP endpoint imposes request size limits (commented elsewhere in the codebase); a 10k-element IN-list with 32-char order numbers approaches ~300KB of parameter payload. The query may fail with a 400/413, caught by the outer try/catch as a generic `'server'` error — and crucially, this happens BEFORE the per-row loop, so the entire import bails for what is conceptually a "duplicate detection" optimization.
-**Fix:** Batch the `inArray` query in chunks of e.g. 1000:
-```typescript
-async function detectDbDuplicates(orderNumbers: string[]): Promise<Set<string>> {
-  if (orderNumbers.length === 0) return new Set();
-  const CHUNK = 1000;
-  const found = new Set<string>();
-  for (let i = 0; i < orderNumbers.length; i += CHUNK) {
-    const slice = orderNumbers.slice(i, i + CHUNK);
-    const existing = await db
-      .select({ orderNumber: productionOrders.orderNumber })
-      .from(productionOrders)
-      .where(inArray(productionOrders.orderNumber, slice));
-    for (const r of existing) found.add(r.orderNumber);
-  }
-  return found;
-}
-```
-
-## Info
-
-### IN-01: `import-schema.ts` `millLine` default is unreachable; action injects `'Premix'` before validation
-
-**File:** `src/actions/import-schema.ts:40`, `src/actions/import.ts:157`
-**Issue:** `millLine: z.enum(['Premix', 'Excel', 'CGM']).default('Premix')` defines a default value, but `parseAndValidate` always injects `millLine: 'Premix' as const` into the object before calling `safeParse` (line 157). The Zod `.default()` is dead from this caller's perspective. Not incorrect, but the redundancy hides D-16 intent (the Zod schema's default is the contract; the action's injection is overlay) and could confuse a future reader who removes one and not the other.
-**Fix:** Drop the action-side injection and rely on the schema default — the schema is the source of truth:
-```typescript
-// in parseAndValidate, REMOVE:
-millLine: 'Premix' as const,
-// keep the schema default in import-schema.ts
-```
-
-### IN-02: `parseAndValidate` error-path coalescing is hard to read
-
-**File:** `src/actions/import.ts:165-172`
-**Issue:** `path: (issue.path.join('.') || issue.path[0]?.toString()) ?? 'unknown'` is a defensive chain that handles three cases (multi-segment path, single-segment path, empty path), but the precedence is non-obvious — `||` vs `??` interaction needs a second read to verify. `issue.path.join('.')` already returns `''` for empty paths, which is falsy, so the `||` branch handles it; the `?? 'unknown'` only matters if `issue.path[0]` is `undefined`, which can only happen when `issue.path` is empty, in which case `join('.')` already returned `''`. The first fallback (`issue.path[0]?.toString()`) is unreachable as long as `issue.path` exists.
-**Fix:** Simplify:
-```typescript
-path: issue.path.length > 0 ? issue.path.join('.') : 'unknown',
-```
-
-### IN-03: `decisions.skipRows.includes(rowIndex)` is O(n) per row; large decision sets are O(n*m)
-
-**File:** `src/actions/import.ts:464, 475`
-**Issue:** Out of v1 review scope (performance), but worth noting for a future tune-up: when the operator skips/overwrites hundreds of rows, the `Array.prototype.includes` lookups dominate the in-loop overhead. Converting to `Set` once before the loop is a trivial change.
-**Fix:**
-```typescript
-const skipSet = new Set(decisions.skipRows);
-const overwriteSet = new Set(decisions.overwriteRows);
-// then use .has(rowIndex) instead of .includes(rowIndex)
-```
-
-### IN-04: Test file mock dispatch is brittle (sequence-based `callN` keys)
-
-**File:** `src/actions/__tests__/import-commit.test.ts:243-260, multiple test bodies`
-**Issue:** The `mockInsert` dispatch keys on call-count (e.g., `if (idx === 4) return batches; if (idx % 2 === 0) return orders;`). Any future code change that adds a DB call inside `commitImportAction` (e.g., an additional read or audit row) breaks every test that hardcoded the sequence. The cleaner pattern would key on the table identity (`if (table === productionOrders)`) by importing the schema modules inside the test file (which is allowed — only the mocked `@/db` is intercepted). The current pattern is documented as a known compromise but is a real maintenance liability.
-**Fix:** Refactor the dispatch to key on the table reference:
-```typescript
-import { productionOrders } from '@/db/schema/orders';
-import { orderEvents } from '@/db/schema/events';
-import { importBatches } from '@/db/schema/imports';
-
-mockInsert.mockImplementation((table: unknown) => {
-  if (table === productionOrders) return { values: mockInsertOrdersValues };
-  if (table === orderEvents) return { values: mockInsertEventsValues };
-  if (table === importBatches) return { values: mockInsertBatchesValues };
-  throw new Error('Unknown table');
-});
+  await main();
+  console.log('PASS: ...');
+} catch (err) { ... }
+await cleanup();         // outside the try/finally — always runs
+process.exit(process.exitCode ?? 0);
 ```
 
 ---
 
-_Reviewed: 2026-05-13T00:00:00Z_
+### CR-02: Concurrent-race harness has a secondary leak window if `seedRaceOrder` fails mid-roundtrip
+
+**File:** `scripts/test-concurrent-transition.ts:338-388, 391-402`
+**Issue:** Beyond the shared `process.exit(0)` BLOCKER in CR-01, `main()` in
+the concurrent-race harness intentionally does NOT clean up after its
+top-level `preDeleteSentinelRows()` call on the success path — the only
+cleanup is the per-iteration `deleteSeed(seed.id)` in the loop's `finally`.
+That per-iteration delete keys on `seed.id` (the row inserted by the current
+loop iteration). If `seedRaceOrder()` itself throws AFTER its `INSERT` has
+committed but BEFORE the `RETURNING` resolves (transient Neon HTTP error
+during the round-trip — rare but the entire premise of the race harness is
+testing transient behavior), the harness has no reference to `seed.id` to
+delete, the loop's per-iteration `finally` is not entered (no `seed`
+in scope), and the outer cleanup is also skipped by `process.exit(0)` per
+CR-01.
+
+The sentinel-keyed `cleanup()` would otherwise catch the orphan, but it
+cannot run on success and is the only safety net for this edge case.
+
+**Fix:** Address CR-01 (`process.exit(0)` removal) which makes the outer
+sentinel-keyed `cleanup()` actually run on success — that single fix closes
+this hole as well. Optionally, ALSO wrap the `seedRaceOrder()` call in its
+own try-catch that defensively logs the orderNumber so an operator can
+sentinel-delete by hand if the cleanup itself fails:
+
+```ts
+let seed: { id: string; version: number } | undefined;
+try {
+  seed = await seedRaceOrder(i);
+  ...
+} finally {
+  if (seed) await deleteSeed(seed.id);
+}
+```
+
+## Warnings
+
+### WR-01: GAP-05 regression tests accept "success OR generic server error" — fail-open against future bugs
+
+**File:** `src/actions/__tests__/import-commit.test.ts:1222-1257`, `src/actions/__tests__/import-preview.test.ts:498-534`
+**Issue:** Test 28 (commit) and Test 18 (preview) both target the
+`ParseSheetDataResultError` discriminated-union branch where
+`readSheet` returns `{ objects: undefined, errors: [...] }`. Both assertions
+accept multiple outcomes:
+
+```ts
+expect(result).toBeDefined();
+if (result.ok) {
+  expect(result.committedCount).toBe(0);
+} else {
+  expect(['server', 'validation']).toContain(result.code);
+}
+```
+
+A regressed implementation that crashes with `TypeError: Cannot read properties
+of undefined (reading 'length')` would be caught by the outer try/catch and
+surface as `{ ok: false, code: 'server', message: 'Failed to ...' }`. The test
+would still pass — exactly the bug the test was added to prevent. The "no
+TypeError unhandled" comment is misleading: a TypeError IS handled (by the
+outer catch) and produces `code: 'server'`, which is in the accepted set.
+
+**Fix:** Assert the intended behavior precisely. The GAP-05 contract is that
+the action returns `ok: true` with the parser errors surfaced as per-row
+`errors[]` (or as synthetic error rows for preview). Tighten the test to:
+
+```ts
+expect(result.ok).toBe(true);
+if (result.ok) {
+  expect(result.committedCount).toBe(0);
+  expect(result.failedCount).toBe(0);  // parser errors are not "failed inserts"
+  // (for preview) the synthetic error row must surface
+  expect(result.rows.some((r) => r.errors && r.errors.length > 0)).toBe(true);
+}
+```
+
+To regression-protect against `code: 'server'` masking, also explicitly assert:
+
+```ts
+if (!result.ok) {
+  fail(`Expected ok:true (parser error branch should not crash); got ${result.code}: ${result.message}`);
+}
+```
+
+### WR-02: Test 26 (WR-04 blank-name normalization) accepts the default `'blob'` and never exercises the normalization branch
+
+**File:** `src/actions/__tests__/import-commit.test.ts:1144-1175`
+**Issue:** The test description says "blank file.name is normalized to
+`'unknown.xlsx'`", but the assertion is
+
+```ts
+expect(['blob', 'unknown.xlsx']).toContain(batchArg.fileName);
+```
+
+`FormData.set('file', blob)` always wraps a `Blob` as `'blob'`. The action's
+WR-04 normalization (`rawName.trim().length > 0 ? rawName.slice(0, 255) :
+'unknown.xlsx'`) sees `'blob'` (length > 0) and passes it through. The test
+ALWAYS hits the `'blob'` branch and never observes the `'unknown.xlsx'`
+fallback — even though the test claims to verify that fallback. If the
+normalization regressed (e.g., removed entirely), the test would still pass.
+
+**Fix:** Use a name that the action's logic genuinely treats as blank.
+Construct a `File` (not `Blob`) with an empty or whitespace-only name:
+
+```ts
+const file = new File([new Uint8Array(100)], '   ', {
+  type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+});
+const formData = new FormData();
+formData.set('file', file);
+
+await commitImportAction(formData, noDecisions);
+
+const batchArg = mockInsertBatchesValues.mock.calls[0][0] as Record<string, unknown>;
+expect(batchArg.fileName).toBe('unknown.xlsx');  // exactly, not "either-or"
+```
+
+### WR-03: `import.ts` non-null asserts `userId!` on the `auth()` return — silent NOT NULL DB violation if Clerk shape drifts
+
+**File:** `src/actions/import.ts:548, 706, 734, 745, 785`
+**Issue:** After `await requireRole('mill_operator')`, the code calls
+`const { userId } = await auth()` and then uses `userId!` (non-null assertion)
+in five DB inserts. `requireRole` is documented to throw if there is no
+authenticated user, but `requireRole` and `auth()` are TWO independent
+imports. If `auth()` ever returns `{ userId: null }` while a session is
+present (Clerk version drift, anonymous-with-role testing setup, a refactor
+that returns a session with `userId: null` for organization-scoped tokens),
+the inserts would push `null` into the `changedBy` / `created_by` /
+`imported_by` NOT NULL columns and surface as a generic "server" error per
+the outer catch — losing the per-row results array.
+
+This is the same defensive posture issue that CR-04 (audit-row insert
+wrapping) was added to address.
+
+**Fix:** Guard once after destructuring and short-circuit cleanly:
+
+```ts
+const { userId } = await auth();
+if (!userId) {
+  return { ok: false, code: 'unauthorized', message: 'No authenticated user.' };
+}
+// ... no `!` needed on subsequent uses; userId is `string`
+```
+
+Then drop the `!` operators at lines 706, 734, 745, 785.
+
+### WR-04: Harness `xlsxSchema` injects `product: 'unknown'` while production action surfaces missing-product as a Zod error — divergent path means harness does NOT exercise the real Zod failure surface
+
+**File:** `scripts/test-xlsx-import.ts:240-253`
+**Issue:** The harness header acknowledges (lines 239-245) that Book1.xlsx
+has no `Product` column and that the production action treats this as a Zod
+validation error per IMPORT-04. But the harness then **injects**
+`product: 'unknown'` so every row passes Zod and the commit loop has work to
+do. This means the harness proves the DB-driver path on a SYNTHETIC dataset
+that diverges from the production parse pipeline. GAP-03's purpose
+("Unit tests mock @/db; this harness hits the real Neon HTTP driver so
+per-row auto-commit behavior and the UNIQUE constraint surface on
+order_number are exercised end-to-end") is partly defeated — the harness
+never exercises the production case where most rows would be Zod-rejected.
+
+This is a scope-narrowing decision the harness author made consciously, but
+it should be called out as a coverage gap rather than left to a single inline
+comment.
+
+**Fix:** Either (a) use a fixture XLSX that DOES have a Product column so the
+harness mirrors the production parse path 1:1, or (b) add a second harness
+that exercises the all-rows-Zod-fail path against the same DB to verify the
+"no productionOrders inserts, no import_batches row, no order_events" contract.
+At minimum, document in the harness header that GAP-03 closure is
+partial — the no-Product-column scenario is not exercised by this harness
+because of the `product: 'unknown'` injection.
+
+### WR-05: `import-commit.test.ts` mutable module-scope state with dead code paths — fragile under parallel test runs / re-imports
+
+**File:** `src/actions/__tests__/import-commit.test.ts:77-88, 184-262`
+**Issue:** Module-level mutable state (`mockInsertCalls: unknown[]`,
+`insertCallIndex`, `mockInsertDispatch`) plus `setupDefaultInsertDispatch`
+(declared but never called from `beforeEach`) plus `resetInsertDispatch`
+(declared but never called) create a confusing test harness. `mockInsertDispatch`
+is initialized as a `let` arrow returning `mockInsertOrdersValues`, but every
+test path then calls `mockInsert.mockImplementation(...)` directly, so the
+`mockInsertDispatch` ref is dead. Future maintainers may add a test that
+calls one of the setup helpers, expecting it to mutate state — but the
+`beforeEach` block at line 246-262 rebinds `mockInsert.mockImplementation`
+anyway, silently clobbering any setup the helper did.
+
+The dispatch logic is also fragile across tests that change row count: the
+"even idx = orders, odd idx = events, last idx = batches" heuristic in many
+tests assumes a fixed call sequence and will silently mis-route inserts if
+the action's call order ever changes (e.g., batch insert moves before the
+per-row loop).
+
+**Fix:** Either route inserts by **table identity** (import the schema
+modules after the mock is in place and key on the actual imported references)
+or by a per-test explicit map. Remove the dead `setupDefaultInsertDispatch`,
+`resetInsertDispatch`, and `mockInsertDispatch` declarations. Centralize the
+sequence logic in a single helper:
+
+```ts
+function dispatchInserts(plan: Array<'orders' | 'events' | 'batches'>) {
+  let n = 0;
+  mockInsert.mockImplementation((_table) => {
+    const which = plan[n++];
+    if (which === 'orders') return { values: mockInsertOrdersValues };
+    if (which === 'events') return { values: mockInsertEventsValues };
+    return { values: mockInsertBatchesValues };
+  });
+}
+// per test:
+dispatchInserts(['orders', 'events', 'orders', 'events', 'batches']);
+```
+
+This makes the expected call sequence explicit in each test and fails loudly
+when the action diverges.
+
+### WR-06: `xlsxSchema` cast as `Record<string, unknown>` (action) and `Record<string, any>` (harness) — type-safety of v9.x schema-aware return shape is unverified
+
+**File:** `src/actions/import.ts:86, 160-166`, `scripts/test-xlsx-import.ts:140-151, 208-214`
+**Issue:** Both the action and the harness define `xlsxSchema` as
+`Record<string, unknown>` / `Record<string, any>` and then cast `readSheet`
+to a hand-rolled `XlsxFn` signature via `readSheet as unknown as XlsxFn`.
+The actual v9.x `Schema` type from
+`node_modules/read-excel-file/index.d.ts` is parameterized and supports
+overloads — the hand-rolled signature loses both compile-time guarantees:
+
+1. If the upstream schema shape changes (e.g., a `validate` or `parse`
+   callback is added that the action should provide), TypeScript will not
+   complain.
+2. `readSheet`'s declared return type carries a discriminated union via
+   `ParseSheetDataResult` — the hand-rolled `{ objects: ...; errors: ... }`
+   shape is structurally compatible but loses the discriminant. Tests must
+   reproduce the cast (`as never`) on every mock return value, polluting
+   every test setup.
+
+**Fix:** Import the real `Schema` type from `read-excel-file` and use it for
+the schema literal:
+
+```ts
+import { readSheet, Schema } from 'read-excel-file/node';
+
+const xlsxSchema: Schema = {
+  orderNumber: { column: 'Document Number', type: String },
+  // ...
+};
+
+// then `readSheet(buffer, { schema: xlsxSchema })` types correctly without the cast
+```
+
+If the typed `Schema` import is not exported from the `/node` entry point,
+file an upstream issue and TODO-tag the cast with a link.
+
+### WR-07: `cleanup()` in test-xlsx-import.ts deletes `order_events` BEFORE `production_orders` — works but defeats the documented CASCADE verification
+
+**File:** `scripts/test-xlsx-import.ts:282-296, 498-504`
+**Issue:** The pre-delete and final-cleanup both delete in the order
+`order_events → production_orders → import_batches`. The comments say
+"explicit event delete is belt-and-suspenders — the CASCADE on the FK
+handles it automatically, but being explicit confirms the FK cascade is
+wired correctly." But by deleting events FIRST, the production_orders delete
+no longer has any events to cascade — the CASCADE branch is never actually
+exercised by the harness. If the FK CASCADE wiring was wrong (or
+accidentally changed to `ON DELETE NO ACTION`), this harness would still
+pass cleanup successfully.
+
+**Fix:** Either reverse the order (delete `production_orders` FIRST; rely on
+CASCADE to remove events; then verify zero events remain for the sentinel),
+or add an explicit assertion that the orderEvents row count for the sentinel
+drops to zero after the `productionOrders` delete:
+
+```ts
+const ordersDeleted = await db.delete(productionOrders)
+  .where(eq(productionOrders.createdBy, HARNESS_CREATED_BY))
+  .returning({ id: productionOrders.id });
+// CASCADE verification: events for these orders must be gone
+const [{ count }] = await db
+  .select({ count: sql<number>`count(*)::int` })
+  .from(orderEvents)
+  .where(eq(orderEvents.changedBy, HARNESS_CREATED_BY));
+if (count !== 0) {
+  console.error(`CASCADE assertion failed: ${count} order_events remain for sentinel`);
+}
+const batchesDeleted = await db.delete(importBatches)...
+```
+
+### WR-08: `cleanup()` failure swallowed with `console.error` only — silent residue under chained errors
+
+**File:** `scripts/test-xlsx-import.ts:493-509`, `scripts/test-concurrent-transition.ts:327-335`
+**Issue:** Both `cleanup()` implementations catch any error from the
+`db.delete(...)` chain and log via `console.error`. The function then
+returns normally, the harness's `process.exitCode` is whatever the main path
+set (1 on failure, otherwise the default 0). A failed cleanup leaves
+sentinel rows in the dev DB AND does NOT influence the exit code, so the
+caller (CI, an operator running the harness) cannot distinguish a clean
+exit from a "cleanup-failed-residue-present" exit.
+
+**Fix:** Set `process.exitCode = 1` when cleanup fails so the caller can
+detect it:
+
+```ts
+} catch (err) {
+  console.error('cleanup FAILED (residue may remain):', String(err));
+  if (process.exitCode === undefined || process.exitCode === 0) {
+    process.exitCode = 1;
+  }
+}
+```
+
+### WR-09: `dateToIsoString` (and its copy in the harness) uses `Date.toISOString().split('T')[0]` — UTC vs local-timezone footgun
+
+**File:** `src/actions/import.ts:113-118`, `scripts/test-xlsx-import.ts:169-174`
+**Issue:** `read-excel-file` parses Excel date cells assuming the local
+timezone unless configured otherwise. `Date.prototype.toISOString()` returns
+the UTC representation. A row with `Early Delivery Date = 2025-08-15` parsed
+on a server in `America/New_York` produces a Date of
+`2025-08-15T04:00:00.000Z`, and `.split('T')[0]` correctly yields `2025-08-15`.
+But a row with `2025-08-15` parsed on a server in `Pacific/Auckland` (UTC+12)
+produces a Date of `2025-08-14T12:00:00.000Z`, and `.split('T')[0]` yields
+`2025-08-14` — silent off-by-one-day in storage.
+
+The function's defensive `instanceof Date && !isNaN(...)` guard does not
+address this. Server timezone is not explicitly configured anywhere in the
+codebase visible from this review.
+
+**Fix:** Use the UTC date components explicitly:
+
+```ts
+function dateToIsoString(d: unknown): string {
+  if (!(d instanceof Date) || isNaN(d.getTime())) return '';
+  // Use UTC components — d.toISOString() and d.getUTCFullYear() agree.
+  // If you want LOCAL components, swap to getFullYear/getMonth/getDate AND
+  // document the policy at the top of the action file.
+  const yyyy = d.getUTCFullYear();
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+```
+
+OR pass `dateFormat: 'yyyy-mm-dd'` to `read-excel-file` so the parsed value
+is a string in the desired format from the start, eliminating the
+timezone-conversion step. This is also a duplication issue: the harness
+copies `dateToIsoString` verbatim with the same flaw.
+
+## Info
+
+### IN-01: Sentinel constant name drift between code and task description
+
+**File:** `scripts/test-xlsx-import.ts:110`
+**Issue:** The orchestrator's `scope_note` says the harness self-cleans via
+the `'harness-xlsx-import'` sentinel, but the actual constant in code is
+`'harness-xlsx-test'`. The code is internally consistent (header comment,
+constant, and WHERE clauses all use `'harness-xlsx-test'`). This is a
+documentation mismatch only — flagging because it can confuse a future
+operator looking at logs or running `DELETE FROM production_orders WHERE
+created_by = 'harness-xlsx-import'` to clean up.
+**Fix:** Update the plan/scope note to match the in-code constant
+(`'harness-xlsx-test'`), or rename the constant to match the documented name
+(but the constant is referenced in three sites — see header comment lines
+124-131 of `test-concurrent-transition.ts` — so prefer fixing the doc).
+
+### IN-02: `crypto.randomUUID()` (global) in action vs `randomUUID` from `node:crypto` (named import) in harness — minor inconsistency
+
+**File:** `src/actions/import.ts:592`, `scripts/test-xlsx-import.ts:76, 336`, `scripts/test-concurrent-transition.ts:107, 193`
+**Issue:** The action uses the global `crypto.randomUUID()` (available on
+Node 19+ and the Next.js server runtime); the harness scripts use the named
+import from `'node:crypto'`. Functionally identical, but the divergence is
+load-bearing for environments without the global (e.g., older Node, jest
+environments without `Web Crypto` polyfill). The unit tests under
+`__tests__/` don't import `crypto`, so they inherit the action's global call
+— in jest's jsdom env, this currently works on Node 19+ but is implicitly
+coupled.
+**Fix:** Pick one. If sticking with the global, add an explicit comment in
+`import.ts` near line 592 noting the Node 19+ requirement; if sticking with
+the import, change the action to `import { randomUUID } from 'node:crypto'`
+for consistency.
+
+### IN-03: Inlined Drizzle chains for "grep verify parity" trade readability for tooling
+
+**File:** `scripts/test-xlsx-import.ts:287-289, 498-500`, `scripts/test-concurrent-transition.ts:184, 230, 330`
+**Issue:** Multiple Drizzle chains are written on a single long line (e.g.,
+`db.delete(...).where(...).returning({...})`) with comments citing
+"grep verify parity." This means the plan-time verification grep is checking
+literal strings rather than parsing the AST, and the code style is bent to
+the grep. The result is harder to read at review time. If the verify
+tooling could be upgraded to AST-aware checks (e.g., via `tsx` + a tiny AST
+walker), the inline-chain accommodation could be retired.
+**Fix:** None required for v2.0 — this is a deliberate trade-off documented
+in 33-07/33-08 deviations. Track as tech debt: replace literal-string
+verification with AST-aware verification at the next tooling pass.
+
+### IN-04: Test 6b reads the source file to verify a SQL predicate — source-grep tests are brittle
+
+**File:** `src/actions/__tests__/import-commit.test.ts:512-547`
+**Issue:** Test 6b reads `import.ts` from disk and regex-matches
+`eq(productionOrders.version, existing.version)`. This is the same
+accommodation as IN-03 (verifying via grep rather than behavior). A small
+refactor — e.g., extracting the WHERE predicate to a helper variable named
+differently, or using `productionOrders["version"]` — would break the test
+without breaking the behavior. Behavioral coverage (Test 6a: zero-rows
+return → conflict result) is the stronger guarantee.
+**Fix:** Keep Test 6a (behavioral, robust). Demote Test 6b to a comment in
+6a (`// CR-02 source assertion verified by Test 6a's zero-rows path`) or
+remove it.
+
+### IN-05: `RACE_ITERATIONS = 5` comment overstates the operator's coverage
+
+**File:** `scripts/test-concurrent-transition.ts:156-163`
+**Issue:** The comment claims "Five iterations + two operator runs = ten
+sample points" but the harness itself only runs five iterations — the
+"two operator runs" is a procedural recommendation that lives in the plan,
+not in the code. Reading the constant alone, a future operator would think
+ten samples are guaranteed per invocation. Cosmetic only.
+**Fix:** Tighten the comment to describe what the constant actually does:
+"5 iterations per run; the plan recommends invoking the harness twice for a
+total of 10 samples (T-33-08-FalsePositiveClose)."
+
+### IN-06: Cleanup log field order does not match cleanup execution order
+
+**File:** `scripts/test-xlsx-import.ts:292-295, 502-505`
+**Issue:** The cleanup log message says
+
+```ts
+console.log(
+  `step 3: preDeleteSentinelRows - deleted ${ordersDeleted.length} production_orders, ` +
+  `${batchesDeleted.length} import_batches, ${eventsDeleted.length} order_events`
+);
+```
+
+…but the deletes happen in the order `events, orders, batches`. The log is
+factually accurate, but the column order in the log
+(`orders, batches, events`) doesn't match the delete order, which can
+confuse a reader correlating logs with the cleanup sequence.
+**Fix:** Reorder the log fields to match the execution order, or label them
+explicitly:
+
+```ts
+console.log(
+  `step 3: preDeleteSentinelRows - deleted: events=${eventsDeleted.length}, ` +
+  `orders=${ordersDeleted.length}, batches=${batchesDeleted.length}`
+);
+```
+
+---
+
+_Reviewed: 2026-05-14_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
