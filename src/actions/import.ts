@@ -120,6 +120,12 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
   // legacy prop-based format (column titles → { prop, type, required }) used here per
   // RESEARCH.md §3 lines 309-337. The double-cast through `unknown` is safe — runtime
   // behavior is correct and tests mock this function.
+  // Return-shape contract (v9.0.9): per node_modules/read-excel-file/types/parseSheetData/parseSheetData.d.ts
+  // the result is a discriminated union — ParseSheetDataResultSuccess returns `errors: undefined`
+  // (success/clean-file case) and ParseSheetDataResultError returns `errors: Error[]` (parse-failure
+  // case). The `errors: Array<...> | undefined` shape below covers both overloads. See GAP-04 in
+  // 33-VERIFICATION.md for the post-mortem on the original missing `| undefined` annotation that
+  // caused a TypeError on every clean Book1.xlsx upload.
   type XlsxFn = (
     input: Buffer,
     options: { schema: Record<string, unknown> }
@@ -128,7 +134,10 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
     schema: xlsxSchema,
   });
 
-  // Index parser errors by 1-based row number for O(1) lookup
+  // Index parser errors by 1-based row number for O(1) lookup.
+  // The `?? []` guard is REQUIRED: read-excel-file v9.0.9 returns `errors: undefined`
+  // (not `errors: []`) for clean files per its ParseSheetDataResultSuccess overload. Without
+  // the guard, `for (const pe of undefined)` throws TypeError. See GAP-04 in 33-VERIFICATION.md.
   const parserErrorsByRow = new Map<
     number,
     Array<{ path: string; message: string }>
