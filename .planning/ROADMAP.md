@@ -188,7 +188,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
-| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 7/7 | Complete   | 2026-05-14 |
+| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 7/7 | Complete    | 2026-05-14 |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
