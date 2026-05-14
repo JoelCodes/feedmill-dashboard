@@ -34,7 +34,7 @@ findings:
   warning: 4
   info: 5
   total: 9
-status: issues_found
+status: resolved
 ---
 
 # Phase 34: Code Review Report
@@ -201,6 +201,23 @@ than the inline parent.
 
 ---
 
+## Resolution
+
+All 4 warning findings resolved on 2026-05-14. Info findings (IN-01..IN-05) deferred per scope.
+
+| Finding | Commit | Description |
+|---------|--------|-------------|
+| WR-01 | `1172c8a` | Renamed `"Formula Type"` label to `"Texture Type"` in `ProductionDrawer.tsx:216` |
+| WR-02 | `a3021b6` | Validated `userId` once after `requireRole`, removed all 4 `userId!` non-null assertions from `import.ts` |
+| WR-03 | `25514f1` | Fixed `isActive` in `Sidebar.tsx` to use exact-match or true-subpath check (`pathname === href \|\| pathname.startsWith(href + '/')`) |
+| WR-04 | `8c43595` | Reversed `setReason('')` / `onClose()` order in `BlockReasonModal.tsx` to clear state before unmount |
+
+**Test run (post-fix):** 71/72 suites passed, 715/729 tests passed. The 14 failures in `src/app/settings/__tests__/page.test.tsx` are pre-existing Clerk/ClerkProvider setup issues unrelated to phase 34.
+
+---
+
 _Reviewed: 2026-05-14_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: quick_
+_Resolved: 2026-05-14_
+_Fixer: Claude (gsd-code-fixer)_
