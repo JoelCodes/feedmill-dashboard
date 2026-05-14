@@ -72,12 +72,12 @@ export async function requireRole(role: Role): Promise<void> {
  * @returns `Promise<boolean>` — `true` iff the session has `role`.
  *
  * @example
- * // src/app/page.tsx — Phase 31 read-only / edit split (D-03)
+ * // src/app/page.tsx — Phase 34 dashboard (D-03 canEdit pattern)
  * import { checkRole } from '@/lib/auth';
  *
  * export default async function HomePage() {
  *   const canEdit = await checkRole('mill_operator');
- *   return <MillReadOnlyStub canEdit={canEdit} />;
+ *   return <ProductionDashboard canEdit={canEdit} />;
  * }
  */
 export async function checkRole(role: Role): Promise<boolean> {

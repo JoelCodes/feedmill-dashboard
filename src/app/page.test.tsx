@@ -1,18 +1,15 @@
 /**
- * Unit tests for the Phase 31 async RSC homepage (`src/app/page.tsx`).
+ * Unit tests for the Phase 34 transitional homepage (`src/app/page.tsx`).
  *
- * Replaces the prior placeholder tests entirely. The rewritten
- * HomePage is an async server component that:
- *   1. Calls `await auth()` and `redirect('/sign-in')` when there is no userId.
- *   2. Otherwise calls `await checkRole('mill_operator')` and renders
- *      `<MillReadOnlyStub canEdit={canEdit} />` inside `<DashboardLayout>`.
+ * The homepage is now a clean transitional stub pending ProductionDashboard wiring
+ * in plan 07. The Phase 31 placeholder stub has been deleted and replaced.
  *
- * The four behavior branches under test correspond to CONTEXT.md D-01..D-03
- * and D-13 (multi-role coverage):
+ * Test behaviors:
  *   - Test 1: unauthenticated → redirect('/sign-in')
- *   - Test 2: authenticated, no mill_operator → data-mode="read-only"
- *   - Test 3: authenticated, mill_operator → data-mode="edit"
- *   - Test 4: authenticated, ['demo','mill_operator'] dual-role → data-mode="edit"
+ *   - Test 2: authenticated → renders "Dashboard placeholder" text
+ *   - Test 3: auth is preserved (auth gate still runs)
+ *
+ * TODO: This test is rewritten in 34-07-PLAN.md to assert ProductionDashboard rendering.
  *
  * Uses the canonical clerkAuth fixture consumer pattern from
  * `src/test/fixtures/clerkAuth.test.ts:22-23` — factories passed to
@@ -50,14 +47,13 @@ import {
   mockUnauthenticatedSession,
   mockNonDemoSession,
   mockMillOperatorSession,
-  mockDualRoleSession,
 } from "@/test/fixtures/clerkAuth";
 
 beforeEach(() => {
   mockAuth.mockReset();
 });
 
-describe("HomePage (Phase 31 async RSC)", () => {
+describe("HomePage (Phase 34 transitional stub)", () => {
   it("redirects to /sign-in when unauthenticated", async () => {
     mockUnauthenticatedSession();
 
@@ -67,40 +63,21 @@ describe("HomePage (Phase 31 async RSC)", () => {
     await expect(HomePage()).rejects.toMatchObject({ url: "/sign-in" });
   });
 
-  it("renders with data-mode='read-only' when authenticated without mill_operator role", async () => {
+  it("renders Dashboard placeholder text when authenticated", async () => {
     mockNonDemoSession("user");
 
     const element = await HomePage();
     render(element);
 
-    const modeIndicator = screen.getByTestId("mill-mode");
-    expect(modeIndicator).toHaveAttribute("data-mode", "read-only");
-    expect(modeIndicator).toHaveTextContent("Read-only mode");
+    expect(screen.getByText(/Dashboard placeholder/i)).toBeInTheDocument();
   });
 
-  it("renders with data-mode='edit' when authenticated with mill_operator role", async () => {
+  it("renders Dashboard placeholder for mill_operator users", async () => {
     mockMillOperatorSession();
 
     const element = await HomePage();
     render(element);
 
-    const modeIndicator = screen.getByTestId("mill-mode");
-    expect(modeIndicator).toHaveAttribute("data-mode", "edit");
-    expect(modeIndicator).toHaveTextContent("Edit mode (mill_operator)");
-  });
-
-  // D-13: canonical multi-role coverage. A user with both 'demo' and
-  // 'mill_operator' must see edit affordances — proves
-  // `Array.prototype.includes('mill_operator')` semantics hold for users
-  // who carry more than one role.
-  it("renders with data-mode='edit' when authenticated with dual roles ['demo','mill_operator']", async () => {
-    mockDualRoleSession();
-
-    const element = await HomePage();
-    render(element);
-
-    const modeIndicator = screen.getByTestId("mill-mode");
-    expect(modeIndicator).toHaveAttribute("data-mode", "edit");
-    expect(modeIndicator).toHaveTextContent("Edit mode (mill_operator)");
+    expect(screen.getByText(/Dashboard placeholder/i)).toBeInTheDocument();
   });
 });

@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  // nuqs is ESM-only; transpile it for Jest test compatibility
+  transpilePackages: ['nuqs'],
 };
 
 export default nextConfig;

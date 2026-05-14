@@ -15,6 +15,8 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   testPathIgnorePatterns: ['/node_modules/', '<rootDir>/e2e/'],
+  // nuqs is ESM-only; allow Next.js/SWC to transform it during Jest runs
+  transformIgnorePatterns: ['/node_modules/(?!(nuqs)/)'],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

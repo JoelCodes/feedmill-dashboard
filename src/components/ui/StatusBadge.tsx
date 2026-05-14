@@ -1,4 +1,5 @@
 import { OrderStatus } from "@/types/order";
+import type { ProductionState } from "@/db/schema/orders";
 
 export interface StatusConfig {
   bg: string;
@@ -8,7 +9,17 @@ export interface StatusConfig {
   label: string;
 }
 
-export const STATUS_CONFIG: Record<OrderStatus, StatusConfig> = {
+/**
+ * BadgeStatus is the union of all supported status values:
+ * - OrderStatus: demo order statuses (Pending, Producing, Ready, In Transit, Complete)
+ * - ProductionState: production order states (Pending, Mixing, Completed, Blocked)
+ *
+ * 'Pending' is shared between both unions and uses the same visual config.
+ */
+export type BadgeStatus = OrderStatus | ProductionState;
+
+export const STATUS_CONFIG: Record<BadgeStatus, StatusConfig> = {
+  // --- OrderStatus values ---
   "Pending": {
     bg: "bg-[var(--pending-light)]",
     text: "text-[var(--text-secondary)]",
@@ -43,11 +54,34 @@ export const STATUS_CONFIG: Record<OrderStatus, StatusConfig> = {
     dot: "bg-[var(--success-dark)]",
     countBg: "bg-[var(--status-completed-bg-22)]",
     label: "Complete"
-  }
+  },
+  // --- ProductionState values (D-03 extension) ---
+  // 'Pending' is already defined above and is shared.
+  "Mixing": {
+    bg: "bg-[var(--warning-light)]",
+    text: "text-[var(--warning)]",
+    dot: "bg-[var(--warning)]",
+    countBg: "bg-[var(--status-mixing-bg-22)]",
+    label: "Mixing"
+  },
+  "Completed": {
+    bg: "bg-[var(--success-light)]",
+    text: "text-[var(--success-dark)]",
+    dot: "bg-[var(--success-dark)]",
+    countBg: "bg-[var(--status-completed-bg-22)]",
+    label: "Completed"
+  },
+  "Blocked": {
+    bg: "bg-[var(--error-light)]",
+    text: "text-[var(--error-dark)]",
+    dot: "bg-[var(--error)]",
+    countBg: "bg-[var(--status-blocked-bg-22)]",
+    label: "Blocked"
+  },
 };
 
 interface StatusBadgeProps {
-  status: OrderStatus;
+  status: BadgeStatus;
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {

@@ -8,6 +8,7 @@ import {
   Factory,
   Users,
   FlaskConical,
+  Upload,
 } from "lucide-react";
 
 const demoNavItems = [
@@ -16,8 +17,10 @@ const demoNavItems = [
   { icon: Factory, label: "Mill Production", id: "mill-production", href: "/demo/mill-production" },
 ];
 
+// D-24: Production sidebar lists Dashboard (/) and Import (/import) only.
 const productionNavItems = [
-  { icon: LayoutDashboard, label: "Coming Soon", id: "coming-soon", href: "/" },
+  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard", href: "/" },
+  { icon: Upload,          label: "Import",    id: "import",    href: "/import" },
 ];
 
 const settingsItems = [
@@ -36,7 +39,7 @@ function isActive(href: string, pathname: string): boolean {
  *
  * Displays different navigation items based on the current route:
  * - Demo routes (/demo/*): Shows Orders, Customers, and Mill Production links
- * - Production routes: Shows Coming Soon placeholder
+ * - Production routes: Shows Dashboard and Import navigation items (D-24)
  * - Settings link is visible in both contexts
  *
  * Section label dynamically displays "DEMO" or "PRODUCTION" based on context.

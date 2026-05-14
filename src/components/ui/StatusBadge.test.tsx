@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { axe } from "jest-axe";
 import StatusBadge, { STATUS_CONFIG } from "./StatusBadge";
 import { OrderStatus } from "@/types/order";
+import type { ProductionState } from "@/db/schema/orders";
 
 describe("StatusBadge", () => {
   describe("Token usage for each status", () => {
@@ -100,6 +101,53 @@ describe("StatusBadge", () => {
         expect(STATUS_CONFIG[key]).toHaveProperty("countBg");
         expect(STATUS_CONFIG[key]).toHaveProperty("label");
       });
+    });
+  });
+});
+
+/**
+ * Task 2 TDD RED tests: ProductionState support in StatusBadge
+ * Tests 1-4 assert the new ProductionState badges render correctly.
+ * Test 4 is a regression test for existing OrderStatus values.
+ */
+describe("StatusBadge - ProductionState support (Task 2 TDD)", () => {
+  // Test 1: Mixing renders correctly
+  it("renders Mixing status without throwing and shows label text", () => {
+    render(<StatusBadge status={"Mixing" as ProductionState} />);
+    const badge = screen.getByText("Mixing").closest("div");
+    expect(badge).toBeInTheDocument();
+  });
+
+  // Test 2: Blocked renders the blocked variant
+  it("renders Blocked status with error/blocked CSS token", () => {
+    const { container } = render(<StatusBadge status={"Blocked" as ProductionState} />);
+    // The badge should reference error/blocked design tokens
+    const badge = container.querySelector("div");
+    const classNames = badge?.className ?? "";
+    expect(
+      classNames.includes("bg-[var(--error-light)]") ||
+      classNames.includes("error") ||
+      classNames.includes("blocked")
+    ).toBe(true);
+  });
+
+  // Test 3: Pending and Completed both render their literal label text
+  it("renders Pending and Completed ProductionState labels", () => {
+    const { unmount } = render(<StatusBadge status={"Pending" as ProductionState} />);
+    expect(screen.getByText("Pending")).toBeInTheDocument();
+    unmount();
+
+    render(<StatusBadge status={"Completed" as ProductionState} />);
+    expect(screen.getByText("Completed")).toBeInTheDocument();
+  });
+
+  // Test 4 (regression): existing OrderStatus cases still render
+  it("still renders all OrderStatus cases correctly (regression)", () => {
+    const orderStatuses: OrderStatus[] = ["Producing", "Ready", "In Transit", "Complete", "Pending"];
+    orderStatuses.forEach((status) => {
+      const { unmount } = render(<StatusBadge status={status} />);
+      expect(screen.getByText(STATUS_CONFIG[status].label)).toBeInTheDocument();
+      unmount();
     });
   });
 });
