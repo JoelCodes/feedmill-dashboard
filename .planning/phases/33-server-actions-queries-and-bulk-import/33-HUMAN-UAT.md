@@ -1,20 +1,20 @@
 ---
-status: gaps_flagged
+status: resolved
 phase: 33-server-actions-queries-and-bulk-import
 source: [33-VERIFICATION.md]
 started: 2026-05-14T01:30:00Z
-updated: 2026-05-14T08:00:00Z
+updated: 2026-05-14T15:55:00Z
 ---
 
 ## Current Test
 
-[awaiting human testing]
+[all human tests complete or deferred]
 
 ## Tests
 
 ### 1. Concurrent transition race (SC#2)
 expected: Two simultaneous transitionToMixing calls for the same order — exactly one returns {ok:true}, the other returns {ok:false, code:'conflict', message:'Order was modified by another user. Please refresh.'}
-result: [pending]
+result: passed (harness 5/5 × 2 runs, 2026-05-14) — closed by plan 33-08 (GAP-01). scripts/test-concurrent-transition.ts run twice against live Neon dev DB; exactly-one-winner + locked CONFLICT_MESSAGE confirmed on all 10 iterations.
 
 ### 2. revalidateTag cache invalidation observed in browser
 expected: After a successful transition, the Phase 34 dashboard reflects the new order state without a manual hard refresh
@@ -46,9 +46,9 @@ result: passed (harness, 2026-05-14) — closed by plan 33-11 (GAP-05). scripts/
 ## Summary
 
 total: 3
-passed: 1
+passed: 2
 issues: 0
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 deferred: 1
