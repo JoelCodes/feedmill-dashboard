@@ -112,13 +112,11 @@ function dateToIsoString(d: unknown): string {
  * where `row` is 1-based (matching XLSX row numbers).
  */
 async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
-  // Type cast required: read-excel-file 9.x TypeScript types use new-style Schema
-  // but the runtime (and this codebase) use the legacy prop-based schema format
-  // (see xlsxSchema definition above). The cast is safe — runtime behavior is correct.
-  // Type cast required: read-excel-file 9.x TypeScript types use new-style Schema
-  // but the runtime (and this codebase) use the legacy prop-based schema format
-  // (see xlsxSchema definition above). The double-cast through `unknown` is safe —
-  // runtime behavior is correct and tests mock this call.
+  // Type cast required: read-excel-file 9.x TypeScript types use the new typed-Schema
+  // API (output keys → { column, type, required }). The runtime still accepts the
+  // legacy prop-based format (column titles → { prop, type, required }) used here per
+  // RESEARCH.md §3 lines 309-337. The double-cast through `unknown` is safe — runtime
+  // behavior is correct and tests mock this function.
   type XlsxFn = (
     input: Buffer,
     options: { schema: Record<string, unknown> }
