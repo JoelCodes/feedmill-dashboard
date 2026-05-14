@@ -1255,3 +1255,83 @@ it('Test 28 (GAP-05): handles ParseSheetDataResultError branch — objects:undef
     expect(['server', 'validation']).toContain(result.code);
   }
 });
+
+// ────────────────────────────────────────────────────────────────────────────
+// D-21 TDD tests: revalidateTag('import-batches') patch (Phase 34 Plan 01)
+// Tests 29-31 assert BOTH production-orders AND import-batches are invalidated.
+// Written RED before the patch is applied to src/actions/import.ts.
+// ────────────────────────────────────────────────────────────────────────────
+
+// Test 29 (D-21): success path invalidates BOTH production-orders AND import-batches
+it('Test 29 (D-21): success path calls revalidateTag for both production-orders and import-batches', async () => {
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
+  } as never);
+
+  let callN = 0;
+  mockInsert.mockImplementation((_table: unknown) => {
+    const idx = callN++;
+    mockInsertCalls.push({ callN: idx, table: _table });
+    if (idx === 0) return { values: mockInsertOrdersValues };
+    if (idx === 1) return { values: mockInsertEventsValues };
+    return { values: mockInsertBatchesValues };
+  });
+
+  const file = makeFile();
+  const formData = makeFormData(file);
+  await commitImportAction(formData, noDecisions);
+
+  // D-21: BOTH cache tags must be invalidated on success
+  expect(jest.mocked(revalidateTag)).toHaveBeenCalledWith('production-orders', 'max');
+  expect(jest.mocked(revalidateTag)).toHaveBeenCalledWith('import-batches', 'max');
+});
+
+// Test 30 (D-21): degraded-success path (batch-insert failure) also invalidates both tags
+it('Test 30 (D-21): degraded-success path (batch-insert failure) also calls revalidateTag for both tags', async () => {
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
+  } as never);
+
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+  // importBatches insert throws — triggers degraded-success path
+  const failingBatchesValues = jest.fn().mockReturnValue({
+    returning: jest.fn().mockRejectedValue(new Error('batch-insert failed')),
+  });
+  let callN = 0;
+  mockInsert.mockImplementation((_table: unknown) => {
+    const idx = callN++;
+    mockInsertCalls.push({ callN: idx, table: _table });
+    if (idx === 0) return { values: mockInsertOrdersValues };
+    if (idx === 1) return { values: mockInsertEventsValues };
+    return { values: failingBatchesValues };
+  });
+
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, noDecisions);
+
+  // Degraded-success still returns ok=true
+  expect(result.ok).toBe(true);
+
+  // D-21: BOTH cache tags must be invalidated even in degraded-success path
+  expect(jest.mocked(revalidateTag)).toHaveBeenCalledWith('production-orders', 'max');
+  expect(jest.mocked(revalidateTag)).toHaveBeenCalledWith('import-batches', 'max');
+
+  errorSpy.mockRestore();
+});
+
+// Test 31 (regression): validation failure (before any insert) does NOT call revalidateTag
+it('Test 31 (regression): validation failure path does NOT call revalidateTag for import-batches', async () => {
+  // Malformed decisions — validation error fires before any DB work
+  const bad = { skipRows: null, overwriteRows: [] } as unknown as ImportDecisions;
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, bad);
+
+  expect(result).toMatchObject({ ok: false, code: 'validation' });
+  // No revalidateTag calls on validation failure
+  expect(jest.mocked(revalidateTag)).not.toHaveBeenCalledWith('import-batches', 'max');
+});
