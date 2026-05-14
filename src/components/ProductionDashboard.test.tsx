@@ -32,7 +32,7 @@ jest.mock('next/link', () => {
 });
 
 import React from 'react';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import ProductionDashboard from './ProductionDashboard';
@@ -110,13 +110,7 @@ function renderDashboard({
 
 describe('ProductionDashboard', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
     jest.clearAllMocks();
-  });
-
-  afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
   });
 
   // ── Test 1: Filter pill labels and counts ──────────────────────────────
@@ -124,11 +118,12 @@ describe('ProductionDashboard', () => {
   test('Test 1: renders four FilterPill labels with counts from fixture orders', () => {
     renderDashboard();
 
-    // The four states must appear as pill labels
-    expect(screen.getByText('Pending')).toBeInTheDocument();
-    expect(screen.getByText('Mixing')).toBeInTheDocument();
-    expect(screen.getByText('Completed')).toBeInTheDocument();
-    expect(screen.getByText('Blocked')).toBeInTheDocument();
+    // FilterPill has aria-label="Filter by X, N orders"
+    // Use this to assert each pill is present
+    expect(screen.getByRole('button', { name: /filter by pending/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /filter by mixing/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /filter by completed/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /filter by blocked/i })).toBeInTheDocument();
   });
 
   // ── Test 2: Mill column headings ───────────────────────────────────────
@@ -146,7 +141,7 @@ describe('ProductionDashboard', () => {
   test('Test 3: renders search input with placeholder text', () => {
     renderDashboard();
 
-    // UI-SPEC §1 placeholder
+    // UI-SPEC §1 placeholder contains "search"
     const searchInput = screen.getByPlaceholderText(/search/i);
     expect(searchInput).toBeInTheDocument();
   });
@@ -196,16 +191,20 @@ describe('ProductionDashboard', () => {
       onUrlUpdate: (evt) => urlUpdates.push(evt.searchParams),
     });
 
-    // Click the "Mixing" pill (it's a button with aria-label)
+    // Click the "Mixing" pill
     const mixingPill = screen.getByRole('button', {
       name: /filter by mixing/i,
     });
+
     await act(async () => {
-      await userEvent.click(mixingPill);
+      fireEvent.click(mixingPill);
     });
 
-    // nuqs should have updated the URL to include status=Mixing
-    expect(urlUpdates.length).toBeGreaterThan(0);
+    // nuqs may update asynchronously via scheduler — wait for URL to update
+    await waitFor(() => {
+      expect(urlUpdates.length).toBeGreaterThan(0);
+    });
+
     const lastUrl = urlUpdates[urlUpdates.length - 1];
     const statusParam = lastUrl.get('status');
     expect(statusParam).toBeTruthy();
@@ -215,41 +214,53 @@ describe('ProductionDashboard', () => {
   // ── Test 7: Search debounce → nuqs q update ────────────────────────────
 
   test('Test 7: typing in search input updates nuqs q after 150ms debounce', async () => {
-    const urlUpdates: URLSearchParams[] = [];
-    renderDashboard({
-      onUrlUpdate: (evt) => urlUpdates.push(evt.searchParams),
-    });
+    jest.useFakeTimers();
+    try {
+      const urlUpdates: URLSearchParams[] = [];
+      renderDashboard({
+        onUrlUpdate: (evt) => urlUpdates.push(evt.searchParams),
+      });
 
-    const searchInput = screen.getByPlaceholderText(/search/i);
+      const searchInput = screen.getByPlaceholderText(/search/i);
 
-    await act(async () => {
-      await userEvent.type(searchInput, 'acme');
-    });
+      // Type into the search field via fireEvent (compatible with fake timers)
+      fireEvent.change(searchInput, { target: { value: 'acme' } });
 
-    // Advance past 150ms debounce
-    act(() => {
-      jest.advanceTimersByTime(200);
-    });
+      // Advance past 150ms debounce
+      await act(async () => {
+        jest.advanceTimersByTime(200);
+      });
 
-    // After debounce, the URL q param should be 'acme'
-    await waitFor(() => {
-      const lastUrl = urlUpdates[urlUpdates.length - 1];
-      expect(lastUrl?.get('q')).toBe('acme');
-    });
+      // After debounce, the URL q param should be 'acme'
+      await waitFor(() => {
+        expect(urlUpdates.length).toBeGreaterThan(0);
+        const lastUrl = urlUpdates[urlUpdates.length - 1];
+        expect(lastUrl?.get('q')).toBe('acme');
+      });
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
   });
 
   // ── Test 8: Polling — router.refresh called after 30s ─────────────────
 
-  test('Test 8 (D-19 / PROD-09): after 30s, router.refresh is called at least once', () => {
-    renderDashboard();
+  test('Test 8 (D-19 / PROD-09): after 30s, router.refresh is called at least once', async () => {
+    jest.useFakeTimers();
+    try {
+      renderDashboard();
 
-    expect(mockRefresh).not.toHaveBeenCalled();
+      expect(mockRefresh).not.toHaveBeenCalled();
 
-    act(() => {
-      jest.advanceTimersByTime(30_000);
-    });
+      await act(async () => {
+        jest.advanceTimersByTime(30_000);
+      });
 
-    expect(mockRefresh).toHaveBeenCalledTimes(1);
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
   });
 
   // ── Test 9: Card click → nuqs order updates ────────────────────────────
@@ -264,17 +275,17 @@ describe('ProductionDashboard', () => {
       onUrlUpdate: (evt) => urlUpdates.push(evt.searchParams),
     });
 
-    // Cards have role="button" — get the one for our order
-    const cards = screen.getAllByRole('button');
-    // The card for the order (not the filter pills or import button)
-    // The order card should contain "ORD-ord_1"
-    const orderCard = cards.find((btn) => {
-      return btn.textContent?.includes('Acme Feed');
-    });
+    // ProductionCard has role="button" — find the card that contains "Acme Feed"
+    // Filter buttons from the pill strip by aria-label pattern; cards don't have aria-label
+    const allButtons = screen.getAllByRole('button');
+    // Find the card - it will have customer text inside it
+    const orderCard = allButtons.find((btn) =>
+      btn.textContent?.includes('Acme Feed')
+    );
     expect(orderCard).toBeTruthy();
 
     await act(async () => {
-      await userEvent.click(orderCard!);
+      fireEvent.click(orderCard!);
     });
 
     expect(urlUpdates.length).toBeGreaterThan(0);
@@ -308,39 +319,49 @@ describe('ProductionDashboard', () => {
   // ── Test 12: lastUpdated resets when orders prop changes ───────────────
 
   test('Test 12: LastUpdatedChip resets when orders prop reference changes', async () => {
-    const { rerender } = renderDashboard({ orders: baseFixture });
+    jest.useFakeTimers();
+    try {
+      const { rerender } = renderDashboard({ orders: baseFixture });
 
-    // Advance time 10 seconds so chip shows something > 0s
-    act(() => {
-      jest.advanceTimersByTime(10_000);
-    });
+      // Advance time 10 seconds so chip shows something > 0s
+      await act(async () => {
+        jest.advanceTimersByTime(10_000);
+      });
 
-    // Find the "Updated Xs ago" text — it should be ≥ 10s
-    const chipEl = screen.getByText(/updated.*ago/i);
-    const textBefore = chipEl.textContent ?? '';
-    // Should show at least some seconds elapsed
-    expect(textBefore).toMatch(/updated \d+s ago/i);
+      // Find the "Updated Xs ago" text — it should be ≥ 10s
+      const chipEl = screen.getByText(/updated.*ago/i);
+      const textBefore = chipEl.textContent ?? '';
+      // Should show some seconds elapsed (≥ 10s)
+      expect(textBefore).toMatch(/updated \d+s ago/i);
+      expect(parseInt(textBefore.match(/\d+/)?.[0] ?? '0', 10)).toBeGreaterThanOrEqual(9);
 
-    // Re-render with a NEW orders array reference (simulates RSC refresh after router.refresh())
-    const newOrders = [...baseFixture, makeOrder({ id: 'ord_new', state: 'Pending', millLine: 'CGM' })];
+      // Re-render with a NEW orders array reference (simulates RSC refresh after router.refresh())
+      const newOrders = [
+        ...baseFixture,
+        makeOrder({ id: 'ord_new', state: 'Pending', millLine: 'CGM' }),
+      ];
 
-    await act(async () => {
-      rerender(
-        <NuqsTestingAdapter searchParams="">
-          <ProductionDashboard
-            orders={newOrders}
-            canEdit={true}
-            drawerOrder={null}
-            drawerEvents={emptyEvents}
-          />
-        </NuqsTestingAdapter>
-      );
-    });
+      await act(async () => {
+        rerender(
+          <NuqsTestingAdapter searchParams="">
+            <ProductionDashboard
+              orders={newOrders}
+              canEdit={true}
+              drawerOrder={null}
+              drawerEvents={emptyEvents}
+            />
+          </NuqsTestingAdapter>
+        );
+      });
 
-    // After re-render, the lastUpdated state resets → chip shows ~0s
-    const chipElAfter = screen.getByText(/updated.*ago/i);
-    const textAfter = chipElAfter.textContent ?? '';
-    // The chip should reset to "Updated 0s ago"
-    expect(textAfter).toBe('Updated 0s ago');
+      // After re-render, the lastUpdated state resets → chip shows ~0s
+      const chipElAfter = screen.getByText(/updated.*ago/i);
+      const textAfter = chipElAfter.textContent ?? '';
+      // The chip should reset to "Updated 0s ago"
+      expect(textAfter).toBe('Updated 0s ago');
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
   });
 });
