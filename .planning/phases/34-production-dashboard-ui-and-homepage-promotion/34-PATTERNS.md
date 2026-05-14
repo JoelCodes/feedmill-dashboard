@@ -562,7 +562,9 @@ const CONFLICT_MESSAGE = 'Order was modified by another user. Please refresh.';
 Phase 34 UI MUST display this string EXACTLY. UI-SPEC.md surface 5 + copywriting contract repeat this lock.
 
 **Button shape and copywriting** (UI-SPEC.md copywriting + surface 5):
-- Pending state: `<StartMixingButton />` — "Start Mixing", `variant="primary"`
+- Pending state (D-11 amended 2026-05-14, gap T10a):
+    `<StartMixingButton />` — "Start Mixing", `variant="primary"`
+    `<BlockOrderTrigger />` — "Block Order", `variant="destructive"` (opens BlockReasonModal, same wiring as the Mixing case)
 - Mixing state: `<CompleteOrderButton />` ("Complete Order", `variant="primary"`) + `<BlockOrderTrigger />` ("Block Order", `variant="destructive"`)
 - Blocked state: `<ResumeButton toState="Mixing" />` ("Resume to Mixing", primary) + `<ResumeButton toState="Pending" />` ("Resume to Pending", secondary)
 - Completed: no buttons.

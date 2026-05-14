@@ -70,19 +70,19 @@ describe('TransitionButtons', () => {
 
   // ── Test 1: Pending state — only "Start Mixing" button ────────────────────
 
-  test('Test 1 (Pending — D-11): renders exactly ONE "Start Mixing" button; transitionToMixing called on click', async () => {
+  test('Test 1 (Pending — D-11 amended 2026-05-14, gap T10a): renders "Start Mixing" + "Block Order" buttons; transitionToMixing called on Start Mixing click', async () => {
     const user = userEvent.setup();
     const order = makeOrder({ state: 'Pending' });
 
     render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
 
-    // Exactly one transition button: "Start Mixing"
+    // D-11 amended: Pending now shows both Start Mixing AND Block Order
     const startBtn = screen.getByRole('button', { name: /start mixing/i });
     expect(startBtn).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /block order/i })).toBeInTheDocument();
 
-    // No other transition buttons present
+    // No Complete Order or Resume buttons present
     expect(screen.queryByRole('button', { name: /complete order/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /block order/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
 
     await user.click(startBtn);
@@ -264,5 +264,74 @@ describe('TransitionButtons', () => {
     expect(() =>
       render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />)
     ).not.toThrow();
+  });
+});
+
+describe('TransitionButtons Pending → Blocked path (D-11 amended, gap T10a)', () => {
+  beforeEach(() => {
+    mockOnBlockClick.mockClear();
+    mockRefresh.mockClear();
+  });
+
+  it('renders both Start Mixing and Block Order buttons for Pending state', () => {
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: /start mixing/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /block order/i })).toBeInTheDocument();
+  });
+
+  it('clicking Block Order on Pending invokes onBlockClick exactly once', async () => {
+    const user = userEvent.setup();
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /block order/i }));
+
+    expect(mockOnBlockClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('Mixing state still shows Complete + Block (regression)', () => {
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Mixing' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: /complete order/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /block order/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /start mixing/i })).toBeNull();
+  });
+
+  it('Completed state renders null (regression)', () => {
+    const { container } = render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Completed' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('Blocked state shows only Resume buttons, no Block Order (regression)', () => {
+    render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Blocked' })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: /resume to mixing/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /resume to pending/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /block order/i })).toBeNull();
   });
 });

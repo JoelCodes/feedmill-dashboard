@@ -4,13 +4,13 @@
  *
  * D-10: All four transition actions live in the drawer ONLY. Cards are click-targets;
  *       no inline transition controls on cards.
- * D-11: Pending → Start Mixing (single-click, no confirm). Mixing → Complete Order (single-click, no confirm).
+ * D-11 (amended 2026-05-14, gap T10a): Pending shows Start Mixing + Block Order. Mixing → Complete Order (single-click, no confirm).
  * D-12: Blocked → split Resume: "Resume to Mixing" (primary) + "Resume to Pending" (secondary).
  * D-14: On conflict (code === 'conflict'), render the EXACT locked message inline + auto router.refresh().
  * D-25: The read-only gate lives in the PARENT (ProductionDrawer). TransitionButtons does NOT implement it.
  *
  * UI-SPEC §5 "Transition buttons" + Copywriting Contract:
- *   - Pending:   "Start Mixing"
+ *   - Pending:   "Start Mixing" (primary) + "Block Order" (destructive trigger) [D-11 amended 2026-05-14, gap T10a]
  *   - Mixing:    "Complete Order" (primary) + "Block Order" (destructive trigger)
  *   - Blocked:   "Resume to Mixing" (primary) + "Resume to Pending" (secondary)
  *   - Completed: no buttons
@@ -186,9 +186,14 @@ export default function TransitionButtons({
 }): React.JSX.Element | null {
   switch (order.state) {
     case 'Pending':
+      // D-11 amended 2026-05-14 (gap T10a): Pending now exposes both Start Mixing
+      // AND Block Order. The Block path opens the same BlockReasonModal used from
+      // the Mixing case. blockOrder() (src/actions/transitions.ts:215) already
+      // accepts fromState='Pending' — no server change required.
       return (
         <div className="flex gap-3">
           <StartMixingButton orderId={order.id} version={order.version} />
+          <BlockOrderTrigger onClick={onBlockClick} />
         </div>
       );
 
