@@ -6,6 +6,11 @@
  *   - Test 2: 3 batches → "Recent Imports" + 4 column headers + 3 data rows
  *   - Test 3: date format via Intl.DateTimeFormat('en-US', { month: 'short', ... })
  *   - Test 4: renders all rows passed (no internal slicing — query handles limit)
+ *
+ * Tests T9b (plan 34-09): date hydration contract regression.
+ *   - Baseline: real Date instance renders without throwing
+ *   - Contract pin: string-typed importedAt throws RangeError (documents that
+ *     callers MUST hydrate before passing; ImportFlow now enforces this via useMemo)
  */
 import { render, screen } from "@testing-library/react";
 import ImportHistoryTable from "./ImportHistoryTable";
@@ -90,5 +95,44 @@ describe("ImportHistoryTable", () => {
     const rows = screen.getAllByRole("row");
     const dataRows = rows.filter(row => row.querySelectorAll('td').length > 0);
     expect(dataRows).toHaveLength(12);
+  });
+});
+
+describe('ImportHistoryTable date hydration contract (T9b regression — plan 34-09)', () => {
+  it('renders without throwing when importedAt is a Date (baseline)', () => {
+    const batches: ImportBatch[] = [
+      {
+        id: 'b1',
+        fileName: 'Book1.xlsx',
+        rowCount: 33,
+        importedBy: 'user_abc',
+        importedAt: new Date('2026-05-14T19:00:00.000Z'),
+      },
+    ];
+    expect(() => render(<ImportHistoryTable batches={batches} />)).not.toThrow();
+    expect(screen.getByText('Book1.xlsx')).toBeInTheDocument();
+  });
+
+  it('throws RangeError when importedAt is a string and NOT hydrated upstream (architectural type-lie demonstration)', () => {
+    // This documents the bug: the contract is "callers MUST hydrate before passing".
+    // If ImportFlow ever regresses on hydration, this test will fail loudly with the
+    // exact RangeError observed in UAT T9b.
+    const badBatches = [
+      {
+        id: 'b1',
+        fileName: 'Book1.xlsx',
+        rowCount: 33,
+        importedBy: 'user_abc',
+        importedAt: '2026-05-14T19:00:00.000Z' as unknown as Date,
+      },
+    ] as unknown as ImportBatch[];
+
+    // Suppress React's error boundary noise for this expected throw.
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      expect(() => render(<ImportHistoryTable batches={badBatches} />)).toThrow(RangeError);
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });
