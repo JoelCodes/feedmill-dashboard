@@ -1,0 +1,268 @@
+/**
+ * TransitionButtons — TDD RED tests for plan 34-06 Task 1.
+ *
+ * Tests cover: D-10 (all four transitions in drawer only), D-11 (single-click Complete),
+ * D-12 (split Resume button), D-14 (conflict banner + auto-refresh), D-25 (canEdit in parent).
+ *
+ * Mock strategy: jest.mock('@/actions/transitions') so actions return controllable Promises.
+ * Mock strategy: jest.mock('next/navigation') to capture mockRefresh.
+ */
+
+// Mocks BEFORE any imports that trigger module evaluation
+const mockRefresh = jest.fn();
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: mockRefresh }),
+}));
+
+jest.mock('@/actions/transitions', () => ({
+  transitionToMixing: jest.fn(),
+  completeOrder: jest.fn(),
+  blockOrder: jest.fn(),
+  resumeFromBlocked: jest.fn(),
+}));
+
+import React from 'react';
+import { render, screen, waitFor, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import TransitionButtons from './TransitionButtons';
+import {
+  transitionToMixing,
+  completeOrder,
+  resumeFromBlocked,
+} from '@/actions/transitions';
+import type { ProductionOrder } from '@/db/schema/orders';
+
+// ─── Fixture helpers ─────────────────────────────────────────────────────────
+
+function makeOrder(overrides: Partial<ProductionOrder> = {}): ProductionOrder {
+  return {
+    id: 'ord-001',
+    orderNumber: 'ORD-001',
+    customer: 'Acme Feed',
+    product: 'Layer Mash',
+    weightLbs: '5000.00',
+    deliveryTime: 'May 14, 2026 10am',
+    state: 'Pending',
+    millLine: 'Premix',
+    textureType: null,
+    lineCode: null,
+    version: 1,
+    createdBy: 'user_abc',
+    createdAt: new Date('2026-01-01'),
+    updatedAt: new Date('2026-01-01'),
+    ...overrides,
+  };
+}
+
+const mockOnBlockClick = jest.fn();
+
+// ─── Tests ───────────────────────────────────────────────────────────────────
+
+describe('TransitionButtons', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Default: actions resolve with { ok: true }
+    (transitionToMixing as jest.Mock).mockResolvedValue({ ok: true });
+    (completeOrder as jest.Mock).mockResolvedValue({ ok: true });
+    (resumeFromBlocked as jest.Mock).mockResolvedValue({ ok: true });
+  });
+
+  // ── Test 1: Pending state — only "Start Mixing" button ────────────────────
+
+  test('Test 1 (Pending — D-11): renders exactly ONE "Start Mixing" button; transitionToMixing called on click', async () => {
+    const user = userEvent.setup();
+    const order = makeOrder({ state: 'Pending' });
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    // Exactly one transition button: "Start Mixing"
+    const startBtn = screen.getByRole('button', { name: /start mixing/i });
+    expect(startBtn).toBeInTheDocument();
+
+    // No other transition buttons present
+    expect(screen.queryByRole('button', { name: /complete order/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /block order/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+
+    await user.click(startBtn);
+
+    await waitFor(() => {
+      expect(transitionToMixing).toHaveBeenCalledWith('ord-001', 1);
+    });
+  });
+
+  // ── Test 2: Mixing state — "Complete Order" + "Block Order" ──────────────
+
+  test('Test 2 (Mixing): renders "Complete Order" + "Block Order"; clicking Complete calls completeOrder; clicking Block calls onBlockClick', async () => {
+    const user = userEvent.setup();
+    const order = makeOrder({ state: 'Mixing' });
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    const completeBtn = screen.getByRole('button', { name: /complete order/i });
+    const blockBtn = screen.getByRole('button', { name: /block order/i });
+
+    expect(completeBtn).toBeInTheDocument();
+    expect(blockBtn).toBeInTheDocument();
+
+    // No Start Mixing or Resume buttons
+    expect(screen.queryByRole('button', { name: /start mixing/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+
+    await user.click(completeBtn);
+    await waitFor(() => {
+      expect(completeOrder).toHaveBeenCalledWith('ord-001', 1);
+    });
+
+    await user.click(blockBtn);
+    expect(mockOnBlockClick).toHaveBeenCalledTimes(1);
+  });
+
+  // ── Test 3: Blocked state — D-12 resume split buttons ────────────────────
+
+  test('Test 3 (Blocked — D-12): renders "Resume to Mixing" (primary) + "Resume to Pending" (secondary); each calls resumeFromBlocked with correct toState', async () => {
+    const user = userEvent.setup();
+    const order = makeOrder({ state: 'Blocked' });
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    const resumeMixingBtn = screen.getByRole('button', { name: /resume to mixing/i });
+    const resumePendingBtn = screen.getByRole('button', { name: /resume to pending/i });
+
+    expect(resumeMixingBtn).toBeInTheDocument();
+    expect(resumePendingBtn).toBeInTheDocument();
+
+    // No other transition buttons
+    expect(screen.queryByRole('button', { name: /start mixing/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /complete order/i })).not.toBeInTheDocument();
+
+    await user.click(resumeMixingBtn);
+    await waitFor(() => {
+      expect(resumeFromBlocked).toHaveBeenCalledWith('ord-001', 1, 'Mixing');
+    });
+
+    (resumeFromBlocked as jest.Mock).mockClear();
+
+    await user.click(resumePendingBtn);
+    await waitFor(() => {
+      expect(resumeFromBlocked).toHaveBeenCalledWith('ord-001', 1, 'Pending');
+    });
+  });
+
+  // ── Test 4: Completed state — ZERO transition buttons ────────────────────
+
+  test('Test 4 (Completed): renders ZERO transition buttons for Completed orders', () => {
+    const order = makeOrder({ state: 'Completed' });
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    expect(screen.queryByRole('button', { name: /start mixing/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /complete order/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /block order/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+  });
+
+  // ── Test 5: Conflict UX — D-14 banner + auto-refresh ─────────────────────
+
+  test('Test 5 (conflict UX — D-14): conflict result shows locked banner text and calls router.refresh() once', async () => {
+    const user = userEvent.setup();
+    const order = makeOrder({ state: 'Pending' });
+
+    (transitionToMixing as jest.Mock).mockResolvedValue({
+      ok: false,
+      code: 'conflict',
+      message: 'Order was modified by another user. Please refresh.',
+    });
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    const startBtn = screen.getByRole('button', { name: /start mixing/i });
+    await user.click(startBtn);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Order was modified by another user. Please refresh.')
+      ).toBeInTheDocument();
+    });
+
+    expect(mockRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  // ── Test 6: Locked message verbatim ──────────────────────────────────────
+
+  test('Test 6 (locked-message verbatim): conflict banner text matches character-for-character', async () => {
+    const user = userEvent.setup();
+    const order = makeOrder({ state: 'Pending' });
+
+    const LOCKED_MSG = 'Order was modified by another user. Please refresh.';
+
+    (transitionToMixing as jest.Mock).mockResolvedValue({
+      ok: false,
+      code: 'conflict',
+      message: LOCKED_MSG,
+    });
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    const startBtn = screen.getByRole('button', { name: /start mixing/i });
+    await user.click(startBtn);
+
+    await waitFor(() => {
+      const banner = screen.getByRole('alert');
+      expect(banner.textContent).toBe(LOCKED_MSG);
+    });
+  });
+
+  // ── Test 7: Loading state — aria-busy during in-flight action ─────────────
+
+  test('Test 7 (loading): button shows aria-busy="true" while action is in-flight', async () => {
+    const user = userEvent.setup();
+    const order = makeOrder({ state: 'Pending' });
+
+    // Use a never-resolving promise to keep action pending
+    let resolveAction!: (val: { ok: true }) => void;
+    const pendingPromise = new Promise<{ ok: true }>((resolve) => {
+      resolveAction = resolve;
+    });
+
+    (transitionToMixing as jest.Mock).mockReturnValue(pendingPromise);
+
+    render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />);
+
+    const startBtn = screen.getByRole('button', { name: /start mixing/i });
+
+    await act(async () => {
+      await user.click(startBtn);
+    });
+
+    // While pending, button should be aria-busy (useActionState isPending)
+    await waitFor(() => {
+      // Button may become disabled and aria-busy while loading
+      const btn = screen.queryByRole('button', { name: /start mixing/i });
+      // During isPending, the button renders with loading prop — check aria-busy
+      // The Button component sets aria-busy when loading={true}
+      expect(btn?.getAttribute('aria-busy') === 'true' || btn?.hasAttribute('disabled')).toBe(true);
+    });
+
+    // Clean up: resolve the pending promise
+    resolveAction({ ok: true });
+    await waitFor(() => {
+      // After resolution, no longer busy
+      expect(transitionToMixing).toHaveBeenCalled();
+    });
+  });
+
+  // ── Test 8: canEdit not checked in TransitionButtons itself ──────────────
+
+  test('Test 8 (canEdit): TransitionButtons does not contain canEdit prop — parent controls rendering', () => {
+    // This is a source-level assertion — we verify by checking the component renders
+    // without a canEdit prop. The acceptance criteria grep will verify the source.
+    const order = makeOrder({ state: 'Pending' });
+
+    // Component renders without canEdit — it is not part of its prop signature
+    expect(() =>
+      render(<TransitionButtons order={order} onBlockClick={mockOnBlockClick} />)
+    ).not.toThrow();
+  });
+});

@@ -14,11 +14,11 @@
  * D-01: PRODUCTION_STATE_PILL_CONFIG and STATE_COLORS are local consts —
  *       do NOT import from MillProductionUI.tsx.
  *
- * D-25 / Plan 06 TODO: drawerOrder and drawerEvents props are accepted
- * but not yet rendered. Plan 06 will compose <ProductionDrawer> using them.
+ * D-25: canEdit prop controls whether the ProductionDrawer shows transition buttons.
+ * Plan 06: ProductionDrawer is rendered conditionally on the order URL param.
  */
 
-import { useMemo, useState, useEffect, Suspense } from 'react';
+import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import {
   useQueryStates,
   parseAsArrayOf,
@@ -38,6 +38,8 @@ import BlockedAlertBand from '@/components/BlockedAlertBand';
 import LastUpdatedChip from '@/components/LastUpdatedChip';
 import ColumnSkeleton from '@/components/ColumnSkeleton';
 import MillColumn from '@/components/MillColumn';
+import ProductionDrawer from '@/components/ProductionDrawer';
+import DrawerSkeleton from '@/components/DrawerSkeleton';
 
 import type { ProductionOrder, MillLine, ProductionState } from '@/db/schema/orders';
 import type { OrderEvent } from '@/db/schema/events';
@@ -130,26 +132,16 @@ export default function ProductionDashboard({
   canEdit,
   drawerOrder,
   drawerEvents,
-}: Props): JSX.Element {
-  // TODO(plan-06): wire drawerOrder and drawerEvents into <ProductionDrawer>.
-  // Plan 06 will render <ProductionDrawer order={drawerOrder} events={drawerEvents} canEdit={canEdit} />
-  // when drawerOrder is non-null. For now, props are accepted but not rendered.
-  void canEdit;
-  void drawerOrder;
-  void drawerEvents;
-
+}: Props): React.JSX.Element {
   // ── Polling — PROD-09 / D-19 ───────────────────────────────────────────
   useProductionPolling();
 
   // ── URL state — D-04 / D-05 / D-06 ────────────────────────────────────
-  const [{ status, q, order: _order }, setQuery] = useQueryStates({
+  const [{ status, q, order }, setQuery] = useQueryStates({
     status: parseAsArrayOf(parseAsStringLiteral(STATE_ORDER)).withDefault([]),
     q: parseAsString.withDefault(''),
     order: parseAsString.withDefault(''),
   });
-
-  // Suppress unused _order — plan 07 passes it to open the drawer
-  void _order;
 
   // ── Search debounce — D-05 / 150ms ────────────────────────────────────
   // Initialize controlled input from URL state on first render
@@ -276,6 +268,18 @@ export default function ProductionDashboard({
           </Suspense>
         </div>
       </div>
+
+      {/* ── Drawer — plan 06 integration ──────────────────────────────── */}
+      {/* Render when ?order= URL param is set (even if drawerOrder is null for stale IDs) */}
+      {order && (
+        <Suspense fallback={<DrawerSkeleton />}>
+          <ProductionDrawer
+            order={drawerOrder}
+            events={drawerEvents}
+            canEdit={canEdit}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
