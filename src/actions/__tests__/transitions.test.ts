@@ -319,6 +319,28 @@ describe('blockOrder', () => {
     await blockOrder('order-1', 1, 'reason');
     expect(revalidateTag).toHaveBeenCalledWith('production-orders', 'max');
   });
+
+  it('C9 (WR-03 empty reason): returns validation error and performs no DB writes when reason is ""', async () => {
+    setupDbMocks({ orderState: 'Mixing' });
+    const result = await blockOrder('order-1', 1, '');
+    expect(result).toMatchObject({ ok: false, code: 'validation' });
+    expect((result as { message: string }).message).toMatch(/non-empty reason/i);
+    // No DB writes: state-guard SELECT, optimistic UPDATE, and audit INSERT all skipped
+    expect(mockSelect).not.toHaveBeenCalled();
+    expect(mockUpdate).not.toHaveBeenCalled();
+    expect(mockInsert).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
+  });
+
+  it('C10 (WR-03 whitespace-only reason): returns validation error and performs no DB writes', async () => {
+    setupDbMocks({ orderState: 'Mixing' });
+    const result = await blockOrder('order-1', 1, '   ');
+    expect(result).toMatchObject({ ok: false, code: 'validation' });
+    expect(mockSelect).not.toHaveBeenCalled();
+    expect(mockUpdate).not.toHaveBeenCalled();
+    expect(mockInsert).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -220,6 +220,20 @@ export async function blockOrder(
   await requireRole('mill_operator');
   const { userId } = await auth();
 
+  // WR-03: TRANS-03 + D-04 require a non-empty blocking reason. The TS signature
+  // `reason: string` prevents callers from omitting the parameter, but the empty
+  // string '' is still a valid string. Reject empty/whitespace-only reasons here
+  // so an audit row with an empty `note` cannot be persisted — an empty reason
+  // in the timeline UI is indistinguishable from a missing reason and defeats
+  // the contract's intent ("operator must explain the block").
+  if (reason.trim().length === 0) {
+    return {
+      ok: false,
+      code: 'validation' as const,
+      message: 'A non-empty reason is required to block an order.',
+    };
+  }
+
   // Step 3: state-guard SELECT
   const [order] = await db
     .select({ state: productionOrders.state, id: productionOrders.id })
