@@ -18,7 +18,7 @@
  * Plan 06: ProductionDrawer is rendered conditionally on the order URL param.
  */
 
-import React, { useMemo, useState, useEffect, Suspense } from 'react';
+import React, { useMemo, useState, useEffect, Suspense, startTransition } from 'react';
 import {
   useQueryStates,
   parseAsArrayOf,
@@ -136,12 +136,25 @@ export default function ProductionDashboard({
   // ── Polling — PROD-09 / D-19 ───────────────────────────────────────────
   useProductionPolling();
 
-  // ── URL state — D-04 / D-05 / D-06 ────────────────────────────────────
-  const [{ status, q, order }, setQuery] = useQueryStates({
+  // ── URL state — D-04 / D-05 / D-06 (split per T10b gap closure 2026-05-14) ──
+  // Status + q are SHALLOW: they update the URL without triggering an RSC fetch.
+  // This preserves the snappy pill-toggle and per-keystroke search UX (filters
+  // execute client-side over the already-fetched orders array — Pitfall 11).
+  const [{ status, q }, setQuery] = useQueryStates({
     status: parseAsArrayOf(parseAsStringLiteral(STATE_ORDER)).withDefault([]),
     q: parseAsString.withDefault(''),
-    order: parseAsString.withDefault(''),
   });
+
+  // Order is NON-SHALLOW: setting ?order=<id> must re-run the page RSC so
+  // getOrderById + getOrderEvents are fetched (src/app/page.tsx:39-43).
+  // history: 'push' makes the browser back button close the drawer (deep-link parity).
+  // The setter is wrapped in startTransition() at each call site so the existing
+  // <Suspense fallback={<DrawerSkeleton />}> boundary at lines 275-282 renders
+  // during the RSC fetch instead of freezing the previous UI.
+  const [{ order }, setOrderQuery] = useQueryStates(
+    { order: parseAsString.withDefault('') },
+    { shallow: false, history: 'push' }
+  );
 
   // ── Search debounce — D-05 / 150ms ────────────────────────────────────
   // Initialize controlled input from URL state on first render
@@ -245,7 +258,11 @@ export default function ProductionDashboard({
             <MillColumn
               millLine="Premix"
               orders={ordersByMill.Premix}
-              onOrderClick={(id) => setQuery({ order: id })}
+              onOrderClick={(id) =>
+                startTransition(() => {
+                  setOrderQuery({ order: id });
+                })
+              }
             />
           </Suspense>
         </div>
@@ -254,7 +271,11 @@ export default function ProductionDashboard({
             <MillColumn
               millLine="Excel"
               orders={ordersByMill.Excel}
-              onOrderClick={(id) => setQuery({ order: id })}
+              onOrderClick={(id) =>
+                startTransition(() => {
+                  setOrderQuery({ order: id });
+                })
+              }
             />
           </Suspense>
         </div>
@@ -263,7 +284,11 @@ export default function ProductionDashboard({
             <MillColumn
               millLine="CGM"
               orders={ordersByMill.CGM}
-              onOrderClick={(id) => setQuery({ order: id })}
+              onOrderClick={(id) =>
+                startTransition(() => {
+                  setOrderQuery({ order: id });
+                })
+              }
             />
           </Suspense>
         </div>
