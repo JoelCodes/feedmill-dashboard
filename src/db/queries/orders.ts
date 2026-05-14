@@ -3,8 +3,12 @@ import { unstable_cache } from 'next/cache';
 import { db } from '@/db';
 import { productionOrders } from '@/db/schema/orders';
 import { and, eq, inArray } from 'drizzle-orm';
-import type { ProductionState, MillLine } from '@/db/schema/orders';
+import type { ProductionState, MillLine, ProductionOrder } from '@/db/schema/orders';
 
+/**
+ * Filter shape for getProductionOrders.
+ * Exported for reuse by plan 33-04 transition actions and Phase 34 RSC pages.
+ */
 export type ProductionOrderFilters = {
   millLine?: MillLine;
   states?: ProductionState[];
@@ -26,7 +30,7 @@ export type ProductionOrderFilters = {
  * invalidation triggered by a mutating action, or after a `router.refresh()`.
  */
 export const getProductionOrders = unstable_cache(
-  async (filters?: ProductionOrderFilters) => {
+  async (filters?: ProductionOrderFilters): Promise<ProductionOrder[]> => {
     const conditions = [];
     if (filters?.millLine) {
       conditions.push(eq(productionOrders.millLine, filters.millLine));
@@ -55,7 +59,7 @@ export const getProductionOrders = unstable_cache(
  * getOrderById(orderId) as their state-guard read; without it, plan 33-04
  * has no consistent way to load the current state before the optimistic UPDATE."
  */
-export async function getOrderById(id: string) {
+export async function getOrderById(id: string): Promise<ProductionOrder | null> {
   const [order] = await db
     .select()
     .from(productionOrders)

@@ -3,6 +3,7 @@ import { unstable_cache } from 'next/cache';
 import { db } from '@/db';
 import { orderEvents } from '@/db/schema/events';
 import { eq, desc } from 'drizzle-orm';
+import type { OrderEvent } from '@/db/schema/events';
 
 /**
  * Fetch all events for a given order, ordered newest-first.
@@ -23,7 +24,7 @@ import { eq, desc } from 'drizzle-orm';
  * Note: `revalidate` is intentionally absent — tag-only invalidation.
  */
 export const getOrderEvents = unstable_cache(
-  async (orderId: string) => {
+  async (orderId: string): Promise<OrderEvent[]> => {
     return db
       .select()
       .from(orderEvents)
