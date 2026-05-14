@@ -473,23 +473,50 @@ export async function commitImportAction(
   // AUTH-02: requireRole must be the first call in the body.
   await requireRole('mill_operator');
 
+  // WR-01: validate the decisions payload at the network boundary. Server
+  // actions are public endpoints and the TS signature is only enforced at
+  // compile time — a malformed payload like { skipRows: null, overwriteRows: null }
+  // would otherwise crash at decisions.skipRows.includes() and be caught by the
+  // outer try/catch, surfacing as a generic 'server' error with no diagnostic
+  // value. Validate with Zod so the caller sees a clean 'validation' code.
+  const decisionsSchema = z.object({
+    skipRows: z.array(z.number().int().nonnegative()),
+    overwriteRows: z.array(z.number().int().nonnegative()),
+  });
+  const parsedDecisions = decisionsSchema.safeParse(decisions);
+  if (!parsedDecisions.success) {
+    return { ok: false, code: 'validation', message: 'Invalid decisions payload.' };
+  }
+  const safeDecisions = parsedDecisions.data;
+
   try {
     const { userId } = await auth();
 
     // Extract file from FormData (same validation as previewImportAction — D-05 re-parse)
     const file = formData.get('file');
-    if (!file || typeof file === 'string') {
+    // WR-08: narrow the FormData entry with instanceof Blob instead of the
+    // permissive '!file || typeof file === string' check.
+    if (!(file instanceof Blob)) {
       return { ok: false, code: 'validation', message: 'No file provided.' };
     }
-    const fileObj = file as { size: number; name: string; arrayBuffer: () => Promise<ArrayBuffer> };
 
     // T-33-DoS layer 2: server-side size guard (re-checked on commit — separate upload)
-    if (fileObj.size > MAX_IMPORT_BYTES) {
+    if (file.size > MAX_IMPORT_BYTES) {
       return { ok: false, code: 'validation', message: 'File exceeds 2MB limit.' };
     }
 
+    // WR-04: validate and normalize the file name. A plain Blob (not File) lacks
+    // .name (the default is 'blob'); the import_batches.file_name column is
+    // NOT NULL, so an undefined name would crash the audit insert. Also cap the
+    // length at 255 to bound persisted user input.
+    const rawName = (file as { name?: unknown }).name;
+    const fileName =
+      typeof rawName === 'string' && rawName.trim().length > 0
+        ? rawName.slice(0, 255)
+        : 'unknown.xlsx';
+
     // Convert to Buffer for read-excel-file (D-05 — re-parse from uploaded file)
-    const rawArrayBuffer = await (fileObj.arrayBuffer as (() => Promise<ArrayBuffer>) | undefined)?.();
+    const rawArrayBuffer = await (file.arrayBuffer as (() => Promise<ArrayBuffer>) | undefined)?.();
     const buffer = Buffer.from(rawArrayBuffer ?? new ArrayBuffer(0));
 
     // Step 4: Re-parse + validate (D-05 stateless server — identical pipeline to preview)
@@ -517,7 +544,7 @@ export async function commitImportAction(
       const rowIndex = row.rowIndex;
 
       // Decision precedence: skip wins over overwrite (Test 21 — safer default)
-      if (decisions.skipRows.includes(rowIndex)) {
+      if (safeDecisions.skipRows.includes(rowIndex)) {
         results.push({ rowIndex, ok: true, action: 'skipped' });
         continue;
       }
@@ -527,7 +554,7 @@ export async function commitImportAction(
         // WR-02: report the action the operator intended, not always 'insert'.
         // An overwrite-listed row that fails validation should surface as an
         // overwrite failure so the audit/result trail reflects intent.
-        const intendedAction = decisions.overwriteRows.includes(rowIndex) ? 'overwrite' : 'insert';
+        const intendedAction = safeDecisions.overwriteRows.includes(rowIndex) ? 'overwrite' : 'insert';
         results.push({ rowIndex, ok: false, action: intendedAction, error: row.errors[0].message });
         continue;
       }
@@ -543,13 +570,13 @@ export async function commitImportAction(
       // default per-row UI selection — safer than silently inserting).
       const isUndecidedDuplicate =
         (row.isDuplicate || dbDuplicates.has(row.orderNumber)) &&
-        !decisions.overwriteRows.includes(rowIndex);
+        !safeDecisions.overwriteRows.includes(rowIndex);
       if (isUndecidedDuplicate) {
         results.push({ rowIndex, ok: true, action: 'skipped' });
         continue;
       }
 
-      if (decisions.overwriteRows.includes(rowIndex)) {
+      if (safeDecisions.overwriteRows.includes(rowIndex)) {
         // ── Overwrite path (D-10 + D-11 + D-13) ──────────────────────────
         try {
           // Load existing order to capture current state AND version for
@@ -685,23 +712,55 @@ export async function commitImportAction(
     // Step 12: Write import_batches row (D-07 — one row per successful commit)
     // rowCount = committedCount (NOT total rows — D-07 exact wording)
     // importedAt defaults via defaultNow() — omitted here
-    await db
-      .insert(importBatches)
-      .values({
-        id: batchId,
-        fileName: fileObj.name,
-        rowCount: committedCount,
-        importedBy: userId!,
-      })
-      .returning({ id: importBatches.id });
+    //
+    // CR-04: wrap the audit-row insert in its OWN try/catch. The per-row loop
+    // already committed `committedCount` production_orders rows; if the
+    // import_batches insert fails (NOT NULL on fileName, transient Neon error,
+    // schema drift, etc.), we MUST NOT discard `results[]` by falling through
+    // to the outer catch. A missing batch row is an audit-only failure, not a
+    // row-commit failure. Cache must still be invalidated since the data did
+    // change.
+    try {
+      await db
+        .insert(importBatches)
+        .values({
+          id: batchId,
+          fileName, // WR-04: validated/normalized at action entry
+          rowCount: committedCount,
+          importedBy: userId!,
+        })
+        .returning({ id: importBatches.id });
+    } catch (err) {
+      // WR-05: log the batch-row failure for production triage.
+      console.error('[commitImportAction] import_batches insert failed:', err);
+      // Step 13a: cache invalidation still required (data DID change).
+      try {
+        revalidateTag('production-orders', 'max');
+      } catch (revalErr) {
+        console.error('[commitImportAction] revalidateTag failed after batch-insert failure:', revalErr);
+      }
+      // Surface degraded-success — the operator sees the per-row results
+      // and the committed count so they can verify in the dashboard.
+      return { ok: true, batchId, committedCount, failedCount, results };
+    }
 
-    // Step 13: Revalidate cache tag (TRANS-07 + STATE.md mutation invariant)
+    // Step 13: Revalidate cache tag (TRANS-07 + STATE.md mutation invariant).
+    // CR-04: also wrap revalidateTag — a thrown revalidateTag here would
+    // otherwise hit the outer catch and discard `results[]` despite every row
+    // having been persisted successfully.
     // 'max' is the revalidateTag type parameter — matches project convention from transitions.ts
-    revalidateTag('production-orders', 'max');
+    try {
+      revalidateTag('production-orders', 'max');
+    } catch (revalErr) {
+      console.error('[commitImportAction] revalidateTag failed:', revalErr);
+    }
 
     // Step 14: Return success
     return { ok: true, batchId, committedCount, failedCount, results };
-  } catch {
+  } catch (err) {
+    // WR-05: bind the error for server-side log correlation. The operator-facing
+    // message is preserved as a generic 'server' code — no internal-error leak.
+    console.error('[commitImportAction] failed:', err);
     return { ok: false, code: 'server', message: 'Failed to commit import.' };
   }
 }
