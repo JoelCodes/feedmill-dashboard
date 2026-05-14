@@ -156,10 +156,10 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [x] 34-05-PLAN.md — ProductionDashboard client wrapper composing filters/search/polling/blocked band/columns (PROD-02, PROD-03, PROD-04, PROD-06, PROD-09, PROD-10, PROD-11)
 - [x] 34-06-PLAN.md — ProductionDrawer + TransitionButtons + BlockReasonModal + DrawerCloseHandlers + dashboard drawer wiring (PROD-05)
 - [x] 34-07-PLAN.md — Page rewrites (/, /import) + ImportFlow + ImportHistoryTable + manual UAT incl. Inherited GAP-02 (PROD-01, PROD-02, PROD-05, PROD-10)
-- [ ] 34-08-PLAN.md — Gap closure T3: remove Header dead search input + full-route regression test (PROD-03, PROD-04)
-- [ ] 34-09-PLAN.md — Gap closure T9a + T9b: hydrate batches.importedAt in ImportFlow + router.refresh on commit success + regression tests (IMPORT-04..06)
-- [ ] 34-10-PLAN.md — Gap closure T10a (D-11 amendment): TransitionButtons Pending case adds Block Order trigger + PATTERNS.md/CONTEXT.md D-11 amendment + tests (PROD-05, TRANS-03)
-- [ ] 34-11-PLAN.md — Gap closure T10b: split nuqs `order` key with shallow:false + history:'push' + startTransition wrapping; preserves shallow status/q for snappy filter/search (PROD-05, PROD-10)
+- [x] 34-08-PLAN.md — Gap closure T3: remove Header dead search input + full-route regression test (PROD-03, PROD-04)
+- [x] 34-09-PLAN.md — Gap closure T9a + T9b: hydrate batches.importedAt in ImportFlow + router.refresh on commit success + regression tests (IMPORT-04..06)
+- [x] 34-10-PLAN.md — Gap closure T10a (D-11 amendment): TransitionButtons Pending case adds Block Order trigger + PATTERNS.md/CONTEXT.md D-11 amendment + tests (PROD-05, TRANS-03)
+- [x] 34-11-PLAN.md — Gap closure T10b: split nuqs `order` key with shallow:false + history:'push' + startTransition wrapping; preserves shallow status/q for snappy filter/search (PROD-05, PROD-10)
 - [ ] 34-12-PLAN.md — Gap closure T12: wire router.refresh() on transition action success paths + BlockReasonModal success path; reduces cross-tab latency 15s → ~1s (PROD-05, TRANS-07)
 **UI hint**: yes
 
@@ -193,7 +193,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
-| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 7/12 | Gap closure planned | 2026-05-14 (7 of 12) |
+| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 11/12 | In Progress|  |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
