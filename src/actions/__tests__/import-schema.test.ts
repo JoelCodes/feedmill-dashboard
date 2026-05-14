@@ -117,6 +117,23 @@ describe('productionOrderImportSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  // Test 10a (WR-07): Accepts weightLbs at the numeric(10,2) maximum (99,999,999.99)
+  it('WR-07: accepts weightLbs at numeric(10,2) maximum (99,999,999.99)', () => {
+    const result = productionOrderImportSchema.safeParse({ ...validRow, weightLbs: 99_999_999.99 });
+    expect(result.success).toBe(true);
+  });
+
+  // Test 10b (WR-07): Rejects weightLbs above the numeric(10,2) maximum with clean validation message
+  // (instead of letting the DB layer surface a cryptic "numeric field overflow")
+  it('WR-07: rejects weightLbs above numeric(10,2) maximum with clean validation message', () => {
+    const result = productionOrderImportSchema.safeParse({ ...validRow, weightLbs: 1e10 });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const weightIssue = result.error.issues.find((i) => i.path[0] === 'weightLbs');
+      expect(weightIssue?.message).toMatch(/maximum/i);
+    }
+  });
+
   // Test 11: Accepts row with textureType: null AND lineCode: null (explicit nulls per D-15)
   it('accepts row with textureType: null AND lineCode: null (explicit nulls per D-15)', () => {
     const result = productionOrderImportSchema.safeParse({

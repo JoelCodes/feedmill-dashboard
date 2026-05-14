@@ -34,7 +34,16 @@ export const productionOrderImportSchema = z.object({
   orderNumber: z.string().min(1, 'Document Number is required'),   // D-15: required
   customer: z.string().min(1, 'Customer is required'),             // D-15: required
   product: z.string().min(1, 'Product is required'),               // D-15: required
-  weightLbs: z.number().positive('Weight must be positive'),       // D-15: required; CR-01: number here, string at DB insert
+  // WR-07: cap at numeric(10,2) maximum (99,999,999.99). Without the cap a row
+  // with an oversized weight passes Zod, then fails at the DB layer with a generic
+  // "numeric field overflow" caught as `error: String(err)` in the per-row result.
+  // The operator sees a cryptic Postgres error in the UI instead of a clean
+  // validation message. Bound the value at the schema layer where we already
+  // know the column's precision (Phase 32 D-12 — numeric(10, 2)).
+  weightLbs: z
+    .number()
+    .positive('Weight must be positive')
+    .max(99_999_999.99, 'Weight exceeds maximum (99,999,999.99 lbs).'), // D-15: required; CR-01: number here, string at DB insert
   deliveryTime: z.string().min(1, 'Early Delivery Date is required'), // D-15: required
   formulaType: z.string().min(1, 'Formula Type is required'),      // D-15: required
   millLine: z.enum(['Premix', 'Excel', 'CGM']).default('Premix'),  // D-16: Book1.xlsx has no Mill Line column - defaults to 'Premix' at parse time
