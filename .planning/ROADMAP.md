@@ -148,7 +148,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   3. Clicking an order card opens the order details panel showing all order fields and the full transition history from `order_events`; the blocked alert band lists all currently-blocked orders; each column shows a "next-up" highlight on the topmost Pending order and an in-progress badge on every Mixing order
   4. The dashboard auto-refreshes every 30 seconds; a last-updated timestamp and manual refresh control are visible in the header strip; loading skeletons appear while data is fetching
   5. The sidebar shows production navigation (not "Coming Soon") when the current route is `/`; the demo namespace at `/demo/*` is unchanged
-**Plans**: 7 plans
+**Plans**: 12 plans (7 in-scope + 5 gap-closure)
 - [x] 34-01-PLAN.md — Foundation: install nuqs+Radix Dialog, NuqsAdapter wiring, search-params lib, StatusBadge extension, Sidebar/Header production nav, D-21 commitImportAction patch, MillReadOnlyStub deletion + transitional page.tsx (PROD-01, PROD-03..06)
 - [x] 34-02-PLAN.md — useProductionPolling hook (TDD red/green 30s + cleanup, exports REFRESH_INTERVAL_MS) — PROD-09
 - [x] 34-03-PLAN.md — getImportBatches cached query + ColumnSkeleton + DrawerSkeleton + LastUpdatedChip + BlockedAlertBand (PROD-06, PROD-10, PROD-11)
@@ -156,6 +156,11 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [x] 34-05-PLAN.md — ProductionDashboard client wrapper composing filters/search/polling/blocked band/columns (PROD-02, PROD-03, PROD-04, PROD-06, PROD-09, PROD-10, PROD-11)
 - [x] 34-06-PLAN.md — ProductionDrawer + TransitionButtons + BlockReasonModal + DrawerCloseHandlers + dashboard drawer wiring (PROD-05)
 - [x] 34-07-PLAN.md — Page rewrites (/, /import) + ImportFlow + ImportHistoryTable + manual UAT incl. Inherited GAP-02 (PROD-01, PROD-02, PROD-05, PROD-10)
+- [ ] 34-08-PLAN.md — Gap closure T3: remove Header dead search input + full-route regression test (PROD-03, PROD-04)
+- [ ] 34-09-PLAN.md — Gap closure T9a + T9b: hydrate batches.importedAt in ImportFlow + router.refresh on commit success + regression tests (IMPORT-04..06)
+- [ ] 34-10-PLAN.md — Gap closure T10a (D-11 amendment): TransitionButtons Pending case adds Block Order trigger + PATTERNS.md/CONTEXT.md D-11 amendment + tests (PROD-05, TRANS-03)
+- [ ] 34-11-PLAN.md — Gap closure T10b: split nuqs `order` key with shallow:false + history:'push' + startTransition wrapping; preserves shallow status/q for snappy filter/search (PROD-05, PROD-10)
+- [ ] 34-12-PLAN.md — Gap closure T12: wire router.refresh() on transition action success paths + BlockReasonModal success path; reduces cross-tab latency 15s → ~1s (PROD-05, TRANS-07)
 **UI hint**: yes
 
 ---
@@ -188,10 +193,10 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
-| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 7/7 | Complete    | 2026-05-14 |
+| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 7/12 | Gap closure planned | 2026-05-14 (7 of 12) |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
 
 ---
-*Last updated: 2026-05-14 — Phase 34 plans created (7 plans across 4 waves)*
+*Last updated: 2026-05-14 — Phase 34 gap closure plans 34-08 through 34-12 created (5 plans across 2 waves) addressing UAT gaps T3, T9a, T9b, T10a, T10b, T12. T11 retest captured in 34-HUMAN-UAT-RETEST.md (procedural — no code change).*
