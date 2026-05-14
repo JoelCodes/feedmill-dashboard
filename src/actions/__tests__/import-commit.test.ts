@@ -1144,3 +1144,46 @@ it('Test 26 (WR-04): blank file.name is normalized to "unknown.xlsx" in the impo
   // 'unknown.xlsx' (true blank case).
   expect(['blob', 'unknown.xlsx']).toContain(batchArg.fileName);
 });
+
+// Test 27 (GAP-04): clean files — readXlsxFile returns { rows, errors: undefined } per v9.0.9 .d.ts
+it('Test 27 (GAP-04): handles clean files (errors: undefined) without throwing — read-excel-file v9.0.9 contract', async () => {
+  // v9.0.9 .d.ts ParseSheetDataResultSuccess overload: errors is undefined
+  // (not []) when zero parser errors occur. The action's `for (const pe of
+  // parserErrors)` loop inside the shared parseAndValidate helper must
+  // tolerate this shape. See GAP-04 in 33-VERIFICATION.md.
+  jest.mocked(readXlsxFile).mockResolvedValue({
+    rows: [makeRawRow({ orderNumber: 'ORD-CLEAN-001' })],
+    errors: undefined,
+  } as never);
+
+  // Standard happy-path dispatch (mirrors Test 2): 0=orders, 1=events, 2=batches
+  let callN = 0;
+  mockInsert.mockImplementation((_table: unknown) => {
+    const idx = callN++;
+    mockInsertCalls.push({ callN: idx, table: _table });
+    if (idx === 0) return { values: mockInsertOrdersValues };
+    if (idx === 1) return { values: mockInsertEventsValues };
+    return { values: mockInsertBatchesValues };
+  });
+
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, noDecisions);
+
+  // Must NOT return the generic server error from the outer try/catch
+  // (which would indicate the TypeError surfaced).
+  expect(result).toMatchObject({
+    ok: true,
+    batchId: expect.any(String),
+    committedCount: 1,
+    failedCount: 0,
+  });
+  if (result.ok) {
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0]).toMatchObject({
+      rowIndex: 1,
+      ok: true,
+      action: 'inserted',
+    });
+  }
+});
