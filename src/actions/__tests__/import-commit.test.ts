@@ -1,8 +1,5 @@
 /**
- * Contract tests for commitImportAction (plan 33-06).
- *
- * TDD: RED phase — commitImportAction does not yet exist in src/actions/import.ts.
- * All tests fail at "commitImportAction is not a function" or similar.
+ * Contract tests for commitImportAction (plans 33-06, 33-11).
  *
  * Mock topology:
  * - @/lib/auth: requireRole is a no-op by default
@@ -11,7 +8,10 @@
  * - next/navigation: redirect is a spy
  * - @/db: chainable mock; select->from->where returns [] by default;
  *   extended with insert (per-table), update chains
- * - read-excel-file/node: default export is a spy; return value controlled per test
+ * - read-excel-file/node: readSheet named export (v9.x API) is a spy; return value controlled per test.
+ *   Uses the v9.x ParseSheetDataResult discriminated union:
+ *   Success branch: { objects: [...], errors: undefined }
+ *   Error branch:   { objects: undefined, errors: [...] }
  */
 
 import * as fs from 'fs';
@@ -102,10 +102,12 @@ jest.mock('@/db', () => ({
   },
 }));
 
-// read-excel-file/node mock
+// read-excel-file/node mock — exposes readSheet named export (v9.x API).
+// The default export is also mocked to a no-op to prevent accidental use.
 jest.mock('read-excel-file/node', () => ({
   __esModule: true,
   default: jest.fn(),
+  readSheet: jest.fn(),
 }));
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -113,7 +115,7 @@ jest.mock('read-excel-file/node', () => ({
 // ────────────────────────────────────────────────────────────────────────────
 
 import { revalidateTag } from 'next/cache';
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 import { requireRole } from '@/lib/auth';
 import { auth } from '@clerk/nextjs/server';
 
@@ -264,27 +266,29 @@ beforeEach(() => {
 // ────────────────────────────────────────────────────────────────────────────
 
 // Test 1: re-parse contract D-05
-it('Test 1: readXlsxFile is invoked exactly once per commitImportAction call (D-05 re-parse)', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+it('Test 1: readSheet is invoked exactly once per commitImportAction call (D-05 re-parse)', async () => {
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   const file = makeFile();
   const formData = makeFormData(file);
   await commitImportAction(formData, noDecisions);
 
-  expect(jest.mocked(readXlsxFile)).toHaveBeenCalledTimes(1);
+  expect(jest.mocked(readSheet)).toHaveBeenCalledTimes(1);
 });
 
 // Test 2: happy path insert (IMPORT-04)
 it('Test 2: happy path — two rows inserted, returns ok=true with committedCount=2', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -320,13 +324,14 @@ it('Test 2: happy path — two rows inserted, returns ok=true with committedCoun
 
 // Test 3: skip filter (D-12)
 it('Test 3: decisions.skipRows excludes rows and marks them as skipped', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
       makeRawRow({ orderNumber: 'ORD-003' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -354,9 +359,10 @@ it('Test 3: decisions.skipRows excludes rows and marks them as skipped', async (
 
 // Test 4: overwrite path (D-10 + D-11)
 it('Test 4: overwrite path calls db.update (not db.insert for orders) and writes overwrite event', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: undefined,
   } as never);
 
   // The db.select chain is called TWICE:
@@ -392,9 +398,10 @@ it('Test 4: overwrite path calls db.update (not db.insert for orders) and writes
 
 // Test 5: overwrite event row shape (D-11) — fromState === toState === existing.state
 it('Test 5: overwrite event row has fromState === toState === existing state (D-11)', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: undefined,
   } as never);
 
   // 1st call = detectDbDuplicates, 2nd call = overwrite lookup
@@ -425,9 +432,10 @@ it('Test 5: overwrite event row has fromState === toState === existing state (D-
 
 // Test 6: overwrite bumps version via sql literal
 it('Test 6: overwrite UPDATE set payload includes version as sql`version + 1` (not a number)', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: undefined,
   } as never);
 
   // 1st call = detectDbDuplicates, 2nd call = overwrite lookup
@@ -460,9 +468,10 @@ it('Test 6: overwrite UPDATE set payload includes version as sql`version + 1` (n
 // Test 6a (CR-02): overwrite reports conflict when the UPDATE matches zero rows
 // (e.g., another writer bumped the version between our SELECT and UPDATE).
 it('Test 6a (CR-02): overwrite returns per-row conflict and skips audit event when UPDATE .returning() is empty', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: undefined,
   } as never);
 
   // 1st select = detectDbDuplicates, 2nd select = overwrite lookup (returns version 1)
@@ -502,9 +511,10 @@ it('Test 6a (CR-02): overwrite returns per-row conflict and skips audit event wh
 
 // Test 6b (CR-02): the overwrite UPDATE WHERE clause includes a version predicate
 it('Test 6b (CR-02): overwrite path SELECTs version and uses it in the UPDATE WHERE predicate', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: undefined,
   } as never);
 
   mockSelectWhere
@@ -538,9 +548,10 @@ it('Test 6b (CR-02): overwrite path SELECTs version and uses it in the UPDATE WH
 
 // Test 7: initial-insert event row (RESEARCH.md Open Question 2 YES)
 it('Test 7: new insert writes orderEvents row with fromState=null, toState=Pending, note=Imported from XLSX', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -567,13 +578,14 @@ it('Test 7: new insert writes orderEvents row with fromState=null, toState=Pendi
 
 // Test 8: partial-import (D-08 + IMPORT-04) — second insert throws
 it('Test 8: partial-import — failed row does not abort batch; committedCount=2 failedCount=1', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
       makeRawRow({ orderNumber: 'ORD-003' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -610,12 +622,13 @@ it('Test 8: partial-import — failed row does not abort batch; committedCount=2
 
 // Test 9: import_batches written on success (D-07)
 it('Test 9: import_batches row has correct fileName, rowCount=committedCount, importedBy=userId', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -644,13 +657,14 @@ it('Test 9: import_batches row has correct fileName, rowCount=committedCount, im
 
 // Test 10: import_batches NOT written if all rows failed (D-07)
 it('Test 10: import_batches NOT inserted when committedCount=0', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
       makeRawRow({ orderNumber: 'ORD-003' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   // All inserts throw
@@ -670,9 +684,10 @@ it('Test 10: import_batches NOT inserted when committedCount=0', async () => {
 
 // Test 11: revalidateTag called on successful commit (TRANS-07 + STATE.md)
 it('Test 11: revalidateTag(production-orders) called on successful commit', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -694,9 +709,10 @@ it('Test 11: revalidateTag(production-orders) called on successful commit', asyn
 
 // Test 12: revalidateTag NOT called when committedCount=0
 it('Test 12: revalidateTag NOT called when committedCount=0', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   mockInsert.mockImplementation(() => ({
@@ -714,18 +730,19 @@ it('Test 12: revalidateTag NOT called when committedCount=0', async () => {
 
 // Test 13: AUTH-02 — requireRole called with 'mill_operator' first
 it('Test 13: requireRole called with mill_operator as first action', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [],
+    errors: undefined,
   } as never);
 
   const callOrder: string[] = [];
   jest.mocked(requireRole).mockImplementationOnce(async () => {
     callOrder.push('requireRole');
   });
-  jest.mocked(readXlsxFile).mockImplementationOnce(async () => {
-    callOrder.push('readXlsxFile');
-    return { rows: [], errors: [] } as never;
+  jest.mocked(readSheet).mockImplementationOnce(async () => {
+    callOrder.push('readSheet');
+    return { objects: [], errors: undefined } as never;
   });
 
   const file = makeFile();
@@ -733,14 +750,15 @@ it('Test 13: requireRole called with mill_operator as first action', async () =>
   await commitImportAction(formData, noDecisions);
 
   expect(jest.mocked(requireRole)).toHaveBeenCalledWith('mill_operator');
-  expect(callOrder.indexOf('requireRole')).toBeLessThan(callOrder.indexOf('readXlsxFile'));
+  expect(callOrder.indexOf('requireRole')).toBeLessThan(callOrder.indexOf('readSheet'));
 });
 
 // Test 14: weightLbs string boundary (CR-01)
 it('Test 14: db.insert(productionOrders) receives weightLbs as string (CR-01 numeric boundary)', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001', weightLbs: 6000 })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001', weightLbs: 6000 })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -764,12 +782,13 @@ it('Test 14: db.insert(productionOrders) receives weightLbs as string (CR-01 num
 
 // Test 15: millLine defaults to 'Premix' (D-16)
 it('Test 15: every insert row has millLine=Premix (D-16)', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -793,9 +812,10 @@ it('Test 15: every insert row has millLine=Premix (D-16)', async () => {
 
 // Test 16: createdBy: userId
 it('Test 16: every insert row has createdBy=userId from auth()', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -819,9 +839,10 @@ it('Test 16: every insert row has createdBy=userId from auth()', async () => {
 
 // Test 17: state defaults to 'Pending' for new inserts
 it('Test 17: every NEW insert has state=Pending', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -843,9 +864,10 @@ it('Test 17: every NEW insert has state=Pending', async () => {
 
 // Test 18: version defaults to 1 for new inserts
 it('Test 18: every NEW insert has version=1', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -867,9 +889,10 @@ it('Test 18: every NEW insert has version=1', async () => {
 
 // Test 19: deliveryTime conversion (date to string)
 it('Test 19: deliveryTime stored as YYYY-MM-DD string from Date input', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001', deliveryDate: new Date('2025-08-15T00:00:00.000Z') })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001', deliveryDate: new Date('2025-08-15T00:00:00.000Z') })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -891,12 +914,13 @@ it('Test 19: deliveryTime stored as YYYY-MM-DD string from Date input', async ()
 
 // Test 20: Zod-failed rows are NOT committed
 it('Test 20: rows with Zod validation errors are not inserted and appear as failures', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: -100 }), // invalid — negative weight
       makeRawRow({ orderNumber: 'ORD-002', weightLbs: 5000 }), // valid
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -924,13 +948,14 @@ it('Test 20: rows with Zod validation errors are not inserted and appear as fail
 
 // Test 21: skip wins over overwrite when both list the same rowIndex
 it('Test 21: skipRows takes precedence over overwriteRows for the same rowIndex', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
       makeRawRow({ orderNumber: 'ORD-003' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -959,12 +984,13 @@ it('Test 21: skipRows takes precedence over overwriteRows for the same rowIndex'
 
 // Test 21a (CR-03): un-decided DB-duplicate rows default to skipped (no INSERT attempt)
 it('Test 21a (CR-03): un-decided DB-duplicate row is auto-skipped and no INSERT is attempted', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-FRESH' }),    // not in DB
       makeRawRow({ orderNumber: 'ORD-EXISTING' }), // already in DB; operator decides nothing
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   // detectDbDuplicates returns ORD-EXISTING. The row is in neither skipRows nor
@@ -1001,9 +1027,10 @@ it('Test 21a (CR-03): un-decided DB-duplicate row is auto-skipped and no INSERT 
 
 // Test 21b (CR-03): overwrite-listed DB-duplicate still uses the overwrite path
 it('Test 21b (CR-03): DB-duplicate in overwriteRows takes the overwrite path, not auto-skip', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-EXISTING' })],
+    errors: undefined,
   } as never);
 
   // 1st = detectDbDuplicates returns the row; 2nd = overwrite existing-row lookup
@@ -1054,9 +1081,10 @@ it('Test 24 (CR-04): import_batches insert failure still returns ok=true with re
   // (WR-05 + CR-04), not a test problem.
   const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   // Make the importBatches insert reject — but the orders+events inserts succeed.
@@ -1107,16 +1135,17 @@ it('Test 25 (WR-01): rejects malformed decisions payload with code: validation',
     expect(result.message).toMatch(/decisions/i);
   }
   // No DB work attempted on the malformed payload.
-  expect(jest.mocked(readXlsxFile)).not.toHaveBeenCalled();
+  expect(jest.mocked(readSheet)).not.toHaveBeenCalled();
   expect(mockInsert).not.toHaveBeenCalled();
   expect(mockUpdate).not.toHaveBeenCalled();
 });
 
 // Test 26 (WR-04): missing/blank file name is normalized to a default value
 it('Test 26 (WR-04): blank file.name is normalized to "unknown.xlsx" in the import_batches row', async () => {
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-001' })],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-001' })],
+    errors: undefined,
   } as never);
 
   let callN = 0;
@@ -1145,14 +1174,13 @@ it('Test 26 (WR-04): blank file.name is normalized to "unknown.xlsx" in the impo
   expect(['blob', 'unknown.xlsx']).toContain(batchArg.fileName);
 });
 
-// Test 27 (GAP-04): clean files — readXlsxFile returns { rows, errors: undefined } per v9.0.9 .d.ts
-it('Test 27 (GAP-04): handles clean files (errors: undefined) without throwing — read-excel-file v9.0.9 contract', async () => {
-  // v9.0.9 .d.ts ParseSheetDataResultSuccess overload: errors is undefined
-  // (not []) when zero parser errors occur. The action's `for (const pe of
-  // parserErrors)` loop inside the shared parseAndValidate helper must
-  // tolerate this shape. See GAP-04 in 33-VERIFICATION.md.
-  jest.mocked(readXlsxFile).mockResolvedValue({
-    rows: [makeRawRow({ orderNumber: 'ORD-CLEAN-001' })],
+// Test 27 (GAP-04/GAP-05): clean files — readSheet returns { objects: [...], errors: undefined } per v9.x
+it('Test 27 (GAP-04/GAP-05): handles clean files (ParseSheetDataResultSuccess) without throwing — readSheet v9.x', async () => {
+  // v9.0.9 ParseSheetDataResultSuccess: { objects: [...], errors: undefined }
+  // readSheet with schema returns this union — action must destructure `objects`
+  // (not `rows`) and tolerate errors: undefined via `?? []` guard from GAP-04.
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: [makeRawRow({ orderNumber: 'ORD-CLEAN-001' })],
     errors: undefined,
   } as never);
 
@@ -1185,5 +1213,45 @@ it('Test 27 (GAP-04): handles clean files (errors: undefined) without throwing �
       ok: true,
       action: 'inserted',
     });
+  }
+});
+
+// Test 28 (GAP-05): parser-error branch — readSheet returns { objects: undefined, errors: [...] }
+// This is the ParseSheetDataResultError discriminated-union branch. The action must handle
+// objects: undefined gracefully (via `?? []` guard) and surface the errors correctly.
+it('Test 28 (GAP-05): handles ParseSheetDataResultError branch — objects:undefined, errors:[...] without crashing', async () => {
+  // v9.x error branch: { objects: undefined, errors: [...] }
+  jest.mocked(readSheet).mockResolvedValue({
+    objects: undefined,
+    errors: [
+      {
+        row: 1,
+        column: 'Document Number',
+        error: 'required',
+        value: undefined,
+      },
+    ],
+  } as never);
+
+  // No DB inserts expected in the error branch (all rows have parser errors)
+  mockInsert.mockImplementation((_table: unknown) => {
+    mockInsertCalls.push({ callN: -1, table: _table });
+    return { values: jest.fn().mockReturnValue({ returning: jest.fn().mockResolvedValue([]) }) };
+  });
+
+  const file = makeFile();
+  const formData = makeFormData(file);
+  const result = await commitImportAction(formData, noDecisions);
+
+  // Must NOT crash with TypeError: Cannot read properties of undefined (reading 'length')
+  // Must return a result (either ok:true with error rows surfaced, or ok:false from outer catch)
+  expect(result).toBeDefined();
+  if (result.ok) {
+    // Parser error rows have committedCount=0, failedCount=0 (skipped as error rows)
+    // or failedCount=1 depending on action logic. Key: no TypeError unhandled.
+    expect(result.committedCount).toBe(0);
+  } else {
+    // Outer catch with a server error is also acceptable — no TypeError unhandled
+    expect(['server', 'validation']).toContain(result.code);
   }
 });

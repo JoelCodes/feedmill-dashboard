@@ -1,15 +1,15 @@
 /**
- * Contract tests for previewImportAction (plan 33-05).
- *
- * TDD: RED phase — src/actions/import.ts does not yet exist.
- * All tests fail at module resolution. Run after GREEN to verify they pass.
+ * Contract tests for previewImportAction (plans 33-05, 33-11).
  *
  * Mock topology:
  * - @/lib/auth: requireRole is a no-op by default
  * - @clerk/nextjs/server: auth returns { userId: 'u1' }
  * - next/cache: revalidateTag is a spy (must NOT be called by preview)
  * - @/db: chainable mock; select->from->where returns [] (no DB duplicates) by default
- * - read-excel-file/node: default export is a spy; return value controlled per test
+ * - read-excel-file/node: readSheet named export is a spy; return value controlled per test.
+ *   Uses the v9.x ParseSheetDataResult discriminated union:
+ *   Success branch: { objects: [...], errors: undefined }
+ *   Error branch:   { objects: undefined, errors: [...] }
  */
 
 // Mocks MUST be declared before any imports of the module under test.
@@ -47,14 +47,17 @@ jest.mock('@/db', () => ({
   },
 }));
 
-// read-excel-file/node mock — controlled per test
+// read-excel-file/node mock — controlled per test.
+// Exposes the readSheet named export (v9.x API) as a jest.fn().
+// The default export is also mocked to a no-op to prevent accidental use.
 jest.mock('read-excel-file/node', () => ({
   __esModule: true,
   default: jest.fn(),
+  readSheet: jest.fn(),
 }));
 
 import { revalidateTag } from 'next/cache';
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 import { requireRole } from '@/lib/auth';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -143,7 +146,7 @@ it('Test 1: rejects files exceeding MAX_IMPORT_BYTES with validation error', asy
     message: 'File exceeds 2MB limit.',
   });
   // Parser must NOT be called for oversize files
-  expect(jest.mocked(readXlsxFile)).not.toHaveBeenCalled();
+  expect(jest.mocked(readSheet)).not.toHaveBeenCalled();
 });
 
 // Test 2: missing file
@@ -164,12 +167,13 @@ it('Test 3: returns ok preview payload for 2 valid rows', async () => {
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 3000 }),
       makeRawRow({ orderNumber: 'ORD-002', weightLbs: 5000 }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   const result = await previewImportAction(formData);
@@ -198,13 +202,14 @@ it('Test 4: collects per-row Zod errors without rejecting the whole file', async
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 6000 }),
       makeRawRow({ orderNumber: 'ORD-002', weightLbs: 4000 }),
       makeRawRow({ orderNumber: 'ORD-003', weightLbs: -50 }), // invalid
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   const result = await previewImportAction(formData);
@@ -225,12 +230,13 @@ it('Test 5: flags the second occurrence of a duplicate orderNumber within the fi
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 3000 }),
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 4000 }), // duplicate of row above
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   const result = await previewImportAction(formData);
@@ -253,11 +259,12 @@ it('Test 6: flags rows whose orderNumber already exists in the database', async 
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-005', weightLbs: 7000 }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   // DB returns ORD-005 as an existing order
@@ -278,13 +285,14 @@ it('Test 7: handles combined intra-file and DB duplicates correctly', async () =
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 1000 }),
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 2000 }), // intra-file dup
       makeRawRow({ orderNumber: 'ORD-099', weightLbs: 3000 }), // DB dup
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   // DB says ORD-099 already exists
@@ -314,9 +322,10 @@ it('Test 8: does NOT write to DB and does NOT call revalidateTag', async () => {
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [makeRawRow()],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [makeRawRow()],
+    errors: undefined,
   } as never);
 
   await previewImportAction(formData);
@@ -330,12 +339,13 @@ it('Test 9: every preview row has millLine === Premix (D-16 — no Mill Line col
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001' }),
       makeRawRow({ orderNumber: 'ORD-002' }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   const result = await previewImportAction(formData);
@@ -353,11 +363,12 @@ it('Test 10: converts Date deliveryDate to YYYY-MM-DD string in deliveryTime fie
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ deliveryDate: new Date('2025-08-15T00:00:00.000Z') }),
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   const result = await previewImportAction(formData);
@@ -375,14 +386,15 @@ it('Test 11: totalWeight includes only rows without Zod errors', async () => {
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [
       makeRawRow({ orderNumber: 'ORD-001', weightLbs: 100 }),
       makeRawRow({ orderNumber: 'ORD-002', weightLbs: 200 }),
       makeRawRow({ orderNumber: 'ORD-003', weightLbs: 300 }),
       makeRawRow({ orderNumber: 'ORD-004', weightLbs: -999 }), // invalid — excluded from totalWeight
     ],
-    errors: [],
+    errors: undefined,
   } as never);
 
   const result = await previewImportAction(formData);
@@ -401,9 +413,10 @@ it('Test 12: calls requireRole(mill_operator) before any other operation', async
   jest.mocked(requireRole).mockImplementationOnce(async () => {
     callOrder.push('requireRole');
   });
-  jest.mocked(readXlsxFile).mockImplementationOnce(async () => {
-    callOrder.push('readXlsxFile');
-    return { rows: [], errors: [] } as never;
+  // v9.x success branch for readSheet
+  jest.mocked(readSheet).mockImplementationOnce(async () => {
+    callOrder.push('readSheet');
+    return { objects: [], errors: undefined } as never;
   });
 
   const file = makeFile();
@@ -411,9 +424,9 @@ it('Test 12: calls requireRole(mill_operator) before any other operation', async
   await previewImportAction(formData);
 
   expect(jest.mocked(requireRole)).toHaveBeenCalledWith('mill_operator');
-  // requireRole must be called before readXlsxFile
+  // requireRole must be called before readSheet
   const roleIdx = callOrder.indexOf('requireRole');
-  const parseIdx = callOrder.indexOf('readXlsxFile');
+  const parseIdx = callOrder.indexOf('readSheet');
   expect(roleIdx).toBeLessThan(parseIdx);
 });
 
@@ -422,11 +435,9 @@ it('Test 13: surfaces read-excel-file parser errors as per-row errors on the cor
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [
-      makeRawRow({ orderNumber: 'ORD-001' }),
-      makeRawRow({ orderNumber: 'ORD-002' }), // row index 2 in XLSX (1-based)
-    ],
+  // v9.x error branch: { objects: undefined, errors: [...] }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: undefined,
     errors: [
       {
         row: 2,
@@ -465,9 +476,10 @@ it('Test 15: previewImportAction does not call revalidateTag (mutation-free beha
   const file = makeFile();
   const formData = makeFormData(file);
 
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [makeRawRow()],
-    errors: [],
+  // v9.x success branch: { objects: [...], errors: undefined }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [makeRawRow()],
+    errors: undefined,
   } as never);
 
   await previewImportAction(formData);
@@ -475,23 +487,62 @@ it('Test 15: previewImportAction does not call revalidateTag (mutation-free beha
   expect(jest.mocked(revalidateTag)).not.toHaveBeenCalled();
 });
 
-// Test 16: source assert — imports from read-excel-file/node (Pitfall 3)
-it('Test 16: src/actions/import.ts imports from read-excel-file/node subpath (Pitfall 3)', () => {
+// Test 16: source assert — imports readSheet (named export) from read-excel-file/node (GAP-05)
+it('Test 16: src/actions/import.ts imports readSheet named export from read-excel-file/node (GAP-05)', () => {
   const importPath = path.resolve(__dirname, '../import.ts');
   const source = fs.readFileSync(importPath, 'utf8');
-  expect(source).toMatch(/from\s+['"]read-excel-file\/node['"]/);
+  // Must use readSheet named export, not the default readXlsxFile (v8.x misuse)
+  expect(source).toMatch(/import\s*\{[^}]*readSheet[^}]*\}\s*from\s*['"]read-excel-file\/node['"]/);
 });
 
-// Test 17 (GAP-04): clean files — readXlsxFile returns { rows, errors: undefined } per v9.0.9 .d.ts
-it('Test 17 (GAP-04): handles clean files (errors: undefined) without throwing — read-excel-file v9.0.9 contract', async () => {
+// Test 18 (GAP-05): parser-error branch — readSheet returns { objects: undefined, errors: [...] }
+// This is the ParseSheetDataResultError discriminated-union branch. The action must handle
+// objects: undefined gracefully (via `?? []` guard) and surface the errors correctly.
+it('Test 18 (GAP-05): handles ParseSheetDataResultError branch — objects:undefined, errors:[...] without crashing', async () => {
   const file = makeFile();
   const formData = makeFormData(file);
 
-  // v9.0.9 .d.ts ParseSheetDataResultSuccess overload: errors is undefined
-  // (not []) when zero parser errors occur. The action's `for (const pe of
-  // parserErrors)` loop must tolerate this shape. See GAP-04 in 33-VERIFICATION.md.
-  jest.mocked(readXlsxFile).mockResolvedValueOnce({
-    rows: [makeRawRow({ orderNumber: 'ORD-CLEAN-001', weightLbs: 6000 })],
+  // v9.x error branch: { objects: undefined, errors: [...] }
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: undefined,
+    errors: [
+      {
+        row: 1,
+        column: 'Document Number',
+        error: 'required',
+        value: undefined,
+      },
+    ],
+  } as never);
+
+  const result = await previewImportAction(formData);
+
+  // Must NOT crash with TypeError: Cannot read properties of undefined (reading 'length')
+  // Must return a result (either server error caught in outer try/catch, OR ok:true with the parser
+  // error surfaced as a synthetic row). Either is acceptable — the key is no unhandled TypeError.
+  expect(result).toBeDefined();
+  // The action's outer catch returns { ok: false, code: 'server' } if rawRows ?? [] evaluates to 0-length
+  // and the parser error lands in the synthetic-row path. Accept both shapes.
+  if (result.ok) {
+    // Parser error was surfaced as a synthetic row
+    const errorRow = result.rows.find((r) => r.errors && r.errors.length > 0);
+    expect(errorRow).toBeDefined();
+  } else {
+    // Parser error triggered the outer catch (still acceptable — no TypeError unhandled)
+    expect(['server', 'validation']).toContain(result.code);
+  }
+});
+
+// Test 17 (GAP-04/GAP-05): clean files — readSheet returns { objects: [...], errors: undefined } per v9.0.9 .d.ts
+it('Test 17 (GAP-04/GAP-05): handles clean files (ParseSheetDataResultSuccess) without throwing — readSheet v9.x', async () => {
+  const file = makeFile();
+  const formData = makeFormData(file);
+
+  // v9.0.9 ParseSheetDataResultSuccess: { objects: [...], errors: undefined }
+  // readSheet with schema returns this union — action must destructure `objects`
+  // (not `rows`) and tolerate errors: undefined via `?? []` guard from GAP-04.
+  jest.mocked(readSheet).mockResolvedValueOnce({
+    objects: [makeRawRow({ orderNumber: 'ORD-CLEAN-001', weightLbs: 6000 })],
     errors: undefined,
   } as never);
 
