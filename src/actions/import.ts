@@ -791,6 +791,7 @@ export async function commitImportAction(
       // Step 13a: cache invalidation still required (data DID change).
       try {
         revalidateTag('production-orders', 'max');
+        revalidateTag('import-batches', 'max');   // D-21 Phase-34 cross-phase patch
       } catch (revalErr) {
         console.error('[commitImportAction] revalidateTag failed after batch-insert failure:', revalErr);
       }
@@ -806,6 +807,7 @@ export async function commitImportAction(
     // 'max' is the revalidateTag type parameter — matches project convention from transitions.ts
     try {
       revalidateTag('production-orders', 'max');
+      revalidateTag('import-batches', 'max');   // D-21 Phase-34 cross-phase patch
     } catch (revalErr) {
       console.error('[commitImportAction] revalidateTag failed:', revalErr);
     }
