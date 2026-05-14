@@ -133,12 +133,22 @@ function dateToIsoString(d: unknown): string {
  * read-excel-file `errors` array items have shape:
  *   { row: number; column: string; error: string; value: unknown }
  * where `row` is 1-based (matching XLSX row numbers).
+ *
+ * IMPORTANT: this helper calls `readSheet` (named export — schema-aware
+ * v9.x overload), NOT `readXlsxFile` (default — returns Sheet[] without
+ * schema support). See GAP-05 in 33-VERIFICATION.md.
  */
 async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
-  // GAP-05 migration (33-11): readSheet (named export) is the schema-aware API in read-excel-file v9.x.
-  // The default export `readXlsxFile` returns a 2D Sheet array with NO schema support — passing
-  // `{ schema }` to it is silently ignored at runtime, yielding raw cell values instead of
-  // prop-mapped objects. See RESEARCH.md §3 CORRECTION 2026-05-14 for the full post-mortem.
+  // GAP-05 migration (2026-05-14): the SCHEMA-AWARE function is `readSheet`
+  // (named export), NOT the default export `readXlsxFile`. Per
+  // node_modules/read-excel-file/node/index.d.ts lines 73-97:
+  //   - `export default readXlsxFile`: returns Promise<Sheet[]> (2D cell array,
+  //     no schema support — the schema option is silently dropped at runtime).
+  //   - `export function readSheet` (4th overload): takes OptionsWithSchema,
+  //     returns Promise<ParseSheetDataResult> — the `{ objects, errors }`
+  //     discriminated union below. Plans 33-05/33-06 originally used the
+  //     default export by mistake; GAP-05 in 33-VERIFICATION.md is the
+  //     post-mortem.
   //
   // v9.x ParseSheetDataResult discriminated union (parseSheetData.d.ts):
   //   ParseSheetDataResultSuccess: { objects: Object[];      errors: undefined }  ← clean file

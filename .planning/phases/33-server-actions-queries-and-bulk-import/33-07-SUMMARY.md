@@ -154,3 +154,7 @@ None — the harness is a complete implementation, not UI-connected. No stub pat
 *Plan: 07*
 *Completed (Tasks 1-2): 2026-05-14*
 *Task 3 checkpoint: pending operator*
+
+## 2026-05-14 Addendum: Task 3 unblocked + verified by plan 33-11
+
+Plan 33-11 (GAP-05 closure) migrated `src/actions/import.ts` and `scripts/test-xlsx-import.ts` from the v8.x `readXlsxFile + {schema}` API to the v9.x `readSheet + {objects, errors}` API. The harness re-run completed successfully (PASS: GAP-03 closed — 31 rows committed to the live Neon dev DB). GAP-03's Task 3 (operator harness re-run) is closed by plan 33-11's Task 3 commit. See VERIFICATION.md GAP-03 (CLOSED), GAP-05 (CLOSED) and 33-11-SUMMARY.md.
