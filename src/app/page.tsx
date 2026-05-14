@@ -1,38 +1,55 @@
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { checkRole } from '@/lib/auth';
+import { searchParamsCache } from '@/lib/search-params';
+import { getProductionOrders, getOrderById } from '@/db/queries/orders';
+import { getOrderEvents } from '@/db/queries/events';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProductionDashboard from '@/components/ProductionDashboard';
+import type { SearchParams } from 'nuqs/server';
+
+export const dynamic = 'force-dynamic'; // PROD-01: never cached at the RSC level
 
 /**
- * Phase 34 transitional homepage (`/`) — async server component.
+ * Production homepage (`/`) — async RSC with live DB data.
  *
- * Behavior (CONTEXT.md D-01..D-03):
- *   1. D-02: authentication gate only. Sign-in redirect happens when the
- *      session has no userId. No page-level role gate is applied.
- *   2. D-03: the canEdit flag is computed server-side and passed as a
- *      serializable boolean prop. The browser never re-checks the role;
- *      the server-only enforcement boundary lives at the RSC layer.
- *   3. D-01: any authenticated user reaches the page. Non-operator users
- *      see read-only mode; operator users see edit affordances.
- *
- * The full ProductionDashboard wiring lands in plan 07.
- * This transitional stub keeps the build green between Wave 1 and Wave 4.
+ * PROD-01: force-dynamic, no CDN cache, every request re-runs queries.
+ * D-02: auth gate ONLY (no role gate) — any authenticated user reaches the page.
+ * D-03: canEdit computed server-side, passed as a serializable boolean prop.
+ * D-09: drawer data fetched here (RSC layer), not inside the drawer component.
+ * D-25: canEdit gates transition buttons inside ProductionDrawer.
+ * Pitfall 2 (RESEARCH.md): searchParams is a Promise in Next.js 16 and must be awaited.
+ * Pitfall 7 (RESEARCH.md): getOrderById may return null for stale ?order= ids;
+ *   drawerOrder=null is passed through — ProductionDrawer renders empty state.
  */
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: { searchParams: Promise<SearchParams> }): Promise<React.JSX.Element> {
   const { userId } = await auth();
-  if (!userId) {
-    redirect('/sign-in'); // D-02: auth gate ONLY (no role gate)
-  }
+  if (!userId) redirect('/sign-in'); // D-02: auth gate ONLY (no role gate)
 
   const canEdit = await checkRole('mill_operator'); // D-03
 
+  // Pitfall 2 (RESEARCH.md): searchParams is a Promise in Next.js 16 — must be awaited via the cache
+  const { order } = await searchParamsCache.parse(searchParams);
+
+  // D-09: fetch drawer data server-side when ?order= is present.
+  // Three queries run in parallel via fan-out; null/[] are resolved synchronously
+  // when order is absent, so no extra DB round-trip is added in that case.
+  const [orders, drawerOrder, drawerEvents] = await Promise.all([
+    getProductionOrders(),
+    order ? getOrderById(order) : Promise.resolve(null),
+    order ? getOrderEvents(order) : Promise.resolve([]),
+  ]);
+
   return (
     <DashboardLayout>
-      <main className="flex flex-1 items-center justify-center" data-testid="dashboard-placeholder">
-        <p className="text-sm text-[var(--text-secondary)]" data-can-edit={canEdit}>
-          Dashboard placeholder — wired in plan 07
-        </p>
-      </main>
+      <ProductionDashboard
+        orders={orders}
+        canEdit={canEdit}
+        drawerOrder={drawerOrder}
+        drawerEvents={drawerEvents}
+      />
     </DashboardLayout>
   );
 }
