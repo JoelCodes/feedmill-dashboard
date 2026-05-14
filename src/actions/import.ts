@@ -1,6 +1,6 @@
 'use server';
 
-import readXlsxFile from 'read-excel-file/node';
+import { readSheet } from 'read-excel-file/node';
 import { db } from '@/db';
 import { productionOrders } from '@/db/schema/orders';
 import { orderEvents } from '@/db/schema/events';
@@ -61,7 +61,7 @@ export type PreviewResult =
 // the legacy prop-based format (column titles → { prop, type, required }) used
 // in this codebase per RESEARCH.md §3 lines 309-337. Using `Record<string, unknown>`
 // here avoids the type mismatch while preserving the correct runtime behavior.
-// The `as unknown as Parameters<typeof readXlsxFile>[1]` cast ensures the options
+// The call-site cast `as unknown as XlsxFn` in parseAndValidate ensures the options
 // pass TypeScript type-checking at the call site without sacrificing correctness.
 const xlsxSchema: Record<string, unknown> = {
   'Document Number': { prop: 'orderNumber', type: String, required: true },
@@ -115,22 +115,26 @@ function dateToIsoString(d: unknown): string {
  * where `row` is 1-based (matching XLSX row numbers).
  */
 async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
-  // Type cast required: read-excel-file 9.x TypeScript types use the new typed-Schema
-  // API (output keys → { column, type, required }). The runtime still accepts the
-  // legacy prop-based format (column titles → { prop, type, required }) used here per
-  // RESEARCH.md §3 lines 309-337. The double-cast through `unknown` is safe — runtime
-  // behavior is correct and tests mock this function.
-  // Return-shape contract (v9.0.9): per node_modules/read-excel-file/types/parseSheetData/parseSheetData.d.ts
-  // the result is a discriminated union — ParseSheetDataResultSuccess returns `errors: undefined`
-  // (success/clean-file case) and ParseSheetDataResultError returns `errors: Error[]` (parse-failure
-  // case). The `errors: Array<...> | undefined` shape below covers both overloads. See GAP-04 in
-  // 33-VERIFICATION.md for the post-mortem on the original missing `| undefined` annotation that
-  // caused a TypeError on every clean Book1.xlsx upload.
+  // GAP-05 migration (33-11): readSheet (named export) is the schema-aware API in read-excel-file v9.x.
+  // The default export `readXlsxFile` returns a 2D Sheet array with NO schema support — passing
+  // `{ schema }` to it is silently ignored at runtime, yielding raw cell values instead of
+  // prop-mapped objects. See RESEARCH.md §3 CORRECTION 2026-05-14 for the full post-mortem.
+  //
+  // v9.x ParseSheetDataResult discriminated union (parseSheetData.d.ts):
+  //   ParseSheetDataResultSuccess: { objects: Object[];      errors: undefined }  ← clean file
+  //   ParseSheetDataResultError:   { objects: undefined;     errors: Error[]   }  ← parse failure
+  //
+  // Both fields must be guarded with `?? []` before iteration:
+  //   - `parserErrors ?? []`  (GAP-04 guard, carried forward)
+  //   - `rawRows ?? []`       (GAP-05 new guard — objects: undefined on error branch)
   type XlsxFn = (
     input: Buffer,
     options: { schema: Record<string, unknown> }
-  ) => Promise<{ rows: Record<string, unknown>[]; errors: Array<{ row: number; column: string; error: string; value: unknown }> | undefined }>;
-  const { rows: rawRows, errors: parserErrors } = await (readXlsxFile as unknown as XlsxFn)(buffer, {
+  ) => Promise<{
+    objects: Record<string, unknown>[] | undefined;  // undefined on ParseSheetDataResultError branch
+    errors: Array<{ row: number; column: string; error: string; value: unknown }> | undefined;
+  }>;
+  const { objects: rawRows, errors: parserErrors } = await (readSheet as unknown as XlsxFn)(buffer, {
     schema: xlsxSchema,
   });
 
@@ -155,8 +159,9 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
 
   const result: PreviewRow[] = [];
 
-  for (let i = 0; i < rawRows.length; i++) {
-    const raw = rawRows[i] as Record<string, unknown>;
+  // GAP-05: rawRows is undefined on the ParseSheetDataResultError branch — guard required.
+  for (let i = 0; i < (rawRows ?? []).length; i++) {
+    const raw = (rawRows ?? [])[i] as Record<string, unknown>;
     const rowIndex = i + 1; // 1-based
 
     // D-16: inject 'Premix' default + date conversion before Zod validation
