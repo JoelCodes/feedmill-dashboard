@@ -7,9 +7,24 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
+    refresh: jest.fn(),
   }),
   useSearchParams: () => new URLSearchParams(),
 }));
+
+// Mock next/link to a simple passthrough <a> for jsdom
+jest.mock('next/link', () => {
+  const React = require('react');
+  return function MockLink({
+    href,
+    children,
+  }: {
+    href: string;
+    children: React.ReactNode;
+  }) {
+    return React.createElement('a', { href }, children);
+  };
+});
 
 // Mock @clerk/nextjs components used by Header
 jest.mock("@clerk/nextjs", () => ({
@@ -25,6 +40,41 @@ jest.mock("@clerk/nextjs", () => ({
 // Mock services used by Header
 jest.mock("@/services/notifications", () => ({
   getNotifications: jest.fn().mockResolvedValue([]),
+}));
+
+// Mock useProductionPolling to avoid live router.refresh intervals in layout tests
+jest.mock('@/hooks/useProductionPolling', () => ({
+  useProductionPolling: jest.fn(),
+}));
+
+// Mock ProductionDrawer to avoid pulling in server-action dependencies
+jest.mock('./ProductionDrawer', () => ({
+  __esModule: true,
+  default: ({ order }: { order: { orderNumber?: string } | null }) => {
+    const React = require('react');
+    return React.createElement(
+      'div',
+      { 'data-testid': 'production-drawer' },
+      order ? `Drawer: ${order.orderNumber ?? 'unknown'}` : 'Drawer: Order not found'
+    );
+  },
+}));
+
+// Mock DrawerSkeleton
+jest.mock('./DrawerSkeleton', () => ({
+  __esModule: true,
+  default: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'drawer-skeleton' }, 'DrawerSkeleton');
+  },
+}));
+
+// Mock @/actions/transitions to prevent DB connection attempts
+jest.mock('@/actions/transitions', () => ({
+  transitionToMixing: jest.fn(),
+  completeOrder: jest.fn(),
+  blockOrder: jest.fn(),
+  resumeFromBlocked: jest.fn(),
 }));
 
 describe("DashboardLayout", () => {
@@ -76,5 +126,87 @@ describe("DashboardLayout", () => {
     const outerDiv = container.firstChild as HTMLElement;
     expect(outerDiv).toHaveClass("flex");
     expect(outerDiv).toHaveClass("h-screen");
+  });
+});
+
+// ── Integration regression: T3 gap closure ──────────────────────────────────
+//
+// These tests render DashboardLayout + ProductionDashboard together to exercise
+// the full `/` route DOM and catch layout-level duplicate-input bugs that
+// standalone-component tests cannot observe.
+//
+// Previously: Header had a dead `type="text"` search input (placeholder "Type here...")
+// that was never wired to URL state. ProductionDashboard has the real URL-syncing
+// `type="search"` input (placeholder "Search orders..."). Rendering both in isolation
+// missed the duplication; this test catches it.
+
+import React from 'react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
+import ProductionDashboard from './ProductionDashboard';
+import type { ProductionOrder } from '@/db/schema/orders';
+import type { OrderEvent } from '@/db/schema/events';
+
+const emptyOrders: ProductionOrder[] = [];
+const emptyEvents: OrderEvent[] = [];
+
+describe('DashboardLayout + ProductionDashboard integration (T3 gap closure)', () => {
+  it('renders exactly one searchbox on the `/` route', () => {
+    render(
+      <NuqsTestingAdapter>
+        <DashboardLayout>
+          <ProductionDashboard
+            orders={emptyOrders}
+            canEdit={false}
+            drawerOrder={null}
+            drawerEvents={emptyEvents}
+          />
+        </DashboardLayout>
+      </NuqsTestingAdapter>
+    );
+
+    const searchboxes = screen.getAllByRole('searchbox');
+    expect(searchboxes).toHaveLength(1);
+    expect(searchboxes[0]).toHaveAttribute('placeholder', 'Search orders...');
+  });
+
+  it('the surviving searchbox writes ?q to the URL via nuqs', async () => {
+    jest.useFakeTimers();
+    try {
+      const urlUpdates: URLSearchParams[] = [];
+
+      render(
+        <NuqsTestingAdapter onUrlUpdate={(evt) => urlUpdates.push(evt.searchParams)}>
+          <DashboardLayout>
+            <ProductionDashboard
+              orders={emptyOrders}
+              canEdit={false}
+              drawerOrder={null}
+              drawerEvents={emptyEvents}
+            />
+          </DashboardLayout>
+        </NuqsTestingAdapter>
+      );
+
+      const input = screen.getByPlaceholderText('Search orders...');
+
+      // Type into the search field via fireEvent (compatible with fake timers)
+      fireEvent.change(input, { target: { value: 'acme' } });
+
+      // Advance past 150ms debounce window (ProductionDashboard uses 150ms)
+      await act(async () => {
+        jest.advanceTimersByTime(200);
+      });
+
+      // After debounce, the URL q param should be 'acme'
+      await waitFor(() => {
+        expect(urlUpdates.length).toBeGreaterThan(0);
+        const lastUrl = urlUpdates[urlUpdates.length - 1];
+        expect(lastUrl?.get('q')).toBe('acme');
+      });
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
   });
 });
