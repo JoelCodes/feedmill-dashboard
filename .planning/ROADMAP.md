@@ -154,7 +154,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [x] 34-03-PLAN.md — getImportBatches cached query + ColumnSkeleton + DrawerSkeleton + LastUpdatedChip + BlockedAlertBand (PROD-06, PROD-10, PROD-11)
 - [x] 34-04-PLAN.md — production-derivations pure helpers (TDD) + ProductionCard + MillColumn (PROD-02, PROD-07, PROD-08)
 - [x] 34-05-PLAN.md — ProductionDashboard client wrapper composing filters/search/polling/blocked band/columns (PROD-02, PROD-03, PROD-04, PROD-06, PROD-09, PROD-10, PROD-11)
-- [ ] 34-06-PLAN.md — ProductionDrawer + TransitionButtons + BlockReasonModal + DrawerCloseHandlers + dashboard drawer wiring (PROD-05)
+- [x] 34-06-PLAN.md — ProductionDrawer + TransitionButtons + BlockReasonModal + DrawerCloseHandlers + dashboard drawer wiring (PROD-05)
 - [ ] 34-07-PLAN.md — Page rewrites (/, /import) + ImportFlow + ImportHistoryTable + manual UAT incl. Inherited GAP-02 (PROD-01, PROD-02, PROD-05, PROD-10)
 **UI hint**: yes
 
@@ -188,7 +188,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 31. Role Expansion and DB Infrastructure | v2.0 | 5/5 | Complete    | 2026-05-13 |
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
-| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 5/7 | In Progress|  |
+| 34. Production Dashboard UI and Homepage Promotion | v2.0 | 6/7 | In Progress|  |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
