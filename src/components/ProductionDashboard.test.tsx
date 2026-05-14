@@ -395,3 +395,120 @@ describe('ProductionDashboard', () => {
     }
   });
 });
+
+// ─── T10b gap closure: URL-update options (shallow/history) ─────────────────
+
+describe('Order key URL-update options (T10b gap closure)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('order setter uses shallow: false + history: push (card click triggers RSC fetch)', async () => {
+    const urlUpdateEvents: Array<{ searchParams: URLSearchParams; queryString: string; options: { shallow: boolean; history: string; scroll: boolean } }> = [];
+    const onUrlUpdate = (evt: typeof urlUpdateEvents[0]) => urlUpdateEvents.push(evt);
+
+    render(
+      <NuqsTestingAdapter onUrlUpdate={onUrlUpdate}>
+        <ProductionDashboard
+          orders={[makeOrder({ id: 'ord_1', state: 'Pending', millLine: 'Premix', customer: 'Acme Feed' })]}
+          canEdit={false}
+          drawerOrder={null}
+          drawerEvents={[]}
+        />
+      </NuqsTestingAdapter>
+    );
+
+    // Find the order card button (contains customer name)
+    const allButtons = screen.getAllByRole('button');
+    const orderCard = allButtons.find((btn) => btn.textContent?.includes('Acme Feed'));
+    expect(orderCard).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.click(orderCard!);
+    });
+
+    await waitFor(() => {
+      expect(urlUpdateEvents.length).toBeGreaterThan(0);
+    });
+
+    // Find the update that sets the order param
+    const orderUpdate = urlUpdateEvents.find((evt) =>
+      evt.queryString.includes('order=') || evt.searchParams.has('order')
+    );
+    expect(orderUpdate).toBeDefined();
+    expect(orderUpdate!.options.shallow).toBe(false);
+    expect(orderUpdate!.options.history).toBe('push');
+  });
+
+  it('status pill toggle remains shallow (no RSC fetch per pill)', async () => {
+    const urlUpdateEvents: Array<{ searchParams: URLSearchParams; queryString: string; options: { shallow: boolean; history: string; scroll: boolean } }> = [];
+    const onUrlUpdate = (evt: typeof urlUpdateEvents[0]) => urlUpdateEvents.push(evt);
+
+    render(
+      <NuqsTestingAdapter onUrlUpdate={onUrlUpdate}>
+        <ProductionDashboard
+          orders={[]}
+          canEdit={false}
+          drawerOrder={null}
+          drawerEvents={[]}
+        />
+      </NuqsTestingAdapter>
+    );
+
+    // Click the Pending filter pill
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /filter by pending/i }));
+    });
+
+    await waitFor(() => {
+      expect(urlUpdateEvents.length).toBeGreaterThan(0);
+    });
+
+    const statusUpdate = urlUpdateEvents.find((evt) =>
+      evt.queryString.includes('status=') || evt.searchParams.has('status')
+    );
+    expect(statusUpdate).toBeDefined();
+    // shallow defaults to true when not specified — assert it's NOT false
+    expect(statusUpdate!.options.shallow).not.toBe(false);
+  });
+
+  it('search-debounce q update remains shallow (no RSC fetch per keystroke)', async () => {
+    jest.useFakeTimers();
+    try {
+      const urlUpdateEvents: Array<{ searchParams: URLSearchParams; queryString: string; options: { shallow: boolean; history: string; scroll: boolean } }> = [];
+      const onUrlUpdate = (evt: typeof urlUpdateEvents[0]) => urlUpdateEvents.push(evt);
+
+      render(
+        <NuqsTestingAdapter onUrlUpdate={onUrlUpdate}>
+          <ProductionDashboard
+            orders={[]}
+            canEdit={false}
+            drawerOrder={null}
+            drawerEvents={[]}
+          />
+        </NuqsTestingAdapter>
+      );
+
+      const input = screen.getByPlaceholderText(/search/i);
+      fireEvent.change(input, { target: { value: 'acme' } });
+
+      // Advance past the 150ms debounce
+      await act(async () => {
+        jest.advanceTimersByTime(200);
+      });
+
+      await waitFor(() => {
+        expect(urlUpdateEvents.length).toBeGreaterThan(0);
+      });
+
+      const qUpdate = urlUpdateEvents.find((evt) =>
+        evt.queryString.includes('q=') || evt.searchParams.has('q')
+      );
+      expect(qUpdate).toBeDefined();
+      expect(qUpdate!.options.shallow).not.toBe(false);
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
+  });
+});
