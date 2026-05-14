@@ -126,9 +126,11 @@ describe('ProductionDrawer', () => {
     const order = makeOrder({ orderNumber: 'ORD-001', customer: 'Acme Feed' });
     renderDrawer({ order });
 
-    // Header should contain order number and customer
-    expect(screen.getByText(/ORD-001/)).toBeInTheDocument();
-    expect(screen.getAllByText(/Acme Feed/)[0]).toBeInTheDocument();
+    // Header should contain order number and customer — both appear in h2
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('ORD-001');
+    // Customer appears in the header and also in fields — at least one occurrence
+    const customerEls = screen.getAllByText(/Acme Feed/);
+    expect(customerEls.length).toBeGreaterThanOrEqual(1);
   });
 
   // ── Test 7: Order fields rendered ────────────────────────────────────────
@@ -142,15 +144,17 @@ describe('ProductionDrawer', () => {
       millLine: 'Premix',
       textureType: null,
     });
-    renderDrawer({ order });
+    const { container } = renderDrawer({ order });
 
-    // Product field
-    expect(screen.getByText('Layer Mash')).toBeInTheDocument();
-    // Weight — formatted with parseFloat + toLocaleString
-    // 5000.50 rendered as "5,000.5 lbs" or similar
-    expect(screen.getByText(/5[,.]?000/)).toBeInTheDocument();
-    // Mill Line
-    expect(screen.getByText('Premix')).toBeInTheDocument();
+    // Product field — appears in the dl fields section
+    expect(screen.getAllByText('Layer Mash').length).toBeGreaterThanOrEqual(1);
+    // Weight — formatted with parseFloat + toLocaleString — at least one element contains "5,000" or "5000"
+    const weightRegex = /5[,.]?000/;
+    const allText = container.textContent ?? '';
+    expect(allText).toMatch(weightRegex);
+    // Mill Line — appears in field row
+    const premixEls = screen.getAllByText('Premix');
+    expect(premixEls.length).toBeGreaterThanOrEqual(1);
   });
 
   // ── Test 8: Timeline rendered in order ───────────────────────────────────

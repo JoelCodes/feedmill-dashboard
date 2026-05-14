@@ -22,7 +22,7 @@
  * This string MUST match character-for-character.
  */
 
-import { useActionState, useEffect } from 'react';
+import React, { useActionState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   transitionToMixing,
@@ -183,7 +183,7 @@ export default function TransitionButtons({
 }: {
   order: ProductionOrder;
   onBlockClick: () => void;
-}): JSX.Element | null {
+}): React.JSX.Element | null {
   switch (order.state) {
     case 'Pending':
       return (

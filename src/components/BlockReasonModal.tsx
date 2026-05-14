@@ -23,7 +23,7 @@
  *   so the modal owns ESC while it is open.
  */
 
-import { useActionState, useState } from 'react';
+import React, { useActionState, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { blockOrder, type TransitionResult } from '@/actions/transitions';
 import Textarea from '@/components/ui/Textarea';
@@ -45,7 +45,7 @@ export default function BlockReasonModal({
   version,
   open,
   onClose,
-}: BlockReasonModalProps): JSX.Element {
+}: BlockReasonModalProps): React.JSX.Element {
   const [reason, setReason] = useState('');
 
   const [state, formAction, isPending] = useActionState<TransitionResult | null, FormData>(

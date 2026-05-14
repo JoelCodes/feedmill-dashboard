@@ -31,6 +31,36 @@ jest.mock('next/link', () => {
   };
 });
 
+// Mock ProductionDrawer to avoid pulling in server-action dependencies (transitions.ts → DB)
+jest.mock('./ProductionDrawer', () => ({
+  __esModule: true,
+  default: ({ order }: { order: { orderNumber?: string } | null }) => {
+    const React = require('react');
+    return React.createElement(
+      'div',
+      { 'data-testid': 'production-drawer' },
+      order ? `Drawer: ${order.orderNumber ?? 'unknown'}` : 'Drawer: Order not found'
+    );
+  },
+}));
+
+// Mock DrawerSkeleton
+jest.mock('./DrawerSkeleton', () => ({
+  __esModule: true,
+  default: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'drawer-skeleton' }, 'DrawerSkeleton');
+  },
+}));
+
+// Mock @/actions/transitions to prevent DB connection attempts
+jest.mock('@/actions/transitions', () => ({
+  transitionToMixing: jest.fn(),
+  completeOrder: jest.fn(),
+  blockOrder: jest.fn(),
+  resumeFromBlocked: jest.fn(),
+}));
+
 import React from 'react';
 import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
