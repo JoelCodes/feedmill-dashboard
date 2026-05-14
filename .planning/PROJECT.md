@@ -11,11 +11,12 @@ Operations staff can see and manage feed orders in real-time, from pending throu
 ## Current State
 
 **Shipped:** v1.5 Production Transition (2026-05-12)
-**In progress:** v2.0 Mill Production MVP — Phases 31, 32, 33 complete (Phase 34 next: production dashboard UI)
+**In progress:** v2.0 Mill Production MVP — Phases 31–34 complete (manual UAT pending for Phase 34)
 **Codebase:** ~11,650 LOC TypeScript
-**Tech stack:** Next.js 15, React 19, Tailwind CSS 4, Clerk v7, Drizzle ORM, Neon (Postgres)
+**Tech stack:** Next.js 16, React 19, Tailwind CSS 4, Clerk v7, Drizzle ORM, Neon (Postgres)
 **Tests:** Unit + E2E suite green | **ESLint:** 0 errors | **Milestone audit:** passed
 **Phase 33 (2026-05-14):** Server actions, queries, and bulk XLSX import landed. All TRANS-01..07 + IMPORT-01..07 satisfied. Live-DB harnesses for the version-column race (GAP-01) and Book1.xlsx end-to-end (GAP-03) confirmed against Neon dev DB. GAP-02 (revalidateTag end-to-end) deferred to Phase 34 via 34-INHERITED-UAT.md.
+**Phase 34 (2026-05-14):** Production dashboard UI + homepage promotion shipped (PROD-01..11). The Coming Soon page at `/` is replaced by a live DB-backed three-column dashboard with nuqs URL state, 30s polling, drawer + transition buttons + block-reason modal, bulk-import flow, and the GAP-02 two-tab UAT contract in `34-HUMAN-UAT.md` (pending manual execution).
 
 **What's working:**
 - **Demo namespace** — orders, customers, mill-production live under `/demo/*` with 404s on legacy paths
@@ -277,4 +278,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-14 — Phase 33 (server actions + bulk import) complete; Phase 34 next*
+*Last updated: 2026-05-14 — Phase 34 (production dashboard UI + homepage promotion) shipped; manual UAT pending*
