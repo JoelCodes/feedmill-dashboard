@@ -9,6 +9,11 @@
  */
 
 // Mocks BEFORE any imports
+const mockRefresh = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: mockRefresh }),
+}));
+
 jest.mock('@/actions/transitions', () => ({
   transitionToMixing: jest.fn(),
   completeOrder: jest.fn(),
@@ -206,5 +211,67 @@ describe('BlockReasonModal', () => {
     await waitFor(() => {
       expect(onClose).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe('BlockReasonModal router.refresh on success (T12 gap closure)', () => {
+  const mockOnClose = jest.fn();
+
+  beforeEach(() => {
+    mockRefresh.mockClear();
+    mockOnClose.mockClear();
+    (blockOrder as jest.Mock).mockResolvedValue({ ok: true });
+  });
+
+  it('calls router.refresh and onClose on successful blockOrder', async () => {
+    const user = userEvent.setup();
+    (blockOrder as jest.Mock).mockResolvedValueOnce({ ok: true });
+
+    render(
+      <BlockReasonModal
+        orderId="ord-001"
+        version={1}
+        open={true}
+        onClose={mockOnClose}
+      />
+    );
+
+    const textarea = screen.getByRole('textbox', { name: /reason/i });
+    await user.type(textarea, 'Equipment failure');
+    await user.click(screen.getByRole('button', { name: /confirm block/i }));
+
+    await waitFor(() => {
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does NOT call router.refresh on validation failure', async () => {
+    const user = userEvent.setup();
+    (blockOrder as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      code: 'validation',
+      message: 'A non-empty reason is required to block an order.',
+    });
+
+    render(
+      <BlockReasonModal
+        orderId="ord-001"
+        version={1}
+        open={true}
+        onClose={mockOnClose}
+      />
+    );
+
+    const textarea = screen.getByRole('textbox', { name: /reason/i });
+    await user.type(textarea, 'tmp');  // type something so Confirm is enabled
+    await user.click(screen.getByRole('button', { name: /confirm block/i }));
+
+    await waitFor(() => {
+      expect(blockOrder).toHaveBeenCalled();
+    });
+
+    expect(mockRefresh).not.toHaveBeenCalled();
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 });
