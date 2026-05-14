@@ -481,3 +481,37 @@ it('Test 16: src/actions/import.ts imports from read-excel-file/node subpath (Pi
   const source = fs.readFileSync(importPath, 'utf8');
   expect(source).toMatch(/from\s+['"]read-excel-file\/node['"]/);
 });
+
+// Test 17 (GAP-04): clean files — readXlsxFile returns { rows, errors: undefined } per v9.0.9 .d.ts
+it('Test 17 (GAP-04): handles clean files (errors: undefined) without throwing — read-excel-file v9.0.9 contract', async () => {
+  const file = makeFile();
+  const formData = makeFormData(file);
+
+  // v9.0.9 .d.ts ParseSheetDataResultSuccess overload: errors is undefined
+  // (not []) when zero parser errors occur. The action's `for (const pe of
+  // parserErrors)` loop must tolerate this shape. See GAP-04 in 33-VERIFICATION.md.
+  jest.mocked(readXlsxFile).mockResolvedValueOnce({
+    rows: [makeRawRow({ orderNumber: 'ORD-CLEAN-001', weightLbs: 6000 })],
+    errors: undefined,
+  } as never);
+
+  const result = await previewImportAction(formData);
+
+  // Must NOT return the generic server error from the outer try/catch
+  // (which would indicate the TypeError surfaced).
+  expect(result).toMatchObject({
+    ok: true,
+    summary: {
+      rowCount: 1,
+      totalWeight: 6000,
+      validCount: 1,
+      duplicateCount: 0,
+      errorCount: 0,
+    },
+  });
+  if (result.ok) {
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0].orderNumber).toBe('ORD-CLEAN-001');
+    expect(result.rows[0].errors).toBeUndefined();
+  }
+});
