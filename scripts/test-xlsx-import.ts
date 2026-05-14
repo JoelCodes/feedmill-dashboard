@@ -56,6 +56,14 @@
  *   - D-13:   All imports start as 'Pending'.
  */
 
+// ── 'server-only' shim is loaded BEFORE this module via tsx --import ───────
+// The harness is invoked as:
+//   tsx --import ./scripts/_server-only-shim.mjs scripts/test-xlsx-import.ts
+// see scripts/_server-only-shim.mjs for the rationale. The shim must run via
+// --import (not an inline statement) because ESM hoists all `import`
+// declarations above module-level code, so an inline shim would patch the
+// resolver AFTER `import { db } from '@/db'` has already failed.
+
 // ── Load .env.local BEFORE any import that touches src/db/index.ts ─────────
 // src/db/index.ts throws immediately if process.env.DATABASE_URL is undefined.
 // dotenv.config must run before the module graph is evaluated, which in ESM/tsx
@@ -69,10 +77,10 @@ import { randomUUID } from 'node:crypto';
 
 // The `@/` alias resolves to `./src/` per tsconfig paths.
 // tsx resolves tsconfig path aliases at runtime; no extra config needed.
-// NOTE: `src/db/index.ts` begins with `import 'server-only'` (D-10).
-// In a Next.js server runtime this directive is enforced by the bundler.
-// In a tsx/Node CLI context the `server-only` package is a no-op stub —
-// it does NOT throw, so direct Drizzle access from this script is safe.
+// NOTE: `src/db/index.ts` begins with `import 'server-only'` (D-10) — the npm
+// `server-only` package throws by design when imported from a non-RSC runtime
+// (plain Node/tsx). The resolver hook at the top of this file short-circuits
+// that import to a no-op so direct Drizzle access from this script is safe.
 import { db } from '@/db';
 import { productionOrders } from '@/db/schema/orders';
 import { orderEvents } from '@/db/schema/events';
