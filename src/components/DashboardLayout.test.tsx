@@ -77,6 +77,31 @@ jest.mock('@/actions/transitions', () => ({
   resumeFromBlocked: jest.fn(),
 }));
 
+// Mock KpiStrip + KpiSection to avoid DB query imports in the integration test
+jest.mock('./KpiStrip', () => ({
+  __esModule: true,
+  default: () => {
+    const React = require('react');
+    return React.createElement('div', { 'aria-label': 'KPI summary strip', 'data-testid': 'kpi-strip' }, 'KpiStrip');
+  },
+  KpiStripSkeleton: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'kpi-strip-skeleton' }, 'KpiStripSkeleton');
+  },
+}));
+
+jest.mock('./KpiSection', () => ({
+  __esModule: true,
+  default: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'kpi-section' }, 'KpiSection');
+  },
+  KpiSectionSkeleton: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'kpi-section-skeleton' }, 'KpiSectionSkeleton');
+  },
+}));
+
 describe("DashboardLayout", () => {
   it("renders children", () => {
     render(
@@ -146,9 +171,19 @@ import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import ProductionDashboard from './ProductionDashboard';
 import type { ProductionOrder } from '@/db/schema/orders';
 import type { OrderEvent } from '@/db/schema/events';
+import type { KpiStripData, TrendDay, BlockedOrderWithDwell } from '@/db/queries/kpis';
 
 const emptyOrders: ProductionOrder[] = [];
 const emptyEvents: OrderEvent[] = [];
+
+// KPI fixtures — minimal values for integration test (KPI components are mocked)
+const kpiStripFixture: KpiStripData = {
+  completedTodayLbs: '0', premixLbs: '0', excelLbs: '0', cgmLbs: '0',
+  pendingCount: 0, pendingLbs: '0', pelletPct: null, mashPct: null,
+  crumblePct: null, uncategorizedCount: 0,
+};
+const trendFixture: TrendDay[] = [];
+const exceptionsFixture: BlockedOrderWithDwell[] = [];
 
 describe('DashboardLayout + ProductionDashboard integration (T3 gap closure)', () => {
   it('renders exactly one searchbox on the `/` route', () => {
@@ -160,6 +195,9 @@ describe('DashboardLayout + ProductionDashboard integration (T3 gap closure)', (
             canEdit={false}
             drawerOrder={null}
             drawerEvents={emptyEvents}
+            kpiStrip={kpiStripFixture}
+            kpiTrend={trendFixture}
+            kpiBlocked={exceptionsFixture}
           />
         </DashboardLayout>
       </NuqsTestingAdapter>
@@ -183,6 +221,9 @@ describe('DashboardLayout + ProductionDashboard integration (T3 gap closure)', (
               canEdit={false}
               drawerOrder={null}
               drawerEvents={emptyEvents}
+              kpiStrip={kpiStripFixture}
+              kpiTrend={trendFixture}
+              kpiBlocked={exceptionsFixture}
             />
           </DashboardLayout>
         </NuqsTestingAdapter>

@@ -19,6 +19,11 @@
  */
 
 import React, { useMemo, useState, useEffect, Suspense, startTransition } from 'react';
+import KpiStrip, { KpiStripSkeleton } from '@/components/KpiStrip';
+import KpiSection, { KpiSectionSkeleton } from '@/components/KpiSection';
+import { computeColumnWeights } from '@/lib/production-derivations';
+import type { KpiStripData, TrendDay, BlockedOrderWithDwell } from '@/db/queries/kpis';
+import type { ColumnSummary } from '@/components/MillColumn';
 import {
   useQueryStates,
   parseAsArrayOf,
@@ -126,6 +131,9 @@ type Props = {
   canEdit: boolean;
   drawerOrder: ProductionOrder | null;
   drawerEvents: OrderEvent[];
+  kpiStrip: KpiStripData;
+  kpiTrend: TrendDay[];
+  kpiBlocked: BlockedOrderWithDwell[];
 };
 
 export default function ProductionDashboard({
@@ -133,6 +141,9 @@ export default function ProductionDashboard({
   canEdit,
   drawerOrder,
   drawerEvents,
+  kpiStrip,
+  kpiTrend,
+  kpiBlocked,
 }: Props): React.JSX.Element {
   // ── Polling — PROD-09 / D-19 ───────────────────────────────────────────
   useProductionPolling();
@@ -203,10 +214,33 @@ export default function ProductionDashboard({
     [filtered]
   );
 
+  // ── KPI-03 column summaries — Pitfall 6: MUST use `orders` (UNFILTERED) ──
+  // Filter pills change `filtered` but NOT `orders`; header counts reflect
+  // the total per-line workload, not the currently visible filtered subset.
+  // computeColumnWeights returns { completed, total } by summing Completed / all weights.
+  const columnSummaries = useMemo<Record<MillLine, ColumnSummary>>(
+    () => {
+      const lines: MillLine[] = ['Premix', 'Excel', 'CGM'];
+      return Object.fromEntries(
+        lines.map((line) => {
+          const lineOrders = orders.filter((o) => o.millLine === line); // UNFILTERED — Pitfall 6
+          const { completed, total } = computeColumnWeights(lineOrders);
+          return [line, { orderCount: lineOrders.length, completedLbs: completed, totalLbs: total }];
+        })
+      ) as Record<MillLine, ColumnSummary>;
+    },
+    [orders] // NOTE: depends on `orders` (unfiltered), NOT `filtered` (Pitfall 6)
+  );
+
   // ── JSX ───────────────────────────────────────────────────────────────
 
   return (
     <div className="flex flex-col gap-5">
+      {/* ── Zone 1: KpiStrip — ABOVE filter pills (D-07) ──────────────────── */}
+      <Suspense fallback={<KpiStripSkeleton />}>
+        <KpiStrip kpis={kpiStrip} />
+      </Suspense>
+
       {/* ── Header strip — UI-SPEC §1 ──────────────────────────────────── */}
       <div className="flex items-center justify-between gap-4">
         {/* Left: filter pills */}
@@ -251,12 +285,14 @@ export default function ProductionDashboard({
 
       {/* ── Columns — PROD-02 / D-23 Suspense per column ─────────────── */}
       {/* Each column is explicitly rendered (not .map) so grep sees ≥ 3 literal <Suspense */}
+      {/* summary prop uses columnSummaries (UNFILTERED orders) — Pitfall 6 */}
       <div className="flex gap-6">
         <div data-suspense="column">
           <Suspense fallback={<ColumnSkeleton />}>
             <MillColumn
               millLine="Premix"
               orders={ordersByMill.Premix}
+              summary={columnSummaries.Premix}
               onOrderClick={(id) =>
                 startTransition(() => {
                   setOrderQuery({ order: id });
@@ -270,6 +306,7 @@ export default function ProductionDashboard({
             <MillColumn
               millLine="Excel"
               orders={ordersByMill.Excel}
+              summary={columnSummaries.Excel}
               onOrderClick={(id) =>
                 startTransition(() => {
                   setOrderQuery({ order: id });
@@ -283,6 +320,7 @@ export default function ProductionDashboard({
             <MillColumn
               millLine="CGM"
               orders={ordersByMill.CGM}
+              summary={columnSummaries.CGM}
               onOrderClick={(id) =>
                 startTransition(() => {
                   setOrderQuery({ order: id });
@@ -292,6 +330,11 @@ export default function ProductionDashboard({
           </Suspense>
         </div>
       </div>
+
+      {/* ── Zone 3: KpiSection — BELOW columns (D-07) ─────────────────── */}
+      <Suspense fallback={<KpiSectionSkeleton />}>
+        <KpiSection trendData={kpiTrend} exceptions={kpiBlocked} />
+      </Suspense>
 
       {/* ── Drawer — plan 06 integration ──────────────────────────────── */}
       {/* Render when ?order= URL param is set (even if drawerOrder is null for stale IDs) */}
