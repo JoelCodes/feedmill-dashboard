@@ -22,7 +22,7 @@
  * This string MUST match character-for-character.
  */
 
-import React, { useActionState, useEffect } from 'react';
+import React, { useActionState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   transitionToMixing,
@@ -59,8 +59,22 @@ export function StartMixingButton({
   version: number;
 }) {
   const router = useRouter();
+  // CR-02 (deep review 2026-05-14): useActionState memoises the FIRST action
+  // callback it receives. A subsequent render with a new `version` prop (e.g.
+  // after router.refresh() bumps it) does NOT rebind the closure — clicking
+  // again would send the stale version and trigger a spurious server conflict.
+  // Read the latest props through a ref that we sync in an effect on every
+  // render, so the action always reads the current orderId/version.
+  const propsRef = useRef({ orderId, version });
+  useEffect(() => {
+    propsRef.current = { orderId, version };
+  }, [orderId, version]);
+
   const [state, formAction, isPending] = useActionState<TransitionResult | null, FormData>(
-    async (_prev) => transitionToMixing(orderId, version),
+    async (_prev) => {
+      const { orderId: id, version: v } = propsRef.current;
+      return transitionToMixing(id, v);
+    },
     null
   );
 
@@ -97,8 +111,17 @@ export function CompleteOrderButton({
   version: number;
 }) {
   const router = useRouter();
+  // CR-02: see StartMixingButton — same pinned-closure mitigation via propsRef.
+  const propsRef = useRef({ orderId, version });
+  useEffect(() => {
+    propsRef.current = { orderId, version };
+  }, [orderId, version]);
+
   const [state, formAction, isPending] = useActionState<TransitionResult | null, FormData>(
-    async (_prev) => completeOrder(orderId, version),
+    async (_prev) => {
+      const { orderId: id, version: v } = propsRef.current;
+      return completeOrder(id, v);
+    },
     null
   );
 
@@ -147,8 +170,20 @@ export function ResumeButton({
   toState: 'Mixing' | 'Pending';
 }) {
   const router = useRouter();
+  // CR-02: see StartMixingButton — same pinned-closure mitigation via propsRef.
+  // toState is included so a future re-render that swaps the resume target also
+  // reaches the action (current call sites mount one ResumeButton per toState,
+  // but the ref keeps the contract honest).
+  const propsRef = useRef({ orderId, version, toState });
+  useEffect(() => {
+    propsRef.current = { orderId, version, toState };
+  }, [orderId, version, toState]);
+
   const [state, formAction, isPending] = useActionState<TransitionResult | null, FormData>(
-    async (_prev) => resumeFromBlocked(orderId, version, toState),
+    async (_prev) => {
+      const { orderId: id, version: v, toState: ts } = propsRef.current;
+      return resumeFromBlocked(id, v, ts);
+    },
     null
   );
 

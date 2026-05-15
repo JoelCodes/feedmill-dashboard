@@ -466,6 +466,97 @@ describe('TransitionButtons router.refresh on success (T12 gap closure)', () => 
     expect(mockRefresh).not.toHaveBeenCalled();
   });
 
+  it('CR-02: StartMixingButton re-render with bumped version sends the NEW version on the next click', async () => {
+    // Regression for the pinned-closure bug. useActionState memoises the first
+    // action callback; without the propsRef mitigation, the second click would
+    // send version=1 even after the parent re-rendered with version=2.
+    const user = userEvent.setup();
+    (transitionToMixing as jest.Mock).mockResolvedValue({ ok: true });
+
+    const { rerender } = render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending', version: 1 })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /start mixing/i }));
+    await waitFor(() => {
+      expect(transitionToMixing).toHaveBeenLastCalledWith('ord-001', 1);
+    });
+
+    // Simulate the parent passing a fresh order after router.refresh().
+    rerender(
+      <TransitionButtons
+        order={makeOrder({ state: 'Pending', version: 2 })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /start mixing/i }));
+    await waitFor(() => {
+      expect(transitionToMixing).toHaveBeenLastCalledWith('ord-001', 2);
+    });
+  });
+
+  it('CR-02: CompleteOrderButton re-render with bumped version sends the NEW version on the next click', async () => {
+    const user = userEvent.setup();
+    (completeOrder as jest.Mock).mockResolvedValue({ ok: true });
+
+    const { rerender } = render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Mixing', version: 1 })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /complete order/i }));
+    await waitFor(() => {
+      expect(completeOrder).toHaveBeenLastCalledWith('ord-001', 1);
+    });
+
+    rerender(
+      <TransitionButtons
+        order={makeOrder({ state: 'Mixing', version: 2 })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /complete order/i }));
+    await waitFor(() => {
+      expect(completeOrder).toHaveBeenLastCalledWith('ord-001', 2);
+    });
+  });
+
+  it('CR-02: ResumeButton re-render with bumped version sends the NEW version on the next click', async () => {
+    const user = userEvent.setup();
+    (resumeFromBlocked as jest.Mock).mockResolvedValue({ ok: true });
+
+    const { rerender } = render(
+      <TransitionButtons
+        order={makeOrder({ state: 'Blocked', version: 1 })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /resume to mixing/i }));
+    await waitFor(() => {
+      expect(resumeFromBlocked).toHaveBeenLastCalledWith('ord-001', 1, 'Mixing');
+    });
+
+    rerender(
+      <TransitionButtons
+        order={makeOrder({ state: 'Blocked', version: 2 })}
+        onBlockClick={mockOnBlockClick}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: /resume to mixing/i }));
+    await waitFor(() => {
+      expect(resumeFromBlocked).toHaveBeenLastCalledWith('ord-001', 2, 'Mixing');
+    });
+  });
+
   it('BlockOrderTrigger on Pending (post-34-10) does NOT call router.refresh directly', async () => {
     // 34-10 added BlockOrderTrigger to the Pending case. Confirm THIS plan does
     // not accidentally couple router.refresh to that trigger — refresh belongs
