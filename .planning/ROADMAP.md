@@ -175,7 +175,14 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
   3. A pending backlog KPI card shows the count and total weight of all Pending orders; a formula mix breakdown shows Pellet / Mash / Crumble percentages for today's completed orders
   4. A 7-day order volume trend (bar or sparkline) is rendered from DB data; if fewer than 7 days of data exist, the component shows a "Not enough data yet" empty state rather than a broken chart
   5. A cross-column exception list surfaces every currently-blocked order sortable by dwell time; orders past their `earlyDeliveryDate` carry a warning badge in list view
-**Plans**: TBD
+**Plans**: 7 plans
+- [ ] 35-01-PLAN.md — Schema column + Drizzle migration + seed backfill + makeOrder fixture propagation (D-04, D-06) [BLOCKING migrate gate]
+- [ ] 35-02-PLAN.md — Import path extension: productionOrderImportSchema + commitImportAction insert/overwrite (D-05, Pitfall 7)
+- [ ] 35-03-PLAN.md — TDD pure helpers: bucketTexture (D-11/D-12) + formatDwell (UI-SPEC dwell format)
+- [ ] 35-04-PLAN.md — TDD KPI query layer: getKpiStrip + getSevenDayTrend + getBlockedWithDwell + sanitizeIanaTimezone (D-14, Pitfall 2)
+- [ ] 35-05-PLAN.md — Presentational primitives: KpiCard + KpiStrip + TzBootstrap; DELETE legacy KPICard.tsx (D-07 zone 1, D-08)
+- [ ] 35-06-PLAN.md — SevenDayTrendChart + BlockedExceptionList + KpiSection layout (D-07 zone 3, D-10, D-13)
+- [ ] 35-07-PLAN.md — RSC integration: page.tsx tz cookie + KPI fan-out + ProductionDashboard zone wiring + MillColumn summary prop + Manual UAT (D-02, D-07, Pitfall 6) [checkpoint]
 **UI hint**: yes
 
 ---
@@ -194,9 +201,9 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 12/12 | Complete   | 2026-05-14 |
-| 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/? | Not started | - |
+| 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/7 | Planning complete | - |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
 
 ---
-*Last updated: 2026-05-14 — Phase 34 gap closure plans 34-08 through 34-12 created (5 plans across 2 waves) addressing UAT gaps T3, T9a, T9b, T10a, T10b, T12. T11 retest captured in 34-HUMAN-UAT-RETEST.md (procedural — no code change).*
+*Last updated: 2026-05-14 — Phase 35 plans 35-01 through 35-07 created (7 plans across 4 waves) covering KPI-01..KPI-08; schema migration in 35-01 has a [BLOCKING] drizzle-kit migrate gate; 35-07 ends with Manual UAT checkpoint.*
