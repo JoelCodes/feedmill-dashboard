@@ -49,6 +49,8 @@ export const productionOrderImportSchema = z.object({
   millLine: z.enum(['Premix', 'Excel', 'CGM']).default('Premix'),  // D-16: Book1.xlsx has no Mill Line column - defaults to 'Premix' at parse time
   textureType: z.string().nullish(),                               // D-15: nullable (.nullish handles undefined too — Pitfall 8)
   lineCode: z.string().nullish(),                                  // D-15: nullable (.nullish handles undefined too — Pitfall 8)
+  // D-05: YYYY-MM-DD string mapped from the Book1.xlsx "Early Delivery Date" column.
+  earlyDeliveryDate: z.string().nullish(),                         // D-05: YYYY-MM-DD or null; .nullish handles undefined (absent cell)
 });
 
 export type ProductionOrderImportRow = z.infer<typeof productionOrderImportSchema>;
