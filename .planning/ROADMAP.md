@@ -201,9 +201,9 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 32. Schema, Migrations, and Seed Data | v2.0 | 7/7 | Complete    | 2026-05-13 |
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 12/12 | Complete   | 2026-05-14 |
-| 35. KPI Sections and Role-Specific Metrics | v2.0 | 0/7 | Planning complete | - |
+| 35. KPI Sections and Role-Specific Metrics | v2.0 | 7/7 | Complete    | 2026-05-15 |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
 
 ---
-*Last updated: 2026-05-14 — Phase 35 plans 35-01 through 35-07 created (7 plans across 4 waves) covering KPI-01..KPI-08; schema migration in 35-01 has a [BLOCKING] drizzle-kit migrate gate; 35-07 ends with Manual UAT checkpoint.*
+*Last updated: 2026-05-15 — Phase 35 complete (7 plans across 4 waves). All 8 KPI requirements (KPI-01..KPI-08) verified via Manual UAT against the dashboard. v2.0 (Mill Production MVP) milestone now reaches feature-complete state. Four post-merge SQL fixes (ba54b4a, ca707c9, d792924, 24b34bf) closed bugs the mock-db unit tests couldn't catch — captured as backlog: KPI SQL integration smoke tests.*

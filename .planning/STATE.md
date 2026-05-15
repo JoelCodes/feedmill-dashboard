@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
 status: executing
-last_updated: "2026-05-15T04:01:17.945Z"
+last_updated: "2026-05-15T04:19:31.257Z"
 last_activity: 2026-05-14
 progress:
   total_phases: 5
@@ -17,7 +17,7 @@ progress:
 
 **Milestone:** v2.0 Mill Production MVP
 **Last shipped:** v1.5 Production Transition (2026-05-12)
-**Last updated:** 2026-05-12
+**Last updated:** 2026-05-15
 
 ## Project Reference
 
@@ -25,22 +25,22 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Phase 34 — production-dashboard-ui-and-homepage-promotion
+**Current focus:** v2.0 (Mill Production MVP) feature-complete — Phase 35 closed the KPI deferral carried since v1.0.
 
 ## Current Position
 
-Phase: 34 (production-dashboard-ui-and-homepage-promotion) — EXECUTING
-Plan: 1 of 12
-**Phase:** 34
-**Plan:** Not started
-**Status:** Executing Phase 34
-**Last activity:** 2026-05-14
+Phase: 35 (kpi-sections-and-role-specific-metrics) — COMPLETE
+Plan: 7 of 7
+**Phase:** 35
+**Plan:** all complete; Manual UAT verified 2026-05-15
+**Status:** v2.0 feature-complete; awaiting milestone wrap or next phase
+**Last activity:** 2026-05-15
 
 ### Progress Bar
 
 ```
-v2.0 Progress: [░░░░░░░░░░] 0/5 phases complete
-Phase 31 ░  Phase 32 ░  Phase 33 ░  Phase 34 ░  Phase 35 ░
+v2.0 Progress: [██████████] 5/5 phases complete
+Phase 31 █  Phase 32 █  Phase 33 █  Phase 34 █  Phase 35 █
 ```
 
 ## Performance Metrics
@@ -79,7 +79,7 @@ The `roles[]` refactor is code-complete but the Clerk Dashboard JWT template and
 ### Carried Deferred Items
 
 - Production E2E automation requires custom domain to disable Clerk 2FA (carried from v1.4)
-- KPI Cards display computed values + click-to-filter (carried from v1.0 — closes in Phase 35)
+- ~~KPI Cards display computed values + click-to-filter (carried from v1.0 — closes in Phase 35)~~ **CLOSED 2026-05-15** — KPI-01..KPI-08 implemented and Manual UAT verified.
 - 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 deferred from Phase 27)
 
 ### Key Implementation Notes (v2.0 decisions pre-loaded)
