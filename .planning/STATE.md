@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
 status: executing
-last_updated: "2026-05-15T21:07:16.506Z"
+last_updated: "2026-05-15T21:08:48.508Z"
 last_activity: 2026-05-15
 progress:
   total_phases: 6
@@ -25,15 +25,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** v2.0 (Mill Production MVP) feature-complete — Phase 35 closed the KPI deferral carried since v1.0.
+**Current focus:** Phase 36 — Close gap: BUILD-01 void cast + Phase 35 verification
 
 ## Current Position
 
-Phase: 35 (kpi-sections-and-role-specific-metrics) — COMPLETE
-Plan: 7 of 7
+Phase: 36 (Close gap: BUILD-01 void cast + Phase 35 verification) — EXECUTING
+Plan: 1 of 5
 **Phase:** 35
 **Plan:** all complete; Manual UAT verified 2026-05-15
-**Status:** Ready to execute
+**Status:** Executing Phase 36
 **Last activity:** 2026-05-15
 
 ### Progress Bar

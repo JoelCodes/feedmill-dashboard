@@ -41,7 +41,7 @@ export default function BlockedAlertBand({ orders }: BlockedAlertBandProps) {
       {blocked.map((order) => (
         <button
           key={order.id}
-          onClick={() => startTransition(() => setQuery({ order: order.id }))}
+          onClick={() => startTransition(() => void setQuery({ order: order.id }))}
           className="rounded px-2 py-1 text-xs text-[var(--error-dark)] hover:underline"
         >
           BLOCKED: {order.orderNumber} ({order.millLine})
