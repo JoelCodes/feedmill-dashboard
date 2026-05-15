@@ -246,6 +246,49 @@ describe('BlockReasonModal router.refresh on success (T12 gap closure)', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
+  it('WR-04: re-render with bumped version sends the NEW version on next confirm click', async () => {
+    // Regression for the pinned-closure bug fixed in WR-04. Without the
+    // propsRef mitigation, the action would always send version=1 even after
+    // the parent re-rendered with version=2.
+    const user = userEvent.setup();
+    (blockOrder as jest.Mock).mockResolvedValue({ ok: true });
+
+    const { rerender } = render(
+      <BlockReasonModal
+        orderId="ord-001"
+        version={1}
+        open={true}
+        onClose={mockOnClose}
+      />
+    );
+
+    let textarea = screen.getByRole('textbox', { name: /reason/i });
+    await user.type(textarea, 'first reason');
+    await user.click(screen.getByRole('button', { name: /confirm block/i }));
+
+    await waitFor(() => {
+      expect(blockOrder).toHaveBeenLastCalledWith('ord-001', 1, 'first reason');
+    });
+
+    // Parent re-renders with bumped version after router.refresh().
+    rerender(
+      <BlockReasonModal
+        orderId="ord-001"
+        version={2}
+        open={true}
+        onClose={mockOnClose}
+      />
+    );
+
+    textarea = screen.getByRole('textbox', { name: /reason/i });
+    await user.type(textarea, 'second reason');
+    await user.click(screen.getByRole('button', { name: /confirm block/i }));
+
+    await waitFor(() => {
+      expect(blockOrder).toHaveBeenLastCalledWith('ord-001', 2, 'second reason');
+    });
+  });
+
   it('does NOT call router.refresh on validation failure', async () => {
     const user = userEvent.setup();
     (blockOrder as jest.Mock).mockResolvedValueOnce({

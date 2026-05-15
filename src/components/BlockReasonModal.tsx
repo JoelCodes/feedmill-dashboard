@@ -23,7 +23,7 @@
  *   so the modal owns ESC while it is open.
  */
 
-import React, { useActionState, useState } from 'react';
+import React, { useActionState, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
 import { blockOrder, type TransitionResult } from '@/actions/transitions';
@@ -50,16 +50,32 @@ export default function BlockReasonModal({
   const [reason, setReason] = useState('');
   const router = useRouter();
 
+  // WR-04 (deep review 2026-05-14): useActionState memoises the FIRST action
+  // callback, so directly closing over orderId / version / onClose pins them
+  // to first-render values. After router.refresh() bumps version, the next
+  // submit would still send the old version (mirror of CR-02 in
+  // TransitionButtons). Read the latest values through a ref synced on every
+  // render so the action always sees fresh props.
+  const propsRef = useRef({ orderId, version, onClose });
+  useEffect(() => {
+    propsRef.current = { orderId, version, onClose };
+  }, [orderId, version, onClose]);
+
   const [state, formAction, isPending] = useActionState<TransitionResult | null, FormData>(
-    async () => {
-      const result = await blockOrder(orderId, version, reason);
+    async (_prev, formData) => {
+      // Read reason from the FormData the form submission supplied — avoids
+      // closing over the `reason` useState value (same pinned-closure trap).
+      const currentReason = (formData.get('reason') as string | null) ?? '';
+      const { orderId: id, version: v, onClose: close } = propsRef.current;
+      const result = await blockOrder(id, v, currentReason);
       if (result.ok) {
-        // T12 fix (2026-05-14): kick off RSC re-fetch before closing the modal
-        // so the drawer's next paint shows the freshly-fetched Blocked state.
-        // router.refresh() returns synchronously (kicks off the RSC fetch async).
+        // WR-04: reorder side effects — clear local state and notify the
+        // parent BEFORE scheduling the RSC re-fetch. router.refresh() kicks
+        // off an async fetch; running it AFTER unmount handoff means we are
+        // not scheduling state updates on a soon-to-unmount tree.
+        setReason('');
+        close();
         router.refresh();
-        setReason('');   // clear local state before notifying parent (WR-04)
-        onClose();
       }
       return result;
     },
@@ -91,6 +107,10 @@ export default function BlockReasonModal({
           </Dialog.Title>
 
           <form action={formAction} className="mt-4 flex flex-col gap-4">
+            {/* WR-04: pass `reason` through FormData so the action callback
+                does not close over the `reason` useState value. The Textarea
+                stays controlled for client-side disabled-when-empty UX. */}
+            <input type="hidden" name="reason" value={reason} />
             <Textarea
               label="Reason (required)"
               required
