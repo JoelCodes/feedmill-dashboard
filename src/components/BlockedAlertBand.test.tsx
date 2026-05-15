@@ -124,4 +124,30 @@ describe('BlockedAlertBand', () => {
       expect.objectContaining({ shallow: false, history: 'push' })
     );
   });
+
+  // ── BUILD-01 regression guard (Phase 36 Plan 01) ──
+  //
+  // The `nuqs` setQuery setter on a non-shallow key returns Promise<URLSearchParams>,
+  // which leaks into React's startTransition callback brand `() => void | Promise<void>`
+  // (VoidOrUndefinedOnly) and causes a TS2322 build failure. The canonical fix is to
+  // coerce the Promise to undefined with the `void` operator inside the inner arrow:
+  //
+  //   onClick={() => startTransition(() => void setQuery({ order: order.id }))}
+  //
+  // Canonical reference: src/components/BlockedExceptionList.tsx:35 uses exactly this
+  // pattern (`startTransition(() => void setQuery({ order: id }))`).
+  //
+  // This source-grep test is a structural invariant guard: if a future refactor removes
+  // the `void` operator, this test fails BEFORE `npm run build` does, surfacing the
+  // regression at unit-test time rather than at integration time.
+
+  it('Test 12: startTransition callback uses `void setQuery` cast (BUILD-01 regression guard)', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const fs = require('fs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const path = require('path');
+    const filePath = path.resolve(__dirname, 'BlockedAlertBand.tsx');
+    const content = fs.readFileSync(filePath, 'utf-8');
+    expect(content).toMatch(/startTransition\(\(\) => void setQuery/);
+  });
 });
