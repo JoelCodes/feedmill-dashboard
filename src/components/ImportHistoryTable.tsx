@@ -8,6 +8,7 @@
  * Server component — no event handlers or client state required.
  * The caller (ImportFlow) passes batches received from the page RSC.
  */
+import React from "react";
 import type { ImportBatch } from "@/db/schema/imports";
 
 // ─── Date formatter — UI-SPEC §8 (locked format) ────────────────────────────
