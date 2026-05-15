@@ -21,8 +21,9 @@
  */
 
 import React, { useState, startTransition } from 'react';
-import { useQueryStates, parseAsString } from 'nuqs';
 import { X } from 'lucide-react';
+
+import { useOrderQuery } from '@/hooks/useOrderQuery';
 
 import Button from '@/components/ui/Button';
 import StatusBadge from '@/components/ui/StatusBadge';
@@ -125,10 +126,8 @@ export default function ProductionDrawer({
   // Order is NON-SHALLOW: closing the drawer (?order= cleared) must re-run the page RSC
   // so the drawer cleanly unmounts when drawerOrder becomes null (T10b gap closure).
   // history: 'push' enables browser-back to reopen the drawer (deep-link parity).
-  const [, setQuery] = useQueryStates(
-    { order: parseAsString.withDefault('') },
-    { shallow: false, history: 'push' }
-  );
+  // WR-05: parser + option literals centralised in @/hooks/useOrderQuery.
+  const [, setQuery] = useOrderQuery();
 
   const handleClose = () => {
     startTransition(() => {

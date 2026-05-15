@@ -25,6 +25,7 @@ import {
   parseAsStringLiteral,
   parseAsString,
 } from 'nuqs';
+import { useOrderQuery } from '@/hooks/useOrderQuery';
 import Link from 'next/link';
 import { Search, Upload } from 'lucide-react';
 
@@ -151,10 +152,8 @@ export default function ProductionDashboard({
   // The setter is wrapped in startTransition() at each call site so the existing
   // <Suspense fallback={<DrawerSkeleton />}> boundary at lines 275-282 renders
   // during the RSC fetch instead of freezing the previous UI.
-  const [{ order }, setOrderQuery] = useQueryStates(
-    { order: parseAsString.withDefault('') },
-    { shallow: false, history: 'push' }
-  );
+  // WR-05: parser + option literals centralised in @/hooks/useOrderQuery.
+  const [{ order }, setOrderQuery] = useOrderQuery();
 
   // ── Search debounce — D-05 / 150ms ────────────────────────────────────
   // Initialize controlled input from URL state on first render

@@ -18,7 +18,7 @@
  * parameterised Drizzle — no SQL injection surface from the URL param.
  */
 import { startTransition } from 'react';
-import { useQueryStates, parseAsString } from 'nuqs';
+import { useOrderQuery } from '@/hooks/useOrderQuery';
 import type { ProductionOrder } from '@/db/schema/orders';
 
 interface BlockedAlertBandProps {
@@ -28,10 +28,8 @@ interface BlockedAlertBandProps {
 export default function BlockedAlertBand({ orders }: BlockedAlertBandProps) {
   // Order is NON-SHALLOW: setting ?order=<id> must re-run the page RSC (T10b gap closure).
   // history: 'push' enables browser-back to close the drawer.
-  const [, setQuery] = useQueryStates(
-    { order: parseAsString.withDefault('') },
-    { shallow: false, history: 'push' }
-  );
+  // WR-05: parser + option literals centralised in @/hooks/useOrderQuery.
+  const [, setQuery] = useOrderQuery();
 
   const blocked = orders.filter((o) => o.state === 'Blocked');
 
