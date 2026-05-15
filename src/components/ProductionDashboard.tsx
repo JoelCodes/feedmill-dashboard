@@ -164,7 +164,7 @@ export default function ProductionDashboard({
 
   useEffect(() => {
     setQuery({ q: debouncedSearch });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- setQuery is stable per nuqs contract; omitting prevents redundant URL writes.
   }, [debouncedSearch]);
 
   // ── Last-updated reset — PROD-11 / D-20 ───────────────────────────────
