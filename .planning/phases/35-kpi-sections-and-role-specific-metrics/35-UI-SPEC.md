@@ -47,10 +47,9 @@ Declared values (all multiples of 4, sourced from `globals.css` `--space-*` toke
 
 Exceptions:
 
-- KPI card inner padding: `px-[var(--card-padding-lg)] py-5` — `--card-padding-lg: 1.3125rem` (21px) is the project's established card-padding token declared in `globals.css` line 121; horizontal padding references the token directly rather than a raw pixel value. Vertical padding is `20px` (`py-5`), a multiple of 4. This preserves the card's proportional feel while eliminating non-grid raw values.
 - Column header KPI-03 strip: `mt-1` (4px) below the column title — matches existing `MillColumn.tsx` header spacing.
 
-Rationale for `py-5` (20px) over `py-4` (16px): 16px vertical padding produces a noticeably compressed card on a 22px stat value. 20px preserves the spacious feel of the prior art (`py-[18px]`) while snapping to the nearest grid multiple.
+Rationale for `py-5` (20px) on KpiCard over `py-4` (16px): 16px vertical padding produces a noticeably compressed card on a 22px stat value. 20px preserves the spacious feel of the prior art while snapping to the grid. `px-5` (20px) is used for horizontal padding — consistent with `ProductionCard.tsx` (`pl-5`). The legacy `--card-padding-lg` (21px) token in `globals.css` is not used in Phase 35 components.
 
 ---
 
@@ -124,7 +123,7 @@ icon?: LucideIcon      // optional Lucide icon displayed in accent-colored conta
 
 **Visual structure:**
 - Outer: `Card` default variant (`bg-[var(--bg-card)] border border-[var(--divider)] rounded-[var(--radius-lg)]`)
-- Inner padding: `px-[var(--card-padding-lg)] py-5` (horizontal uses the `--card-padding-lg` token; vertical is `20px` — see Spacing section)
+- Inner padding: `px-5 py-5` (20px horizontal, 20px vertical — both multiples of 4; consistent with `ProductionCard.tsx` `pl-5`)
 - Left column: `label` at `--fs-11` bold muted, `value` at `--fs-22` bold primary, `unit` inline at `text-sm` muted
 - Optional `subValue` at `text-sm` regular muted, below value
 - Optional `footnote` at `--fs-11` muted, bottom of card
@@ -207,14 +206,14 @@ Source: CONTEXT.md D-03 — "Display formatting is a UI concern, locked via UI-S
 
 **Overdue badge (KPI-08):**
 - Renders only when `earlyDeliveryDate` is non-null AND `earlyDeliveryDate < today` AND `state !== 'Completed'`
-- Visual: inline badge `bg-[var(--warning-light)] text-[var(--warning)] border border-[var(--warning)] rounded-[var(--radius-sm)] px-2 py-0.5 text-[var(--fs-11)] font-bold`
+- Visual: inline badge `bg-[var(--warning-light)] text-[var(--warning)] border border-[var(--warning)] rounded-[var(--radius-sm)] px-2 py-1 text-[var(--fs-11)] font-bold`
 - Label: `"Overdue"`
 - Accessible: `role="status"` `aria-label="Order past early delivery date"`
 - Reuses `StatusBadge` color palette approach but does NOT extend `StatusBadge.tsx` directly — it is an inline span in `BlockedExceptionList` and `ProductionCard` (see below)
 
 **Overdue badge in `ProductionCard` (KPI-08 in list view):**
 - Rendered below the delivery time line (`<p>` with `mt-1`)
-- Same visual spec as above
+- Same visual spec as above: `px-2 py-1 text-[var(--fs-11)] font-bold`
 
 #### `KpiSection.tsx`
 Full-width container below the 3 columns.
