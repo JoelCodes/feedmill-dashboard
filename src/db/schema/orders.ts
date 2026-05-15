@@ -10,6 +10,7 @@ import {
   index,
   uniqueIndex,
   pgEnum,
+  date,
 } from 'drizzle-orm/pg-core';
 
 // D-07: Postgres native enum types — created before the table in SQL output
@@ -39,6 +40,7 @@ export const productionOrders = pgTable(
     millLine: millLineEnum('mill_line').notNull(),  // D-07
     textureType: text('texture_type'),              // D-12: nullable
     lineCode: text('line_code'),                    // D-12: nullable
+    earlyDeliveryDate: date('early_delivery_date'), // D-04: nullable date; PgDateString → TS: string | null
     version: integer('version').notNull().default(1), // D-11: optimistic concurrency
     createdBy: text('created_by').notNull(),         // D-09: Clerk user ID as text, no FK
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(), // D-14

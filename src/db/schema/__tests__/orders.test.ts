@@ -6,7 +6,7 @@ describe('productionOrders table contract', () => {
   const cfg = getTableConfig(productionOrders);
   const cols = Object.fromEntries(cfg.columns.map((c) => [c.name, c]));
 
-  it('has the 14 required columns (D-06 through D-14)', () => {
+  it('has the 15 required columns (D-06 through D-14, plus D-04 early_delivery_date)', () => {
     expect(Object.keys(cols).sort()).toEqual(
       [
         'id',
@@ -19,6 +19,7 @@ describe('productionOrders table contract', () => {
         'mill_line',
         'texture_type',
         'line_code',
+        'early_delivery_date',
         'version',
         'created_by',
         'created_at',
