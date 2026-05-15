@@ -1,0 +1,1 @@
+ALTER TABLE "production_orders" ADD COLUMN "early_delivery_date" date;
