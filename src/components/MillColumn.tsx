@@ -2,7 +2,6 @@
 
 import {
   groupOrdersByState,
-  computeColumnWeights,
   isOrderNextUp,
 } from '@/lib/production-derivations';
 // WR-06 (deep review 2026-05-14): COLUMN_STATE_ORDER (visual: Completed → Mixing
@@ -84,10 +83,21 @@ function StateSection({
 // MillColumn — per-line composition component
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * KPI-03 column summary — computed from UNFILTERED orders in ProductionDashboard.
+ * Passed as a required prop to this component (filter pills do NOT change these counts).
+ */
+export interface ColumnSummary {
+  orderCount: number;
+  completedLbs: number;
+  totalLbs: number;
+}
+
 export interface MillColumnProps {
   millLine: MillLine;
   orders: ProductionOrder[];
   onOrderClick: (orderId: string) => void;
+  summary: ColumnSummary; // KPI-03 — required; derived from UNFILTERED orders in ProductionDashboard
 }
 
 /**
@@ -103,17 +113,21 @@ export default function MillColumn({
   millLine,
   orders,
   onOrderClick,
+  summary,
 }: MillColumnProps) {
   const grouped = groupOrdersByState(orders);
-  const { completed, total } = computeColumnWeights(orders);
 
   return (
     <div className="flex flex-1 flex-col gap-5">
       {/* Column header — always visible, even when empty */}
       <div>
         <h2 className="text-primary text-2xl font-bold">{millLine}</h2>
-        <p className="text-muted mt-1 text-base font-semibold">
-          {formatWeight(completed)} / {formatWeight(total)} lbs
+        <p className="mt-1 text-[var(--fs-11)] font-bold">
+          <span className="text-[var(--text-primary)]">{summary.orderCount} orders</span>
+          <span className="text-[var(--text-muted)]"> — </span>
+          <span className="text-[var(--text-muted)]">
+            {formatWeight(summary.completedLbs)} / {formatWeight(summary.totalLbs)} lbs
+          </span>
         </p>
       </div>
 

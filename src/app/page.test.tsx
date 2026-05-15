@@ -1,7 +1,8 @@
 /**
- * Unit tests for the Phase 34 production homepage (`src/app/page.tsx`).
+ * Unit tests for the Phase 34/35 production homepage (`src/app/page.tsx`).
  *
- * Plan 34-07 full rewrite — 8 tests covering:
+ * Plan 34-07 (8 tests) + Plan 35-07 (5 new tests):
+ *   Plan 34-07:
  *   - Test 1: unauthenticated → redirect('/sign-in')
  *   - Test 2: authenticated mill_operator → ProductionDashboard with canEdit=true
  *   - Test 3: authenticated non-operator → ProductionDashboard with canEdit=false (no redirect)
@@ -10,6 +11,14 @@
  *   - Test 6: getOrderById returns null (stale id) → drawerOrder=null, drawerEvents=[] (Pitfall 7)
  *   - Test 7 (Pitfall 2): await searchParamsCache.parse(searchParams) in source
  *   - Test 8: export const dynamic = 'force-dynamic' present
+ *
+ *   Plan 35-07 (KPI integration):
+ *   - Test 9 (cookie read): getKpiStrip called with tz cookie value
+ *   - Test 10 (cookie absent → fallback): getKpiStrip called with DEFAULT_TIMEZONE
+ *   - Test 11 (cookie empty string → fallback): same as Test 10 for empty value
+ *   - Test 12 (parallel fan-out): all 6 queries dispatched
+ *   - Test 13 (props pass-through): KPI props reach ProductionDashboard
+ *   - Test 14 (regression): existing tests still pass (implicit)
  *
  * Uses canonical clerkAuth fixture consumer pattern.
  * ProductionDashboard is mocked to capture props without pulling in client deps.
@@ -38,6 +47,22 @@ jest.mock("@/db/queries/orders", () => ({
 }));
 jest.mock("@/db/queries/events", () => ({
   getOrderEvents: (...args: unknown[]) => mockGetOrderEvents(...args),
+}));
+
+// Mock KPI queries — Plan 35-07
+const mockGetKpiStrip = jest.fn();
+const mockGetSevenDayTrend = jest.fn();
+const mockGetBlockedWithDwell = jest.fn();
+jest.mock("@/db/queries/kpis", () => ({
+  getKpiStrip: (...args: unknown[]) => mockGetKpiStrip(...args),
+  getSevenDayTrend: (...args: unknown[]) => mockGetSevenDayTrend(...args),
+  getBlockedWithDwell: (...args: unknown[]) => mockGetBlockedWithDwell(...args),
+}));
+
+// Mock next/headers cookies() — Plan 35-07 D-02
+const mockCookiesGet = jest.fn();
+jest.mock("next/headers", () => ({
+  cookies: () => Promise.resolve({ get: mockCookiesGet }),
 }));
 
 // Mock @/lib/search-params — searchParamsCache.parse is what the page awaits
@@ -108,12 +133,43 @@ const FIXTURE_EVENTS = [
   },
 ];
 
+// KPI fixtures
+const FIXTURE_KPI_STRIP = {
+  completedTodayLbs: '18400',
+  premixLbs: '6000',
+  excelLbs: '8000',
+  cgmLbs: '4400',
+  pendingCount: 5,
+  pendingLbs: '47200',
+  pelletPct: 58,
+  mashPct: 32,
+  crumblePct: 10,
+  uncategorizedCount: 3,
+};
+const FIXTURE_TREND = [{ date: '2026-05-14', completedLbs: 18400 }];
+const FIXTURE_BLOCKED = [
+  {
+    orderId: 'ord_1',
+    orderNumber: 'ORD-001',
+    customer: 'Acme Corp',
+    millLine: 'Premix' as const,
+    dwellSeconds: 3600,
+    dwellFormatted: '1h 0m',
+    earlyDeliveryDate: null,
+    isOverdue: false,
+  },
+];
+
 beforeEach(() => {
   mockAuth.mockReset();
   mockCheckRole.mockReset();
   mockGetProductionOrders.mockReset();
   mockGetOrderById.mockReset();
   mockGetOrderEvents.mockReset();
+  mockGetKpiStrip.mockReset();
+  mockGetSevenDayTrend.mockReset();
+  mockGetBlockedWithDwell.mockReset();
+  mockCookiesGet.mockReset();
   mockParse.mockReset();
   capturedProductionDashboardProps.length = 0;
 
@@ -121,6 +177,11 @@ beforeEach(() => {
   mockGetProductionOrders.mockResolvedValue(FIXTURE_ORDERS);
   mockGetOrderById.mockResolvedValue(FIXTURE_ORDER);
   mockGetOrderEvents.mockResolvedValue(FIXTURE_EVENTS);
+  mockGetKpiStrip.mockResolvedValue(FIXTURE_KPI_STRIP);
+  mockGetSevenDayTrend.mockResolvedValue(FIXTURE_TREND);
+  mockGetBlockedWithDwell.mockResolvedValue(FIXTURE_BLOCKED);
+  // Default: tz cookie present with a valid IANA value
+  mockCookiesGet.mockReturnValue({ value: 'America/New_York' });
 });
 
 describe("HomePage (Phase 34 full RSC — plan 34-07)", () => {
@@ -223,5 +284,80 @@ describe("HomePage (Phase 34 full RSC — plan 34-07)", () => {
       "utf-8"
     );
     expect(pageSrc).toContain("export const dynamic = 'force-dynamic'");
+  });
+});
+
+// ─── Plan 35-07: KPI cookie read + query fan-out tests ──────────────────────
+
+describe("HomePage Phase 35 — KPI cookie read + query fan-out (plan 35-07)", () => {
+  it("Test 9 (cookie read): getKpiStrip called with tz cookie value 'America/New_York'", async () => {
+    mockMillOperatorSession();
+    mockCheckRole.mockResolvedValue(true);
+    mockParse.mockResolvedValue({ order: '', status: [], q: '' });
+    mockCookiesGet.mockReturnValue({ value: 'America/New_York' });
+
+    await HomePage({ searchParams: Promise.resolve({}) });
+
+    expect(mockGetKpiStrip).toHaveBeenCalledWith('America/New_York');
+  });
+
+  it("Test 10 (cookie absent → fallback): getKpiStrip called with 'America/Chicago' when cookie absent", async () => {
+    mockMillOperatorSession();
+    mockCheckRole.mockResolvedValue(true);
+    mockParse.mockResolvedValue({ order: '', status: [], q: '' });
+    // Simulate cookie absent: get() returns undefined
+    mockCookiesGet.mockReturnValue(undefined);
+
+    await HomePage({ searchParams: Promise.resolve({}) });
+
+    expect(mockGetKpiStrip).toHaveBeenCalledWith('America/Chicago');
+  });
+
+  it("Test 11 (cookie empty string → fallback): getKpiStrip called with 'America/Chicago' when cookie value is ''", async () => {
+    mockMillOperatorSession();
+    mockCheckRole.mockResolvedValue(true);
+    mockParse.mockResolvedValue({ order: '', status: [], q: '' });
+    // Simulate cookie with empty string value
+    mockCookiesGet.mockReturnValue({ value: '' });
+
+    await HomePage({ searchParams: Promise.resolve({}) });
+
+    expect(mockGetKpiStrip).toHaveBeenCalledWith('America/Chicago');
+  });
+
+  it("Test 12 (parallel fan-out): all 6 queries dispatched (getProductionOrders, getKpiStrip, getSevenDayTrend, getBlockedWithDwell, and optionally getOrderById/getOrderEvents when order present)", async () => {
+    mockMillOperatorSession();
+    mockCheckRole.mockResolvedValue(true);
+    mockParse.mockResolvedValue({ order: '', status: [], q: '' });
+    mockCookiesGet.mockReturnValue({ value: 'America/Chicago' });
+
+    await HomePage({ searchParams: Promise.resolve({}) });
+
+    // Core 4 queries always called
+    expect(mockGetProductionOrders).toHaveBeenCalledTimes(1);
+    expect(mockGetKpiStrip).toHaveBeenCalledTimes(1);
+    expect(mockGetSevenDayTrend).toHaveBeenCalledTimes(1);
+    expect(mockGetBlockedWithDwell).toHaveBeenCalledTimes(1);
+    // When no ?order=, the two drawer queries are NOT called
+    expect(mockGetOrderById).not.toHaveBeenCalled();
+    expect(mockGetOrderEvents).not.toHaveBeenCalled();
+  });
+
+  it("Test 13 (props pass-through): kpiStrip, kpiTrend, kpiBlocked props reach ProductionDashboard", async () => {
+    mockMillOperatorSession();
+    mockCheckRole.mockResolvedValue(true);
+    mockParse.mockResolvedValue({ order: '', status: [], q: '' });
+    mockCookiesGet.mockReturnValue({ value: 'America/Chicago' });
+    mockGetKpiStrip.mockResolvedValue(FIXTURE_KPI_STRIP);
+    mockGetSevenDayTrend.mockResolvedValue(FIXTURE_TREND);
+    mockGetBlockedWithDwell.mockResolvedValue(FIXTURE_BLOCKED);
+
+    const element = await HomePage({ searchParams: Promise.resolve({}) });
+    render(element);
+
+    expect(capturedProductionDashboardProps).toHaveLength(1);
+    expect(capturedProductionDashboardProps[0].kpiStrip).toEqual(FIXTURE_KPI_STRIP);
+    expect(capturedProductionDashboardProps[0].kpiTrend).toEqual(FIXTURE_TREND);
+    expect(capturedProductionDashboardProps[0].kpiBlocked).toEqual(FIXTURE_BLOCKED);
   });
 });
