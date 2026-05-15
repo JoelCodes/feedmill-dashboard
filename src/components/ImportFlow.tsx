@@ -84,24 +84,35 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
     const formData = new FormData();
     formData.append('file', file);
 
-    const result: PreviewResult = await previewImportAction(formData);
-    setIsPending(false);
+    // CR-01 (deep review 2026-05-14): wrap the server-action await in try/catch/finally
+    // so that a thrown rejection (network error, server 500, RSC payload failure)
+    // re-enables the UI instead of leaving the spinner stuck. The synchronous
+    // setIsPending(false) below is reached via the finally block on both success
+    // and rejection paths.
+    try {
+      const result: PreviewResult = await previewImportAction(formData);
 
-    if (!result.ok) {
-      setError(result.message);
-      return;
-    }
-
-    // Initialize per-row decisions — duplicates default to 'skip' (D-18)
-    const initialDecisions: Record<number, 'skip' | 'overwrite'> = {};
-    for (const row of result.rows) {
-      if (row.isDuplicate) {
-        initialDecisions[row.rowIndex] = 'skip';
+      if (!result.ok) {
+        setError(result.message);
+        return;
       }
+
+      // Initialize per-row decisions — duplicates default to 'skip' (D-18)
+      const initialDecisions: Record<number, 'skip' | 'overwrite'> = {};
+      for (const row of result.rows) {
+        if (row.isDuplicate) {
+          initialDecisions[row.rowIndex] = 'skip';
+        }
+      }
+      setRowDecisions(initialDecisions);
+      setPreview({ summary: result.summary, rows: result.rows });
+      setPhase('preview');
+    } catch (err) {
+      console.error('[ImportFlow.onFileSelect] preview failed:', err);
+      setError('Could not process file. Please try again.');
+    } finally {
+      setIsPending(false);
     }
-    setRowDecisions(initialDecisions);
-    setPreview({ summary: result.summary, rows: result.rows });
-    setPhase('preview');
   }
 
   // ── Drag handlers ──────────────────────────────────────────────────────────
@@ -144,23 +155,32 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
         .map(r => r.rowIndex),
     };
 
-    const result = await commitImportAction(formData, decisions);
-    setIsPending(false);
+    // CR-01 (deep review 2026-05-14): wrap the server-action await in try/catch/finally
+    // so a rejected commit (network/server failure) re-enables the UI instead of
+    // pinning the button text on "Committing…".
+    try {
+      const result = await commitImportAction(formData, decisions);
 
-    if (!result.ok) {
-      setError(result.message);
-      return;
+      if (!result.ok) {
+        setError(result.message);
+        return;
+      }
+
+      // T9a fix: trigger the parent RSC to re-fetch so ImportHistoryTable
+      // receives the new batch from the freshly invalidated cache.
+      // Mirror of TransitionButtons.tsx pattern (router.refresh after action success).
+      // Note: server-side revalidateTag is already wired in src/actions/import.ts:793,808
+      // (Phase 33 D-21). router.refresh() is the client-side counterpart that picks up
+      // the invalidated cache on the next RSC pass.
+      router.refresh();
+
+      setPhase('committed');
+    } catch (err) {
+      console.error('[ImportFlow.handleCommit] commit failed:', err);
+      setError('Could not commit import. Please try again.');
+    } finally {
+      setIsPending(false);
     }
-
-    // T9a fix: trigger the parent RSC to re-fetch so ImportHistoryTable
-    // receives the new batch from the freshly invalidated cache.
-    // Mirror of TransitionButtons.tsx pattern (router.refresh after action success).
-    // Note: server-side revalidateTag is already wired in src/actions/import.ts:793,808
-    // (Phase 33 D-21). router.refresh() is the client-side counterpart that picks up
-    // the invalidated cache on the next RSC pass.
-    router.refresh();
-
-    setPhase('committed');
   }
 
   // ── Cancel handler ─────────────────────────────────────────────────────────

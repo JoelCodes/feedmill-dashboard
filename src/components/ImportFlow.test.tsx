@@ -382,6 +382,82 @@ describe("ImportFlow", () => {
     expect(mockRefresh).not.toHaveBeenCalled();
   });
 
+  // ── CR-01 regression: rejected server actions re-enable the UI ──────────
+
+  it("CR-01: previewImportAction rejection re-enables the file input and shows an error", async () => {
+    // Suppress the expected console.error from the catch block
+    const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
+    mockPreviewImportAction.mockRejectedValue(new Error("network down"));
+
+    try {
+      render(<ImportFlow batches={EMPTY_BATCHES} canEdit={true} />);
+
+      const validFile = new File(
+        ["xlsx"],
+        "Book1.xlsx",
+        { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+      );
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [validFile] } });
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/could not process file\. please try again\./i)
+        ).toBeInTheDocument();
+      });
+
+      // Browse-file label flips back from "Processing…" once isPending resets via finally.
+      expect(screen.getByText(/browse file/i)).toBeInTheDocument();
+      expect(fileInput.disabled).toBe(false);
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it("CR-01: commitImportAction rejection re-enables the Commit button and shows an error", async () => {
+    const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
+    mockPreviewImportAction.mockResolvedValue(VALID_PREVIEW);
+    mockCommitImportAction.mockRejectedValue(new Error("network down"));
+
+    try {
+      render(<ImportFlow batches={EMPTY_BATCHES} canEdit={true} />);
+
+      const validFile = new File(
+        ["xlsx"],
+        "Book1.xlsx",
+        { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+      );
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      await act(async () => {
+        fireEvent.change(fileInput, { target: { files: [validFile] } });
+      });
+
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: /commit/i })).toBeInTheDocument()
+      );
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: /commit/i }));
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/could not commit import\. please try again\./i)
+        ).toBeInTheDocument();
+      });
+
+      // Commit button is re-enabled (not stuck on "Committing…") and we have NOT
+      // transitioned to the committed phase.
+      const commitBtn = screen.getByRole("button", { name: /commit/i });
+      expect(commitBtn).not.toBeDisabled();
+      expect(screen.queryByText(/import complete/i)).toBeNull();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
   // ── T9b regression: hydration of string importedAt ───────────────────────
 
   it("T9b: renders without throwing when batches.importedAt is a string (hydration fix)", () => {
