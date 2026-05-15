@@ -2,7 +2,8 @@
 phase: 34-production-dashboard-ui-and-homepage-promotion
 type: human-uat
 created: 2026-05-14
-status: diagnosed
+status: closed
+closed_at: 2026-05-14
 inherited_from: 33-server-actions-queries-and-bulk-import (GAP-02)
 updated: 2026-05-14
 ---
@@ -69,9 +70,11 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** State resets on reload (nuqs URL sync broken).
 
-**Observed result:** `issue`
-**Severity:** `major`
-**Reported:** Filter pill works (URL updates to `?status=…` and survives reload). Search input does NOT write `?q=…` to the URL when typing — debounce → `setQuery({ q })` path at `src/components/ProductionDashboard.tsx:150-155` is not landing in dev despite unit test (Test 7 in `ProductionDashboard.test.tsx:246`) being green. Reload behavior for search is moot until the URL writes.
+**Observed result:** `pass`
+**Severity:** `n/a (resolved)`
+**Reported (initial):** Filter pill works (URL updates to `?status=…` and survives reload). Search input did NOT write `?q=…` to the URL when typing — debounce → `setQuery({ q })` path at `src/components/ProductionDashboard.tsx:150-155` was not landing in dev despite unit test (Test 7 in `ProductionDashboard.test.tsx:246`) being green.
+
+**Retest 2026-05-14 (post 34-08):** PASS. Single search input on `/` (dead Header search removed). Typing writes `?q=…` to URL within debounce window; reload preserves both filter and search state. **Cosmetic note:** search box is slightly small — non-blocking, captured under deferred-items.md for follow-up styling.
 
 **Note:** A prior blocker on this test — Turbopack build error `Module not found: '@aws-sdk/client-s3'` (in `unzipper/lib/Open/index.js:98`, pulled transitively via `read-excel-file`) — was resolved inline by adding `serverExternalPackages: ['unzipper', 'read-excel-file']` to `next.config.ts`. Recorded as gap #2 below for traceability.
 
@@ -188,11 +191,13 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Size guard missing; preview doesn't appear; commit fails; history doesn't update.
 
-**Observed result:** `issue`
-**Severity:** `blocker`
-**Reported:** Two failures on T9:
+**Observed result:** `pass`
+**Severity:** `n/a (resolved)`
+**Reported (initial):** Two failures on T9:
 1. **History table did not update after commit** — `ImportHistoryTable` still shows the prior state. Likely `revalidateTag` is not firing for the import-batches cache, or the page's `getImportBatches()` call isn't tagged with the same key.
 2. **`RangeError: Invalid time value` at `ImportHistoryTable.tsx:27` after page refresh** — `ImportFlow` is `'use client'` (`src/components/ImportFlow.tsx:1`), so the `batches` prop crosses the RSC → client boundary and `Date` is serialized to an ISO string. `formatBatchDate` receives a string at runtime despite the `Date` type annotation, and `Intl.DateTimeFormat.format(string)` throws.
+
+**Retest 2026-05-14 (post 34-09):** PASS. Full three-phase import flow works end-to-end: drop → preview → commit. `Recent Imports` table updates within ~1s of `Import complete!` without manual reload. No `RangeError` in DevTools console. Hard reload of `/import` renders cleanly with correctly formatted dates.
 
 ---
 
@@ -213,11 +218,17 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Transitions don't update the board; buttons missing; block modal broken.
 
-**Observed result:** `issue`
-**Severity:** `blocker`
-**Reported:** Two issues on T10:
+**Observed result:** `pass`
+**Severity:** `n/a (resolved)`
+**Reported (initial):** Two issues on T10:
 1. **Missing transition: Pending → Blocked is not possible.** `TransitionButtons.tsx:188-191` only renders "Start Mixing" for `state: 'Pending'`. The block path requires going through Mixing first, per D-11. User wants Block available directly from Pending. Spec gap — not a code bug per the current design contract. Needs an ADR-level decision before changing the state machine.
 2. **Drawer load is painful (>5s, sometimes feels stuck).** Mixing → Block → Resume → Complete itself worked correctly, but the drawer fetch on card click is too slow for an operator's flow. Likely root cause: drawer fetches order detail + event timeline server-side without parallelization, or the timeline query lacks an index, or the RSC suspense boundary isn't streaming. Needs profiling.
+
+**Retest 2026-05-14 (post 34-10):** PASS. Drawer on a Pending order shows BOTH "Start Mixing" (primary) and "Block Order" (destructive) buttons. BlockReasonModal opened, typed reason `Customer cancellation, no production needed` was submitted, order moved to Blocked column. Reopening the drawer confirmed the event timeline shows the `Pending → Blocked` transition with the typed reason verbatim in the note field.
+
+**CR-02 verdict — FALSE POSITIVE:** The disputed stale-closure gap in `BlockReasonModal.tsx` from 34-REVIEW.md is conclusively NOT live. The reason value reached `blockOrder()` correctly and was persisted to the order event. The verifier's orchestrator override was correct — React 19's `useActionState` reads the latest action reference on each render, not the first-render closure. No further code change required for CR-02.
+
+**T10b retest 2026-05-14 (post 34-11):** PASS. Card click → DrawerSkeleton within ~1 frame → populated drawer in ~1s. Filter pill and search no longer trigger a skeleton flash (status/q remain shallow). Blocked-alert chip click opens drawer with same ~1s latency. Browser back button closes drawer via history navigation (confirms `history: 'push'`).
 
 ---
 
@@ -237,13 +248,17 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 
 **Fail criteria:** Non-operators see transition buttons or can access the upload flow.
 
-**Observed result:** `needs_retest`
-**Severity:** `n/a (procedural)` + `blocker` (inherited /import crash)
+**Observed result:** `pass`
+**Severity:** `n/a (resolved)`
 **Reported (initial):** Transition buttons visible for `e2e-demo` user; `/import` crashed with the T9b RangeError.
 
 **Diagnosis (post-debug):** The fixture choice was wrong, not the code. `e2e-demo+clerk_test@example.com` is **dual-role** (`['demo', 'mill_operator']`) per Phase 31 D-13 (`docs/clerk-setup.md:37,54-58`) — the buttons rendered legitimately. The `canEdit` chain is fully intact and unit-tested. To validate D-25, T11 must be re-run with `e2e-norole+clerk_test@example.com`. The `/import` crash IS a real bug but is identical to the T9b RangeError already tracked — no separate gap needed.
 
-**Action:** T11 will be re-run after the T9b fix lands, using the no-role fixture. Tracked as a UAT-procedure gap, not a code gap.
+**Retest 2026-05-14 (T11a + T11b):** PASS.
+- **T11a (no-role, `e2e-norole+clerk_test@example.com`):** Dashboard renders, drawer opens with no transition buttons; `/import` shows read-only notice and hides the drop zone while keeping the Recent Imports history visible. RBAC is correctly enforced for no-role users.
+- **T11b (dual-role, `e2e-demo+clerk_test@example.com`):** Drawer shows Start Mixing + Block Order on Pending; `/import` drop zone is visible. Dual-role coverage works as designed.
+
+**New finding (out-of-scope follow-up):** Operator does NOT want the `e2e-demo` fixture to carry `mill_operator` powers. This is a Phase 31 D-13 spec change (and Clerk Dashboard config change for `e2e-demo+clerk_test@example.com.publicMetadata.roles`), not a Phase 34 code defect. Captured as a deferred item below for follow-up via a new phase/quick task — does NOT block Phase 34 completion.
 
 ---
 
@@ -279,38 +294,40 @@ This document captures the manual UAT for Phase 34 (Production Dashboard UI and 
 - Confirm `revalidateTag('production-orders', 'max')` (two-arg form for Next.js 16.1.6) is called in EVERY mutating action path.
 
 **Observed result:** `pass`
-**Observation:** Tab A updated without a manual hard refresh, within the ≤30s polling bound (~15s observed). Test passes per spec. Note: the 15s latency indicates the update is arriving via polling rather than `router.refresh()` — see gap on T12 for enhancement opportunity.
+**Observation (initial):** Tab A updated without a manual hard refresh, within the ≤30s polling bound (~15s observed). Test passes per spec. Note: the 15s latency indicates the update is arriving via polling rather than `router.refresh()` — see gap on T12 for enhancement opportunity.
+
+**Retest 2026-05-14 (post 34-12):** PASS. Cross-tab latency now ~1s (down from ~15s). Both plain transitions and Block-via-modal propagate from Tab B to Tab A near-instantly via `router.refresh()` on action onSuccess. 30s polling remains as fallback.
 
 ---
 
 ## Summary
 
 total: 12
-passed: 7
-issues: 4 (code-level) + 1 (UAT-procedure)
-pending: 1 (T11 re-test with correct fixture)
+passed: 12
+issues: 0
+pending: 0
 skipped: 0
 blocked: 0
 deferred: 0
 
-### Pass / Issue Breakdown (post-diagnosis)
+### Pass / Issue Breakdown (post-retest 2026-05-14)
 
-| Test | Result | Severity | Root Cause |
-|------|--------|----------|------------|
-| T1   | pass   | —        | Auth gate on `/` works |
-| T2   | pass   | —        | Three-column dashboard renders |
-| T3   | diagnosed | major | Two search inputs on `/`; user typed in Header's dead decorative one (onSearch never wired) |
-| T4   | pass   | —        | Drawer open + 3 close methods clear URL |
-| T5   | pass   | —        | Blocked band + next-up + in-progress badges |
-| T6   | pass   | —        | 30s polling + last-updated chip + manual refresh |
-| T7   | pass   | —        | Loading skeletons per column |
-| T8   | pass   | —        | Sidebar nav + active state |
-| T9a  | diagnosed | major | `ImportFlow.handleCommit` missing `router.refresh()` after commit |
-| T9b  | diagnosed | blocker | Date serialized to string across RSC→client boundary in ImportFlow |
-| T10a | needs_decision | major | Pending → Blocked transition is a spec/ADR question, not a code bug |
-| T10b | diagnosed | blocker | `setQuery({ order })` uses nuqs `shallow: true` default → no RSC fetch → drawer waits for 30s poll |
-| T11  | needs_retest | n/a | `e2e-demo` is dual-role per Phase 31 D-13; code is correct, fixture was wrong |
-| T12  | pass   | minor    | Polls (~15s); router.refresh enhancement opportunity |
+| Test | Result (final) | Closing Plan | Retest Outcome |
+|------|----------------|--------------|----------------|
+| T1   | pass           | —            | Initial pass |
+| T2   | pass           | —            | Initial pass |
+| T3   | pass           | 34-08        | Single search input; `?q=` URL sync verified; minor cosmetic note (size) → deferred-items.md |
+| T4   | pass           | —            | Initial pass |
+| T5   | pass           | —            | Initial pass |
+| T6   | pass           | —            | Initial pass |
+| T7   | pass           | —            | Initial pass |
+| T8   | pass           | —            | Initial pass |
+| T9a  | pass           | 34-09        | Recent Imports refresh in ~1s post-commit |
+| T9b  | pass           | 34-09        | No RangeError; ImportFlow hydrates `importedAt` to Date |
+| T10a | pass           | 34-10        | Block button on Pending; typed reason persisted to event timeline (**CR-02 false positive confirmed**) |
+| T10b | pass           | 34-11        | Drawer ~1s; skeleton within 1 frame; pill/search instant |
+| T11  | pass           | — (procedural) | T11a (no-role) and T11b (dual-role) both pass; demo-role policy concern → deferred-items.md |
+| T12  | pass           | 34-12        | Cross-tab latency ~1s (was ~15s) |
 
 ## Routing Decisions (2026-05-14)
 

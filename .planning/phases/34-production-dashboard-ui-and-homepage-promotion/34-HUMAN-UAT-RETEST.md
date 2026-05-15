@@ -3,8 +3,14 @@ phase: 34-production-dashboard-ui-and-homepage-promotion
 type: human-uat-retest-plan
 created: 2026-05-14
 updated: 2026-05-14
-status: ready
+status: complete
+closed_at: 2026-05-14
 companion_to: 34-HUMAN-UAT.md
+outcome: |
+  All six retests passed on 2026-05-14. CR-02 (BlockReasonModal stale closure)
+  conclusively a FALSE POSITIVE — typed reason appeared in event timeline as expected.
+  T11b surfaced an out-of-scope follow-up (operator wants e2e-demo demoted from
+  mill_operator); captured in deferred-items.md, not in Phase 34 scope.
 notes: |
   Gap-closure plans 34-08..34-12 shipped (commits 770a577..7c7bd51). The verifier
   flagged a disputed BlockReasonModal stale-closure gap (CR-02) which the orchestrator
