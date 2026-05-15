@@ -75,16 +75,20 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 ## Phase Details
 
 ### Phase 31: Role Expansion and DB Infrastructure
+
 **Goal**: The `mill_operator` role is defined and enforced; a server-only Drizzle/Neon DB client exists and passes a clean build with no Edge-runtime contamination.
 **Depends on**: Phase 30 (v1.5 complete); quick task 260512-kfy `roles[]` refactor already merged
 **Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, DATA-01, DATA-08
 **Success Criteria** (what must be TRUE):
+
   1. `'mill_operator'` is a member of the `Role` union; TypeScript compiles clean with `tsc --noEmit`
   2. An authenticated user without `mill_operator` sees `/` in read-only mode (edit affordances hidden); mutating server actions (Phase 33) reject without `mill_operator`.
   3. `src/db/index.ts` exists with `import 'server-only'` as line 1; `next build` completes with no Edge-bundle errors
   4. `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct) set in `.env.local`; `drizzle.config.ts` references `DATABASE_URL_UNPOOLED` for migrations. Vercel env-var provisioning deferred to Phase 34 first deploy.
   5. `docs/clerk-setup.md` runbook updated with `mill_operator` test user assignment and JWT template verification
+
 **Plans**: 5 plans
+
 - [x] 31-01-PLAN.md — Role union + `checkRole` helper + test fixtures + REQUIREMENTS/ROADMAP edits (per D-15/D-16/D-17)
 - [x] 31-02-PLAN.md — Drizzle/Neon install + `drizzle.config.ts` + `src/db/{index,schema}.ts` + `.env.example`
 - [x] 31-03-PLAN.md — Playwright auth-mill-operator project + smoke spec + `docs/clerk-setup.md` runbook
@@ -94,16 +98,20 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 ---
 
 ### Phase 32: Schema, Migrations, and Seed Data
+
 **Goal**: All four Drizzle tables are defined in code, their migrations are generated and applied to the development database, and the database is pre-populated with Book1.xlsx example data so development mirrors the demo baseline.
 **Depends on**: Phase 31
 **Requirements**: DATA-02, DATA-03, DATA-04, DATA-05, DATA-06, DATA-07
 **Success Criteria** (what must be TRUE):
+
   1. `production_orders`, `order_events`, `import_batches`, and `users` tables exist in the development Postgres database as verified by `drizzle-kit introspect` or a direct SQL query
   2. `version INTEGER DEFAULT 1` column is present on `production_orders`; `clerk_user_id TEXT` has no foreign key constraint
   3. SQL migration files exist under `drizzle/migrations/` and `drizzle-kit migrate` can be re-run from scratch against an empty DB to reproduce the same schema
   4. Running the seed script populates the database with the 33 Book1.xlsx example orders, matching the row count and field values from the existing mock service
   5. `drizzle-kit push` is not used; the migration discipline (generate + migrate) is in place
+
 **Plans**: 6 plans
+
 - [x] 32-01-PLAN.md — Four Drizzle pgTable modules (orders, events, imports, users) + barrel + Wave-0 schema tests (DATA-02..05)
 - [x] 32-02-PLAN.md — D-04 type rewrite: rename ProductionOrder → DemoOrder, export mockOrders, update all demo consumers
 - [x] 32-03-PLAN.md — Update drizzle.config.ts schema path to barrel + delete src/db/schema.ts placeholder
@@ -114,16 +122,20 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 ---
 
 ### Phase 33: Server Actions, Queries, and Bulk Import
+
 **Goal**: All data mutations and reads are implemented as typed server functions; status transitions are enforced by the directed state machine with optimistic concurrency; bulk XLSX import parses, validates, and persists data with row-level error reporting.
 **Depends on**: Phase 32
 **Requirements**: TRANS-01, TRANS-02, TRANS-03, TRANS-04, TRANS-05, TRANS-06, TRANS-07, IMPORT-01, IMPORT-02, IMPORT-03, IMPORT-04, IMPORT-05, IMPORT-06, IMPORT-07
 **Success Criteria** (what must be TRUE):
+
   1. An operator can transition an order through Pending → Mixing → Completed and each transition writes an `order_events` row with `from_state`, `to_state`, `changed_by`, and `changed_at`
   2. When two operators attempt the same transition simultaneously, exactly one succeeds and the other receives the "Order was modified by another user. Please refresh." error (optimistic concurrency via `version` column)
   3. An operator can mark any active order Blocked (with a required free-text reason) and resume it to Mixing or Pending
   4. Every server action that mutates data calls `revalidateTag('production-orders')` before returning; the UI reflects the new state without a manual hard refresh
   5. An operator can upload a Book1.xlsx-format file; the preview screen shows row count, total weight, and any duplicates before commit; confirmed imports appear in the `import_batches` log; files above 2 MB are rejected client-side with a clear error message
+
 **Plans**: 11 plans (6 in-scope + 5 gap-closure)
+
 - [x] 33-01-PLAN.md — Install read-excel-file@9.0.9 + lock zod in dependencies + add experimental.serverActions.bodySizeLimit (IMPORT-07)
 - [x] 33-02-PLAN.md — src/db/queries/{orders,events}.ts with unstable_cache wrappers tagged production-orders (read-layer for transitions + Phase 34)
 - [x] 33-03-PLAN.md — productionOrderImportSchema (Zod) covering D-14/D-15/D-16 row contract (IMPORT-02 validator surface)
@@ -139,16 +151,20 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 ---
 
 ### Phase 34: Production Dashboard UI and Homepage Promotion
+
 **Goal**: The Coming Soon homepage at `/` is replaced by a live, DB-backed mill production dashboard; filter and search state are URL-synced; the 30-second polling loop keeps data fresh; and the sidebar shows production navigation for the `/` route.
 **Depends on**: Phase 33
 **Requirements**: PROD-01, PROD-02, PROD-03, PROD-04, PROD-05, PROD-06, PROD-07, PROD-08, PROD-09, PROD-10, PROD-11
 **Success Criteria** (what must be TRUE):
+
   1. An authenticated `mill_operator` visiting `/` sees the three-column mill production dashboard (Premix / Excel / CGM) populated from live database data, not mock data; unauthenticated users are redirected to `/sign-in`
   2. Status filter pills (Pending, Mixing, Completed, Blocked) and the search box update the URL (`?status=`, `?q=`) and survive a hard page reload with the same filter state applied
   3. Clicking an order card opens the order details panel showing all order fields and the full transition history from `order_events`; the blocked alert band lists all currently-blocked orders; each column shows a "next-up" highlight on the topmost Pending order and an in-progress badge on every Mixing order
   4. The dashboard auto-refreshes every 30 seconds; a last-updated timestamp and manual refresh control are visible in the header strip; loading skeletons appear while data is fetching
   5. The sidebar shows production navigation (not "Coming Soon") when the current route is `/`; the demo namespace at `/demo/*` is unchanged
+
 **Plans**: 12 plans (7 in-scope + 5 gap-closure)
+
 - [x] 34-01-PLAN.md — Foundation: install nuqs+Radix Dialog, NuqsAdapter wiring, search-params lib, StatusBadge extension, Sidebar/Header production nav, D-21 commitImportAction patch, MillReadOnlyStub deletion + transitional page.tsx (PROD-01, PROD-03..06)
 - [x] 34-02-PLAN.md — useProductionPolling hook (TDD red/green 30s + cleanup, exports REFRESH_INTERVAL_MS) — PROD-09
 - [x] 34-03-PLAN.md — getImportBatches cached query + ColumnSkeleton + DrawerSkeleton + LastUpdatedChip + BlockedAlertBand (PROD-06, PROD-10, PROD-11)
@@ -161,21 +177,26 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [x] 34-10-PLAN.md — Gap closure T10a (D-11 amendment): TransitionButtons Pending case adds Block Order trigger + PATTERNS.md/CONTEXT.md D-11 amendment + tests (PROD-05, TRANS-03)
 - [x] 34-11-PLAN.md — Gap closure T10b: split nuqs `order` key with shallow:false + history:'push' + startTransition wrapping; preserves shallow status/q for snappy filter/search (PROD-05, PROD-10)
 - [x] 34-12-PLAN.md — Gap closure T12: wire router.refresh() on transition action success paths + BlockReasonModal success path; reduces cross-tab latency 15s → ~1s (PROD-05, TRANS-07)
+
 **UI hint**: yes
 
 ---
 
 ### Phase 35: KPI Sections and Role-Specific Metrics
+
 **Goal**: Computed KPI cards and metric sections are visible in the dashboard, all aggregated server-side from real database data, closing the KPI deferral carried since v1.0.
 **Depends on**: Phase 34
 **Requirements**: KPI-01, KPI-02, KPI-03, KPI-04, KPI-05, KPI-06, KPI-07, KPI-08
 **Success Criteria** (what must be TRUE):
+
   1. A mill-wide "tons completed today" KPI card displays the correct aggregate from the database; per-line (Premix / Excel / CGM) ton breakdowns are shown alongside it
   2. Each column header strip shows the current order count and the ratio of completed weight to total weight (e.g., "4 of 12 orders — 18,400 / 52,000 lbs")
   3. A pending backlog KPI card shows the count and total weight of all Pending orders; a formula mix breakdown shows Pellet / Mash / Crumble percentages for today's completed orders
   4. A 7-day order volume trend (bar or sparkline) is rendered from DB data; if fewer than 7 days of data exist, the component shows a "Not enough data yet" empty state rather than a broken chart
   5. A cross-column exception list surfaces every currently-blocked order sortable by dwell time; orders past their `earlyDeliveryDate` carry a warning badge in list view
+
 **Plans**: 7 plans
+
 - [ ] 35-01-PLAN.md — Schema column + Drizzle migration + seed backfill + makeOrder fixture propagation (D-04, D-06) [BLOCKING migrate gate]
 - [ ] 35-02-PLAN.md — Import path extension: productionOrderImportSchema + commitImportAction insert/overwrite (D-05, Pitfall 7)
 - [ ] 35-03-PLAN.md — TDD pure helpers: bucketTexture (D-11/D-12) + formatDwell (UI-SPEC dwell format)
@@ -183,6 +204,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 - [ ] 35-05-PLAN.md — Presentational primitives: KpiCard + KpiStrip + TzBootstrap; DELETE legacy KPICard.tsx (D-07 zone 1, D-08)
 - [ ] 35-06-PLAN.md — SevenDayTrendChart + BlockedExceptionList + KpiSection layout (D-07 zone 3, D-10, D-13)
 - [ ] 35-07-PLAN.md — RSC integration: page.tsx tz cookie + KPI fan-out + ProductionDashboard zone wiring + MillColumn summary prop + Manual UAT (D-02, D-07, Pitfall 6) [checkpoint]
+
 **UI hint**: yes
 
 ---
@@ -211,6 +233,7 @@ _Phases 0-24 archived to their respective milestone files in [`milestones/`](./m
 **Depends on:** Phase 35
 **Requirements**: KPI-01, KPI-02, KPI-03, KPI-04, KPI-05, KPI-06, KPI-07, KPI-08, PROD-06
 **Success Criteria** (what must be TRUE):
+
   1. `npm run build` exits 0 — the `BlockedAlertBand.tsx:44` `startTransition` callback no longer leaks the `nuqs setQuery` `Promise<URLSearchParams>` return; the pattern matches `BlockedExceptionList.tsx:35`'s `void` cast.
   2. A regression test (or extended existing test in `BlockedAlertBand.test.tsx`) covers the void-cast path so the type/return-shape regression cannot silently re-land; `npm test -- BlockedAlertBand` exits 0.
   3. `35-VERIFICATION.md` exists at the phase root with goal-backward analysis covering all 7 plans (35-01..35-07) and all 8 KPI-* requirements; each KPI-* row has a `satisfied` verdict with code-evidence citations.
@@ -221,10 +244,21 @@ _Phases 0-24 archived to their respective milestone files in [`milestones/`](./m
 **Plans:** 5 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 36-01-PLAN.md — TDD void-cast fix at BlockedAlertBand.tsx:44 (BUILD-01 closure)
 - [ ] 36-02-PLAN.md — Author 35-VERIFICATION.md (goal-backward, 8/8 KPI satisfied)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 36-03-PLAN.md — Author 35-UAT.md skeleton + execute 10 UAT scenarios + sync VERIFICATION retest_outcome
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 36-04-PLAN.md — Re-classify 35-VALIDATION.md to complete (Nyquist gates green)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 36-05-PLAN.md — STATE/ROADMAP hygiene + operator audit re-run gate
 
 ---

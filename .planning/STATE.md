@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
 status: executing
-last_updated: "2026-05-15T04:19:31.257Z"
-last_activity: 2026-05-14
+last_updated: "2026-05-15T21:07:16.506Z"
+last_activity: 2026-05-15
 progress:
-  total_phases: 5
-  completed_phases: 4
-  total_plans: 35
-  completed_plans: 35
-  percent: 80
+  total_phases: 6
+  completed_phases: 5
+  total_plans: 47
+  completed_plans: 42
+  percent: 83
 ---
 
 # Project State: v2.0 Mill Production MVP
@@ -33,7 +33,7 @@ Phase: 35 (kpi-sections-and-role-specific-metrics) — COMPLETE
 Plan: 7 of 7
 **Phase:** 35
 **Plan:** all complete; Manual UAT verified 2026-05-15
-**Status:** v2.0 feature-complete; awaiting milestone wrap or next phase
+**Status:** Ready to execute
 **Last activity:** 2026-05-15
 
 ### Progress Bar
@@ -56,6 +56,10 @@ Phase 31 █  Phase 32 █  Phase 33 █  Phase 34 █  Phase 35 █
 **Cumulative across milestones:** see `.planning/MILESTONES.md`
 
 ## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 36 added: Close gap: BUILD-01 void cast + Phase 35 verification
 
 ### Open Blockers
 
