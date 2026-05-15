@@ -458,9 +458,11 @@ describe("ImportFlow", () => {
     }
   });
 
-  // ── T9b regression: hydration of string importedAt ───────────────────────
+  // ── CR-03 regression: ImportHistoryTable accepts string importedAt ───────
+  // Previously T9b — the useMemo hydration shim was removed in CR-03 because
+  // ImportHistoryTable.formatBatchDate now accepts Date | string directly.
 
-  it("T9b: renders without throwing when batches.importedAt is a string (hydration fix)", () => {
+  it("CR-03: renders without throwing when batches.importedAt is a string (RSC serialization)", () => {
     const stringBatches = [
       {
         id: 'b1',
@@ -472,7 +474,7 @@ describe("ImportFlow", () => {
     ] as unknown as ImportBatch[];
 
     expect(() => render(<ImportFlow batches={stringBatches} canEdit={true} />)).not.toThrow();
-    // Date is now hydrated; the table renders the formatted date without RangeError.
+    // formatBatchDate normalises strings → Date internally, no RangeError.
     expect(screen.getByText('Book1.xlsx')).toBeInTheDocument();
   });
 });

@@ -18,7 +18,7 @@
  *   T-34-07-CSRF: Next.js 16 server actions enforce same-origin at framework level.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   previewImportAction,
@@ -54,17 +54,10 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
   // Store the file for commit re-submission (server must re-parse — D-05 stateless)
   const [currentFile, setCurrentFile] = useState<File | null>(null);
 
-  // T9b fix: hydrate batches.importedAt from string|Date → Date at the prop boundary.
-  // RSC serialization turns Date into an ISO string; ImportHistoryTable's formatBatchDate
-  // strictly requires Date input. We hydrate ONCE here so the rest of the tree stays
-  // honest about the type.
-  const hydratedBatches = useMemo(
-    () => batches.map((b) => ({
-      ...b,
-      importedAt: b.importedAt instanceof Date ? b.importedAt : new Date(b.importedAt as unknown as string),
-    })),
-    [batches]
-  );
+  // CR-03 (deep review 2026-05-14): the previous useMemo hydration shim has
+  // been removed. ImportHistoryTable.formatBatchDate now accepts Date | string
+  // and normalises internally, so the type-lie no longer needs a 1-call-site-deep
+  // cliff to defend against RSC serialization. batches passes through verbatim.
 
   // ── File handler — validates size, calls previewImportAction ──────────────
 
@@ -400,7 +393,7 @@ export default function ImportFlow({ batches, canEdit }: Props): React.JSX.Eleme
 
       {/* ── Import history — always visible below the active phase ────── */}
       <hr className="my-6 border-[var(--divider)]" />
-      <ImportHistoryTable batches={hydratedBatches} />
+      <ImportHistoryTable batches={batches} />
     </div>
   );
 }

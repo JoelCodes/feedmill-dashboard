@@ -13,10 +13,22 @@ import type { ImportBatch } from "@/db/schema/imports";
 // ─── Date formatter — UI-SPEC §8 (locked format) ────────────────────────────
 
 /**
- * Formats an ImportBatch.importedAt Date per UI-SPEC §8 copywriting:
+ * Formats an ImportBatch.importedAt value per UI-SPEC §8 copywriting:
  * "May 14, 2026, 2:34 PM"-style output using locked Intl.DateTimeFormat options.
+ *
+ * CR-03 (deep review 2026-05-14): accepts Date | string. RSC serialization
+ * turns Date into an ISO string at the server/client boundary, so any caller
+ * that renders this component directly (admin pages, embedded widgets, future
+ * RSC consumers that bypass ImportFlow's hydration shim) will pass a string.
+ * Normalising here removes the trap; the previous Date-only signature pinned
+ * the type-lie as a contract and crashed with RangeError on string input.
+ *
+ * Defensive: falls back to '' for unparseable input so the row still renders
+ * (the Date column is non-critical UX — better blank than crashed page).
  */
-function formatBatchDate(d: Date): string {
+function formatBatchDate(d: Date | string): string {
+  const date = d instanceof Date ? d : new Date(d);
+  if (isNaN(date.getTime())) return '';
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
@@ -24,7 +36,7 @@ function formatBatchDate(d: Date): string {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
-  }).format(d);
+  }).format(date);
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────

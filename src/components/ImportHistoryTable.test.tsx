@@ -98,7 +98,7 @@ describe("ImportHistoryTable", () => {
   });
 });
 
-describe('ImportHistoryTable date hydration contract (T9b regression — plan 34-09)', () => {
+describe('ImportHistoryTable date hydration contract (CR-03 — deep review 2026-05-14)', () => {
   it('renders without throwing when importedAt is a Date (baseline)', () => {
     const batches: ImportBatch[] = [
       {
@@ -113,26 +113,51 @@ describe('ImportHistoryTable date hydration contract (T9b regression — plan 34
     expect(screen.getByText('Book1.xlsx')).toBeInTheDocument();
   });
 
-  it('throws RangeError when importedAt is a string and NOT hydrated upstream (architectural type-lie demonstration)', () => {
-    // This documents the bug: the contract is "callers MUST hydrate before passing".
-    // If ImportFlow ever regresses on hydration, this test will fail loudly with the
-    // exact RangeError observed in UAT T9b.
+  it('renders correctly when importedAt is an ISO string (matches RSC serialization)', () => {
+    // CR-03: formatBatchDate now accepts Date | string and normalises internally,
+    // so any caller — admin pages, embedded widgets, future RSC consumers that
+    // bypass ImportFlow — can pass the RSC-serialised string directly without
+    // crashing. The previous test pinned the RangeError as a contract; this one
+    // pins the corrected contract: string input renders the formatted date.
+    const stringBatches = [
+      {
+        id: 'b1',
+        fileName: 'Book1.xlsx',
+        rowCount: 33,
+        importedBy: 'user_abc',
+        importedAt: '2026-05-14T19:00:00.000Z',
+      },
+    ] as unknown as ImportBatch[];
+
+    expect(() => render(<ImportHistoryTable batches={stringBatches} />)).not.toThrow();
+    expect(screen.getByText('Book1.xlsx')).toBeInTheDocument();
+
+    // The same row also renders the formatted date derived from the ISO string.
+    const expectedDate = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(new Date('2026-05-14T19:00:00.000Z'));
+    expect(screen.getByText(expectedDate)).toBeInTheDocument();
+  });
+
+  it('renders the row with an empty date cell when importedAt is unparseable (defensive)', () => {
     const badBatches = [
       {
         id: 'b1',
         fileName: 'Book1.xlsx',
         rowCount: 33,
         importedBy: 'user_abc',
-        importedAt: '2026-05-14T19:00:00.000Z' as unknown as Date,
+        importedAt: 'not-a-real-date' as unknown as Date,
       },
     ] as unknown as ImportBatch[];
 
-    // Suppress React's error boundary noise for this expected throw.
-    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
-    try {
-      expect(() => render(<ImportHistoryTable batches={badBatches} />)).toThrow(RangeError);
-    } finally {
-      consoleError.mockRestore();
-    }
+    expect(() => render(<ImportHistoryTable batches={badBatches} />)).not.toThrow();
+    // Row is still visible (file name renders) — the date cell falls back to ''
+    // rather than crashing the page.
+    expect(screen.getByText('Book1.xlsx')).toBeInTheDocument();
   });
 });
