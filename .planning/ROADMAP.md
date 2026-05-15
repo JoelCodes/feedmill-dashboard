@@ -205,5 +205,27 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
 
+### Phase 36: Close gap: BUILD-01 void cast + Phase 35 verification
+
+**Goal:** Close the two blockers identified by the v2.0 milestone re-audit so v2.0 (Mill Production MVP) can ship: (1) fix the `npm run build` TypeScript error at `src/components/BlockedAlertBand.tsx:44` (missing `void` cast on `nuqs setQuery` inside `startTransition`), and (2) produce the Phase 35 verification artifacts (`35-VERIFICATION.md` + `35-UAT.md`) so KPI-01..KPI-08 reach satisfied status and `35-VALIDATION.md` can be re-classified from `draft` → `complete`.
+**Depends on:** Phase 35
+**Requirements**: KPI-01, KPI-02, KPI-03, KPI-04, KPI-05, KPI-06, KPI-07, KPI-08, PROD-06
+**Success Criteria** (what must be TRUE):
+  1. `npm run build` exits 0 — the `BlockedAlertBand.tsx:44` `startTransition` callback no longer leaks the `nuqs setQuery` `Promise<URLSearchParams>` return; the pattern matches `BlockedExceptionList.tsx:35`'s `void` cast.
+  2. A regression test (or extended existing test in `BlockedAlertBand.test.tsx`) covers the void-cast path so the type/return-shape regression cannot silently re-land; `npm test -- BlockedAlertBand` exits 0.
+  3. `35-VERIFICATION.md` exists at the phase root with goal-backward analysis covering all 7 plans (35-01..35-07) and all 8 KPI-* requirements; each KPI-* row has a `satisfied` verdict with code-evidence citations.
+  4. `35-UAT.md` exists at the phase root with a written human-UAT pass record covering: KPI strip visual rendering, tz cookie flow (incl. fallback when cookie missing), 7-day trend chart post-SQL-fix retest (covers commits `ba54b4a..4d61194`), overdue badge rendering, and the formula-mix breakdown card.
+  5. `35-VALIDATION.md` frontmatter is updated to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` — re-classified after Wave-0 test confirmation (`npm test -- kpis`) and human UAT.
+  6. STATE.md and ROADMAP.md reflect Phase 36 complete and v2.0 milestone shippable (gaps closed); `gsd-sdk query roadmap.get-phase 36 --pick goal` returns the canonical goal text, not `[To be planned]`.
+
+**Plans:** 5 plans
+
+Plans:
+- [ ] 36-01-PLAN.md — TDD void-cast fix at BlockedAlertBand.tsx:44 (BUILD-01 closure)
+- [ ] 36-02-PLAN.md — Author 35-VERIFICATION.md (goal-backward, 8/8 KPI satisfied)
+- [ ] 36-03-PLAN.md — Author 35-UAT.md skeleton + execute 10 UAT scenarios + sync VERIFICATION retest_outcome
+- [ ] 36-04-PLAN.md — Re-classify 35-VALIDATION.md to complete (Nyquist gates green)
+- [ ] 36-05-PLAN.md — STATE/ROADMAP hygiene + operator audit re-run gate
+
 ---
 *Last updated: 2026-05-15 — Phase 35 complete (7 plans across 4 waves). All 8 KPI requirements (KPI-01..KPI-08) verified via Manual UAT against the dashboard. v2.0 (Mill Production MVP) milestone now reaches feature-complete state. Four post-merge SQL fixes (ba54b4a, ca707c9, d792924, 24b34bf) closed bugs the mock-db unit tests couldn't catch — captured as backlog: KPI SQL integration smoke tests.*
