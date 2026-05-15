@@ -36,16 +36,21 @@ Declared values (all multiples of 4, sourced from `globals.css` `--space-*` toke
 |-------|-------|-------|
 | xs | 4px (`--space-1`) | Icon gaps, inline badge padding |
 | sm | 8px (`--space-2`) | Compact element spacing, badge px |
+| sm+ | 12px (`--space-3`) | Exception list table row vertical padding (`py-3`) |
 | md | 16px (`--space-4`) | Default element spacing, card padding |
 | lg | 24px (`--space-5`) | Section padding, column gap |
 | xl | 32px (`--space-6`) | Layout gaps between KPI strip zones |
 | 2xl | 48px (`--space-8`) | Major section breaks (between KPI strip and columns, between columns and KpiSection) |
 | 3xl | 64px (`--space-10`) | Page-level vertical spacing |
 
+`12px` (`--space-3`) is a declared token in `globals.css` (line 79). It is sanctioned for use as a compact row variant rather than an exception.
+
 Exceptions:
-- KPI card inner padding: `px-[21px] py-[18px]` (`--card-padding-lg: 1.3125rem` = 21px) — matches existing `KPICard.tsx` prior art and `Card.Content` pattern.
+
+- KPI card inner padding: `px-[var(--card-padding-lg)] py-5` — `--card-padding-lg: 1.3125rem` (21px) is the project's established card-padding token declared in `globals.css` line 121; horizontal padding references the token directly rather than a raw pixel value. Vertical padding is `20px` (`py-5`), a multiple of 4. This preserves the card's proportional feel while eliminating non-grid raw values.
 - Column header KPI-03 strip: `mt-1` (4px) below the column title — matches existing `MillColumn.tsx` header spacing.
-- Exception list table rows: `py-3` (12px) vertical padding — `--space-3` token value.
+
+Rationale for `py-5` (20px) over `py-4` (16px): 16px vertical padding produces a noticeably compressed card on a 22px stat value. 20px preserves the spacious feel of the prior art (`py-[18px]`) while snapping to the nearest grid multiple.
 
 ---
 
@@ -56,11 +61,11 @@ All sizes use existing CSS custom-property tokens from `globals.css`:
 | Role | Size | Weight | Line Height | Token |
 |------|------|--------|-------------|-------|
 | KPI card value (stat) | 22px | 700 (bold) | 1.2 | `--fs-22` |
-| KPI card label / column header strip text | 11px | 600 (semibold) | 1.4 | `--fs-11` |
+| KPI card label / column header strip text | 11px | 700 (bold) | 1.4 | `--fs-11` |
 | Body / exception list cell text | 14px | 400 (regular) | 1.5 | Tailwind `text-sm` |
-| Section heading (chart axis labels, exception list header) | 13px | 600 (semibold) | 1.4 | `--fs-13` |
+| Section heading (chart axis labels, exception list header) | 13px | 700 (bold) | 1.4 | `--fs-13` |
 
-Weights used: **regular (400)** and **bold/semibold (600 / 700)**. The KPI stat value uses 700 for visual hierarchy; all labels use 600. Running body text uses 400. This matches the existing `KPICard.tsx` prior art (`font-bold` on value, `font-bold` on label) and `ProductionCard.tsx` (`font-bold` on customer name, `font-semibold` on order number).
+Weights used: **regular (400)** and **bold (700)**. All emphasis text — stat values, card labels, section headings, and strip text — uses 700. Running body text uses 400. The 22px size alone provides sufficient stat-value hierarchy; a third weight (600) is not needed. This matches existing prior art: `KPICard.tsx` uses `font-bold` on both value and label; `ProductionCard.tsx` uses `font-bold` on customer name and on the "Next Up" badge; `font-semibold` appears only once in `ProductionCard.tsx` as a secondary treatment that Phase 35 does not carry forward.
 
 Source: `globals.css` typography tokens; `KPICard.tsx` lines 62-70; `ProductionCard.tsx` lines 112-128.
 
@@ -119,8 +124,8 @@ icon?: LucideIcon      // optional Lucide icon displayed in accent-colored conta
 
 **Visual structure:**
 - Outer: `Card` default variant (`bg-[var(--bg-card)] border border-[var(--divider)] rounded-[var(--radius-lg)]`)
-- Inner padding: `px-[21px] py-[18px]` (matches existing `KPICard.tsx` prior art)
-- Left column: `label` at `--fs-11` semibold muted, `value` at `--fs-22` bold primary, `unit` inline at `text-sm` muted
+- Inner padding: `px-[var(--card-padding-lg)] py-5` (horizontal uses the `--card-padding-lg` token; vertical is `20px` — see Spacing section)
+- Left column: `label` at `--fs-11` bold muted, `value` at `--fs-22` bold primary, `unit` inline at `text-sm` muted
 - Optional `subValue` at `text-sm` regular muted, below value
 - Optional `footnote` at `--fs-11` muted, bottom of card
 - Right column (when `icon` present): `h-11 w-11` rounded-xl container filled `bg-[var(--primary)]` with `Icon className="h-5 w-5 text-white"`
@@ -151,7 +156,7 @@ Horizontal scrollable row of `KpiCard` instances.
 Not a standalone component — rendered inline in `MillColumn.tsx` header via a `<p>` extension.
 
 **Format:** `{N} orders — {completedLbs} / {totalLbs} lbs`
-- `{N} orders` at `--fs-11` semibold `var(--text-primary)`
+- `{N} orders` at `--fs-11` bold `var(--text-primary)`
 - ` — ` separator at `--fs-11` muted
 - `{completedLbs} / {totalLbs} lbs` at `--fs-11` muted
 - Rendered as the second line of the existing `MillColumn` header, `mt-1` below the column name `h2`
@@ -170,25 +175,27 @@ Hand-rolled inline SVG. No chart library. (D-13 / CONTEXT.md)
 
 **Axis labels:** X-axis day labels below each bar — `--fs-11` `var(--text-muted)` — formatted as "Mon", "Tue", etc. (3-letter weekday abbreviation from the `date` string). Y-axis: no explicit Y-axis line; max value label at top-right of chart in `--fs-11` muted.
 
-**Empty state (fewer than 7 days of data):** Render the chart card but replace SVG with centered text: heading "Not enough data yet" at `text-sm` semibold `var(--text-primary)` + body "Check back after 7 days of production" at `--fs-13` `var(--text-muted)`. Card dimensions preserved so layout does not collapse.
+**Empty state (fewer than 7 days of data):** Render the chart card but replace SVG with centered text: heading "Not enough data yet" at `text-sm` bold `var(--text-primary)` + body "Check back after 7 days of production" at `--fs-13` `var(--text-muted)`. Card dimensions preserved so layout does not collapse.
 
-**Card wrapper:** `Card` default variant, `p-4`, with a section heading "7-Day Volume Trend" at `text-sm` semibold `var(--text-medium)` above the SVG.
+**Card wrapper:** `Card` default variant, `p-4`, with a section heading "7-Day Volume Trend" at `text-sm` bold `var(--text-medium)` above the SVG.
 
 #### `BlockedExceptionList.tsx`
 Sortable table of blocked orders. Distinct from `BlockedAlertBand` (D-10).
 
 **Props:** `orders: Array<BlockedOrderWithDwell>` where `dwell` is a duration string computed server-side.
 
-**Layout:** `Card` default variant. Header row: "Blocked Orders" heading at `text-sm` semibold `var(--text-medium)` + sort affordance label "Sorted by dwell time" at `--fs-11` muted (right-aligned). KPI-07 ships with default dwell-time sort only — no click-to-sort column headers in v2.0 (deferred per CONTEXT.md).
+**Layout:** `Card` default variant. Header row: "Blocked Orders" heading at `text-sm` bold `var(--text-medium)` + sort affordance label "Sorted by dwell time" at `--fs-11` muted (right-aligned). KPI-07 ships with default dwell-time sort only — no click-to-sort column headers in v2.0 (deferred per CONTEXT.md).
 
 **Table columns (in order):**
-1. Order # — `--fs-11` semibold muted; `min-w-[80px]`
+1. Order # — `--fs-11` bold muted; `min-w-[80px]`
 2. Customer — `text-sm` regular `var(--text-primary)`; `flex-1`
-3. Mill Line — `--fs-11` semibold; `min-w-[72px]`; text matches `STATE_COLORS` `--status-{state}-header` for the mill-line display (no color — plain muted)
-4. Blocked For (dwell time) — `text-sm` semibold `var(--text-primary)`; `min-w-[80px]`
+3. Mill Line — `--fs-11` bold; `min-w-[72px]`; text matches `STATE_COLORS` `--status-{state}-header` for the mill-line display (no color — plain muted)
+4. Blocked For (dwell time) — `text-sm` bold `var(--text-primary)`; `min-w-[80px]`
 5. Overdue badge (KPI-08) — conditionally rendered; see badge spec below; `min-w-[64px]`
 
 **Row interaction:** Entire row is `role="button"` + `tabIndex={0}` + Enter/Space keyboard handler. Click sets `?order=<id>` via `useOrderQuery()` (reusing Phase 34 pattern). Hover: `hover:bg-[var(--pending-light)]`. Active: `active:opacity-90`.
+
+**Row padding:** `py-3` (12px — `--space-3` sanctioned token; see Spacing Scale).
 
 **Empty state (no blocked orders):** Card remains visible. Content: centered "No blocked orders" at `text-sm` muted — no icon. Minimum card height `min-h-[64px]` to prevent layout collapse.
 
@@ -200,7 +207,7 @@ Source: CONTEXT.md D-03 — "Display formatting is a UI concern, locked via UI-S
 
 **Overdue badge (KPI-08):**
 - Renders only when `earlyDeliveryDate` is non-null AND `earlyDeliveryDate < today` AND `state !== 'Completed'`
-- Visual: inline badge `bg-[var(--warning-light)] text-[var(--warning)] border border-[var(--warning)] rounded-[var(--radius-sm)] px-2 py-0.5 text-[var(--fs-11)] font-semibold`
+- Visual: inline badge `bg-[var(--warning-light)] text-[var(--warning)] border border-[var(--warning)] rounded-[var(--radius-sm)] px-2 py-0.5 text-[var(--fs-11)] font-bold`
 - Label: `"Overdue"`
 - Accessible: `role="status"` `aria-label="Order past early delivery date"`
 - Reuses `StatusBadge` color palette approach but does NOT extend `StatusBadge.tsx` directly — it is an inline span in `BlockedExceptionList` and `ProductionCard` (see below)
