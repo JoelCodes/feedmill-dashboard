@@ -111,8 +111,7 @@ export const getKpiStrip = unstable_cache(
         sql`${productionOrders.state} = 'Completed'
         AND date_trunc('day', ${productionOrders.updatedAt} AT TIME ZONE ${tz})
           = date_trunc('day', NOW() AT TIME ZONE ${tz})`
-      )
-      .groupBy(sql`1`);
+      );
 
     const completedTodayLbs = millWideResult[0]?.totalLbs ?? '0';
 
@@ -147,8 +146,7 @@ export const getKpiStrip = unstable_cache(
         totalLbs: sql<string>`COALESCE(${sum(productionOrders.weightLbs)}::text, '0')`,
       })
       .from(productionOrders)
-      .where(sql`${productionOrders.state} = 'Pending'`)
-      .groupBy(sql`1`);
+      .where(sql`${productionOrders.state} = 'Pending'`);
 
     const pendingCount = pendingResult[0]?.cnt ?? 0;
     const pendingLbs = pendingResult[0]?.totalLbs ?? '0';
@@ -261,8 +259,7 @@ export const getKpiStrip = unstable_cache(
         sql`${productionOrders.state} = 'Completed'
         AND date_trunc('day', ${productionOrders.updatedAt} AT TIME ZONE ${tz})
           = date_trunc('day', NOW() AT TIME ZONE ${tz})`
-      )
-      .groupBy(sql`1`);
+      );
 
     const fmRow = formulaMixResult[0];
     const pelletPct = fmRow?.pelletPct ?? null;
