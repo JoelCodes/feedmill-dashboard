@@ -18,22 +18,14 @@ import {
   parseAsStringLiteral,
   parseAsString,
 } from 'nuqs/server';
-import type { ProductionState } from '@/db/schema/orders';
 
-/**
- * Canonical ordering of production states for filter pills and grouping.
- *
- * Source of truth: matches visual ordering in `MillProductionUI.tsx` lines 11-16
- * (Phase 28 visual prior art). Phase 34 reuses the same ordering to keep the
- * filter strip visually consistent with the demo board.
- *
- * D-04: the four valid literals are 'Pending' | 'Mixing' | 'Completed' | 'Blocked'.
- * UI-SPEC §1 dictates that filter pill display order follows STATE_ORDER.
- * Since parseAsArrayOf is set-semantics, the order in the URL string does not
- * affect which values survive parsing — all valid literals are kept, all unknown
- * literals are dropped silently.
- */
-export const STATE_ORDER = ['Pending', 'Mixing', 'Completed', 'Blocked'] as const satisfies readonly ProductionState[];
+// WR-06: STATE_ORDER lives in @/lib/state-order (no 'nuqs/server' imports)
+// so MillColumn.tsx and production-derivations.ts can share the same source
+// of truth without pulling server-only code into pure modules. Imported here
+// for the parser definition AND re-exported for backward compatibility with
+// existing call sites that import STATE_ORDER from '@/lib/search-params'.
+import { STATE_ORDER } from '@/lib/state-order';
+export { STATE_ORDER };
 
 /**
  * Shared parser cache for `/?status=&q=&order=`.

@@ -9,22 +9,11 @@
  * weightLbs.toLocaleString() directly; do parseFloat first.
  */
 import type { ProductionOrder, ProductionState } from '@/db/schema/orders';
-
-/**
- * Visual ordering of production states for grouping and column sections.
- * Matches the STATE_ORDER defined in search-params.ts but intentionally
- * duplicated here so this pure module stays free of 'server-only' imports.
- *
- * Note: The column visual order (Completed → Mixing → Blocked → Pending) is
- * defined in MillColumn.tsx as COLUMN_STATE_ORDER. This constant is the
- * canonical parsing/grouping order — the visual order is a rendering concern.
- */
-const STATE_ORDER: readonly ProductionState[] = [
-  'Pending',
-  'Mixing',
-  'Completed',
-  'Blocked',
-] as const;
+// WR-06 (deep review 2026-05-14): STATE_ORDER now lives in @/lib/state-order
+// as the single source of truth, shared with search-params.ts (parser) and
+// MillColumn.tsx (visual). The shared module has no 'server-only' imports so
+// this pure derivations module stays import-clean for both RSC and client.
+import { STATE_ORDER } from '@/lib/state-order';
 
 /**
  * Groups an array of ProductionOrders into a Record keyed by ProductionState.

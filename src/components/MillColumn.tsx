@@ -5,20 +5,14 @@ import {
   computeColumnWeights,
   isOrderNextUp,
 } from '@/lib/production-derivations';
+// WR-06 (deep review 2026-05-14): COLUMN_STATE_ORDER (visual: Completed → Mixing
+// → Blocked → Pending) lives in @/lib/state-order alongside the canonical
+// parsing/filter STATE_ORDER. Both ordering tuples now have a single source of
+// truth so the two distinct meanings ("parse order" vs "visual order") cannot
+// drift independently across files.
+import { COLUMN_STATE_ORDER } from '@/lib/state-order';
 import ProductionCard from '@/components/ProductionCard';
 import type { ProductionOrder, ProductionState, MillLine } from '@/db/schema/orders';
-
-/**
- * Visual ordering of state sections within a column.
- * UI-SPEC §3: Completed → Mixing → Blocked → Pending
- * This differs from STATE_ORDER in search-params.ts which is the parsing/filter order.
- */
-const COLUMN_STATE_ORDER: readonly ProductionState[] = [
-  'Completed',
-  'Mixing',
-  'Blocked',
-  'Pending',
-] as const;
 
 /**
  * Local STATE_COLORS — copied from MillProductionUI.tsx (visual prior art, D-01).
