@@ -106,13 +106,26 @@ const xlsxSchema: Record<string, unknown> = {
  * for cells parsed with `type: Date`. We truncate to the ISO date prefix
  * (YYYY-MM-DD) for storage in the `delivery_time` text column (D-13).
  *
+ * WR-07 (deep review 2026-05-14): use UTC component getters instead of
+ * `toISOString().split('T')[0]`. `toISOString()` always renders in UTC; if
+ * the input Date carries a non-UTC offset (e.g. read-excel-file interpreted
+ * the cell in local server time and the server runs in Asia/Tokyo), slicing
+ * the UTC ISO string produces an off-by-one date. The Vercel/Neon production
+ * environment runs in UTC (low risk in prod) but local-dev and CI runners do
+ * not — silent prod-vs-dev divergence is exactly the kind of bug that ships
+ * unnoticed. Reading getUTCFullYear / getUTCMonth / getUTCDate locks the
+ * derivation to UTC regardless of process.env.TZ.
+ *
  * Defensive: if `d` is not a Date instance (e.g. undefined, null, or an
  * unexpected string), returns an empty string. The Zod schema will then
  * reject the row via the `min(1)` rule on `deliveryTime`.
  */
 function dateToIsoString(d: unknown): string {
   if (d instanceof Date && !isNaN(d.getTime())) {
-    return d.toISOString().split('T')[0];
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
   return '';
 }
