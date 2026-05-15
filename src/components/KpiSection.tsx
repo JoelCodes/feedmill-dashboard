@@ -45,7 +45,7 @@ export default function KpiSection({ trendData, exceptions }: KpiSectionProps) {
  *
  * D-16: Wrapped by <Suspense fallback={<KpiSectionSkeleton />}> in ProductionDashboard.
  */
-export function KpiSectionSkeleton(): JSX.Element {
+export function KpiSectionSkeleton() {
   return (
     <div className="flex flex-col gap-5 md:flex-row md:gap-6" aria-hidden="true">
       <div className="h-[200px] flex-1 animate-pulse rounded-[var(--radius-lg)] bg-[var(--divider)]" />

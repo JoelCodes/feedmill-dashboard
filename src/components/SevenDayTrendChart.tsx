@@ -38,7 +38,7 @@ function weekdayShort(isoDate: string): string {
   });
 }
 
-export default function SevenDayTrendChart({ data }: { data: TrendDay[] }): JSX.Element {
+export default function SevenDayTrendChart({ data }: { data: TrendDay[] }) {
   // ── Empty state ─────────────────────────────────────────────────────────────
   if (data.length < 7) {
     return (

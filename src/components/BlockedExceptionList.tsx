@@ -32,7 +32,7 @@ export default function BlockedExceptionList({
 }) {
   const [, setQuery] = useOrderQuery();
 
-  const openDrawer = (id: string) => startTransition(() => setQuery({ order: id }));
+  const openDrawer = (id: string) => startTransition(() => void setQuery({ order: id }));
 
   const handleKey = (e: KeyboardEvent<HTMLTableRowElement>, id: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
