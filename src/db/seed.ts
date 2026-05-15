@@ -125,7 +125,21 @@ async function seed() {
     }
   }
 
-  const rows = (seedData as SnakeRow[]).map((r) => ({
+  // D-06: Deterministic earlyDeliveryDate spread across today ±5 days.
+  // Formula: offset = (i % 11) - 5, yielding offsets -5..+5 across 33 rows.
+  // Using setUTCDate to avoid local-timezone off-by-one drift (Pitfall 5).
+  // seed-data.json is NOT modified (Option B: runtime computation).
+  const today = new Date();
+  function earlyDeliveryDateFor(i: number): string {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() + (i % 11) - 5);
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  const rows = (seedData as SnakeRow[]).map((r, i) => ({
     orderNumber: r.order_number,
     customer: r.customer,
     product: r.product,
@@ -137,6 +151,7 @@ async function seed() {
     lineCode: r.line_code,
     createdBy: r.created_by,
     version: r.version,
+    earlyDeliveryDate: earlyDeliveryDateFor(i),
   }));
   console.log(`Inserting ${rows.length} seed rows...`);
   await db.insert(productionOrders).values(rows);
