@@ -190,4 +190,57 @@ describe('productionOrderImportSchema', () => {
     // If _typeCheck compiled without error, this test passes trivially.
     expect(typeof _typeCheck).toBe('string');
   });
+
+  // ── Phase 35-02: earlyDeliveryDate optional field (D-05) ───────────────────
+
+  // Test 17 (35-02): accepts a YYYY-MM-DD string for earlyDeliveryDate
+  it('35-02 Test 1: accepts earlyDeliveryDate as a YYYY-MM-DD string', () => {
+    const result = productionOrderImportSchema.safeParse({
+      ...validRow,
+      earlyDeliveryDate: '2026-05-20',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  // Test 18 (35-02): accepts earlyDeliveryDate: null explicitly
+  it('35-02 Test 2: accepts earlyDeliveryDate: null (explicit null)', () => {
+    const result = productionOrderImportSchema.safeParse({
+      ...validRow,
+      earlyDeliveryDate: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  // Test 19 (35-02): accepts earlyDeliveryDate absent (undefined via .nullish())
+  it('35-02 Test 3: accepts earlyDeliveryDate absent — .nullish() treats undefined as valid', () => {
+    // earlyDeliveryDate is not in validRow; .nullish() must pass when field is absent
+    const result = productionOrderImportSchema.safeParse(validRow);
+    expect(result.success).toBe(true);
+  });
+
+  // Test 20 (35-02): type assertion — earlyDeliveryDate is present on the output type
+  it('35-02 Test 4: parsed.data.earlyDeliveryDate has TypeScript type string | null | undefined (field present in schema)', () => {
+    const result = productionOrderImportSchema.safeParse({
+      ...validRow,
+      earlyDeliveryDate: '2026-05-20',
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      // TypeScript confirms: earlyDeliveryDate is string | null | undefined on the inferred type.
+      // This assertion also proves the field is on parsed.data (not just permissive — it's in the schema).
+      const val: string | null | undefined = result.data.earlyDeliveryDate;
+      expect(val).toBe('2026-05-20');
+    }
+  });
+
+  // Test 21 (35-02): regression — existing test rows that omit earlyDeliveryDate still pass
+  it('35-02 Test 5: regression — omitting earlyDeliveryDate does not affect existing tests (.nullish() is non-breaking)', () => {
+    // Baseline validRow (from above) does NOT include earlyDeliveryDate — must still pass.
+    const result = productionOrderImportSchema.safeParse(validRow);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      // When absent, earlyDeliveryDate should be undefined (not fail validation).
+      expect(result.data.earlyDeliveryDate).toBeUndefined();
+    }
+  });
 });

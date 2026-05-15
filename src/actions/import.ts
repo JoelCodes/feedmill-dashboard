@@ -34,6 +34,7 @@ export type PreviewRow = {
   millLine: 'Premix' | 'Excel' | 'CGM';
   textureType: string | null;
   lineCode: string | null;
+  earlyDeliveryDate?: string | null; // D-05: YYYY-MM-DD from "Early Delivery Date" XLSX column; optional for back-compat
   isDuplicate: boolean;
   duplicateOf?: string; // 'db' or `row ${number}` (intra-file)
   errors?: Array<{ path: string; message: string }>;
@@ -219,10 +220,16 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
     // D-15/productionOrderImportSchema but absent from the XLSX, rows missing `product`
     // will surface as Zod validation errors — this is correct per IMPORT-04 (partial-import
     // semantics: invalid rows are surfaced as errors, not silently skipped).
+    // D-05: compute earlyDeliveryDate once — same source date as deliveryTime, different target column.
+    // Using a local const keeps the value available for both toValidate (Zod validation)
+    // and the result.push fallback (in case an older schema version strips the field).
+    const earlyDeliveryDateIso = dateToIsoString(raw.deliveryDate) || null;
+
     const toValidate = {
       ...raw,
       millLine: 'Premix' as const,
       deliveryTime: dateToIsoString(raw.deliveryDate),
+      earlyDeliveryDate: earlyDeliveryDateIso, // D-05: YYYY-MM-DD for KPI-08
     };
 
     const parsed = productionOrderImportSchema.safeParse(toValidate);
@@ -255,6 +262,7 @@ async function parseAndValidate(buffer: Buffer): Promise<PreviewRow[]> {
       millLine: (data?.millLine ?? 'Premix') as 'Premix' | 'Excel' | 'CGM',
       textureType: (data?.textureType ?? (raw.textureType as string | null) ?? null) as string | null,
       lineCode: (data?.lineCode ?? (raw.lineCode as string | null) ?? null) as string | null,
+      earlyDeliveryDate: (data?.earlyDeliveryDate ?? earlyDeliveryDateIso) as string | null, // D-05: Zod-parsed value, falling back to directly-computed ISO string
       isDuplicate: false,
       ...(allErrors.length > 0 ? { errors: allErrors } : {}),
     });
@@ -689,6 +697,7 @@ export async function commitImportAction(
               deliveryTime: row.deliveryTime,
               textureType: row.textureType ?? null,
               lineCode: row.lineCode ?? null,
+              earlyDeliveryDate: row.earlyDeliveryDate ?? null, // D-05 + Pitfall 7: must be in UPDATE .set() or re-imports never update this column
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               version: sql`version + 1` as any,
               // state intentionally absent — D-13: overwrite does NOT change state
@@ -747,6 +756,7 @@ export async function commitImportAction(
               millLine: 'Premix' as const,         // D-16: no Mill Line column in Book1.xlsx
               textureType: row.textureType ?? null,
               lineCode: row.lineCode ?? null,
+              earlyDeliveryDate: row.earlyDeliveryDate ?? null, // D-05: KPI-08 early delivery date
               state: 'Pending' as const,            // D-13: all imports start as Pending
               version: 1,
               createdBy: userId,
