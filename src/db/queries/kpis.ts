@@ -314,8 +314,8 @@ export const getSevenDayTrend = unstable_cache(
         AND ${productionOrders.updatedAt} AT TIME ZONE ${tz}
           >= date_trunc('day', NOW() AT TIME ZONE ${tz}) - INTERVAL '6 days'`
       )
-      .groupBy(sql`date_trunc('day', ${productionOrders.updatedAt} AT TIME ZONE ${tz})::date`)
-      .orderBy(sql`date_trunc('day', ${productionOrders.updatedAt} AT TIME ZONE ${tz})::date ASC`);
+      .groupBy(sql`date_trunc('day', ${productionOrders.updatedAt} AT TIME ZONE ${tz})::date::text`)
+      .orderBy(sql`date_trunc('day', ${productionOrders.updatedAt} AT TIME ZONE ${tz})::date::text ASC`);
 
     return rows.map((r) => ({
       date: r.date,
