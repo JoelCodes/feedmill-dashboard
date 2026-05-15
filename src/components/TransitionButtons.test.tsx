@@ -47,6 +47,7 @@ function makeOrder(overrides: Partial<ProductionOrder> = {}): ProductionOrder {
     millLine: 'Premix',
     textureType: null,
     lineCode: null,
+    earlyDeliveryDate: null,
     version: 1,
     createdBy: 'user_abc',
     createdAt: new Date('2026-01-01'),
