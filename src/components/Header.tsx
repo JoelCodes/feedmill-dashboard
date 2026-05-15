@@ -69,9 +69,12 @@ export default function Header() {
   }, [notifications, setReadNotificationIds]);
 
   // Toggle dropdown
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  // WR-02: useCallback + functional setter so the handler keeps a stable reference
+  // (avoids re-rendering memoized parents) and never reads a stale closure value
+  // for isDropdownOpen under batched renders.
+  const toggleDropdown = useCallback(() => {
+    setIsDropdownOpen((prev) => !prev);
+  }, []);
 
   return (
     <header className="flex w-full items-center justify-between">
