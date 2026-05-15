@@ -118,4 +118,41 @@ describe('productionOrders table contract', () => {
     expect(_selectCheck).toBeUndefined();
     expect(_insertCheck).toBeUndefined();
   });
+
+  // ── Phase 35 D-04: earlyDeliveryDate column assertions ─────────────────────
+
+  it('D-04 Test 1: productionOrders has an early_delivery_date column', () => {
+    const col = cfg.columns.find((c) => c.name === 'early_delivery_date');
+    expect(col).toBeDefined();
+  });
+
+  it('D-04 Test 2: early_delivery_date column has dataType string (PgDateString) and is nullable', () => {
+    const col = cfg.columns.find((c) => c.name === 'early_delivery_date');
+    expect(col).toBeDefined();
+    expect(col!.dataType).toBe('string');
+    expect(col!.notNull).toBe(false);
+  });
+
+  it('D-04 Test 3: ProductionOrder type accepts earlyDeliveryDate: null (compile-time shape check)', () => {
+    // If earlyDeliveryDate is missing from $inferSelect, this assignment will
+    // produce a TypeScript compile error — proving the field is present and nullable.
+    const _order: ProductionOrder = {
+      id: 'test-id',
+      orderNumber: 'ORD-001',
+      customer: 'Acme Feed',
+      product: 'Layer Mash',
+      weightLbs: '1000.00',
+      deliveryTime: 'Mar 5, 2026 10am',
+      state: 'Pending',
+      millLine: 'Premix',
+      textureType: null,
+      lineCode: null,
+      earlyDeliveryDate: null,
+      version: 1,
+      createdBy: 'user-001',
+      createdAt: new Date('2026-01-01'),
+      updatedAt: new Date('2026-01-01'),
+    };
+    expect(_order.earlyDeliveryDate).toBeNull();
+  });
 });
