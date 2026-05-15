@@ -38,12 +38,15 @@ Declared values (all multiples of 4, sourced from `globals.css` `--space-*` toke
 | sm | 8px (`--space-2`) | Compact element spacing, badge px |
 | sm+ | 12px (`--space-3`) | Exception list table row vertical padding (`py-3`) |
 | md | 16px (`--space-4`) | Default element spacing, card padding |
+| md+ | 20px (Tailwind `p-5` / `gap-5`) | KpiCard inner padding (`px-5 py-5`), KpiSection responsive gap (`gap-5`), dashboard zone gap between KpiStrip and column header (`gap-5`) — matches `ProductionCard.tsx` (`pl-5`) prior art |
 | lg | 24px (`--space-5`) | Section padding, column gap |
 | xl | 32px (`--space-6`) | Layout gaps between KPI strip zones |
 | 2xl | 48px (`--space-8`) | Major section breaks (between KPI strip and columns, between columns and KpiSection) |
 | 3xl | 64px (`--space-10`) | Page-level vertical spacing |
 
-`12px` (`--space-3`) is a declared token in `globals.css` (line 79). It is sanctioned for use as a compact row variant rather than an exception.
+`12px` (`--space-3`) is a declared token in `globals.css` (line 78). It is sanctioned for use as a compact row variant rather than an exception.
+
+`20px` (Tailwind `p-5` / `gap-5`) is sanctioned as the `md+` token to bridge the 16→24 jump. It is grid-aligned (5×4=20) and matches existing `ProductionCard.tsx pl-5` prior art. There is no CSS custom property for 20px in `globals.css`; usage is via Tailwind utilities.
 
 Exceptions:
 
