@@ -301,26 +301,32 @@ export const getSevenDayTrend = unstable_cache(
     // Pitfall 2: sanitize before SQL composition.
     const tz = sanitizeIanaTimezone(rawTz);
 
+    // Splice tz as a literal (not a parameter) so all four occurrences render
+    // to byte-identical SQL. With `${tz}` interpolation, Drizzle emits a fresh
+    // parameter slot at each call site ($1 in SELECT, $4 in GROUP BY, $5 in
+    // ORDER BY); Postgres compares expression trees structurally and treats
+    // Param($1) ≠ Param($4), tripping 42803 even though the SQL text looks
+    // identical. Inlining via sql.raw() bypasses the parameter mechanism.
+    // Safe: sanitizeIanaTimezone() enforces `Intl.supportedValuesOf('timeZone')`
+    // — IANA names have no quotes or SQL metacharacters. Defensive escape for
+    // paranoia regardless.
+    const tzLit = sql.raw(`'${tz.replace(/'/g, "''")}'`);
+
     // Pattern 4 (RESEARCH.md): 7-day window using AT TIME ZONE on both sides.
     // Pitfall 5: INTERVAL '6 days' subtracted from the tz-aware "today" boundary.
-    // Drizzle's sql template interpolates `${productionOrders.updatedAt}` as a
-    // bare `"updated_at"` inside SELECT alias expressions but as a fully-qualified
-    // `"production_orders"."updated_at"` inside WHERE/GROUP BY/ORDER BY. Postgres
-    // treats those as different expressions for GROUP BY purposes (42803). Inline
-    // the qualified reference everywhere so all four occurrences are byte-identical.
     const rows = await db
       .select({
-        date: sql<string>`date_trunc('day', "production_orders"."updated_at" AT TIME ZONE ${tz})::date::text`,
+        date: sql<string>`date_trunc('day', "production_orders"."updated_at" AT TIME ZONE ${tzLit})::date::text`,
         completedLbs: sql<number>`COALESCE(${sum(productionOrders.weightLbs)}, '0')::float8`,
       })
       .from(productionOrders)
       .where(
         sql`${productionOrders.state} = 'Completed'
-        AND "production_orders"."updated_at" AT TIME ZONE ${tz}
-          >= date_trunc('day', NOW() AT TIME ZONE ${tz}) - INTERVAL '6 days'`
+        AND "production_orders"."updated_at" AT TIME ZONE ${tzLit}
+          >= date_trunc('day', NOW() AT TIME ZONE ${tzLit}) - INTERVAL '6 days'`
       )
-      .groupBy(sql`date_trunc('day', "production_orders"."updated_at" AT TIME ZONE ${tz})::date::text`)
-      .orderBy(sql`date_trunc('day', "production_orders"."updated_at" AT TIME ZONE ${tz})::date::text ASC`);
+      .groupBy(sql`date_trunc('day', "production_orders"."updated_at" AT TIME ZONE ${tzLit})::date::text`)
+      .orderBy(sql`date_trunc('day', "production_orders"."updated_at" AT TIME ZONE ${tzLit})::date::text ASC`);
 
     return rows.map((r) => ({
       date: r.date,
