@@ -1,10 +1,11 @@
 ---
 phase: 35
 slug: kpi-sections-and-role-specific-metrics
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: complete
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-05-14
+updated: 2026-05-15
 ---
 
 # Phase 35 — Validation Strategy
@@ -49,13 +50,13 @@ created: 2026-05-14
 
 ## Wave 0 Requirements
 
-- [ ] `src/db/queries/__tests__/kpis.test.ts` — KPI-01, KPI-02, KPI-04, KPI-05, KPI-06, KPI-07 query contracts
-- [ ] `src/lib/__tests__/formula-mix.test.ts` — `bucketTexture()` all known textures + unknown + NULL
-- [ ] `src/lib/__tests__/format-dwell.test.ts` — `formatDwell()` edge cases (<1h, 1–24h, 24h+)
-- [ ] `src/components/SevenDayTrendChart.test.tsx` — empty state + 7-bar render
-- [ ] `src/components/BlockedExceptionList.test.tsx` — empty state, row sort, overdue badge
-- [ ] Extend `src/db/schema/__tests__/orders.test.ts` — assert `earlyDeliveryDate` nullable date column exists
-- [ ] Extend `src/components/MillColumn.test.tsx` — `summary` prop + header strip "{N} orders — {completed} / {total} lbs"
+- [x] `src/db/queries/__tests__/kpis.test.ts` — KPI-01, KPI-02, KPI-04, KPI-05, KPI-06, KPI-07 query contracts
+- [x] `src/lib/__tests__/formula-mix.test.ts` — `bucketTexture()` all known textures + unknown + NULL
+- [x] `src/lib/__tests__/format-dwell.test.ts` — `formatDwell()` edge cases (<1h, 1–24h, 24h+)
+- [x] `src/components/SevenDayTrendChart.test.tsx` — empty state + 7-bar render
+- [x] `src/components/BlockedExceptionList.test.tsx` — empty state, row sort, overdue badge
+- [x] Extend `src/db/schema/__tests__/orders.test.ts` — assert `earlyDeliveryDate` nullable date column exists
+- [x] Extend `src/components/MillColumn.test.tsx` — `summary` prop + header strip "{N} orders — {completed} / {total} lbs"
 
 ---
 
@@ -94,4 +95,4 @@ created: 2026-05-14
 - [ ] Feedback latency < 15s (quick) / 60s (full)
 - [ ] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-05-15 (post Phase 36 verification + UAT; see 35-VERIFICATION.md status: verified + 35-UAT.md status: closed)

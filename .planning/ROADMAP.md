@@ -241,7 +241,7 @@ _Phases 0-24 archived to their respective milestone files in [`milestones/`](./m
   5. `35-VALIDATION.md` frontmatter is updated to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` — re-classified after Wave-0 test confirmation (`npm test -- kpis`) and human UAT.
   6. STATE.md and ROADMAP.md reflect Phase 36 complete and v2.0 milestone shippable (gaps closed); `gsd-sdk query roadmap.get-phase 36 --pick goal` returns the canonical goal text, not `[To be planned]`.
 
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 Plans:
 **Wave 1**
@@ -251,7 +251,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 36-03-PLAN.md — Author 35-UAT.md skeleton + execute 10 UAT scenarios + sync VERIFICATION retest_outcome
+- [x] 36-03-PLAN.md — Author 35-UAT.md skeleton + execute 10 UAT scenarios + sync VERIFICATION retest_outcome
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
