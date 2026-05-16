@@ -8,7 +8,7 @@
 - ✅ **v1.3 Design Hardening** — Phases 16-19 (shipped 2026-05-09)
 - ✅ **v1.4 Auth with Clerk** — Phases 20-24 (shipped 2026-05-10)
 - ✅ **v1.5 Production Transition** — Phases 25-30 (shipped 2026-05-12)
-- 🔄 **v2.0 Mill Production MVP** — Phases 31-36 (audit re-run pending — Phase 36 closed BUILD-01 + Phase 35 verification gaps)
+- 🔄 **v2.0 Mill Production MVP** — Phases 31-37 (audit re-run passed_with_warnings 2026-05-16; ship gated on Phase 37 hygiene cleanup)
 
 ## Phases
 
@@ -62,7 +62,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 </details>
 
 <details open>
-<summary>🔄 v2.0 Mill Production MVP (Phases 31-36) — AUDIT RE-RUN PENDING</summary>
+<summary>🔄 v2.0 Mill Production MVP (Phases 31-37) — AUDIT RE-RUN PASSED_WITH_WARNINGS; SHIP GATED ON PHASE 37</summary>
 
 - [x] **Phase 31: Role Expansion and DB Infrastructure** — Add `mill_operator` role, provision Neon Postgres, establish server-only Drizzle client
 - [x] **Phase 32: Schema, Migrations, and Seed Data** — Define all four tables, generate and apply migrations, load Book1.xlsx fixtures
@@ -225,7 +225,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 12/12 | Complete   | 2026-05-14 |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 7/7 | Complete    | 2026-05-15 |
-| 36. Close gap: BUILD-01 void cast + Phase 35 verification | v2.0 | 5/5 | Complete    | 2026-05-15 |
+| 36. Close gap: BUILD-01 void cast + Phase 35 verification | v2.0 | 5/5 | Complete   | 2026-05-16 |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
 
@@ -243,7 +243,7 @@ _Phases 0-24 archived to their respective milestone files in [`milestones/`](./m
   5. ✅ `35-VALIDATION.md` frontmatter is updated to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` — re-classified after Wave-0 test confirmation (`npm test -- kpis`) and human UAT.
   6. ✅ STATE.md and ROADMAP.md reflect Phase 36 complete and v2.0 milestone shippable (gaps closed); `gsd-sdk query roadmap.get-phase 36 --pick goal` returns the canonical goal text, not `[To be planned]`. *(milestone ship indicator gated on operator audit re-run choice — Task 2)*
 
-**Plans:** 5/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 **Wave 1**
@@ -264,4 +264,23 @@ Plans:
 - [x] 36-05-PLAN.md — STATE/ROADMAP hygiene + operator audit re-run gate
 
 ---
-*Last updated: 2026-05-15 — Phase 36 complete (5 plans across 4 waves). BUILD-01 (`npm run build` void-cast) closed in Plan 01; Phase 35 verification artifacts (`35-VERIFICATION.md` + `35-UAT.md`) authored in Plans 02-03; `35-VALIDATION.md` re-classified to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` in Plan 04; STATE/ROADMAP hygiene applied in Plan 05. v2.0 (Mill Production MVP) milestone is feature-complete with gaps closed; ship indicator (🔄 → ✅) gated on operator audit re-run choice (Plan 05 Task 2).*
+
+### Phase 37: v2.0.1 hygiene cleanup (close audit warnings before ship)
+
+**Goal:** Close the 5 cross-phase hygiene items flagged by the v2.0 post-Phase-36 audit (`status: passed_with_warnings`) so the v2.0 ship indicator can flip to ✅ on a clean audit trail. All 45 v2.0 requirements are already SATISFIED per VERIFICATION.md tables; this phase is documentation/traceability hygiene only — no functional code changes expected.
+**Depends on:** Phase 36
+**Requirements**: (none — hygiene phase; touches metadata/docs not requirements)
+**Success Criteria** (what must be TRUE):
+  1. SUMMARY.md frontmatter `requirements-completed` field is populated for every plan in Phases 31-35 (~22 of 45 reqs currently untraced); each REQ-ID listed in a plan's frontmatter MUST appear in the corresponding VERIFICATION.md SATISFIED table.
+  2. REQUIREMENTS.md traceability table — all 45 status cells reflect actual VERIFICATION.md outcomes (currently all read "Pending" despite SATISFIED status); use `[x]`/Done markers consistent with v1.5 INT-07 pattern.
+  3. `33-HUMAN-UAT.md` Test #2 closure note amended per `34-INHERITED-UAT.md:62-65` protocol: `result: deferred_to_phase_34` → `result: closed_in_phase_34 (pass, 2026-05-14, Phase 34 T12)`; file-level frontmatter `status: resolved` → `status: gaps_closed` (closes INT-02).
+  4. `35-LEARNINGS.md` frontmatter `missing_artifacts` field cleared (currently lists `35-VERIFICATION.md` + `35-UAT.md` — both authored by Phase 36 Plans 02-03 and now exist).
+  5. v2.0-MILESTONE-AUDIT.md re-run after Phase 37 returns `passed` (no warnings); ship indicator flips to ✅ + `(shipped 2026-MM-DD)`.
+
+**Plans:** 0 plans (run /gsd-plan-phase 37 to break down)
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 37 to break down)
+
+---
+*Last updated: 2026-05-16 — v2.0 audit re-run complete (passed_with_warnings). Both pre-Phase-36 blockers closed. Operator chose to defer ship indicator until Phase 37 closes the 5 hygiene warnings (mirrors v1.5 Phase 30 INT-07 pattern). 2 v2.1 backlog candidates captured: KPI SQL integration smoke tests; `/api/revalidate?tag=production-orders` POST endpoint for seed/dev-cache invalidation.*

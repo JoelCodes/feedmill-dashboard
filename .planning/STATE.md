@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.0
-milestone_name: Mill Production MVP
+milestone_name: milestone
 status: completed
-last_updated: "2026-05-16T03:07:04Z"
-last_activity: 2026-05-15
+last_updated: "2026-05-16T05:48:47.432Z"
+last_activity: 2026-05-16
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
   total_plans: 47
   completed_plans: 47
-  percent: 100
+  percent: 86
 ---
 
 # Project State: v2.0 Mill Production MVP
@@ -29,12 +29,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 ## Current Position
 
-Phase: 36 (close-gap-build-01-void-cast-phase-35-verification) — COMPLETE
+Phase: 36 — COMPLETE
 Plan: 5 of 5
 **Phase:** 36
 **Plan:** all complete; v2.0 milestone shippable (audit re-run pending)
-**Status:** v2.0 milestone shippable; gaps closed; audit re-run optional
-**Last activity:** 2026-05-15
+**Status:** Phase 36 complete
+**Last activity:** 2026-05-16
 
 ### Progress Bar
 
