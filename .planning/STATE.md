@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.0
-milestone_name: milestone
-status: completed
-last_updated: "2026-05-16T05:48:47.432Z"
+milestone_name: hygiene cleanup
+status: executing
+last_updated: "2026-05-16T06:58:01.504Z"
 last_activity: 2026-05-16
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 47
+  total_plans: 52
   completed_plans: 47
   percent: 86
 ---
@@ -33,7 +33,7 @@ Phase: 36 — COMPLETE
 Plan: 5 of 5
 **Phase:** 36
 **Plan:** all complete; v2.0 milestone shippable (audit re-run pending)
-**Status:** Phase 36 complete
+**Status:** Ready to execute
 **Last activity:** 2026-05-16
 
 ### Progress Bar
