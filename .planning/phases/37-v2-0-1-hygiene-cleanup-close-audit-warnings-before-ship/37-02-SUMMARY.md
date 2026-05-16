@@ -109,6 +109,17 @@ Total: 8 + 4 + 11 + 7 + 7 + 8 = 45 (matches `requirements_in_scope: 45/45` in v2
 
 None. No new security-relevant surface — pure documentation body edits to planning-meta file consumed only by `/gsd:audit-milestone` tooling.
 
-## Self-Check
+## Self-Check: PASSED
 
-(populated after commit lands)
+- FOUND: `.planning/phases/37-v2-0-1-hygiene-cleanup-close-audit-warnings-before-ship/37-02-SUMMARY.md`
+- FOUND: commit `a64842a` (atomic Task 3 — `docs(37-02): mark 45 v2.0 requirements Complete in REQUIREMENTS.md`)
+- FOUND: commit `732f0ce` (SUMMARY — `docs(37-02): complete v2.0 requirements-status update plan`)
+- VERIFIED: Worktree `.planning/REQUIREMENTS.md` post-state — Zone 1 checked = 45, Zone 2 Complete = 45
+- VERIFIED: Main repo `.planning/REQUIREMENTS.md` HEAD-clean (path-safety auto-fix recovered cleanly)
+
+## Commits
+
+| Hash | Subject | Files |
+|------|---------|-------|
+| `a64842a` | docs(37-02): mark 45 v2.0 requirements Complete in REQUIREMENTS.md | `.planning/REQUIREMENTS.md` (90 ins / 90 del) |
+| `732f0ce` | docs(37-02): complete v2.0 requirements-status update plan | `.planning/phases/37-.../37-02-SUMMARY.md` (new file) |
