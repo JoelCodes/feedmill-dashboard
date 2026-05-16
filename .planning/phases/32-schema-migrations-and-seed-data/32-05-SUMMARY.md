@@ -42,6 +42,8 @@ metrics:
   tasks_total: 2
   files_created: 3
   files_modified: 0
+requirements-completed:
+  - DATA-07
 ---
 
 # Phase 32 Plan 05: Seed JSON Exporter Summary

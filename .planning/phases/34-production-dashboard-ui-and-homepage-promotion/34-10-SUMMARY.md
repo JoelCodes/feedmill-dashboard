@@ -33,6 +33,9 @@ metrics:
   completed: "2026-05-14"
   tasks_completed: 2
   files_modified: 4
+requirements-completed:
+  - PROD-05
+  - TRANS-03
 ---
 
 # Phase 34 Plan 10: TransitionButtons D-11 Amendment (Pending → Blocked) Summary

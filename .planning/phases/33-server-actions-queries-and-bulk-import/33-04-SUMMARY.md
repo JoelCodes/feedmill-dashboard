@@ -43,6 +43,14 @@ metrics:
   completed: "2026-05-13"
   completed_tasks: 3
   files: 3
+requirements-completed:
+  - TRANS-01
+  - TRANS-02
+  - TRANS-03
+  - TRANS-04
+  - TRANS-05
+  - TRANS-06
+  - TRANS-07
 ---
 
 # Phase 33 Plan 04: Transition Server Actions Summary

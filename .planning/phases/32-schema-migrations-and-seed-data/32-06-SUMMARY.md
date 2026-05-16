@@ -32,6 +32,8 @@ metrics:
   tasks_total: 3
   files_created: 1
   files_modified: 2
+requirements-completed:
+  - DATA-07
 ---
 
 # Phase 32 Plan 06: Seed Runtime (tsx + db:seed + seed.ts) Summary

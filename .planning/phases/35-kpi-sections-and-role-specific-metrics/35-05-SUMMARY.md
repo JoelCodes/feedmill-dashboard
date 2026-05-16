@@ -46,7 +46,7 @@ metrics:
   files_created: 5
   files_modified: 0
   files_deleted: 1
-requirements: [KPI-01, KPI-02, KPI-04, KPI-05]
+requirements-completed: [KPI-01, KPI-02, KPI-04, KPI-05]
 ---
 
 # Phase 35 Plan 05: KpiCard + KpiStrip + TzBootstrap Presentational Components Summary

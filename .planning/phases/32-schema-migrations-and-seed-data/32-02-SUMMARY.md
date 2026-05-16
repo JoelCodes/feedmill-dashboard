@@ -28,6 +28,7 @@ metrics:
   tasks_completed: 3
   tasks_total: 3
   files_modified: 5
+requirements-completed: []
 ---
 
 # Phase 32 Plan 02: Demo Type Rename (D-04) Summary

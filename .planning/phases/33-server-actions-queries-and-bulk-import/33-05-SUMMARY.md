@@ -46,6 +46,11 @@ metrics:
   tasks_completed: 3
   files_created: 1
   files_modified: 2
+requirements-completed:
+  - IMPORT-01
+  - IMPORT-02
+  - IMPORT-03
+  - IMPORT-07
 ---
 
 # Phase 33 Plan 05: previewImportAction — Read-Only XLSX Import Preview Summary

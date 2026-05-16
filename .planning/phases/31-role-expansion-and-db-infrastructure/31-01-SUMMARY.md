@@ -40,7 +40,7 @@ decisions:
 metrics:
   duration: "~10 minutes wall clock"
   completed: 2026-05-12
-requirements: [AUTH-01, AUTH-02, AUTH-03]
+requirements-completed: [AUTH-01, AUTH-02, AUTH-03]
 ---
 
 # Phase 31 Plan 01: Role Expansion and DB Infrastructure — Wave 1A (auth foundation) Summary

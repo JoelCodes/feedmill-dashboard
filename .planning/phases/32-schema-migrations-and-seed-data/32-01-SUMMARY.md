@@ -3,7 +3,7 @@ phase: 32-schema-migrations-and-seed-data
 plan: "01"
 subsystem: db-schema
 tags: [drizzle, schema, pgenum, postgres, typescript]
-requirements: [DATA-02, DATA-03, DATA-04, DATA-05]
+requirements-completed: [DATA-02, DATA-03, DATA-04, DATA-05]
 
 dependency_graph:
   requires: []

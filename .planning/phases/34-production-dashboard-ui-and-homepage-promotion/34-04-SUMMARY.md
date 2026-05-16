@@ -38,6 +38,10 @@ decisions:
 metrics:
   duration: ~6 minutes
   completed: "2026-05-14T19:44:14Z"
+requirements-completed:
+  - PROD-02
+  - PROD-07
+  - PROD-08
 ---
 
 # Phase 34 Plan 04: Pure Derivations + ProductionCard + MillColumn Summary
