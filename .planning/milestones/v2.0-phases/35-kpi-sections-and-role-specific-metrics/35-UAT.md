@@ -2,8 +2,8 @@
 phase: 35-kpi-sections-and-role-specific-metrics
 type: human-uat
 created: 2026-05-15
-status: closed
-updated: 2026-05-15
+status: complete
+updated: 2026-05-16
 completed: 2026-05-15
 provenance: operator-chain-delegation
 ---

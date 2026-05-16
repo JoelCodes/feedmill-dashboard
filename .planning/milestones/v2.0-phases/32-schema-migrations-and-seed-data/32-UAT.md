@@ -1,5 +1,5 @@
 ---
-status: resolved
+status: complete
 phase: 32-schema-migrations-and-seed-data
 source:
   - 32-01-SUMMARY.md
@@ -10,7 +10,7 @@ source:
   - 32-06-SUMMARY.md
   - 32-07-SUMMARY.md
 started: 2026-05-13T16:20:01Z
-updated: 2026-05-13T17:30:00Z
+updated: 2026-05-16
 resolved_by: 32-07-PLAN.md
 ---
 

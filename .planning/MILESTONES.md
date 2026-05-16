@@ -1,5 +1,30 @@
 # Milestones
 
+## v2.0 Mill Production MVP (Shipped: 2026-05-16)
+
+**Phases completed:** 7 phases (31-37), 52 plans, 74 tasks
+**Requirements:** 45/45 satisfied (AUTH × DATA × TRANS × IMPORT × PROD × KPI)
+**Timeline:** 3 days (2026-05-13 → 2026-05-16) | **Codebase:** ~26,570 LOC TypeScript (+14,673 in src/)
+**Audit:** passed (re-audit #4, all hygiene warnings closed by Phase 37 Wave 1)
+
+**Key accomplishments:**
+
+- **Coming Soon → live mill production dashboard at `/`** — three-column (Premix / Excel / CGM) DB-backed dashboard with role-aware read-only/edit modes, status filter pills + customer/product search URL-synced via `nuqs`, click-to-open order drawer with full transition history, blocked alert band aggregating all blocked orders, next-up + in-progress highlights, 30-second polling via `useProductionPolling` hook (`REFRESH_INTERVAL_MS = 30_000`), last-updated chip + manual refresh, async-RSC + Suspense skeletons throughout (PROD-01..11, AUTH-01..04)
+- **Postgres + Drizzle persistence layer on Neon HTTP** — `production_orders`, `order_events`, `import_batches`, `users` tables with `version INTEGER DEFAULT 1` optimistic-concurrency column; server-only `src/db/index.ts` enforced with `import 'server-only'` on line 1; migration discipline via `drizzle-kit generate` + `drizzle-kit migrate` (push banned); seed script populating dev DB with 33 Book1.xlsx fixture rows (DATA-01..08)
+- **Status transitions with optimistic concurrency + audit trail** — four server actions (Pending→Mixing→Completed + Block + Resume) using `UPDATE ... WHERE version = $v RETURNING id` for exactly-one-winner semantics with user-facing "Order was modified by another user. Please refresh." conflict message; every transition writes an `order_events` row and calls `revalidateTag('production-orders')`; verified by live-DB concurrent-transition harness (TRANS-01..07)
+- **Bulk XLSX import with `read-excel-file` 9.0.9** — drag-drop or file-picker upload, server-side parse + Zod validation, preview screen with row count + total weight + intra-file/DB duplicate detection, partial-import semantics with row-level errors, commit writes `import_batches` log entry, 2 MB body-size limit (`experimental.serverActions.bodySizeLimit`) — SheetJS CVE-2023-30533 avoided (IMPORT-01..07)
+- **8 server-aggregated KPI sections closing the v1.0 deferred KPI ask** — mill-wide tons-today + per-line (Premix/Excel/CGM) breakdowns, per-column header strip (orders + lbs ratio), pending-backlog card, Pellet/Mash/Crumble formula-mix breakdown for today's completions, 7-day order-volume sparkline with "not enough data yet" empty state, cross-column blocked-exception list sortable by dwell time, overdue-badge warnings for orders past `earlyDeliveryDate` (KPI-01..08)
+- **Three-source requirement traceability with zero orphans** — all 45 v2.0 REQ-IDs satisfied via independent confirmation across `VERIFICATION.md` SATISFIED tables (45/45), `SUMMARY.md` `requirements-completed:` frontmatter (45/45), and `REQUIREMENTS.md` traceability cells (45/45 `[x]` + 45/45 `Complete`); Phase 37 hygiene phase mechanically closed 4 actionable audit warnings (SUMMARY-FM backfill, traceability flip, INT-02 closure note, stale `missing_artifacts` clear)
+- **Two integration-closure phases** — Phase 36 closed BUILD-01 (TypeScript void-cast on `nuqs` `setQuery` inside `startTransition`) so `npm run build` exits 0 and authored Phase 35's `VERIFICATION.md` + `UAT.md` to re-classify `VALIDATION.md` to `complete`; Phase 37 (docs-only) closed five hygiene warnings flagged by the post-Phase-36 audit so the final audit returned `passed` with zero warnings
+
+**Tech debt at close:** 4 items (none blocking) — pre-existing 14 ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (carried from Phase 18); pre-existing Drizzle `IndexedColumn` TS errors in `src/db/schema/__tests__/{events,orders}.test.ts` (test-file-only); 3 strict-yaml `decisions:` array parse failures in `32-01-SUMMARY.md`, `33-02-SUMMARY.md`, `34-01-SUMMARY.md` (forgiving parser handles them); Phase 35 UAT chain-delegation provenance transparency note (operator-confirmed rather than executor-witnessed)
+
+**Deferred items at close:** 2 v2.1 backlog candidates — KPI SQL integration smoke tests (closes the gap the mock-DB unit tests couldn't catch on the 5 `getSevenDayTrend` SQL fix commits); `/api/revalidate?tag=production-orders` POST endpoint so `npm run db:seed` can auto-invalidate dev `unstable_cache`
+
+**Archive:** [v2.0-ROADMAP.md](./milestones/v2.0-ROADMAP.md), [v2.0-REQUIREMENTS.md](./milestones/v2.0-REQUIREMENTS.md), [v2.0-MILESTONE-AUDIT.md](./milestones/v2.0-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.5 Production Transition (Shipped: 2026-05-12)
 
 **Phases completed:** 6 phases (25-30), 24 plans, 28 tasks

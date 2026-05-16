@@ -1,113 +1,92 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.0
-milestone_name: hygiene cleanup
-status: executing
-last_updated: "2026-05-16T06:59:36.623Z"
-last_activity: 2026-05-16
+milestone_name: Mill Production MVP
+status: shipped
+last_updated: "2026-05-16T15:30:00.000Z"
+last_activity: 2026-05-16 — Milestone v2.0 shipped and archived
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 52
-  completed_plans: 47
-  percent: 86
+  completed_plans: 52
+  percent: 100
 ---
 
-# Project State: v2.0 Mill Production MVP
+# Project State: Awaiting Next Milestone
 
-**Milestone:** v2.0 Mill Production MVP
-**Last shipped:** v1.5 Production Transition (2026-05-12)
-**Last updated:** 2026-05-15
+**Last shipped:** v2.0 Mill Production MVP (2026-05-16)
+**Last updated:** 2026-05-16
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-12)
+See: `.planning/PROJECT.md` (updated 2026-05-16 after v2.0 milestone)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Phase 37 — v2.0.1 hygiene cleanup (close audit warnings before ship)
+**Current focus:** Planning next milestone (run `/gsd-new-milestone`).
 
 ## Current Position
 
-Phase: 37 (v2.0.1 hygiene cleanup (close audit warnings before ship)) — EXECUTING
-Plan: 1 of 5
-**Phase:** 36
-**Plan:** all complete; v2.0 milestone shippable (audit re-run pending)
-**Status:** Executing Phase 37
-**Last activity:** 2026-05-16
-
-### Progress Bar
-
-```
-v2.0 Progress: [██████████] 6/6 phases complete
-Phase 31 █  Phase 32 █  Phase 33 █  Phase 34 █  Phase 35 █  Phase 36 █
-```
+Phase: —
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-05-16 — Milestone v2.0 shipped and archived
 
 ## Performance Metrics
 
-**Milestone v1.5 (just shipped):**
+**Milestone v2.0 (just shipped):**
 
-- **Phases:** 6 phases (25-30)
-- **Plans:** 24 plans, 28 tasks
-- **Requirements:** 8/8 satisfied
-- **Timeline:** 3 days (2026-05-10 → 2026-05-12)
-- **Audit:** passed (re-audit #3, all gaps closed)
+- **Phases:** 7 phases (31-37)
+- **Plans:** 52 plans, 74 tasks
+- **Requirements:** 45/45 satisfied across 3 sources (VERIFICATION ⨯ SUMMARY-FM ⨯ traceability)
+- **Timeline:** 3 days (2026-05-13 → 2026-05-16)
+- **Audit:** passed (re-audit #4, all hygiene warnings closed by Phase 37 Wave 1)
+- **LOC delta:** ~14,673 src/ insertions (TypeScript)
 
 **Cumulative across milestones:** see `.planning/MILESTONES.md`
 
 ## Accumulated Context
 
-### Roadmap Evolution
-
-- Phase 36 added: Close gap: BUILD-01 void cast + Phase 35 verification
-- Phase 36 completed (2026-05-15): BUILD-01 closed (`npm run build` exits 0); 35-VERIFICATION.md + 35-UAT.md authored; 35-VALIDATION.md re-classified to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true`; v2.0 milestone shippable with audit re-run gated on operator (Plan 05 Task 2)
-
 ### Open Blockers
 
-**Manual Clerk Dashboard cutover pending (from quick task 260512-kfy):**
-
-The `roles[]` refactor is code-complete but the Clerk Dashboard JWT template and demo user `publicMetadata` have not been migrated yet. Until this is done, `/demo/*` redirects all users to `/` (including the demo user). This is a one-time operator action — not a phase requirement.
-
-**Runbook** (from `260512-kfy-01-SUMMARY.md`):
-
-1. `Sessions → Customize session token` → replace body: `{"metadata": {"roles": "{{user.public_metadata.roles}}"}}`
-2. Users → demo user → Edit publicMetadata → `{"roles": ["demo"]}`
-3. If admin user exists: `{"roles": ["admin"]}`
-4. Leave norole user untouched (no `publicMetadata.roles` field — do NOT write empty array)
-5. Sign out of active dev sessions. Sign back in as demo user.
-6. Navigate to `/demo/orders` — confirm page renders (no redirect)
-7. Decode `__session` cookie at `jwt.io` — confirm `"metadata": {"roles": ["demo"]}`
-8. Sign out, sign in as norole user, navigate to `/demo/orders` — confirm redirect to `/`
-
-**Resume signal:** Type "dashboard migrated" to confirm cutover complete.
+None.
 
 ### Carried Deferred Items
 
 - Production E2E automation requires custom domain to disable Clerk 2FA (carried from v1.4)
-- ~~KPI Cards display computed values + click-to-filter (carried from v1.0 — closes in Phase 35)~~ **CLOSED 2026-05-15** — KPI-01..KPI-08 implemented and Manual UAT verified.
-- 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 deferred from Phase 27)
+- 14 pre-existing ClerkProvider test failures in `src/app/settings/__tests__/page.test.tsx` (D-04 carried from Phase 27)
+- Pre-existing Drizzle `IndexedColumn` TS errors in `src/db/schema/__tests__/{events,orders}.test.ts` (test-file only)
+- KPI SQL integration smoke tests — backlog candidate for v2.1 (mock DB unit tests didn't catch the 5 `getSevenDayTrend` SQL fix commits)
+- `/api/revalidate?tag=production-orders` POST endpoint so `npm run db:seed` auto-invalidates dev `unstable_cache` (drawer-loads-orders gotcha)
+- Click KPI card to filter table to relevant orders (deferred from v1.0; not in v2.0 scope)
+- v2.0 Phase 35 UAT chain-delegation transparency note (operator-confirmed rather than executor-witnessed)
 
-### Key Implementation Notes (v2.0 decisions pre-loaded)
+### Key Implementation Notes (v2.0 — load-bearing for next milestone)
 
-**Role shape:** `roles: Role[]` (plural array) is the canonical shape after quick task 260512-kfy. All v2.0 auth work uses `roles.includes('mill_operator')` — no singular `role` field.
+**Role shape:** `roles: Role[]` (plural array) post quick task 260512-kfy. All access checks via `roles.includes(...)` — no singular `role` field.
 
-**DB driver:** Use `@neondatabase/serverless` with `drizzle-orm/neon-http`. `import 'server-only'` in `src/db/index.ts` is mandatory — prevents Edge-runtime contamination. `DATABASE_URL` = pooled endpoint; `DATABASE_URL_UNPOOLED` = direct (migrations only).
+**DB driver:** `@neondatabase/serverless` + `drizzle-orm/neon-http`. `import 'server-only'` on `src/db/index.ts` line 1 is mandatory. `DATABASE_URL` = pooled; `DATABASE_URL_UNPOOLED` = direct (migrations).
 
-**Migration discipline:** `drizzle-kit generate` + `drizzle-kit migrate` from day 1. `drizzle-kit push` is banned after initial schema is created.
+**Migration discipline:** `drizzle-kit generate` + `drizzle-kit migrate` only. `drizzle-kit push` is banned.
 
-**Mutation invariant:** Every server action that mutates data must call `revalidateTag('production-orders')` before returning. This is a definition-of-done checklist item for every action in Phase 33.
+**Mutation invariant:** Every server action that mutates data calls `revalidateTag('production-orders')` before returning.
 
-**Concurrency control:** `version INTEGER DEFAULT 1` must be in the initial `production_orders` schema. Adding it retroactively cascades into all action signatures.
+**Concurrency control:** `version INTEGER DEFAULT 1` + `UPDATE ... WHERE version = $v RETURNING id`. User-facing locked-conflict message: "Order was modified by another user. Please refresh."
 
-**URL state:** Use `nuqs` 2.8.9 with `createSearchParamsCache` for async `searchParams` unwrapping in RSC (required by Next.js 16 — `searchParams` is a Promise).
+**URL state:** `nuqs` 2.8.9 with `createSearchParamsCache` for async `searchParams` (Next.js 16). Use shallow:true for filter/search; shallow:false for keys that need RSC re-fetch (drawer).
 
-**XLSX import library:** `read-excel-file` 9.0.9 only. `xlsx`/SheetJS npm version has unpatched CVE-2023-30533.
+**XLSX library:** `read-excel-file` 9.0.9 only. `xlsx`/SheetJS is banned (CVE-2023-30533).
 
-**Polling:** 30-second interval via `setInterval(() => router.refresh(), 30_000)`. Named constant `REFRESH_INTERVAL_MS = 30_000`. No SSE or Pusher for v2.0.
-
-**Sidebar nav:** Production nav condition is `!pathname.startsWith('/demo/')` — not a `/production/` prefix check.
+**Polling:** `setInterval(() => router.refresh(), REFRESH_INTERVAL_MS)` where `REFRESH_INTERVAL_MS = 30_000`. No SSE/Pusher.
 
 **force-dynamic:** Apply `export const dynamic = 'force-dynamic'` only to live-data pages (`/`). Do not apply to settings or static pages.
+
+**Sidebar nav:** Production nav condition is `!pathname.startsWith('/demo/')`.
+
+### Dev Gotcha (recurrent)
+
+After `npm run db:seed`, restart `npm run dev` or the drawer shows "Order not found" — stale UUIDs in `unstable_cache`. Captured in `memory/cgm_seed_dev_cache_gotcha.md`. v2.1 backlog: `/api/revalidate?tag=production-orders` POST endpoint.
 
 ### Quick Tasks Completed
 
@@ -117,14 +96,15 @@ The `roles[]` refactor is code-complete but the Clerk Dashboard JWT template and
 
 ## Session Continuity
 
-**Context for next session:**
+**Context for next session:** v2.0 is shipped and tagged. The codebase has a live mill production dashboard at `/`, Postgres + Drizzle persistence, role-based access control, bulk XLSX import, and 8 KPI sections. All v2.0 phase artifacts are archived under `.planning/milestones/v2.0-*`.
 
-v2.0 roadmap is defined with 5 phases (31-35) following the dependency-layer build order from ARCHITECTURE.md: role infrastructure → schema → server actions/import → production UI → KPI sections. All 38 v2.0 requirements are mapped.
-
-The Clerk Dashboard manual cutover (quick task 260512-kfy Task 3) is still pending and must be completed before Phase 31 work can be fully validated.
-
-**Next step:** Run `/gsd-plan-phase 31` to plan Phase 31 (Role Expansion and DB Infrastructure).
+**Next step:** Run `/gsd-new-milestone` to scope and plan v2.1.
 
 ---
-*State updated: 2026-05-12 — v2.0 roadmap created (Phases 31-35)*
+*State updated: 2026-05-16 — v2.0 Mill Production MVP shipped*
 *Auto-updated by GSD workflow*
+
+## Operator Next Steps
+
+- Start the next milestone with `/gsd-new-milestone`
+- (Optional) Review v2.1 backlog candidates captured in PROJECT.md → Deferred section

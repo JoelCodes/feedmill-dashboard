@@ -184,6 +184,72 @@
 
 ---
 
+## Milestone: v2.0 — Mill Production MVP
+
+**Shipped:** 2026-05-16
+**Phases:** 7 (31-37) | **Plans:** 52 | **Tasks:** 74 | **Timeline:** 3 days
+
+### What Was Built
+
+- Coming Soon homepage replaced with live mill production dashboard at `/` — three-column DB-backed view (Premix / Excel / CGM), role-aware read-only/edit modes
+- Postgres + Drizzle persistence layer on Neon HTTP: 4 tables (production_orders, order_events, import_batches, users), `version`-column optimistic concurrency, `import 'server-only'` enforcement, migration discipline (no push)
+- Status transitions with optimistic concurrency + audit trail: 4 server actions (Pending→Mixing→Completed + Block/Resume), `revalidateTag('production-orders')` invariant, locked-conflict UX
+- Bulk XLSX import using `read-excel-file` 9.0.9 (SheetJS CVE avoided): preview → commit with row-level errors, duplicate detection, partial-import semantics, 2 MB body cap
+- 8 server-aggregated KPI sections closing the v1.0 deferred KPI ask: mill-wide + per-line tons-today, per-column header strip, pending backlog, Pellet/Mash/Crumble mix, 7-day sparkline, blocked exception list, overdue badges
+- 30-second polling via `useProductionPolling` hook (`REFRESH_INTERVAL_MS = 30_000`) + `nuqs` URL-synced filter/search (shallow) and drawer key (non-shallow)
+- Two closure phases (36, 37): Phase 36 closed BUILD-01 (TypeScript `void` cast on `nuqs setQuery`) + authored Phase 35's VERIFICATION.md + UAT.md; Phase 37 (docs-only) mechanically closed 4 hygiene warnings from the post-Phase-36 audit
+
+### What Worked
+
+- **Three-source requirement traceability:** VERIFICATION.md ⨯ SUMMARY.md frontmatter ⨯ REQUIREMENTS.md traceability cells must all agree. Mechanical surfacing of drift turned the post-Phase-36 audit's "passed_with_warnings" into an actionable 4-item checklist that Phase 37's Wave 1 closed in parallel.
+- **`version` column on `production_orders` from day 1 (DATA-02):** retrofitting optimistic concurrency cascades into all action signatures. Putting it in the initial schema kept Phase 33's transition actions clean.
+- **Live-DB harnesses for race conditions:** `scripts/test-concurrent-transition.ts` ran 5 iterations × 2 operator invocations = 10 sample points against the real Neon dev DB, eliminating mock-DB false positives that wouldn't have caught the actual UPDATE...RETURNING contract.
+- **Phase 36 + 37 as parallel-Wave hygiene phases:** mirrors v1.5 Phase 30 INT-07 pattern. Four independent doc-only plans in Wave 1 with zero file overlap closed all audit warnings in a single audit-replay cycle.
+- **`import 'server-only'` source-string TDD (DATA-08):** test asserts on the raw source line, not just runtime behavior — catches accidental removal of the import that would silently leak the DB driver into the Edge bundle.
+- **Mutation invariant as definition-of-done:** every server action that mutates data MUST call `revalidateTag('production-orders')` before returning. Enforced in plan-level checklists across Phase 33's 6 action plans; zero stale-cache drift discovered in subsequent integration checks.
+- **Yolo mode + worktrees for parallel waves:** Phase 37 Wave 1's 4 independent plans ran in worktrees against separate file targets; no manual coordination needed.
+
+### What Was Inefficient
+
+- **Mock-DB unit tests missed real SQL bugs:** the 5 `getSevenDayTrend` SQL fix commits (`ba54b4a..4d61194`) all passed mock-DB unit tests but failed against real Neon SQL semantics. Backlog candidate for v2.1: KPI SQL integration smoke tests against the real DB.
+- **Dev `unstable_cache` invalidation gap:** after `npm run db:seed`, the drawer fetches stale UUIDs and shows "Order not found" until `npm run dev` restarts. Captured in user memory and v2.1 backlog (`/api/revalidate?tag=production-orders` POST endpoint).
+- **SUMMARY frontmatter `requirements-completed:` lag (recurrent):** same issue as v1.5. ~22 of 45 v2.0 REQ-IDs went untraced in SUMMARY frontmatter during phase execution, surfaced as a Phase 37 hygiene plan. The v1.5 retrospective lesson "enforce SUMMARY frontmatter at phase-verify, not at audit time" did not become an enforced gate.
+- **REQUIREMENTS.md traceability table not flipped at phase close (recurrent):** All 45 cells stayed "Pending" despite VERIFICATION.md SATISFIED status, requiring a dedicated Phase 37 Plan 02. Same root-cause as the SUMMARY-FM lag — phase-verify doesn't gate on REQUIREMENTS.md updates.
+- **Pre-existing strict-yaml parse failures in `decisions:` arrays:** 3 SUMMARY files (32-01, 33-02, 34-01) won't strict-parse but the forgiving parser handles them. Surfaced repeatedly during Phase 37 metadata sweeps; deferred to a future strict-yaml-fix sweep.
+- **Chain-delegation UAT provenance:** Phase 35 UAT scenarios were operator-confirmed rather than executor-witnessed. Documented transparently but represents a delegation step the executor would normally own.
+- **Audit ran 4 times before clean verdict:** pre-Phase-35 (`gaps_found`), post-Phase-35 (`gaps_found`), post-Phase-36 (`passed_with_warnings`), post-Phase-37 (`passed`). Each loop was cheap, but a stricter phase-verify gate could have collapsed loops #3 → final into a single pass.
+
+### Patterns Established
+
+- Neon HTTP driver + `drizzle-orm/neon-http` + `import 'server-only'` line 1 as the canonical RSC-safe DB client
+- `version INTEGER DEFAULT 1` + `UPDATE ... WHERE version = $v RETURNING id` as the v2.0 optimistic-concurrency idiom
+- `revalidateTag('production-orders')` as the mutation invariant for every server action that writes
+- `nuqs` 2.8.9 split-key pattern: `shallow:true` for snappy filter/search updates, `shallow:false` for keys that need RSC re-fetch (drawer)
+- `useProductionPolling` hook with exported `REFRESH_INTERVAL_MS` constant — simple `setInterval(() => router.refresh(), N)` over SSE/Pusher complexity
+- Live-DB script harnesses (`scripts/test-xlsx-import.ts`, `scripts/test-concurrent-transition.ts`) over mock-DB unit tests for SQL semantics
+- Three-source requirement traceability (VERIFICATION ⨯ SUMMARY-FM ⨯ REQUIREMENTS) — mechanical drift detection
+- Closure phases (36 = code-fix + missing verification artifacts, 37 = parallel doc hygiene) as the standard response to milestone-audit warnings
+- Source-string TDD for boundary-enforcement imports (e.g., `import 'server-only'`)
+- `read-excel-file` 9.0.9 + `experimental.serverActions.bodySizeLimit = '2mb'` as the XLSX-upload canonical stack (SheetJS banned)
+
+### Key Lessons
+
+1. **Phase-verify must gate on SUMMARY frontmatter + REQUIREMENTS.md traceability** — this is the second consecutive milestone (v1.5, v2.0) where audit caught these drift items. The v1.5 retrospective lesson didn't translate to enforcement. The next milestone should either (a) bake a phase-verify check that fails when SUMMARY-FM `requirements-completed:` is empty for a satisfied REQ-ID, or (b) accept that a docs-hygiene closure phase per milestone is the cost of doing business.
+2. **Mock DB unit tests can't validate real SQL semantics** — `getSevenDayTrend`'s 5 fix commits all passed unit tests. v2.1 should add a thin live-DB smoke harness for query functions, mirroring `scripts/test-xlsx-import.ts`'s shape but for read paths.
+3. **Live-DB harnesses pay off for race conditions** — the concurrent-transition script's 10-sample design (5 iterations × 2 invocations) eliminated false positives that flaky-race testing would have allowed. Pattern for any future contention-sensitive code path.
+4. **`version` column from day 1 saved a cascade** — optimistic concurrency added retroactively would have touched every action signature in Phase 33. Schema decisions like this belong in the first schema plan, not "we'll add it when we need it."
+5. **Yolo mode + worktrees + atomic plan commits make parallel waves cheap** — Phase 37 Wave 1's 4 plans ran fully parallel with zero file overlap, each landing as an atomic commit. The branching strategy `"none"` + worktree merge model is the right configuration for this workflow.
+6. **Closure phases beat tech-debt carry** — v2.0 closed 4 hygiene warnings in Phase 37 Wave 1 (parallel, ~4 commits) rather than carrying them into v2.1. This matches the v1.5 INT-07 / Phase 30 pattern; both milestones validate the discipline.
+
+### Cost Observations
+
+- 7 phases / 52 plans / 74 tasks in 3 days — highest plan-throughput-per-day of any milestone, driven by yolo mode + worktree parallelization + atomic plan commits
+- Audit re-ran 4 times across the milestone; each loop was a single agent invocation. Cheap relative to shipping with known drift
+- Phase 37 (5 plans, docs-only, ran in worktrees parallel) closed all hygiene warnings in the same milestone — no v2.0 tech debt rolled into v2.1
+- Two closure phases (36, 37) added ~30% phase count overhead vs. the original 5-phase plan — same pattern and same proportion as v1.5
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -196,6 +262,7 @@
 | v1.3 | 4 | 27 | Design system foundation, CVA components, WCAG compliance |
 | v1.4 | 5 | 9 | Auth integration, E2E testing, production deployment |
 | v1.5 | 6 | 24 | Role-based access control, demo/production split, integration-closure phases |
+| v2.0 | 7 | 52 | Real Postgres + Drizzle persistence, optimistic concurrency, bulk XLSX import, 8 KPI sections, closure phase pattern (36+37) |
 
 ### Cumulative Quality
 
@@ -207,6 +274,7 @@
 | v1.3 | 304 | CVA components | Design system, jest-axe, WCAG compliance |
 | v1.4 | 304 + 5 E2E | Auth, routes | Clerk SDK, Playwright infrastructure |
 | v1.5 | 304+ unit + parameterized E2E | Auth utilities, role guards, RSC pages | `checkRole`/`requireRole`, role middleware, RSC pattern |
+| v2.0 | 304+ unit + E2E + live-DB harnesses | Schema, queries, server actions, RSC pages, UI components | Drizzle/Neon stack, `read-excel-file`, `nuqs`, `useProductionPolling`, KPI query layer, optimistic-concurrency pattern |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -218,6 +286,10 @@
 6. CSS variable references enable theme auto-switching without manual sync
 7. Gap closure plans catch issues efficiently without derailing main execution
 8. Milestone audits before completion surface documentation debt early
-9. Re-audit loops keep finding gaps until clean — don't ship with known integration drift (v1.5)
+9. Re-audit loops keep finding gaps until clean — don't ship with known integration drift (v1.5, v2.0)
 10. Grep for stale path strings before planning route-rename phases — sibling components will be missed (v1.5)
 11. Session JWT custom templates beat per-request Backend API calls for role claims (v1.5)
+12. Schema-cascading concerns (`version` for optimistic concurrency) belong in the first schema plan, not retrofitted (v2.0)
+13. Live-DB harnesses validate SQL semantics that mock DBs miss; pattern: 5 iterations × 2 invocations for race conditions (v2.0)
+14. SUMMARY frontmatter `requirements-completed:` lag is recurrent across v1.5 and v2.0 — phase-verify must gate on it, not audit (v1.5, v2.0)
+15. Closure phases (one for code/verification, one parallel for docs) beat tech-debt carry into next milestone (v1.5, v2.0)
