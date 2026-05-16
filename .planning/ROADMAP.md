@@ -277,10 +277,19 @@ Plans:
   4. `35-LEARNINGS.md` frontmatter `missing_artifacts` field cleared (currently lists `35-VERIFICATION.md` + `35-UAT.md` — both authored by Phase 36 Plans 02-03 and now exist).
   5. v2.0-MILESTONE-AUDIT.md re-run after Phase 37 returns `passed` (no warnings); ship indicator flips to ✅ + `(shipped 2026-MM-DD)`.
 
-**Plans:** 0 plans (run /gsd-plan-phase 37 to break down)
+**Plans:** 5 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 37 to break down)
+**Wave 1** *(parallel — 4 plans, zero file overlap)*
+
+- [ ] 37-01-PLAN.md — Backfill `requirements-completed:` in 22 SUMMARYs across Phases 31-35 (W1; 7 RENAME + 15 ADD; atomic commit; mirrors v1.5 Plan 30-02)
+- [ ] 37-02-PLAN.md — Flip 45 v2.0 requirement checkboxes + 45 traceability cells to `[x]` / `Complete` in REQUIREMENTS.md (W2; uses v1.5 INT-07 verbatim format)
+- [ ] 37-03-PLAN.md — Amend 33-HUMAN-UAT.md Test #2 closure per 34-INHERITED-UAT.md:62-66 protocol (W3; closes INT-02)
+- [ ] 37-04-PLAN.md — Clear stale `missing_artifacts:` in 35-LEARNINGS.md (W4; pre-flight `ls` confirms artifact existence)
+
+**Wave 2** *(sequential — depends on Wave 1 commits landing first)*
+
+- [ ] 37-05-PLAN.md — Audit re-run + ROADMAP/STATE ship-indicator flip (W5; `checkpoint:human-action` + `auto`; gated on `status: passed`)
 
 ---
 *Last updated: 2026-05-16 — v2.0 audit re-run complete (passed_with_warnings). Both pre-Phase-36 blockers closed. Operator chose to defer ship indicator until Phase 37 closes the 5 hygiene warnings (mirrors v1.5 Phase 30 INT-07 pattern). 2 v2.1 backlog candidates captured: KPI SQL integration smoke tests; `/api/revalidate?tag=production-orders` POST endpoint for seed/dev-cache invalidation.*
