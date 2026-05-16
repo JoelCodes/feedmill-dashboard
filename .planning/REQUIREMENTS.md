@@ -11,66 +11,66 @@
 
 ### DATA — Persistence Layer (Postgres + Drizzle)
 
-- [ ] **DATA-01**: Neon Postgres project provisioned; pooled (`-pooler.neon.tech`) and direct connection URLs stored in Vercel env as `DATABASE_URL` and `DATABASE_URL_UNPOOLED`.
-- [ ] **DATA-02**: Drizzle schema for `production_orders` table — Book1.xlsx fields + `state` (Pending/Mixing/Completed/Blocked) + `version INTEGER DEFAULT 1` for optimistic concurrency + `clerk_user_id TEXT` (no FK) + timestamps.
-- [ ] **DATA-03**: Drizzle schema for `order_events` table — append-only audit log (`order_id`, `from_state`, `to_state`, `changed_by`, `changed_at`, `note`).
-- [ ] **DATA-04**: Drizzle schema for `import_batches` table — operational visibility (`file_name`, `row_count`, `imported_by`, `imported_at`).
-- [ ] **DATA-05**: Drizzle schema for `users` table — lazy-sync Clerk display name cache; upserted on each authenticated session; never used for auth decisions.
-- [ ] **DATA-06**: SQL migrations generated and applied via `drizzle-kit generate` + `drizzle-kit migrate`. `drizzle-kit push` banned after initial schema.
-- [ ] **DATA-07**: Seed script populates DB with Book1.xlsx example data so development env mirrors current `/demo` baseline.
-- [ ] **DATA-08**: `src/db/index.ts` enforces `import 'server-only'` to prevent Edge-runtime driver leak.
+- [x] **DATA-01**: Neon Postgres project provisioned; pooled (`-pooler.neon.tech`) and direct connection URLs stored in Vercel env as `DATABASE_URL` and `DATABASE_URL_UNPOOLED`.
+- [x] **DATA-02**: Drizzle schema for `production_orders` table — Book1.xlsx fields + `state` (Pending/Mixing/Completed/Blocked) + `version INTEGER DEFAULT 1` for optimistic concurrency + `clerk_user_id TEXT` (no FK) + timestamps.
+- [x] **DATA-03**: Drizzle schema for `order_events` table — append-only audit log (`order_id`, `from_state`, `to_state`, `changed_by`, `changed_at`, `note`).
+- [x] **DATA-04**: Drizzle schema for `import_batches` table — operational visibility (`file_name`, `row_count`, `imported_by`, `imported_at`).
+- [x] **DATA-05**: Drizzle schema for `users` table — lazy-sync Clerk display name cache; upserted on each authenticated session; never used for auth decisions.
+- [x] **DATA-06**: SQL migrations generated and applied via `drizzle-kit generate` + `drizzle-kit migrate`. `drizzle-kit push` banned after initial schema.
+- [x] **DATA-07**: Seed script populates DB with Book1.xlsx example data so development env mirrors current `/demo` baseline.
+- [x] **DATA-08**: `src/db/index.ts` enforces `import 'server-only'` to prevent Edge-runtime driver leak.
 
 ### AUTH — Role Expansion for Production Access
 
-- [ ] **AUTH-01**: `mill_operator` role string added to the `Role` union in `src/types/clerk.d.ts`.
-- [ ] **AUTH-02**: Mutating server actions (Phase 33: transitions, bulk import) enforce `await requireRole('mill_operator')` as the canonical server-side guard for v2.0 write operations. `/` page-level enforcement is NOT used — any authenticated user may view `/` in read-only mode.
-- [ ] **AUTH-03**: Middleware adds `/` to the `auth.protect()` flow only (already covered by the existing `!isPublicRoute(request)` branch). NO `mill_operator` coarse-gate matcher mirroring `/demo/*`.
-- [ ] **AUTH-04**: `docs/clerk-setup.md` runbook updated with `mill_operator` test user assignment and JWT template verification step.
+- [x] **AUTH-01**: `mill_operator` role string added to the `Role` union in `src/types/clerk.d.ts`.
+- [x] **AUTH-02**: Mutating server actions (Phase 33: transitions, bulk import) enforce `await requireRole('mill_operator')` as the canonical server-side guard for v2.0 write operations. `/` page-level enforcement is NOT used — any authenticated user may view `/` in read-only mode.
+- [x] **AUTH-03**: Middleware adds `/` to the `auth.protect()` flow only (already covered by the existing `!isPublicRoute(request)` branch). NO `mill_operator` coarse-gate matcher mirroring `/demo/*`.
+- [x] **AUTH-04**: `docs/clerk-setup.md` runbook updated with `mill_operator` test user assignment and JWT template verification step.
 
 ### PROD — Production Dashboard UI (replaces Coming Soon)
 
-- [ ] **PROD-01**: `/` route replaces Coming Soon with the production mill dashboard, rendered as an async RSC with `export const dynamic = 'force-dynamic'`.
-- [ ] **PROD-02**: Three-column layout (Premix / Excel / CGM) populated from DB-backed orders, matching the existing `mill-production.pen` design.
-- [ ] **PROD-03**: Status filter pills (Pending, Mixing, Completed, Blocked) with multi-select toggle; filter state URL-synced via `nuqs`.
-- [ ] **PROD-04**: Search across customer name and product fields; search term URL-synced via `nuqs`.
-- [ ] **PROD-05**: Order details panel opens on row click, showing all order fields, transition history (from `order_events`), and any free-text blocker note.
-- [ ] **PROD-06**: Blocked alert band aggregates all currently-blocked orders across the three columns.
-- [ ] **PROD-07**: "Next-up" indicator highlights the topmost Pending order in each column.
-- [ ] **PROD-08**: In-progress badge appears on every Mixing order.
-- [ ] **PROD-09**: Polling at 30s via `setInterval(() => router.refresh(), 30_000)` in a client-component hook; named constant for future tuning.
-- [ ] **PROD-10**: Loading skeleton and empty-state UI per status column.
-- [ ] **PROD-11**: Last-updated timestamp + manual refresh control surfaced in the header strip.
+- [x] **PROD-01**: `/` route replaces Coming Soon with the production mill dashboard, rendered as an async RSC with `export const dynamic = 'force-dynamic'`.
+- [x] **PROD-02**: Three-column layout (Premix / Excel / CGM) populated from DB-backed orders, matching the existing `mill-production.pen` design.
+- [x] **PROD-03**: Status filter pills (Pending, Mixing, Completed, Blocked) with multi-select toggle; filter state URL-synced via `nuqs`.
+- [x] **PROD-04**: Search across customer name and product fields; search term URL-synced via `nuqs`.
+- [x] **PROD-05**: Order details panel opens on row click, showing all order fields, transition history (from `order_events`), and any free-text blocker note.
+- [x] **PROD-06**: Blocked alert band aggregates all currently-blocked orders across the three columns.
+- [x] **PROD-07**: "Next-up" indicator highlights the topmost Pending order in each column.
+- [x] **PROD-08**: In-progress badge appears on every Mixing order.
+- [x] **PROD-09**: Polling at 30s via `setInterval(() => router.refresh(), 30_000)` in a client-component hook; named constant for future tuning.
+- [x] **PROD-10**: Loading skeleton and empty-state UI per status column.
+- [x] **PROD-11**: Last-updated timestamp + manual refresh control surfaced in the header strip.
 
 ### TRANS — Status Transitions
 
-- [ ] **TRANS-01**: Operator can transition Pending → Mixing via per-order button.
-- [ ] **TRANS-02**: Operator can transition Mixing → Completed via per-order button.
-- [ ] **TRANS-03**: Operator can mark any active order Blocked from any non-terminal state; required free-text reason captured as `order_events.note`.
-- [ ] **TRANS-04**: Operator can resume Blocked → Mixing (or Blocked → Pending) via per-order button.
-- [ ] **TRANS-05**: Every transition writes a row to `order_events` (from_state, to_state, changed_by, changed_at, note).
-- [ ] **TRANS-06**: Optimistic-concurrency check via `UPDATE … WHERE id = $id AND version = $version`; zero rows returned surfaces user-facing "Order was modified by another user. Please refresh." error.
-- [ ] **TRANS-07**: All transitions are React 19 server actions; every action calls `revalidateTag('production-orders')` before returning.
+- [x] **TRANS-01**: Operator can transition Pending → Mixing via per-order button.
+- [x] **TRANS-02**: Operator can transition Mixing → Completed via per-order button.
+- [x] **TRANS-03**: Operator can mark any active order Blocked from any non-terminal state; required free-text reason captured as `order_events.note`.
+- [x] **TRANS-04**: Operator can resume Blocked → Mixing (or Blocked → Pending) via per-order button.
+- [x] **TRANS-05**: Every transition writes a row to `order_events` (from_state, to_state, changed_by, changed_at, note).
+- [x] **TRANS-06**: Optimistic-concurrency check via `UPDATE … WHERE id = $id AND version = $version`; zero rows returned surfaces user-facing "Order was modified by another user. Please refresh." error.
+- [x] **TRANS-07**: All transitions are React 19 server actions; every action calls `revalidateTag('production-orders')` before returning.
 
 ### IMPORT — Bulk XLSX Import (Book1.xlsx format)
 
-- [ ] **IMPORT-01**: User can upload a `.xlsx` file via drag-drop or file picker (single-file upload).
-- [ ] **IMPORT-02**: Server-side parse with `read-excel-file` 9.0.9 (no `xlsx`/SheetJS — unpatched CVE on npm).
-- [ ] **IMPORT-03**: Preview screen shows row count, total weight, and detected duplicates before commit.
-- [ ] **IMPORT-04**: Row-level error display lists rows with invalid data alongside reason; partial import is allowed (valid rows commit, invalid rows reported).
-- [ ] **IMPORT-05**: Duplicate detection by `Document Number`; duplicates flagged in preview with user choice to skip or overwrite per row.
-- [ ] **IMPORT-06**: Confirmed imports recorded in `import_batches` table; subsequent import history visible in a small log surface (count + filename + date).
-- [ ] **IMPORT-07**: `next.config.ts` `serverActions.bodySizeLimit: '2mb'` (and matching `proxyClientMaxBodySize`); client-side file-size validation before submit.
+- [x] **IMPORT-01**: User can upload a `.xlsx` file via drag-drop or file picker (single-file upload).
+- [x] **IMPORT-02**: Server-side parse with `read-excel-file` 9.0.9 (no `xlsx`/SheetJS — unpatched CVE on npm).
+- [x] **IMPORT-03**: Preview screen shows row count, total weight, and detected duplicates before commit.
+- [x] **IMPORT-04**: Row-level error display lists rows with invalid data alongside reason; partial import is allowed (valid rows commit, invalid rows reported).
+- [x] **IMPORT-05**: Duplicate detection by `Document Number`; duplicates flagged in preview with user choice to skip or overwrite per row.
+- [x] **IMPORT-06**: Confirmed imports recorded in `import_batches` table; subsequent import history visible in a small log surface (count + filename + date).
+- [x] **IMPORT-07**: `next.config.ts` `serverActions.bodySizeLimit: '2mb'` (and matching `proxyClientMaxBodySize`); client-side file-size validation before submit.
 
 ### KPI — Operations Metrics
 
-- [ ] **KPI-01**: Mill-wide tons completed today.
-- [ ] **KPI-02**: Tons completed today per mill line (Premix / Excel / CGM).
-- [ ] **KPI-03**: Per-column header strip showing order count and completed-lbs / total-lbs.
-- [ ] **KPI-04**: Pending backlog (count + total weight) surfaced as a KPI card.
-- [ ] **KPI-05**: Formula mix breakdown (Pellet / Mash / Crumble percentages) for orders completed today.
-- [ ] **KPI-06**: 7-day order volume trend (bar/sparkline) computed from DB; graceful "Not enough data yet" empty state when fewer than 7 days exist.
-- [ ] **KPI-07**: Cross-column exception list — surfaces every blocked order, sortable by dwell time.
-- [ ] **KPI-08**: Orders past `earlyDeliveryDate` flagged with a warning badge in list view.
+- [x] **KPI-01**: Mill-wide tons completed today.
+- [x] **KPI-02**: Tons completed today per mill line (Premix / Excel / CGM).
+- [x] **KPI-03**: Per-column header strip showing order count and completed-lbs / total-lbs.
+- [x] **KPI-04**: Pending backlog (count + total weight) surfaced as a KPI card.
+- [x] **KPI-05**: Formula mix breakdown (Pellet / Mash / Crumble percentages) for orders completed today.
+- [x] **KPI-06**: 7-day order volume trend (bar/sparkline) computed from DB; graceful "Not enough data yet" empty state when fewer than 7 days exist.
+- [x] **KPI-07**: Cross-column exception list — surfaces every blocked order, sortable by dwell time.
+- [x] **KPI-08**: Orders past `earlyDeliveryDate` flagged with a warning badge in list view.
 
 ---
 
@@ -124,51 +124,51 @@ Reasoning preserved so future milestones don't relitigate decisions.
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| AUTH-01 | Phase 31 | Pending |
-| AUTH-02 | Phase 31 | Pending |
-| AUTH-03 | Phase 31 | Pending |
-| AUTH-04 | Phase 31 | Pending |
-| DATA-01 | Phase 31 | Pending |
-| DATA-08 | Phase 31 | Pending |
-| DATA-02 | Phase 32 | Pending |
-| DATA-03 | Phase 32 | Pending |
-| DATA-04 | Phase 32 | Pending |
-| DATA-05 | Phase 32 | Pending |
-| DATA-06 | Phase 32 | Pending |
-| DATA-07 | Phase 32 | Pending |
-| TRANS-01 | Phase 33 | Pending |
-| TRANS-02 | Phase 33 | Pending |
-| TRANS-03 | Phase 33 | Pending |
-| TRANS-04 | Phase 33 | Pending |
-| TRANS-05 | Phase 33 | Pending |
-| TRANS-06 | Phase 33 | Pending |
-| TRANS-07 | Phase 33 | Pending |
-| IMPORT-01 | Phase 33 | Pending |
-| IMPORT-02 | Phase 33 | Pending |
-| IMPORT-03 | Phase 33 | Pending |
-| IMPORT-04 | Phase 33 | Pending |
-| IMPORT-05 | Phase 33 | Pending |
-| IMPORT-06 | Phase 33 | Pending |
-| IMPORT-07 | Phase 33 | Pending |
-| PROD-01 | Phase 34 | Pending |
-| PROD-02 | Phase 34 | Pending |
-| PROD-03 | Phase 34 | Pending |
-| PROD-04 | Phase 34 | Pending |
-| PROD-05 | Phase 34 | Pending |
-| PROD-06 | Phase 34 | Pending |
-| PROD-07 | Phase 34 | Pending |
-| PROD-08 | Phase 34 | Pending |
-| PROD-09 | Phase 34 | Pending |
-| PROD-10 | Phase 34 | Pending |
-| PROD-11 | Phase 34 | Pending |
-| KPI-01 | Phase 35 | Pending |
-| KPI-02 | Phase 35 | Pending |
-| KPI-03 | Phase 35 | Pending |
-| KPI-04 | Phase 35 | Pending |
-| KPI-05 | Phase 35 | Pending |
-| KPI-06 | Phase 35 | Pending |
-| KPI-07 | Phase 35 | Pending |
-| KPI-08 | Phase 35 | Pending |
+| AUTH-01 | Phase 31 | Complete |
+| AUTH-02 | Phase 31 | Complete |
+| AUTH-03 | Phase 31 | Complete |
+| AUTH-04 | Phase 31 | Complete |
+| DATA-01 | Phase 31 | Complete |
+| DATA-08 | Phase 31 | Complete |
+| DATA-02 | Phase 32 | Complete |
+| DATA-03 | Phase 32 | Complete |
+| DATA-04 | Phase 32 | Complete |
+| DATA-05 | Phase 32 | Complete |
+| DATA-06 | Phase 32 | Complete |
+| DATA-07 | Phase 32 | Complete |
+| TRANS-01 | Phase 33 | Complete |
+| TRANS-02 | Phase 33 | Complete |
+| TRANS-03 | Phase 33 | Complete |
+| TRANS-04 | Phase 33 | Complete |
+| TRANS-05 | Phase 33 | Complete |
+| TRANS-06 | Phase 33 | Complete |
+| TRANS-07 | Phase 33 | Complete |
+| IMPORT-01 | Phase 33 | Complete |
+| IMPORT-02 | Phase 33 | Complete |
+| IMPORT-03 | Phase 33 | Complete |
+| IMPORT-04 | Phase 33 | Complete |
+| IMPORT-05 | Phase 33 | Complete |
+| IMPORT-06 | Phase 33 | Complete |
+| IMPORT-07 | Phase 33 | Complete |
+| PROD-01 | Phase 34 | Complete |
+| PROD-02 | Phase 34 | Complete |
+| PROD-03 | Phase 34 | Complete |
+| PROD-04 | Phase 34 | Complete |
+| PROD-05 | Phase 34 | Complete |
+| PROD-06 | Phase 34 | Complete |
+| PROD-07 | Phase 34 | Complete |
+| PROD-08 | Phase 34 | Complete |
+| PROD-09 | Phase 34 | Complete |
+| PROD-10 | Phase 34 | Complete |
+| PROD-11 | Phase 34 | Complete |
+| KPI-01 | Phase 35 | Complete |
+| KPI-02 | Phase 35 | Complete |
+| KPI-03 | Phase 35 | Complete |
+| KPI-04 | Phase 35 | Complete |
+| KPI-05 | Phase 35 | Complete |
+| KPI-06 | Phase 35 | Complete |
+| KPI-07 | Phase 35 | Complete |
+| KPI-08 | Phase 35 | Complete |
 
 ---
 
