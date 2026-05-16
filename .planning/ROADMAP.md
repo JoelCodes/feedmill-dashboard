@@ -282,7 +282,7 @@ Plans:
 Plans:
 **Wave 1** *(parallel — 4 plans, zero file overlap)*
 
-- [ ] 37-01-PLAN.md — Backfill `requirements-completed:` in 28 SUMMARYs across Phases 31-35 (REQ-ID count ≈ 22; file count = 28; the plan reconciles) (W1; 7 RENAME + 21 ADD/POPULATE; atomic commit; mirrors v1.5 Plan 30-02)
+- [ ] 37-01-PLAN.md — Backfill `requirements-completed:` in 28 SUMMARY files (Phases 31-35; addresses ≈22 REQ-IDs untraced — REQ-ID count is per-ID, file count is per-SUMMARY) (W1; 7 RENAME + 21 ADD/POPULATE; atomic commit; mirrors v1.5 Plan 30-02)
 - [ ] 37-02-PLAN.md — Flip 45 v2.0 requirement checkboxes + 45 traceability cells to `[x]` / `Complete` in REQUIREMENTS.md (W2; uses v1.5 INT-07 verbatim format)
 - [ ] 37-03-PLAN.md — Amend 33-HUMAN-UAT.md Test #2 closure per 34-INHERITED-UAT.md:62-66 protocol (W3; closes INT-02)
 - [ ] 37-04-PLAN.md — Clear stale `missing_artifacts:` in 35-LEARNINGS.md (W4; pre-flight `ls` confirms artifact existence)
