@@ -1,5 +1,5 @@
 ---
-status: resolved
+status: gaps_closed
 phase: 33-server-actions-queries-and-bulk-import
 source: [33-VERIFICATION.md]
 started: 2026-05-14T01:30:00Z
@@ -18,7 +18,7 @@ result: passed (harness 5/5 × 2 runs, 2026-05-14) — closed by plan 33-08 (GAP
 
 ### 2. revalidateTag cache invalidation observed in browser
 expected: After a successful transition, the Phase 34 dashboard reflects the new order state without a manual hard refresh
-result: deferred_to_phase_34
+result: closed_in_phase_34 (pass, 2026-05-14, Phase 34 T12)
 deferral_rationale: |
   Cannot be observed in Phase 33 — observation requires an RSC consumer
   (the Phase 34 dashboard) to call getProductionOrders. Action-side tag
