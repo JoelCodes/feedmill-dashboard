@@ -29,6 +29,8 @@ metrics:
   tasks_completed: 1
   tasks_total: 3
   tasks_checkpoint: 2
+requirements-completed:
+  - DATA-06
 ---
 
 # Phase 32 Plan 04: drizzle-kit Generate + Migrate Summary

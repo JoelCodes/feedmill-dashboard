@@ -55,6 +55,12 @@ decisions:
 metrics:
   duration: ~25 minutes
   completed: "2026-05-14T19:28:55Z"
+requirements-completed:
+  - PROD-01
+  - PROD-03
+  - PROD-04
+  - PROD-05
+  - PROD-06
 ---
 
 # Phase 34 Plan 01: Foundation (nuqs, NuqsAdapter, search-params, StatusBadge, Sidebar, Header, D-21) Summary

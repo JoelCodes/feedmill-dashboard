@@ -51,6 +51,10 @@ metrics:
   tasks_completed: 3
   files_created: 1
   files_modified: 3
+requirements-completed:
+  - IMPORT-04
+  - IMPORT-05
+  - IMPORT-06
 ---
 
 # Phase 33 Plan 06: commitImportAction — XLSX Import Commit Summary

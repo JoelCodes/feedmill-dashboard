@@ -33,6 +33,12 @@ metrics:
   completed: "2026-05-14T23:11:24Z"
   tasks_completed: 2
   files_modified: 3
+requirements-completed:
+  - PROD-01
+  - PROD-02
+  - IMPORT-04
+  - IMPORT-05
+  - IMPORT-06
 ---
 
 # Phase 34 Plan 9: T9a + T9b ImportFlow Gap Closure Summary

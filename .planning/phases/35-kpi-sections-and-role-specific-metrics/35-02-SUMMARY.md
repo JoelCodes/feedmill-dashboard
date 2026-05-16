@@ -27,7 +27,7 @@ metrics:
   completed_date: "2026-05-14"
   tasks_completed: 2
   files_modified: 4
-requirements: [KPI-08]
+requirements-completed: [KPI-08]
 ---
 
 # Phase 35 Plan 02: Import Pipeline earlyDeliveryDate Persistence Summary

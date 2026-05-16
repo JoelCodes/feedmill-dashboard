@@ -37,6 +37,11 @@ metrics:
   completed: "2026-05-14"
   tasks_completed: 2
   files_changed: 6
+requirements-completed:
+  - PROD-03
+  - PROD-04
+  - PROD-05
+  - PROD-10
 ---
 
 # Phase 34 Plan 11: nuqs Shallow Split for Drawer RSC Fetch (T10b) Summary

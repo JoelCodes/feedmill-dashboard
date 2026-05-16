@@ -24,6 +24,9 @@ metrics:
   tasks_completed: 2
   tasks_total: 2
   files_modified: 3
+requirements-completed:
+  - PROD-03
+  - PROD-04
 ---
 
 # Phase 34 Plan 8: Remove Dead Header Search Input (T3 Gap Closure) Summary

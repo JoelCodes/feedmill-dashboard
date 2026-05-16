@@ -33,6 +33,9 @@ metrics:
   tasks_completed: 2
   files_created: 4
   files_modified: 0
+requirements-completed:
+  - KPI-05
+  - KPI-07
 ---
 
 # Phase 35 Plan 03: Pure Lib Helpers (bucketTexture + formatDwell) Summary

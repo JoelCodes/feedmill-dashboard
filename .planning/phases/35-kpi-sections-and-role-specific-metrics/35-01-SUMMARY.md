@@ -35,7 +35,7 @@ metrics:
   completed_date: "2026-05-15"
   tasks_completed: 3
   files_modified: 13
-requirements: [KPI-08]
+requirements-completed: [KPI-08]
 ---
 
 # Phase 35 Plan 01: Schema Column + Migration + Seed Backfill + Fixture Propagation Summary

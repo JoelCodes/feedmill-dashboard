@@ -43,7 +43,7 @@ metrics:
   tasks_completed: 3
   files_created: 6
   files_modified: 0
-requirements: [KPI-06, KPI-07, KPI-08]
+requirements-completed: [KPI-06, KPI-07, KPI-08]
 ---
 
 # Phase 35 Plan 06: Bottom-Zone Components (SevenDayTrendChart + BlockedExceptionList + KpiSection) Summary

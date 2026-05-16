@@ -45,7 +45,7 @@ metrics:
   tasks_completed: 3
   files_created: 4
   files_modified: 0
-requirements: [KPI-01, KPI-02, KPI-04, KPI-05, KPI-06, KPI-07, KPI-08]
+requirements-completed: [KPI-01, KPI-02, KPI-04, KPI-05, KPI-06, KPI-07, KPI-08]
 ---
 
 # Phase 35 Plan 04: KPI Query Layer (sanitizeIanaTimezone + getKpiStrip + getSevenDayTrend + getBlockedWithDwell) Summary
