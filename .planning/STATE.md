@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: hygiene cleanup
 status: executing
-last_updated: "2026-05-16T06:58:01.504Z"
+last_updated: "2026-05-16T06:59:36.623Z"
 last_activity: 2026-05-16
 progress:
   total_phases: 7
@@ -25,15 +25,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** v2.0 milestone shippable — Phase 36 complete; operator audit re-run pending (Plan 05 Task 2)
+**Current focus:** Phase 37 — v2.0.1 hygiene cleanup (close audit warnings before ship)
 
 ## Current Position
 
-Phase: 36 — COMPLETE
-Plan: 5 of 5
+Phase: 37 (v2.0.1 hygiene cleanup (close audit warnings before ship)) — EXECUTING
+Plan: 1 of 5
 **Phase:** 36
 **Plan:** all complete; v2.0 milestone shippable (audit re-run pending)
-**Status:** Ready to execute
+**Status:** Executing Phase 37
 **Last activity:** 2026-05-16
 
 ### Progress Bar
