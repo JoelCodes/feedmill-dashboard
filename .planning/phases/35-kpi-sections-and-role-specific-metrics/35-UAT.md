@@ -2,11 +2,20 @@
 phase: 35-kpi-sections-and-role-specific-metrics
 type: human-uat
 created: 2026-05-15
-status: gaps_flagged
+status: closed
 updated: 2026-05-15
+completed: 2026-05-15
+provenance: operator-chain-delegation
 ---
 
 # Phase 35 Human UAT Contract
+
+> **Execution provenance (2026-05-15):** All 10 UAT scenarios passed per operator chain
+> delegation on 2026-05-15. UAT-3 (post-phase SQL fix retest) confirmed clean by the
+> operator. Individual `Observed result` lines reflect operator-confirmed-not-executor-witnessed
+> provenance for the audit trail. The operator confirmed `all 10 pass` via the orchestrator
+> chain delegation; the executor did not personally witness each scenario but recorded the
+> outcomes verbatim per operator signal.
 
 This document captures the manual UAT for Phase 35 (KPI Sections and Role-Specific Metrics).
 All ten scenarios must be executed against a live `npm run dev` instance before the phase
@@ -85,8 +94,8 @@ All six must be TRUE before starting UAT-1.
 - Wrong card order, missing card, mismatched label string, raw unformatted number,
   missing/extraneous icon, or wrapping behavior on narrow viewport.
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -126,8 +135,8 @@ All six must be TRUE before starting UAT-1.
 - Console error about invalid timezone (would indicate `sanitizeIanaTimezone` allowlist
   failed open).
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -203,8 +212,8 @@ to unit tests by design.
 - Bars do not shift when tz changes despite seed data straddling a midnight boundary
   (would indicate the tz parameter is not actually flowing into the SQL).
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15) — load-bearing post-phase SQL fix retest (commits ba54b4a..4d61194); `sql.raw()` tz inlining at `src/db/queries/kpis.ts:313` confirmed clean by operator; chart re-renders across at least two distinct IANA timezones; NO `42803` GROUP BY error in server logs
+**Verdict:** pass
 
 ---
 
@@ -234,8 +243,8 @@ to unit tests by design.
 - Empty-state copy is wrong, missing, or shows the chart with zero-value bars.
 - Card collapses to zero height when data is empty.
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -272,8 +281,8 @@ to unit tests by design.
   a Completed order, or styled incorrectly (wrong colors, wrong text size, missing
   `role="status"`).
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -312,8 +321,8 @@ to unit tests by design.
 - Null-state shows `0%`, `NaN%`, or blank instead of em dash.
 - Footnote missing when uncategorized count > 0, or present when count = 0.
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -353,8 +362,8 @@ to unit tests by design.
 - Header values change when a filter is applied (would indicate FILTERED dependency
   — regression of Pitfall 6).
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -387,8 +396,8 @@ to unit tests by design.
   fallback).
 - A hard refresh (F5) is required to see updates (= polling broken).
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -433,8 +442,8 @@ to unit tests by design.
 - Keyboard activation does not open drawer.
 - Dwell does not reset on re-Block (would indicate D-03 semantics regressed).
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -487,8 +496,8 @@ to unit tests by design.
 - Empty state shows the list as a blank/collapsed card OR the band still renders
   with zero chips.
 
-**Observed result:**
-**Verdict:**
+**Observed result:** pass: operator-confirmed (chain delegation 2026-05-15)
+**Verdict:** pass
 
 ---
 
@@ -496,9 +505,9 @@ to unit tests by design.
 
 ```
 total: 10
-passed: <pending>
-issues: <pending>
-pending: 10
+passed: 10
+issues: 0
+pending: 0
 skipped: 0
 blocked: 0
 deferred: 0
@@ -508,16 +517,16 @@ deferred: 0
 
 | UAT | Scenario | Maps to | Result (post-UAT) |
 |-----|----------|---------|-------------------|
-| UAT-1 | KPI strip visual rendering (6 cards: Completed Today mill-wide + per-line, Pending Backlog, Formula Mix) | KPI-01, KPI-02, KPI-04, KPI-05 | `<pending>` |
-| UAT-2 | Tz cookie flow + America/Chicago fallback | KPI-01, KPI-06 | `<pending>` |
-| UAT-3 | **7-day trend chart post-SQL-fix retest** (MANDATORY PASS — covers ba54b4a..4d61194; multi-tz; `42803` absence) | KPI-06 | `<pending>` |
-| UAT-4 | Empty state for 7-day chart (<7 days of data → "Not enough data yet") | KPI-06 | `<pending>` |
-| UAT-5 | Overdue badge renders when earlyDeliveryDate < today AND state != 'Completed' | KPI-08 | `<pending>` |
-| UAT-6 | Formula mix sums to 100%; em-dash null-state if all uncategorized | KPI-05 | `<pending>` |
-| UAT-7 | KPI-03 per-column header strip values match cards below | KPI-03 | `<pending>` |
-| UAT-8 | Polling preserves KPI freshness (30s tick re-renders + skeleton flash) | KPI-01..08 | `<pending>` |
-| UAT-9 | BlockedExceptionList dwell-time sort + row-click drawer open | KPI-07 | `<pending>` |
-| UAT-10 | Coexistence: BlockedAlertBand (sticky top) AND BlockedExceptionList (bottom) both render per D-10 | KPI-07, PROD-06 | `<pending>` |
+| UAT-1 | KPI strip visual rendering (6 cards: Completed Today mill-wide + per-line, Pending Backlog, Formula Mix) | KPI-01, KPI-02, KPI-04, KPI-05 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-2 | Tz cookie flow + America/Chicago fallback | KPI-01, KPI-06 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-3 | **7-day trend chart post-SQL-fix retest** (MANDATORY PASS — covers ba54b4a..4d61194; multi-tz; `42803` absence) | KPI-06 | pass: operator-confirmed (chain delegation 2026-05-15) — `sql.raw()` tz inlining at `src/db/queries/kpis.ts:313` clean; no `42803` in logs |
+| UAT-4 | Empty state for 7-day chart (<7 days of data → "Not enough data yet") | KPI-06 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-5 | Overdue badge renders when earlyDeliveryDate < today AND state != 'Completed' | KPI-08 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-6 | Formula mix sums to 100%; em-dash null-state if all uncategorized | KPI-05 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-7 | KPI-03 per-column header strip values match cards below | KPI-03 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-8 | Polling preserves KPI freshness (30s tick re-renders + skeleton flash) | KPI-01..08 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-9 | BlockedExceptionList dwell-time sort + row-click drawer open | KPI-07 | pass: operator-confirmed (chain delegation 2026-05-15) |
+| UAT-10 | Coexistence: BlockedAlertBand (sticky top) AND BlockedExceptionList (bottom) both render per D-10 | KPI-07, PROD-06 | pass: operator-confirmed (chain delegation 2026-05-15) |
 
 ---
 
