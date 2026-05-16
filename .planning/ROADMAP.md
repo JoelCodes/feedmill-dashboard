@@ -8,7 +8,7 @@
 - ✅ **v1.3 Design Hardening** — Phases 16-19 (shipped 2026-05-09)
 - ✅ **v1.4 Auth with Clerk** — Phases 20-24 (shipped 2026-05-10)
 - ✅ **v1.5 Production Transition** — Phases 25-30 (shipped 2026-05-12)
-- 🔄 **v2.0 Mill Production MVP** — Phases 31-35 (in progress)
+- 🔄 **v2.0 Mill Production MVP** — Phases 31-36 (audit re-run pending — Phase 36 closed BUILD-01 + Phase 35 verification gaps)
 
 ## Phases
 
@@ -62,13 +62,14 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 </details>
 
 <details open>
-<summary>🔄 v2.0 Mill Production MVP (Phases 31-35) — IN PROGRESS</summary>
+<summary>🔄 v2.0 Mill Production MVP (Phases 31-36) — AUDIT RE-RUN PENDING</summary>
 
-- [ ] **Phase 31: Role Expansion and DB Infrastructure** — Add `mill_operator` role, provision Neon Postgres, establish server-only Drizzle client
-- [ ] **Phase 32: Schema, Migrations, and Seed Data** — Define all four tables, generate and apply migrations, load Book1.xlsx fixtures
-- [ ] **Phase 33: Server Actions, Queries, and Bulk Import** — Write query functions and all server actions (transitions + XLSX import)
-- [ ] **Phase 34: Production Dashboard UI and Homepage Promotion** — Replace Coming Soon with live DB-backed mill dashboard at `/`
-- [ ] **Phase 35: KPI Sections and Role-Specific Metrics** — Operator column stats, supervisor exception views, manager throughput KPIs
+- [x] **Phase 31: Role Expansion and DB Infrastructure** — Add `mill_operator` role, provision Neon Postgres, establish server-only Drizzle client
+- [x] **Phase 32: Schema, Migrations, and Seed Data** — Define all four tables, generate and apply migrations, load Book1.xlsx fixtures
+- [x] **Phase 33: Server Actions, Queries, and Bulk Import** — Write query functions and all server actions (transitions + XLSX import)
+- [x] **Phase 34: Production Dashboard UI and Homepage Promotion** — Replace Coming Soon with live DB-backed mill dashboard at `/`
+- [x] **Phase 35: KPI Sections and Role-Specific Metrics** — Operator column stats, supervisor exception views, manager throughput KPIs
+- [x] **Phase 36: Close gap — BUILD-01 void cast + Phase 35 verification** — Closed BUILD-01 (`npm run build` 0); authored 35-VERIFICATION.md + 35-UAT.md; re-classified 35-VALIDATION.md to complete
 
 </details>
 
@@ -224,6 +225,7 @@ See [`milestones/v1.5-ROADMAP.md`](./milestones/v1.5-ROADMAP.md) for phase-level
 | 33. Server Actions, Queries, and Bulk Import | v2.0 | 11/11 | Complete    | 2026-05-14 |
 | 34. Production Dashboard UI and Homepage Promotion | v2.0 | 12/12 | Complete   | 2026-05-14 |
 | 35. KPI Sections and Role-Specific Metrics | v2.0 | 7/7 | Complete    | 2026-05-15 |
+| 36. Close gap: BUILD-01 void cast + Phase 35 verification | v2.0 | 5/5 | Complete    | 2026-05-15 |
 
 _Phases 0-24 archived to their respective milestone files in [`milestones/`](./milestones/)._
 
@@ -234,14 +236,14 @@ _Phases 0-24 archived to their respective milestone files in [`milestones/`](./m
 **Requirements**: KPI-01, KPI-02, KPI-03, KPI-04, KPI-05, KPI-06, KPI-07, KPI-08, PROD-06
 **Success Criteria** (what must be TRUE):
 
-  1. `npm run build` exits 0 — the `BlockedAlertBand.tsx:44` `startTransition` callback no longer leaks the `nuqs setQuery` `Promise<URLSearchParams>` return; the pattern matches `BlockedExceptionList.tsx:35`'s `void` cast.
-  2. A regression test (or extended existing test in `BlockedAlertBand.test.tsx`) covers the void-cast path so the type/return-shape regression cannot silently re-land; `npm test -- BlockedAlertBand` exits 0.
-  3. `35-VERIFICATION.md` exists at the phase root with goal-backward analysis covering all 7 plans (35-01..35-07) and all 8 KPI-* requirements; each KPI-* row has a `satisfied` verdict with code-evidence citations.
-  4. `35-UAT.md` exists at the phase root with a written human-UAT pass record covering: KPI strip visual rendering, tz cookie flow (incl. fallback when cookie missing), 7-day trend chart post-SQL-fix retest (covers commits `ba54b4a..4d61194`), overdue badge rendering, and the formula-mix breakdown card.
-  5. `35-VALIDATION.md` frontmatter is updated to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` — re-classified after Wave-0 test confirmation (`npm test -- kpis`) and human UAT.
-  6. STATE.md and ROADMAP.md reflect Phase 36 complete and v2.0 milestone shippable (gaps closed); `gsd-sdk query roadmap.get-phase 36 --pick goal` returns the canonical goal text, not `[To be planned]`.
+  1. ✅ `npm run build` exits 0 — the `BlockedAlertBand.tsx:44` `startTransition` callback no longer leaks the `nuqs setQuery` `Promise<URLSearchParams>` return; the pattern matches `BlockedExceptionList.tsx:35`'s `void` cast.
+  2. ✅ A regression test (or extended existing test in `BlockedAlertBand.test.tsx`) covers the void-cast path so the type/return-shape regression cannot silently re-land; `npm test -- BlockedAlertBand` exits 0.
+  3. ✅ `35-VERIFICATION.md` exists at the phase root with goal-backward analysis covering all 7 plans (35-01..35-07) and all 8 KPI-* requirements; each KPI-* row has a `satisfied` verdict with code-evidence citations.
+  4. ✅ `35-UAT.md` exists at the phase root with a written human-UAT pass record covering: KPI strip visual rendering, tz cookie flow (incl. fallback when cookie missing), 7-day trend chart post-SQL-fix retest (covers commits `ba54b4a..4d61194`), overdue badge rendering, and the formula-mix breakdown card.
+  5. ✅ `35-VALIDATION.md` frontmatter is updated to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` — re-classified after Wave-0 test confirmation (`npm test -- kpis`) and human UAT.
+  6. ✅ STATE.md and ROADMAP.md reflect Phase 36 complete and v2.0 milestone shippable (gaps closed); `gsd-sdk query roadmap.get-phase 36 --pick goal` returns the canonical goal text, not `[To be planned]`. *(milestone ship indicator gated on operator audit re-run choice — Task 2)*
 
-**Plans:** 3/5 plans executed
+**Plans:** 5/5 plans executed
 
 Plans:
 **Wave 1**
@@ -255,11 +257,11 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 36-04-PLAN.md — Re-classify 35-VALIDATION.md to complete (Nyquist gates green)
+- [x] 36-04-PLAN.md — Re-classify 35-VALIDATION.md to complete (Nyquist gates green)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 36-05-PLAN.md — STATE/ROADMAP hygiene + operator audit re-run gate
+- [x] 36-05-PLAN.md — STATE/ROADMAP hygiene + operator audit re-run gate
 
 ---
-*Last updated: 2026-05-15 — Phase 35 complete (7 plans across 4 waves). All 8 KPI requirements (KPI-01..KPI-08) verified via Manual UAT against the dashboard. v2.0 (Mill Production MVP) milestone now reaches feature-complete state. Four post-merge SQL fixes (ba54b4a, ca707c9, d792924, 24b34bf) closed bugs the mock-db unit tests couldn't catch — captured as backlog: KPI SQL integration smoke tests.*
+*Last updated: 2026-05-15 — Phase 36 complete (5 plans across 4 waves). BUILD-01 (`npm run build` void-cast) closed in Plan 01; Phase 35 verification artifacts (`35-VERIFICATION.md` + `35-UAT.md`) authored in Plans 02-03; `35-VALIDATION.md` re-classified to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true` in Plan 04; STATE/ROADMAP hygiene applied in Plan 05. v2.0 (Mill Production MVP) milestone is feature-complete with gaps closed; ship indicator (🔄 → ✅) gated on operator audit re-run choice (Plan 05 Task 2).*

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Mill Production MVP
-status: executing
-last_updated: "2026-05-15T21:36:23.473Z"
+status: completed
+last_updated: "2026-05-16T03:07:04Z"
 last_activity: 2026-05-15
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 47
-  completed_plans: 42
-  percent: 83
+  completed_plans: 47
+  percent: 100
 ---
 
 # Project State: v2.0 Mill Production MVP
@@ -25,22 +25,22 @@ See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Operations staff can see and manage feed orders in real-time, from pending through delivery.
 
-**Current focus:** Phase 36 — Close gap: BUILD-01 void cast + Phase 35 verification
+**Current focus:** v2.0 milestone shippable — Phase 36 complete; operator audit re-run pending (Plan 05 Task 2)
 
 ## Current Position
 
-Phase: 36 (Close gap: BUILD-01 void cast + Phase 35 verification) — EXECUTING
-Plan: 1 of 5
-**Phase:** 35
-**Plan:** all complete; Manual UAT verified 2026-05-15
-**Status:** Executing Phase 36
+Phase: 36 (close-gap-build-01-void-cast-phase-35-verification) — COMPLETE
+Plan: 5 of 5
+**Phase:** 36
+**Plan:** all complete; v2.0 milestone shippable (audit re-run pending)
+**Status:** v2.0 milestone shippable; gaps closed; audit re-run optional
 **Last activity:** 2026-05-15
 
 ### Progress Bar
 
 ```
-v2.0 Progress: [██████████] 5/5 phases complete
-Phase 31 █  Phase 32 █  Phase 33 █  Phase 34 █  Phase 35 █
+v2.0 Progress: [██████████] 6/6 phases complete
+Phase 31 █  Phase 32 █  Phase 33 █  Phase 34 █  Phase 35 █  Phase 36 █
 ```
 
 ## Performance Metrics
@@ -60,6 +60,7 @@ Phase 31 █  Phase 32 █  Phase 33 █  Phase 34 █  Phase 35 █
 ### Roadmap Evolution
 
 - Phase 36 added: Close gap: BUILD-01 void cast + Phase 35 verification
+- Phase 36 completed (2026-05-15): BUILD-01 closed (`npm run build` exits 0); 35-VERIFICATION.md + 35-UAT.md authored; 35-VALIDATION.md re-classified to `status: complete`, `nyquist_compliant: true`, `wave_0_complete: true`; v2.0 milestone shippable with audit re-run gated on operator (Plan 05 Task 2)
 
 ### Open Blockers
 
